@@ -7,12 +7,13 @@ trigger:
 - master
 
 pool:
-  vmImage: 'windows-latest'
+  #vmImage: 'windows-latest'
+  vmImage: 'vs2017-win2016'
 
 variables:
   solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+  buildPlatform: 'x64'
+  buildConfiguration: 'Debug'
 
 steps:
 - task: NuGetToolInstaller@0
