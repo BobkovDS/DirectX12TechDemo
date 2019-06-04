@@ -63,6 +63,7 @@ public:
 	UINT rtvDescriptorSize() { return m_rtvDescriptorSize; }
 	DXGI_FORMAT backBufferFormat() { return m_backBufferFormat; }
 	HRESULT m_prevPresentCallStatus = S_OK;
+	
 };
 
 #ifndef ReleaseCom

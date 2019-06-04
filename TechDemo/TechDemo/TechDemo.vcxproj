@@ -84,7 +84,13 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Program Files\Autodesk\FBX\FBX SDK\2019.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>C:\Program Files\Autodesk\FBX\FBX SDK\2019.2\lib\vs2017\x64\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libfbxsdk-md.lib;libxml2-md.lib;zlib-md.lib;wininet.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -118,17 +124,37 @@
     <ClCompile Include="BasicDXGI.cpp" />
     <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="D3D_FrameResourcesManager.cpp" />
+    <ClCompile Include="FBXFileLoader.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ObjectManager.cpp" />
+    <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="TechDemo.cpp" />
+    <ClCompile Include="TextureLoader\DDSTextureLoader.cpp" />
+    <ClCompile Include="TextureLoader\DirectXHelpers.cpp" />
+    <ClCompile Include="TextureLoader\ResourceUploadBatch.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Utilit3D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ApplDataStructures.h" />
+    <ClInclude Include="ApplException.h" />
     <ClInclude Include="BasicDXGI.h" />
     <ClInclude Include="Canvas.h" />
+    <ClInclude Include="d3dx12.h" />
     <ClInclude Include="D3D_FrameResourcesManager.h" />
+    <ClInclude Include="FBXFileLoader.h" />
+    <ClInclude Include="GraphicDataStructures.h" />
+    <ClInclude Include="MathHelper.h" />
+    <ClInclude Include="ObjectManager.h" />
+    <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="stdafx.h" />
     <ClInclude Include="TechDemo.h" />
+    <ClInclude Include="TextureLoader\DDSTextureLoader.h" />
+    <ClInclude Include="TextureLoader\DirectXHelpers.h" />
+    <ClInclude Include="TextureLoader\ResourceUploadBatch.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="UploadBuffer.h" />
+    <ClInclude Include="Utilit3D.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,4 +1,5 @@
 #include "TechDemo.h"
+#include "ApplException.h"
 #include <iostream>
 using namespace std;
 
@@ -10,8 +11,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 
 	try
 	{
-		//TechDemo my3DAppl(hInstance, L"my 3D application", 1000, 1000);
-		BasicDXGI my3DAppl(hInstance );
+		TechDemo my3DAppl(hInstance, L"my 3D application", 1000, 1000);
+		//BasicDXGI my3DAppl(hInstance );
 		my3DAppl.run();
 	}
 	catch (Canvas::CanvasException& exc)
@@ -19,9 +20,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 		cout << exc.what();
 		OutputDebugStringA(exc.what());
 	}
-	/*catch (MyCommonRuntimeException& runTimeException)
+	catch (MyCommonRuntimeException& runTimeException)
 	{
 		MessageBox(0, runTimeException.what().c_str(), runTimeException.where().c_str(), 0);
-	}*/
+	}
 	return 0;
 }

@@ -1,4 +1,6 @@
 #include "Utilit3D.h"
+#include "ApplException.h"
+
 using namespace std;
 using namespace DirectX;
 using Microsoft::WRL::ComPtr;
@@ -6,12 +8,22 @@ using Microsoft::WRL::ComPtr;
 
 Utilit3D::Utilit3D()
 {
+	m_initialized = false;
 }
 
 Utilit3D::~Utilit3D()
 {
 }
 
+void Utilit3D::initialize(ID3D12Device* iDevice, ID3D12GraphicsCommandList* iCmdList)
+{
+	assert(iDevice);
+	assert(iCmdList);
+
+	m_device = iDevice;
+	m_cmdList = iCmdList;
+	m_initialized = true;
+}
 
 ComPtr<ID3D12Resource> Utilit3D::createDefaultBuffer(ID3D12Device* device, ID3D12GraphicsCommandList* cmdList,
 	const void* initData, UINT64 byteSize, ComPtr<ID3D12Resource>& uploadBuffer)
@@ -155,3 +167,5 @@ UINT Utilit3D::CalcConstantBufferByteSize(UINT byteSize)
 {	
 	return (byteSize + 255) & ~255;
 };
+
+// ======================================================  Non-static versions
