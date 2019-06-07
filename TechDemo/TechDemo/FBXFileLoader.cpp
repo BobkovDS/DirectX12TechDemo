@@ -19,15 +19,13 @@ FBXFileLoader::~FBXFileLoader()
 	m_sdkManager->Destroy();
 }
 
-void FBXFileLoader::Initialize(ObjectManager* mngrObject, ResourceManager* mngrResource, Utilit3D* utilit3D)
+void FBXFileLoader::Initialize(ObjectManager* mngrObject, ResourceManager* mngrResource)
 {
 	assert(mngrObject);
-	assert(mngrResource);
-	assert(utilit3D);
+	assert(mngrResource);	
 
 	m_objectManager = mngrObject;	
-	m_resourceManager = mngrResource;
-	m_utilit3D = utilit3D;
+	m_resourceManager = mngrResource;	
 	m_initialized = true;
 }
 
@@ -105,8 +103,7 @@ void FBXFileLoader::createScene()
 	build_GeoMeshes();
 
 	m_resourceManager->buildTexurePathList();
-	m_resourceManager->buildTexureFullNameList();
-	m_resourceManager->loadTexture();
+
 		//build_Skeleton();
 	process_NodeInstances();
 }
@@ -128,6 +125,8 @@ void FBXFileLoader::build_GeoMeshes()
 	auto mesh_it_begin = m_meshesByName.begin();
 	for (; mesh_it_begin != m_meshesByName.end(); mesh_it_begin++)
 	{
+		bool lIsSkinnedMesh = false;
+
 		std::vector<VertexExtGPU> meshVertices;
 		std::vector<uint32_t> meshIndices;
 
@@ -155,8 +154,7 @@ void FBXFileLoader::build_GeoMeshes()
 			if (lMesh->UVs.size())	vertex.UVText = lMesh->UVs[vi];
 			vertex.ShapeID = 0;
 
-			// write vertex/bone weight information			
-
+			// write vertex/bone weight information		
 			for (int wi = 0; wi < lMesh->VertexWeightByBoneName[lMesh->Indices[vi]].size(); wi++)
 			{
 				string lBoneName = lMesh->VertexWeightByBoneName[lMesh->Indices[vi]][wi].first;
@@ -164,12 +162,16 @@ void FBXFileLoader::build_GeoMeshes()
 				int lBoneID = m_BonesIDByName[lBoneName].first;
 				vertex.BoneIndices[wi] = lBoneID;
 				vertex.BoneWeight[wi] = lBoneWeight;
+				lIsSkinnedMesh = true;
 			}
 
 			meshVertices[vi] = vertex;
 			meshIndices[vi] = vi;
 		}
 
+		
+		lgeoMesh->IsSkinnedMesh = lIsSkinnedMesh; // Does this mesh use at leas one skinned vertex
+		
 		submesh.IndexCount = meshVertices.size();
 		lgeoMesh->DrawArgs[lMesh->Name] = submesh;
 
@@ -187,7 +189,7 @@ void FBXFileLoader::build_GeoMeshes()
 
 		//upload geoMesh to GPU
 		
-		m_utilit3D->UploadMeshToDefaultBuffer<Mesh, VertexExtGPU, uint32_t>(lgeoMesh.get(), meshVertices, meshIndices);
+		Utilit3D::UploadMeshToDefaultBuffer<Mesh, VertexExtGPU, uint32_t>(lgeoMesh.get(), meshVertices, meshIndices);
 
 		//move geoMeshUp		
 	 	m_objectManager->addMesh(lgeoMesh->Name, lgeoMesh);
@@ -275,6 +277,7 @@ void FBXFileLoader::build_Materials(string& pMaterialName)
 			lMaterial->Name = (*mat_it).second.Name;
 			lMaterial->DiffuseAlbedo = (*mat_it).second.DiffuseAlbedo;
 
+			int DiffuseTextureCount = 0;
 			for (int i = 0; i < (*mat_it).second.TexturesNameByType.size(); i++)
 			{
 				int liTextureType = -1;
@@ -282,11 +285,15 @@ void FBXFileLoader::build_Materials(string& pMaterialName)
 				string texture_name = (*mat_it).second.TexturesNameByType[i].second;
 				
 				if (type == "diffuse")
-					liTextureType = 0;
+					liTextureType = DiffuseTextureCount++;
 				else if (type == "normal")
-					liTextureType = 1;
-				else if (type == "specular")
 					liTextureType = 2;
+				else if (type == "specular")
+					liTextureType = 3;
+				else if (type == "transparencyF")				
+					liTextureType = 4;									
+
+				if (DiffuseTextureCount > 1) DiffuseTextureCount = 1; // we support only two Diffuse texture
 
 				int textureID = m_resourceManager->getTexturePathIDByName(texture_name);
 				if (liTextureType >= 0)
@@ -295,6 +302,9 @@ void FBXFileLoader::build_Materials(string& pMaterialName)
 					int index = (1 << liTextureType) - 1;
 					lMaterial->DiffuseColorTextureIDs[index] = textureID;
 				}
+
+				lMaterial->IsTransparent = (*mat_it).second.IsTransparent;
+				lMaterial->IsTransparencyFactorUsed= (*mat_it).second.IsTransparencyUsed;
 			}
 			m_resourceManager->addMaterial(lMaterial);
 		}
@@ -312,11 +322,16 @@ void FBXFileLoader::add_InstanceToRenderItem(const fbx_NodeInstance& nodeRIInsta
 		lBaseInstance.World = nodeRIInstance.LocalTransformation;
 		if (nodeRIInstance.Materials.size())
 			lBaseInstance.MaterialIndex = nodeRIInstance.Materials[0]->MatCBIndex;
+
+		//define a type for RenderItem, let's use the first Instance for this and his material
 		if (ri_it->second->Type == 0)
 		{
-			//define a type for RenderItem, let's use the first Instance for this and his material
-			ri_it->second->Type = RenderItemType::RIT_Opaque;
+			if (nodeRIInstance.Materials[0]->IsTransparent || nodeRIInstance.Materials[0]->IsTransparencyUsed)
+				ri_it->second->Type = RenderItemType::RIT_Transparent;
+			else
+				ri_it->second->Type = RenderItemType::RIT_Opaque;
 		}
+
 		ri_it->second->Instances.push_back(lBaseInstance);
 	}
 }
@@ -328,16 +343,21 @@ void FBXFileLoader::move_RenderItems()
 	for (; begin_it != m_RenderItems.end(); begin_it++)
 	{
 		if (begin_it->second->Type == RenderItemType::RIT_Opaque)
-			m_objectManager->addOpaqueObject(begin_it->second);
-
+		{
+			if (begin_it->second->Geometry->IsSkinnedMesh)
+				m_objectManager->addSkinnedOpaqueObject(begin_it->second);
+			else
+				m_objectManager->addOpaqueObject(begin_it->second);
+		}
 		else if (begin_it->second->Type == RenderItemType::RIT_Transparent)
-			m_objectManager->addTransparentObject(begin_it->second);
-
-		else if (begin_it->second->Type == RenderItemType::RIT_Animated)
-			m_objectManager->addAnimatedObject(begin_it->second);
+		{
+			if (begin_it->second->Geometry->IsSkinnedMesh)
+				m_objectManager->addSkinnedNotOpaqueObject(begin_it->second);
+			else
+				m_objectManager->addTransparentObject(begin_it->second);
+		}			
 		else
-			assert(0); 
-		
+			assert(0); 		
 	}
 	//
 }
@@ -392,30 +412,59 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 				if (materialSuface->ShadingModel.Get() == "Phong")
 				{
 					lphongMaterial = static_cast<FbxSurfacePhong*>(materialSuface);
-					FbxDouble* lDifuseData = lphongMaterial->Diffuse.Get().Buffer();
-					float f1 = lphongMaterial->Diffuse.Get().mData[0];
-					float f2 = lphongMaterial->Diffuse.Get().mData[1];
-					float f3 = lphongMaterial->Diffuse.Get().mData[2];
-					float f4 = lphongMaterial->AmbientFactor;
-
-					lMaterial.DiffuseAlbedo = XMFLOAT4(f1, f2, f3, f4);
-					int srcObjectcount = lphongMaterial->Diffuse.GetSrcObjectCount<FbxTexture>();
-
-					if (srcObjectcount)
+					/*
+					int difuseTextureCount = lphongMaterial->Diffuse.GetSrcObjectCount<FbxTexture>();
+					int specularTextureCount = lphongMaterial->Specular.GetSrcObjectCount<FbxTexture>();
+					int transparentTextureCount = lphongMaterial->TransparentColor.GetSrcObjectCount<FbxTexture>();
+					int ambientTextureCount = lphongMaterial->Ambient.GetSrcObjectCount<FbxTexture>();
+					int bumpTextureCount = lphongMaterial->Bump.GetSrcObjectCount<FbxTexture>();
+					int displTextureCount = lphongMaterial->DisplacementColor.GetSrcObjectCount<FbxTexture>();
+					int emmisiveTextureCount = lphongMaterial->Emissive.GetSrcObjectCount<FbxTexture>();
+					int reflectionTextureCount = lphongMaterial->Reflection.GetSrcObjectCount<FbxTexture>();
+					int vecotorDisplTextureCount = lphongMaterial->VectorDisplacementColor.GetSrcObjectCount<FbxTexture>();
+					int transparencyFactorTextureCount = lphongMaterial->TransparencyFactor.GetSrcObjectCount<FbxTexture>();
+					*/
+					
+					// Get Diffuse data
 					{
-						// We do not support layered texture now, so just take the first texture
-						FbxTexture* lTexture = lphongMaterial->Diffuse.GetSrcObject<FbxTexture>(0);
-						assert(lTexture);
+						FbxDouble* lData = lphongMaterial->Diffuse.Get().Buffer();
+						float f1 = lData[0];
+						float f2 = lData[1];
+						float f3 = lData[2];
+						float f4 = lphongMaterial->AmbientFactor;
 
-						string lTextureName = lTexture->GetName();
-						FbxFileTexture* lFileTexture = FbxCast<FbxFileTexture>(lTexture);
-						assert(lFileTexture);
-						string lTexturePath = lFileTexture->GetFileName();
+						lMaterial.DiffuseAlbedo = XMFLOAT4(f1, f2, f3, f4);
+						read_texture_data(&lMaterial, &lphongMaterial->Diffuse, "diffuse");
+					}
+					
+					// Get Specular data
+					{
+						FbxDouble* lData = lphongMaterial->Specular.Get().Buffer();
+						float f1 = lData[0];
+						float f2 = lData[1];
+						float f3 = lData[2];
+						float f4 = lphongMaterial->SpecularFactor;
+
+						lMaterial.Specular = XMFLOAT4(f1, f2, f3, f4);
+						read_texture_data(&lMaterial, &lphongMaterial->Specular, "specular");
+					}
+
+					// Get Transparency data
+					{
+						/*WARNING we do not use Transparent factor now, only Transparency texture;*/
+						FbxDouble* lData = lphongMaterial->TransparentColor.Get().Buffer();
+						float f1 = lData[0];
+						float f2 = lData[1];
+						float f3 = lData[2];
+						float f4 = lphongMaterial->TransparencyFactor;
 						
-						m_resourceManager->addTexturePathByName(lTextureName, lTexturePath);
-						
-						auto ltextureTypeName = std::make_pair("diffuse", lTextureName);
-						lMaterial.TexturesNameByType.push_back(ltextureTypeName);
+						lMaterial.IsTransparent = (f4 != 1.0f);
+						lMaterial.IsTransparent = false;// we do not process Transparent factor now;
+
+						lMaterial.TransparencyColor = XMFLOAT4(f1, f2, f3, f4);
+						//read_texture_data(&lMaterial, &lphongMaterial->TransparentColor, "transparentC");						
+						if (read_texture_data(&lMaterial, &lphongMaterial->TransparencyFactor, "transparencyF"))
+							lMaterial.IsTransparencyUsed = true;
 					}
 				}
 				else if (materialSuface->ShadingModel.Get() == "Lambert")
@@ -714,6 +763,33 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute)
 
 	// add mesh
 	m_meshesByName[name] = std::move(lmesh);
+}
+
+bool FBXFileLoader::read_texture_data(
+	fbx_Material* destMaterial,	FbxProperty* matProperty, std::string textureType)
+{	
+	bool AtleasOneTextureWasAdded = false;
+	int srcObjectcount = matProperty->GetSrcObjectCount<FbxTexture>();
+
+	for (int ti = 0; ti < srcObjectcount; ti++)
+	{		
+		// We do not support layered texture now, so just take the first texture
+		FbxTexture* lTexture = matProperty->GetSrcObject<FbxTexture>(ti);
+		assert(lTexture);
+
+		string lTextureName = lTexture->GetName();
+		FbxFileTexture* lFileTexture = FbxCast<FbxFileTexture>(lTexture);
+		assert(lFileTexture);
+		string lTexturePath = lFileTexture->GetFileName();
+
+		m_resourceManager->addTexturePathByName(lTextureName, lTexturePath);
+
+		auto ltextureTypeName = std::make_pair(textureType, lTextureName);
+		destMaterial->TexturesNameByType.push_back(ltextureTypeName);
+		AtleasOneTextureWasAdded = true;
+	}
+
+	return AtleasOneTextureWasAdded;
 }
 
 void FBXFileLoader::process_Skeleton(const FbxNode* pNode, fbx_TreeBoneNode* parent)

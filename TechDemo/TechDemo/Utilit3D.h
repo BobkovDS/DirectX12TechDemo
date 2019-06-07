@@ -10,20 +10,21 @@
 
 class Utilit3D
 {
-	ID3D12Device* m_device;
-	ID3D12GraphicsCommandList* m_cmdList;
-	bool m_initialized;
+	static ID3D12Device* m_device;
+	static ID3D12GraphicsCommandList* m_cmdList;
+	static bool m_initialized;
 public:
 	Utilit3D();
 	~Utilit3D();
-	void initialize(ID3D12Device* iDevice, ID3D12GraphicsCommandList* iCmdList);
+	
+	static void initialize(ID3D12Device* iDevice, ID3D12GraphicsCommandList* iCmdList);
 	
 	// ======================================================  Non-static versions
 
 	//Upload mesh data to Default Heap Buffer
 	/*use tamplate here to avoid of any using external data structures*/
-	template<typename Mesh, typename VertexGPU, typename IndexGPU>
-	void UploadMeshToDefaultBuffer(Mesh* mesh, std::vector<VertexGPU> vertexData, std::vector<IndexGPU> indexData);
+	//template<typename Mesh, typename VertexGPU, typename IndexGPU>
+	//void UploadMeshToDefaultBuffer(Mesh* mesh, std::vector<VertexGPU> vertexData, std::vector<IndexGPU> indexData);
 
 	// ======================================================  Static versions
 
@@ -50,9 +51,7 @@ public:
 		const std::string& entrypoint,
 		const std::string& target);
 
-	static void UploadDDSTexture(
-		ID3D12Device* device,
-		ID3D12GraphicsCommandList* cmdList,
+	static void UploadDDSTexture(	
 		std::string textureFileName,
 		Microsoft::WRL::ComPtr<ID3D12Resource> *textureResource,
 		Microsoft::WRL::ComPtr<ID3D12Resource> *uploader);
@@ -60,19 +59,16 @@ public:
 	//Upload mesh data to Default Heap Buffer
 	/*use tamplate here to avoid of any using external data structures*/
 	template<typename Mesh, typename VertexGPU, typename IndexGPU>
-	static void UploadMeshToDefaultBuffer(Mesh* mesh, std::vector<VertexGPU> vertexData, std::vector<IndexGPU> indexData,
-		ID3D12Device* device,
-		ID3D12GraphicsCommandList* cmdList );	
+	static void UploadMeshToDefaultBuffer(Mesh* mesh, std::vector<VertexGPU> vertexData, std::vector<IndexGPU> indexData);	
 };
 
 // template methods defenitions
 template<typename Mesh, typename VertexGPU, typename IndexGPU>
 void Utilit3D::UploadMeshToDefaultBuffer(
-	Mesh* mesh, std::vector<VertexGPU> vertexData, std::vector<IndexGPU> indexData,
-	ID3D12Device* device,
-	ID3D12GraphicsCommandList* cmdList
-)
+	Mesh* mesh, std::vector<VertexGPU> vertexData, std::vector<IndexGPU> indexData)
 {
+	assert(m_initialized); //should be initialized at first
+
 	int vertexByteStride = sizeof(VertexGPU);
 
 	mesh->VertexBufferByteSize = sizeof(VertexGPU) * vertexData.size();
@@ -80,12 +76,12 @@ void Utilit3D::UploadMeshToDefaultBuffer(
 	mesh->VertexByteStride = vertexByteStride;
 	mesh->IndexFormat = DXGI_FORMAT_R32_UINT;
 
-	mesh->VertexBufferGPU = Utilit3D::createDefaultBuffer(device, cmdList,
+	mesh->VertexBufferGPU = Utilit3D::createDefaultBuffer(m_device, m_cmdList,
 		vertexData.data(),
 		mesh->VertexBufferByteSize,
 		mesh->VertexBufferUploader);
 
-	mesh->IndexBufferGPU = Utilit3D::createDefaultBuffer(device, cmdList,
+	mesh->IndexBufferGPU = Utilit3D::createDefaultBuffer(m_device, m_cmdList,
 		indexData.data(),
 		mesh->IndexBufferByteSize,
 		mesh->IndexBufferUploader);
@@ -101,13 +97,13 @@ void Utilit3D::UploadMeshToDefaultBuffer(
 	CopyMemory(mesh->IndexBufferCPU->GetBufferPointer(), indexData.data(), mesh->IndexBufferByteSize);
 }
 
-template<typename Mesh, typename VertexGPU, typename IndexGPU>
-void Utilit3D::UploadMeshToDefaultBuffer(Mesh* mesh, std::vector<VertexGPU> vertexData, std::vector<IndexGPU> indexData)
-{
-	if (m_initialized)
-		Utilit3D::UploadMeshToDefaultBuffer<Mesh, VertexGPU, IndexGPU>(mesh, vertexData, indexData, m_device, m_cmdList);
-	else
-		assert(0);
-}
+//template<typename Mesh, typename VertexGPU, typename IndexGPU>
+//void Utilit3D::UploadMeshToDefaultBuffer(Mesh* mesh, std::vector<VertexGPU> vertexData, std::vector<IndexGPU> indexData)
+//{
+//	if (m_initialized)
+//		Utilit3D::UploadMeshToDefaultBuffer<Mesh, VertexGPU, IndexGPU>(mesh, vertexData, indexData, m_device, m_cmdList);
+//	else
+//		assert(0);
+//}
 #endif UTILIT3D_H
 

@@ -9,6 +9,10 @@ class ResourceManager
 	std::map<std::string, int> m_texturePathID;
 	std::vector<std::string> m_orderedTextureList;
 
+	bool m_textureIsUploaded;
+	std::vector<ResourceWithUploader> m_textures;
+
+	void buildTexureFullNameList();
 public:
 	ResourceManager();
 	~ResourceManager();
@@ -16,7 +20,6 @@ public:
 	void addMaterial(std::unique_ptr<MaterialCPU>& material);
 	void addTexturePathByName(const std::string& textureName, const std::string& texturePath);
 	void buildTexurePathList();
-	void buildTexureFullNameList();
 	void loadTexture();
 	int getTexturePathIDByName(const std::string& textureName);
 };

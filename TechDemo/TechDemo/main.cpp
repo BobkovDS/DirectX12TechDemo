@@ -5,6 +5,7 @@ using namespace std;
 
 Canvas* Canvas::m_ptrThisCanvas = nullptr;
 
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd) {
 
 	cout << "created\n";

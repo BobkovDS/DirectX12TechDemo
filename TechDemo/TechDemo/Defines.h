@@ -1,0 +1,13 @@
+#pragma once
+
+// Scene object and PSO layers
+#define OPAQUELAYER 0
+#define NOTOPAQUELAYER OPAQUELAYER +1
+#define SKINNEDOPAQUELAYER OPAQUELAYER +2
+#define SKINNEDNOTOPAQUELAYER OPAQUELAYER +3
+#define LAYERSCOUNT SKINNEDNOTOPAQUELAYER - OPAQUELAYER + 1
+
+// InputLayout variants
+#define ILV1 0
+#define ILV2 ILV1 +1 
+#define ILVCOUNT ILV2 - ILV1 + 1

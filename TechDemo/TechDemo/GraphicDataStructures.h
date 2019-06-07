@@ -1,7 +1,9 @@
-#pragma once
-#include "MathHelper.h"
-#define MaxLights 10
+#ifndef GRAPHICSTRUCT_H
+#define GRAPHICSTRUCT_H
 
+#define MaxLights 10
+#include "stdafx.h"
+#include "MathHelper.h"
 struct SubMesh
 {
 	UINT IndexCount;
@@ -18,6 +20,7 @@ struct Mesh {
 // Add defaultMaterialID just to connect Material with Mesh on loading step in tiny_ObjLoader
 //public:
 	std::string Name;
+	bool IsSkinnedMesh; // Does use a mesh Skinned data?
 
 	// These CPU buffers are used for Dynamic changes(?) and to store Mesh on CPU side for Picking, Collision 
 	//and other CPU stuff with mesh. We should think about do can we use other form of storage.
@@ -191,3 +194,5 @@ struct SSAO_GPU
 	float SurfaceEpsilon;
 	DirectX::XMFLOAT2 pod;
 };
+
+#endif GRAPHICSTRUCT_H

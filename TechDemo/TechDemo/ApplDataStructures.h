@@ -2,17 +2,16 @@
 #include "stdafx.h"
 #include <DirectXCollision.h>
 #include "GraphicDataStructures.h"
-#include "MathHelper.h"
 
 #define MAX_FRAMERESOURCE_COUNT 3
 
 enum RenderItemType {
 	RIT_Opaque = 'opaq', 
 	RIT_Transparent = 'tran',
-	RIT_Animated = 'anim', 
+	RIT_SkinnedOpaque= 'skop', 
+	RIT_SkinnedNotOpaque= 'skno',
 	RIT_GH = 'gesh' // object which will be processed by Geometry Shader
 };
-
 
 struct RenderItem {
 	/*
@@ -35,7 +34,7 @@ struct MaterialCPU
 	int MatCBIndex = -1;
 	int NumFrameDirty;
 
-	int TexturesMask = 0; // 0bit - Difuse Texture; 1-Normal; 2-Specular; 3-none; 4-none
+	int TexturesMask = 0; // 0bit - Difuse Texture1; 1-Difuse Texture2; 2-Normal; 3-Specular; 4-TransperencyFactor; 5-none
 
 
 	//Material Constant Buffer data
@@ -43,8 +42,9 @@ struct MaterialCPU
 	DirectX::XMFLOAT3 FresnelR0 = { 0.5f, 0.1f, 0.1f };
 	float Roughness = 0.1f;
 	DirectX::XMFLOAT4X4 MatTransform = MathHelper::Identity4x4();
-	int DiffuseColorTextureIDs[4]; //we think that we can have 3 Diffuse color Textures for one material. [0] - size
-	// for OpendGEX format it is just array of 4 textures; see TexturesMask for format
+	int DiffuseColorTextureIDs[6]; //see TextureMask for texture meaning
+	bool IsTransparent; // float factor is used for Transparent factor
+	bool IsTransparencyFactorUsed; // Texture is used for transparency
 };
 
 enum LightType : unsigned int {

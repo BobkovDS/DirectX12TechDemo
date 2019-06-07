@@ -1,0 +1,29 @@
+#pragma once
+#include "stdafx.h"
+#include <map>
+#include "Defines.h"
+#include "Utilit3D.h"
+#include "ApplException.h"
+
+class PSOBaseLayer
+{
+protected:
+	static std::vector<D3D12_INPUT_ELEMENT_DESC> m_inputLayout[ILVCOUNT];
+	std::map<std::string, Microsoft::WRL::ComPtr <ID3DBlob>> m_shaders;
+	Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pso[LAYERSCOUNT];
+	Microsoft::WRL::ComPtr<ID3D12RootSignature> m_rootSignature;
+	ID3D12Device* m_device;
+
+	virtual void buildShadersBlob() = 0;
+	void buildRootSignature(ID3DBlob* ptrblob);
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC buildCommonPSODescription();
+public:
+	PSOBaseLayer();
+	virtual ~PSOBaseLayer();
+
+	//virtual void initialized()=0;
+	virtual void buildPSO(ID3D12Device* m_device)=0;
+	ID3D12PipelineState* getPSO(UINT layerID);
+	ID3D12RootSignature* getRootSignature();	
+};
+

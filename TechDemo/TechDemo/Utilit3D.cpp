@@ -5,10 +5,14 @@ using namespace std;
 using namespace DirectX;
 using Microsoft::WRL::ComPtr;
 
+ID3D12Device* Utilit3D::m_device = nullptr;
+ID3D12GraphicsCommandList* Utilit3D::m_cmdList = nullptr;
+bool Utilit3D::m_initialized = false;
+
 
 Utilit3D::Utilit3D()
 {
-	m_initialized = false;
+	
 }
 
 Utilit3D::~Utilit3D()
@@ -120,18 +124,18 @@ ComPtr<ID3DBlob> Utilit3D::compileShader(
 };
 
 void Utilit3D::UploadDDSTexture(
-	ID3D12Device* device,
-	ID3D12GraphicsCommandList* cmdList,
 	std::string textureFileName,
 	ComPtr<ID3D12Resource> *textureResource,
 	ComPtr<ID3D12Resource> *uploader)
 {
+	assert(m_initialized); //should be initialized at first
+
 	std::wstring tmpFleName(textureFileName.begin(), textureFileName.end());
 	std::unique_ptr<uint8_t[]> ddsData;
 	std::vector<D3D12_SUBRESOURCE_DATA> subresource;
 
 	HRESULT hr = LoadDDSTextureFromFile(
-		device, 
+		m_device, 
 		tmpFleName.c_str(), textureResource->ReleaseAndGetAddressOf(),
 		ddsData,
 		subresource);
@@ -147,7 +151,7 @@ void Utilit3D::UploadDDSTexture(
 	const UINT64 uploadBufferSize = GetRequiredIntermediateSize(textureResource->Get(), 0,
 		static_cast<UINT>(subresource.size()));
 
-	device->CreateCommittedResource(
+	m_device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
 		&CD3DX12_RESOURCE_DESC::Buffer(uploadBufferSize),
@@ -155,10 +159,10 @@ void Utilit3D::UploadDDSTexture(
 		nullptr,
 		IID_PPV_ARGS(uploader->GetAddressOf()));
 
-	UpdateSubresources(cmdList, textureResource->Get(), uploader->Get(),
+	UpdateSubresources(m_cmdList, textureResource->Get(), uploader->Get(),
 		0, 0, static_cast<UINT>(subresource.size()), subresource.data());
 
-	cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(textureResource->Get(),
+	m_cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(textureResource->Get(),
 		D3D12_RESOURCE_STATE_COPY_DEST, 
 		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE| D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
 }

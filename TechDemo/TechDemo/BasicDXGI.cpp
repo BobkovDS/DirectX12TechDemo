@@ -20,7 +20,7 @@ BasicDXGI::~BasicDXGI()
 void BasicDXGI::run()
 {
 	Canvas::run();
-	// -------------------- NO CODE AFTER HERE !!! ---------------
+	// -------------------- NO CODE AFTER THIS !!! ---------------
 }
 
 void BasicDXGI::work()

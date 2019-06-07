@@ -1,4 +1,5 @@
 #include "ResourceManager.h"
+#include "Utilit3D.h"
 
 using namespace std;
 
@@ -66,12 +67,21 @@ void ResourceManager::buildTexureFullNameList()
 		string texture_path = (*texture_it).first;
 		texture_path.replace(texture_path.size() - 3, 3, "DDS");
 		m_orderedTextureList[texture_it->second] = texture_path;
-	}
-
-	//loadTextures();
+	}	
 }
 
 
 void ResourceManager::loadTexture()
 {
+	void buildTexureFullNameList();
+
+	assert(m_textureIsUploaded == false); //this function should be executed once
+	
+	m_textures.resize(m_orderedTextureList.size());
+
+	for (int i = 0; i < m_orderedTextureList.size(); i++)	
+		Utilit3D::UploadDDSTexture(m_orderedTextureList[i], 
+			&m_textures[i].RessourceInDefaultHeap, &m_textures[i].RessourceInUploadHeap);
+	
+	m_textureIsUploaded = true;
 }

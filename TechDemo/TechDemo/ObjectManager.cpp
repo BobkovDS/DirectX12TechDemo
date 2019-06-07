@@ -11,7 +11,6 @@ ObjectManager::~ObjectManager()
 	
 }
 
-
 void ObjectManager::addOpaqueObject(unique_ptr<RenderItem>& p)
 {
 	m_opaqueLayer.push_back(std::move(p));	
@@ -19,16 +18,37 @@ void ObjectManager::addOpaqueObject(unique_ptr<RenderItem>& p)
 
 void ObjectManager::addTransparentObject(unique_ptr<RenderItem>& p)
 {
-	assert(0);
+	m_notOpaqueLayer.push_back(std::move(p));
 }
-void ObjectManager::addAnimatedObject(unique_ptr<RenderItem>& p)
+
+void ObjectManager::addSkinnedOpaqueObject(unique_ptr<RenderItem>& p)
 {
-	assert(0);
+	m_skinnedOpaqueLayer.push_back(std::move(p));
+}
+
+void ObjectManager::addSkinnedNotOpaqueObject(unique_ptr<RenderItem>& p)
+{
+	m_skinnedNotOpaqueLayer.push_back(std::move(p));
 }
 
 const vector<unique_ptr<RenderItem>>& ObjectManager::getOpaqueLayer()
 {
 	return m_opaqueLayer;
+}
+
+const vector<unique_ptr<RenderItem>>& ObjectManager::getNotOpaqueLayer()
+{
+	return m_notOpaqueLayer;
+}
+
+const vector<unique_ptr<RenderItem>>& ObjectManager::getSkinnedOpaqueLayer()
+{
+	return m_skinnedOpaqueLayer;
+}
+
+const vector<unique_ptr<RenderItem>>& ObjectManager::getSkinnedNotOpaqueLayer()
+{
+	return m_skinnedNotOpaqueLayer;
 }
 
 void ObjectManager::addMesh(std::string name, std::unique_ptr<Mesh>& iMesh)

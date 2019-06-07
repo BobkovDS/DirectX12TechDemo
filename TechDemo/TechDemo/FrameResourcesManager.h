@@ -6,10 +6,22 @@
 //#include <d3d12.h>
 //#include <wrl.h>
 #include "UploadBuffer.h"
-#include "DataStructures.h"
+#include "ApplDataStructures.h"
 
-template<class ConstObjectType, class PassConstsType, class MaterialType, class SSAOType>
-class D3D_FrameResourcesManager
+// ------------ Interface Base class ----------------------
+class IFrameResourcesManager
+{
+public:
+	virtual ID3D12Resource* getCurrentObjectCBResource()=0;
+	virtual ID3D12Resource* getCurrentPassCBResource() = 0;	
+	virtual ID3D12Resource* getCurrentBoneCBResource() = 0;
+	virtual ID3D12Resource* getCurrentSSAOCBResource() = 0;
+};
+
+//--------------END of Interface Base class ---------------
+
+template<class ConstObjectType, class PassConstsType,   class SSAOType>
+class FrameResourcesManager: public IFrameResourcesManager
 {	
 	class FrameResource;
 	std::vector<FrameResource*> m_frameResources;
@@ -17,13 +29,12 @@ class D3D_FrameResourcesManager
 	UINT m_currentFR; // points to current FR. Function getFreeFR moves to next one
 	bool m_initialized;
 	//closed
-	D3D_FrameResourcesManager(const D3D_FrameResourcesManager&) = delete;
-	void operator=(const D3D_FrameResourcesManager&) = delete;	
+	FrameResourcesManager(const FrameResourcesManager&) = delete;
+	void operator=(const FrameResourcesManager&) = delete;	
 public:
 
 	typedef ConstObjectType constObjType;
-	typedef PassConstsType passConsts;
-	typedef MaterialType materialType;
+	typedef PassConstsType passConsts;	
 	typedef SSAOType ssaoType;
 	constObjType tmpConstObject;
 	passConsts tmpPassConsts;
@@ -32,8 +43,7 @@ public:
 	class FrameResource /*FR*/ { 
 		Microsoft::WRL::ComPtr<ID3D12CommandAllocator> m_commandAllocator;
 		std::unique_ptr<UploadBuffer<constObjType>> m_objectCB = nullptr; //constant buffer for every object
-		std::unique_ptr<UploadBuffer<passConsts>> m_passCB = nullptr;// constant buffer for frame (pass)	
-		std::unique_ptr<UploadBuffer<materialType>> m_materialCB = nullptr;
+		std::unique_ptr<UploadBuffer<passConsts>> m_passCB = nullptr;// constant buffer for frame (pass)			
 		std::unique_ptr<UploadBuffer<ssaoType>> m_SSAOCB = nullptr;
 		std::unique_ptr<UploadBuffer<DirectX::XMFLOAT4X4>> m_bonesTransform = nullptr;
 
@@ -41,7 +51,7 @@ public:
 		FrameResource(const FrameResource&) = delete;
 		void operator=(const FrameResource&) = delete;
 	protected:
-		friend D3D_FrameResourcesManager<constObjType, passConsts, materialType, ssaoType>;
+		friend FrameResourcesManager<constObjType, passConsts,  ssaoType>;
 		UINT64 m_fenceValue = 0;
 	public:		
 		FrameResource(ID3D12Device* device, UINT constObjCount, UINT passCount, UINT materialCount, 
@@ -49,37 +59,41 @@ public:
 		void setFenceValue(UINT64 newFenceValue) { m_fenceValue = newFenceValue; } 
 		Microsoft::WRL::ComPtr<ID3D12CommandAllocator>& getCommandAllocator() { return m_commandAllocator; }	
 		UploadBuffer<constObjType>* getObjectCB() { return m_objectCB.get(); }
-		UploadBuffer<passConsts>* getPassCB() { return m_passCB.get(); }
-		UploadBuffer<materialType>* getMaterialCB() { return m_materialCB.get(); }
-		UploadBuffer<ssaoType>* getSSAOB() { return m_SSAOCB.get(); }
+		UploadBuffer<passConsts>* getPassCB() { return m_passCB.get(); }		
+		UploadBuffer<ssaoType>* getSSAOCB() { return m_SSAOCB.get(); }
 		UploadBuffer<DirectX::XMFLOAT4X4>* getBoneCB() {	return m_bonesTransform.get();}
 	};
 
 	// device and fence will come from basic class BasicDXGI for Basic3D, 
 	// constObjCount in current realisation is set in Basic3D constructor
 
-	D3D_FrameResourcesManager();
-	~D3D_FrameResourcesManager();
+	FrameResourcesManager();
+	~FrameResourcesManager();
 
 	int count() const { return m_frameResources.size(); }
 	void Initialize(ID3D12Device* device, ID3D12Fence* fence,
 		UINT constObjCount, UINT passCount, UINT materialCount, UINT SSAOCount, UINT BoneCount);
 	void getFreeFR(); // move a pointer to next FR and wait for when it becomes "clean"
 	FrameResource* currentFR() const; // get current "clean" FR
+	ID3D12Resource* getCurrentObjectCBResource();
+	ID3D12Resource* getCurrentPassCBResource();	
+	ID3D12Resource* getCurrentBoneCBResource();
+	ID3D12Resource* getCurrentSSAOCBResource();
+
 	void changeCmdAllocator(ID3D12GraphicsCommandList* cmdList, ID3D12PipelineState* pInitialState);
 };
 
 
 //------------------------------------- Declaration ------------------------------------
 
-template<class ConstObjectType, class PassConstsType, class MaterialType, class SSAOType>
-D3D_FrameResourcesManager<ConstObjectType, PassConstsType, MaterialType, SSAOType>::D3D_FrameResourcesManager()
+template<class ConstObjectType, class PassConstsType,   class SSAOType>
+FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::FrameResourcesManager()
 	:m_currentFR(0), m_initialized(false)
 {
 }
 
-template<class ConstObjectType, class PassConstsType, class MaterialType, class SSAOType>
-D3D_FrameResourcesManager<ConstObjectType, PassConstsType, MaterialType, SSAOType>::~D3D_FrameResourcesManager()
+template<class ConstObjectType, class PassConstsType,   class SSAOType>
+FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::~FrameResourcesManager()
 {
 	for (int i = 0; i < m_frameResources.size(); i++)
 	{
@@ -88,8 +102,8 @@ D3D_FrameResourcesManager<ConstObjectType, PassConstsType, MaterialType, SSAOTyp
 	}
 }
 
-template<class ConstObjectType, class PassConstsType, class MaterialType, class SSAOType>
-void D3D_FrameResourcesManager<ConstObjectType, PassConstsType, MaterialType, SSAOType>
+template<class ConstObjectType, class PassConstsType,   class SSAOType>
+void FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>
 ::Initialize(ID3D12Device* device, ID3D12Fence* fence, UINT constObjCount, UINT passCount, UINT materialCount, UINT SSAOCount, UINT BoneCount)
 {
 	if (m_initialized) return;
@@ -107,8 +121,8 @@ void D3D_FrameResourcesManager<ConstObjectType, PassConstsType, MaterialType, SS
 	m_initialized = true;
 }
 
-template<class ConstObjectType, class PassConstsType,class MaterialType, class SSAOType>
-void D3D_FrameResourcesManager<ConstObjectType, PassConstsType, MaterialType, SSAOType>::getFreeFR()
+template<class ConstObjectType, class PassConstsType,  class SSAOType>
+void FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::getFreeFR()
 {
 	if (!m_initialized) return;
 
@@ -134,16 +148,43 @@ void D3D_FrameResourcesManager<ConstObjectType, PassConstsType, MaterialType, SS
 	}
 };
 
-template<class ConstObjectType, class PassConstsType, class MaterialType, class SSAOType>
-typename D3D_FrameResourcesManager<ConstObjectType, PassConstsType, MaterialType, SSAOType>::FrameResource*
-D3D_FrameResourcesManager<ConstObjectType, PassConstsType, MaterialType, SSAOType>::currentFR() const
+template<class ConstObjectType, class PassConstsType,   class SSAOType>
+typename FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::FrameResource*
+FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::currentFR() const
 {
 	if (!m_initialized) return nullptr ;
 	return m_frameResources.at(m_currentFR);
 }
 
-template<class ConstObjectType, class PassConstsType, class MaterialType, class SSAOType>
-D3D_FrameResourcesManager<ConstObjectType, PassConstsType, MaterialType, SSAOType>::FrameResource
+template<class ConstObjectType, class PassConstsType,   class SSAOType>
+ID3D12Resource* FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::getCurrentObjectCBResource()
+{
+	if (!m_initialized) return nullptr;
+	return currentFR()->getObjectCB()->Resource();
+}
+
+template<class ConstObjectType, class PassConstsType,   class SSAOType>
+ID3D12Resource* FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::getCurrentPassCBResource()
+{
+	if (!m_initialized) return nullptr;
+	return currentFR()->getPassCB()->Resource();
+}
+
+template<class ConstObjectType, class PassConstsType,   class SSAOType>
+ID3D12Resource* FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::getCurrentBoneCBResource()
+{
+	if (!m_initialized) return nullptr;
+	return currentFR()->getBoneCB()->Resource();
+}
+
+template<class ConstObjectType, class PassConstsType,   class SSAOType>
+ID3D12Resource* FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::getCurrentSSAOCBResource()
+{
+	if (!m_initialized) return nullptr;
+	return currentFR()->getSSAOCB()->Resource();
+}
+template<class ConstObjectType, class PassConstsType,   class SSAOType>
+FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::FrameResource
 ::FrameResource(ID3D12Device* device, UINT constObjCount, UINT passCount, UINT materialCount, UINT SSAOCount, UINT BoneTransformCount)
 {
 	HRESULT res;
@@ -162,8 +203,8 @@ D3D_FrameResourcesManager<ConstObjectType, PassConstsType, MaterialType, SSAOTyp
 
 }
 
-template<class ConstObjectType, class PassConstsType, class MaterialType, class SSAOType>
-void D3D_FrameResourcesManager<ConstObjectType, PassConstsType, MaterialType, SSAOType>::changeCmdAllocator(
+template<class ConstObjectType, class PassConstsType,   class SSAOType>
+void FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::changeCmdAllocator(
 	ID3D12GraphicsCommandList* cmdList, 
 	ID3D12PipelineState* pInitialState)
 {	

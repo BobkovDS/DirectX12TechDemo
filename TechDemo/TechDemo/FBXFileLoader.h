@@ -27,11 +27,16 @@ struct fbx_Material {
 	int MatCBIndex = -1;
 
 	//Material Constant Buffer data
-	DirectX::XMFLOAT4 DiffuseAlbedo = { 0.5f, 0.5f, 0.5f, 1.0f }; // this is just initialisation, diffuse color will come from obj file 
+	DirectX::XMFLOAT4 DiffuseAlbedo;
+	DirectX::XMFLOAT4 Specular;
+	DirectX::XMFLOAT4 TransparencyColor;
+	
 	DirectX::XMFLOAT3 FresnelR0 = { 0.5f, 0.1f, 0.1f };
 	float Roughness = 0.1f;
 	DirectX::XMFLOAT4X4 MatTransform;
 	std::vector<std::pair<std::string, std::string>> TexturesNameByType;
+	bool IsTransparencyUsed; //here Transparency Factor as texture is used
+	bool IsTransparent; // here Transparency Factor as float is used
 };
 
 struct fbx_NodeInstance {
@@ -59,8 +64,7 @@ private:
 
 	//static int m_lastMaterialID;
 	ObjectManager* m_objectManager;
-	ResourceManager* m_resourceManager;
-	Utilit3D* m_utilit3D;
+	ResourceManager* m_resourceManager;	
 	bool m_initialized;
 
 	std::string m_sceneName;
@@ -79,8 +83,7 @@ private:
 
 	void createScene();
 	void build_GeoMeshes();
-	void build_Materials(std::string& pMaterialName);
-	void build_Textures();
+	void build_Materials(std::string& pMaterialName);	
 	void build_Animation();
 	void build_Skeleton();
 	void add_InstanceToRenderItem(const fbx_NodeInstance& nodeRI);
@@ -94,12 +97,13 @@ private:
 	// FBX process functions
 	void process_node(const FbxNode* pNode);
 	void process_mesh(const FbxNodeAttribute* pNodeAtribute);
+	bool read_texture_data(fbx_Material* destMaterial, FbxProperty* matProperty, std::string textureType); //FbxSurfacePhong* srcMaterial,
 public:
 	
 	FBXFileLoader();
 	~FBXFileLoader();
 
-	void Initialize(ObjectManager* imngrObject, ResourceManager* mngrResource, Utilit3D* utilit3D);
+	void Initialize(ObjectManager* imngrObject, ResourceManager* mngrResource);
 	void loadSceneFile(const std::string& fileName);
 };
 
