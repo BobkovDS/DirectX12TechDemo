@@ -51,9 +51,29 @@ const vector<unique_ptr<RenderItem>>& ObjectManager::getSkinnedNotOpaqueLayer()
 	return m_skinnedNotOpaqueLayer;
 }
 
+UINT ObjectManager::getCommonInstancesCount()
+{
+	UINT lCommonInstancesCount = 0;
+
+	for (int ri = 0; ri < m_opaqueLayer.size(); ri++)
+		lCommonInstancesCount += m_opaqueLayer[ri]->Instances.size();
+
+	for (int ri = 0; ri < m_notOpaqueLayer.size(); ri++)
+		lCommonInstancesCount += m_notOpaqueLayer[ri]->Instances.size();
+
+	for (int ri = 0; ri < m_skinnedOpaqueLayer.size(); ri++)
+		lCommonInstancesCount += m_skinnedOpaqueLayer[ri]->Instances.size();
+	
+	for (int ri = 0; ri < m_skinnedNotOpaqueLayer.size(); ri++)
+		lCommonInstancesCount += m_skinnedNotOpaqueLayer[ri]->Instances.size();
+	
+	return lCommonInstancesCount;
+}
+
 void ObjectManager::addMesh(std::string name, std::unique_ptr<Mesh>& iMesh)
 {
 	auto it = m_meshes.find(name);
 	assert(it == m_meshes.end());// we do not expect more meshes with the same name
 	m_meshes[name] = std::move(iMesh);
 }
+

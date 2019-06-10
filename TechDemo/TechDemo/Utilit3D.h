@@ -18,7 +18,9 @@ public:
 	~Utilit3D();
 	
 	static void initialize(ID3D12Device* iDevice, ID3D12GraphicsCommandList* iCmdList);
-	
+	static ID3D12Device* getDevice() { assert(m_initialized); return m_device; }
+	static ID3D12GraphicsCommandList* getCmdList() { assert(m_initialized); return m_cmdList; }
+
 	// ======================================================  Non-static versions
 
 	//Upload mesh data to Default Heap Buffer

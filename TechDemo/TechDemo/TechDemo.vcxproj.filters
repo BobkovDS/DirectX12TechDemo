@@ -19,6 +19,9 @@
     <Filter Include="Source Files\PSO">
       <UniqueIdentifier>{e3fb9991-7638-458f-92b6-e9671bbded28}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Sahders">
+      <UniqueIdentifier>{18804083-f463-4006-9045-cf5dee808819}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BasicDXGI.cpp">
@@ -161,5 +164,25 @@
     <ClInclude Include="PSOBaseLayer.h">
       <Filter>Header Files\PSO</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders\commonPart.hlsl">
+      <Filter>Resource Files\Sahders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\FinalRender_shaders.hlsl">
+      <Filter>Resource Files\Sahders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\FinalRender_skinnedShaders.hlsl">
+      <Filter>Resource Files\Sahders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\Lighting.hlsl">
+      <Filter>Resource Files\Sahders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\RootSignature.hlsl">
+      <Filter>Resource Files\Sahders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\SkinnedCommonPart.hlsl">
+      <Filter>Resource Files\Sahders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

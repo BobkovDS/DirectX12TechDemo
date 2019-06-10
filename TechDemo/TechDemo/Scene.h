@@ -1,13 +1,16 @@
 #pragma once
 #include "ApplDataStructures.h"
 #include "Defines.h"
+#include "ObjectManager.h"
 
 
 class Scene
 {
 	class SceneLayer;
 	std::vector<SceneLayer> m_Layers;
+	ObjectManager* m_objectManager;
 
+	bool m_doesItNeedUpdate;
 public:
 	class SceneLayer
 	{
@@ -27,9 +30,12 @@ public:
 			void setObjectMesh(const RenderItem* mesh);
 		};
 		//-------------------------------------------------------
+		void clearLayer();
 		bool isLayerVisible();
+		void setVisibility(bool b);
 		int getLayerInstancesCount();
 		int getSceneObjectCount();
+		void addSceneObject(SceneLayerObject sceneObject);
 		SceneLayerObject* getSceneObject(UINT sceneObjectIndex);
 	};
 	//----------------------------------------------------
@@ -38,6 +44,9 @@ public:
 
 	int getLayersCount();
 	int getLayerInstanceOffset(UINT layerIndex);
+	void build(ObjectManager* objectManager);
+	void update();
 	SceneLayer* getLayer(UINT layerIndex);
+	void updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<RenderItem>>& RI);
 };
 

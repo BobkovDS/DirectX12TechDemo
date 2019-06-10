@@ -47,6 +47,7 @@ ID3D12PipelineState* PSOBaseLayer::getPSO(UINT layerID)
 
 ID3D12RootSignature* PSOBaseLayer::getRootSignature()
 {
+	assert(m_rootSignature.Get() != nullptr);
 	return m_rootSignature.Get();
 }
 
@@ -99,6 +100,9 @@ D3D12_GRAPHICS_PIPELINE_STATE_DESC PSOBaseLayer::buildCommonPSODescription()
 	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
 	psoDesc.NumRenderTargets = 1;	
+	psoDesc.RTVFormats[0] = m_rtvFormat;
+	psoDesc.DSVFormat = m_dsvFormat;
+
 	psoDesc.SampleDesc.Count = 1;
 
 	return psoDesc;

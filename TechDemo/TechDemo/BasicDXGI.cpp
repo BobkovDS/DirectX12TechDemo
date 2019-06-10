@@ -263,6 +263,7 @@ void BasicDXGI::setFence()
 
 	m_fenceValue++;
 }
+
 void BasicDXGI::getHardwareAdapter(IDXGIFactory2* pFactory, ComPtr<IDXGIAdapter1>& ppAdapter)
 {	
 	if (pFactory == nullptr) return;

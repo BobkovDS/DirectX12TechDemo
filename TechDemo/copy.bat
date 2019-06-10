@@ -1,0 +1,1 @@
+copy x64\Debug\TechDemo.exe TechDemo\

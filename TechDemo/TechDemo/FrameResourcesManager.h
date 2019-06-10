@@ -54,8 +54,8 @@ public:
 		friend FrameResourcesManager<constObjType, passConsts,  ssaoType>;
 		UINT64 m_fenceValue = 0;
 	public:		
-		FrameResource(ID3D12Device* device, UINT constObjCount, UINT passCount, UINT materialCount, 
-			UINT SSAOCount, UINT BoneTransformCount);
+		FrameResource(ID3D12Device* device, UINT constObjCount, UINT passCount, UINT SSAOCount, 
+			UINT BoneTransformCount);
 		void setFenceValue(UINT64 newFenceValue) { m_fenceValue = newFenceValue; } 
 		Microsoft::WRL::ComPtr<ID3D12CommandAllocator>& getCommandAllocator() { return m_commandAllocator; }	
 		UploadBuffer<constObjType>* getObjectCB() { return m_objectCB.get(); }
@@ -72,7 +72,7 @@ public:
 
 	int count() const { return m_frameResources.size(); }
 	void Initialize(ID3D12Device* device, ID3D12Fence* fence,
-		UINT constObjCount, UINT passCount, UINT materialCount, UINT SSAOCount, UINT BoneCount);
+		UINT constObjCount, UINT passCount, UINT SSAOCount, UINT BoneCount);
 	void getFreeFR(); // move a pointer to next FR and wait for when it becomes "clean"
 	FrameResource* currentFR() const; // get current "clean" FR
 	ID3D12Resource* getCurrentObjectCBResource();
@@ -104,7 +104,7 @@ FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::~FrameResourc
 
 template<class ConstObjectType, class PassConstsType,   class SSAOType>
 void FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>
-::Initialize(ID3D12Device* device, ID3D12Fence* fence, UINT constObjCount, UINT passCount, UINT materialCount, UINT SSAOCount, UINT BoneCount)
+::Initialize(ID3D12Device* device, ID3D12Fence* fence, UINT constObjCount, UINT passCount, UINT SSAOCount, UINT BoneCount)
 {
 	if (m_initialized) return;
 
@@ -115,7 +115,7 @@ void FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>
 
 	for (int i = 0; i < MAX_FRAMERESOURCE_COUNT; i++)
 	{
-		m_frameResources.push_back(new FrameResource(device, constObjCount, passCount, materialCount, SSAOCount, BoneCount));
+		m_frameResources.push_back(new FrameResource(device, constObjCount, passCount, SSAOCount, BoneCount));
 	}
 
 	m_initialized = true;
@@ -152,40 +152,36 @@ template<class ConstObjectType, class PassConstsType,   class SSAOType>
 typename FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::FrameResource*
 FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::currentFR() const
 {
-	if (!m_initialized) return nullptr ;
+	assert(m_initialized);
 	return m_frameResources.at(m_currentFR);
 }
 
 template<class ConstObjectType, class PassConstsType,   class SSAOType>
 ID3D12Resource* FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::getCurrentObjectCBResource()
-{
-	if (!m_initialized) return nullptr;
+{	
 	return currentFR()->getObjectCB()->Resource();
 }
 
 template<class ConstObjectType, class PassConstsType,   class SSAOType>
 ID3D12Resource* FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::getCurrentPassCBResource()
-{
-	if (!m_initialized) return nullptr;
+{	
 	return currentFR()->getPassCB()->Resource();
 }
 
 template<class ConstObjectType, class PassConstsType,   class SSAOType>
 ID3D12Resource* FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::getCurrentBoneCBResource()
-{
-	if (!m_initialized) return nullptr;
+{	
 	return currentFR()->getBoneCB()->Resource();
 }
 
 template<class ConstObjectType, class PassConstsType,   class SSAOType>
 ID3D12Resource* FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::getCurrentSSAOCBResource()
-{
-	if (!m_initialized) return nullptr;
+{	
 	return currentFR()->getSSAOCB()->Resource();
 }
 template<class ConstObjectType, class PassConstsType,   class SSAOType>
 FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::FrameResource
-::FrameResource(ID3D12Device* device, UINT constObjCount, UINT passCount, UINT materialCount, UINT SSAOCount, UINT BoneTransformCount)
+::FrameResource(ID3D12Device* device, UINT constObjCount, UINT passCount, UINT SSAOCount, UINT BoneTransformCount)
 {
 	HRESULT res;
 

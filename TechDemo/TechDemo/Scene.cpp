@@ -3,6 +3,7 @@
 Scene::Scene()
 {
 	m_Layers.resize(4);
+	m_doesItNeedUpdate = true;
 }
 
 
@@ -34,9 +35,62 @@ int Scene::getLayerInstanceOffset(UINT layerCount)
 	return offset;
 }
 
+void Scene::build(ObjectManager* objectManager)
+{
+	assert(objectManager);
+	m_objectManager = objectManager;
+
+	m_Layers[0].setVisibility(true);
+	m_Layers[1].setVisibility(true);
+	m_Layers[2].setVisibility(true);
+	m_Layers[3].setVisibility(true);
+
+	update();
+}
+
+void Scene::update()
+{
+	if (!m_doesItNeedUpdate) return;
+	
+	updateLayer(m_Layers[0], m_objectManager->getOpaqueLayer());
+	updateLayer(m_Layers[1], m_objectManager->getNotOpaqueLayer());
+	updateLayer(m_Layers[2], m_objectManager->getSkinnedOpaqueLayer());
+	updateLayer(m_Layers[3], m_objectManager->getSkinnedNotOpaqueLayer());	
+	
+	m_doesItNeedUpdate = false;
+}
+
+void Scene::updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<RenderItem>>& arrayRI)
+{
+	layer.clearLayer();
+
+	for (int i = 0; i < arrayRI.size(); i++)
+	{
+		SceneLayer::SceneLayerObject lSceneObject = {};
+
+		RenderItem* lRI = arrayRI[i].get();
+		lSceneObject.setObjectMesh(lRI);
+		for (int j = 0; j < lRI->Instances.size(); j++)
+			lSceneObject.addInstance(&lRI->Instances[j]);
+
+		layer.addSceneObject(lSceneObject);
+	}
+}
+// ================================================================ [Scene::SceneLayer] =============================== 
+
+void Scene::SceneLayer::clearLayer()
+{
+	m_objects.clear();
+}
+
 bool Scene::SceneLayer::isLayerVisible()
 {
 	return m_visible;
+}
+
+void Scene::SceneLayer::setVisibility(bool b)
+{
+	m_visible = b;
 }
 
 int Scene::SceneLayer::getLayerInstancesCount()
@@ -49,6 +103,11 @@ int Scene::SceneLayer::getSceneObjectCount()
 	return m_objects.size();
 }
 
+void Scene::SceneLayer::addSceneObject(SceneLayerObject sceneObject)
+{
+	m_objects.push_back(sceneObject);
+}
+
 Scene::SceneLayer::SceneLayerObject* Scene::SceneLayer::getSceneObject(UINT sceneObjectIndex)
 {
 	if (sceneObjectIndex < m_objects.size())
@@ -56,7 +115,7 @@ Scene::SceneLayer::SceneLayerObject* Scene::SceneLayer::getSceneObject(UINT scen
 	else
 		return nullptr;
 }
-
+// ================================================================ [Scene::SceneLayer::SceneLayerObject] =============
 const RenderItem* Scene::SceneLayer::SceneLayerObject::getObjectMesh()
 {
 	return m_mesh;
@@ -81,3 +140,6 @@ std::vector<const InstanceDataGPU*>& Scene::SceneLayer::SceneLayerObject::getIns
 {
 	return m_instances;
 }
+
+
+

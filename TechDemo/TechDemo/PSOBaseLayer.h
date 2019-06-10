@@ -13,6 +13,8 @@ protected:
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pso[LAYERSCOUNT];
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> m_rootSignature;
 	ID3D12Device* m_device;
+	DXGI_FORMAT m_rtvFormat;
+	DXGI_FORMAT m_dsvFormat;
 
 	virtual void buildShadersBlob() = 0;
 	void buildRootSignature(ID3DBlob* ptrblob);
@@ -22,7 +24,7 @@ public:
 	virtual ~PSOBaseLayer();
 
 	//virtual void initialized()=0;
-	virtual void buildPSO(ID3D12Device* m_device)=0;
+	virtual void buildPSO(ID3D12Device* m_device, DXGI_FORMAT rtFormat, DXGI_FORMAT dsFormat)=0;
 	ID3D12PipelineState* getPSO(UINT layerID);
 	ID3D12RootSignature* getRootSignature();	
 };

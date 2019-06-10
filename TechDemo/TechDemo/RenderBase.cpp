@@ -22,14 +22,25 @@ void RenderBase::initialize(const RenderMessager& renderParams)
 	m_psoManager = renderParams.PSOMngr;
 	m_frameResourceManager= renderParams.FrameResourceMngr;
 	m_dsResourceFormat = renderParams.DSResourceFormat;
+	m_rtResourceFormat = renderParams.RTResourceFormat;
 	m_rtvDescriptorSize = m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	m_initialized = true;
+
+	resize(m_width, m_height);
 }
 
 void RenderBase::resize(UINT newWidth, UINT newHeight)
 {
 	m_width = newWidth;
 	m_height = newHeight;
+
+	m_viewPort = {};
+	m_viewPort.Width = static_cast<float> (m_width);
+	m_viewPort.Height= static_cast<float> (m_height);
+	m_viewPort.MinDepth = 0.0f;
+	m_viewPort.MaxDepth = 1.0f;
+
+	m_scissorRect = { 0,0, static_cast<LONG> (m_width),static_cast<LONG> (m_height) };
 }
 
 // -------------------------------- RESOURCE -------------------------------------------------------------------------------
@@ -103,6 +114,7 @@ void RenderBase::create_DescriptorHeap_DSV()
 	HRESULT res = m_device->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&m_own_dsvHeap));
 	assert(SUCCEEDED(res));
 
+	m_dsvHeap = m_own_dsvHeap.Get();
 	m_dsvHeapWasSetBefore = false;
 }
 
@@ -165,6 +177,12 @@ const ID3D12DescriptorHeap* RenderBase::get_dsvHeapPointer()
 const ID3D12DescriptorHeap* RenderBase::get_rtvHeapPointer()
 {
 	return m_rtvHeap;
+}
+
+void RenderBase::set_DescriptorHeap(ID3D12DescriptorHeap* srvDescriptorHeap)
+{
+	assert(srvDescriptorHeap);
+	m_descriptorHeap = srvDescriptorHeap;
 }
 
 // --------------- General Methods -------------------------------

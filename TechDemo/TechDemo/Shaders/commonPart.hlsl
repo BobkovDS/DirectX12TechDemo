@@ -1,0 +1,108 @@
+
+struct BoneData
+{
+    float4x4 Transform;
+};
+
+struct InstanceData
+{
+    float4x4 World;
+    float4x4 TexTransform;
+    uint MaterialIndex;
+    //for alignment
+    uint Pad0;
+    uint Pad1;
+    uint Pad2;
+};
+
+struct MaterialData
+{
+    float4 DiffuseAlbedo;
+    float3 FresnelR0;
+    float Roughness;
+    float4x4 MatTransform;
+    uint textureFlags;
+	uint DiffuseMapIndex[3];    
+};
+
+struct VertexIn
+{
+    float3 PosL : POSITION;
+    float3 Normal : NORMAL;
+	float3 TangentU : TANGENT;
+    float2 UVText : TEXCOORD;    
+};
+
+struct VertexOut
+{
+    float4 PosH : SV_POSITION;
+    float3 PosW : POSITION;
+    float3 NormalW : NORMAL;
+	float4 TangentW : TANGENT;
+    float2 UVText : TEXCOORD;
+    float4 UVTextProj : TEXCOORDPROJ;
+    float4 SSAOPosH : TEXCOORDPROJSSAO;
+    uint ShapeID : SHAPEID;    
+	//uint instID : SV_INSTANCEID;
+};
+
+struct PassStruct
+{
+    float4x4 View;
+    float4x4 InvView;
+    float4x4 Proj;
+    float4x4 InvProj;
+    float4x4 ViewProj;
+    float4x4 InvViewProj;
+    float4x4 MirWord;
+	float4x4 ShadowWord;
+    float3 EyePosW;
+    uint doesUseMirrorLight;
+    float2 RenderTargetSize;
+    float2 InvRenderTargetSize;
+    float NearZ;
+    float FarZ;
+    float TotalTime;
+    float DeltaTime;
+    float4 AmbientLight;
+    float4 FogColor;
+    float FogStart;
+    float FogRange;
+    float CameraDistance;
+    float pod0;
+    Light Lights[MaxLights];
+};
+
+struct PassStructSSAO
+{
+	float4x4 Proj;
+    float4x4 InvProj;
+	float4x4 ProjTex;
+    float4 OffsetVectors[14];
+    float4 BlurWeight[3];	   
+    float2 InvRenderTargetSize;
+    float OcclusionRadius;
+    float OcclusionFadeStart;
+    float OcclusionFadeEnd;
+    float SurfaceEpsilon;    	
+};
+
+struct PatchTess
+{
+   float EdgeTess[4] : SV_TessFactor;
+   float InsideTess[2] : SV_InsideTessFactor;   
+};
+
+float3 NormalSampleToWorldSpace(float3 normaleSample, float3 unitNormalW, float4 tangentW)
+{
+    float3 normalT = 2.0f * normaleSample - 1.0f;
+    float3 N = unitNormalW;
+    float3 T = normalize(tangentW.xyz - dot(tangentW.xyz, N) * N);
+    float w = tangentW.w < 0.0f ? -1.0f : 1.0f;    
+    float3 B = cross(N, T) * w;
+
+    float3x3 TBN = float3x3(T, B, N);
+
+    float3 bumpedNormaleW = mul(normalT, TBN);
+    return bumpedNormaleW;
+}

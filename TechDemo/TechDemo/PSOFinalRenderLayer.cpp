@@ -47,20 +47,23 @@ void PSOFinalRenderLayer::buildShadersBlob()
 	buildRootSignature(m_shaders["vs"].Get()); //Root signature was added to Vertex Shader only. It is enough for us.
 }
 
-void PSOFinalRenderLayer::buildPSO(ID3D12Device* device)
+void PSOFinalRenderLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, DXGI_FORMAT dsFormat)
 {
 	m_device = device;
+	m_rtvFormat = rtFormat;
+	m_dsvFormat= dsFormat;
+
 
 	// compile shaders blob
 	buildShadersBlob();
 
-	// PSO for Layer_0: Non-skinned Opaque objects
+	// PSO for Layer_0: Non-skinned Opaque objects: [OPAQUELAYER]
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer0 = buildCommonPSODescription();
 	psoDescLayer0.InputLayout = { m_inputLayout[ILV1].data(), (UINT) m_inputLayout[ILV1].size() };
 	psoDescLayer0.VS = { reinterpret_cast<BYTE*>(m_shaders["vs"]->GetBufferPointer()), m_shaders["vs"]->GetBufferSize() };
 	psoDescLayer0.PS = { reinterpret_cast<BYTE*>(m_shaders["ps"]->GetBufferPointer()), m_shaders["ps"]->GetBufferSize() };
 	
-	// PSO for Layer_1:  Non-skinned Not Opaque objects
+	// PSO for Layer_1:  Non-skinned Not Opaque objects: [NOTOPAQUELAYER]
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer1 = psoDescLayer0;
 	D3D12_BLEND_DESC  blend_desc = {};
 	blend_desc.RenderTarget[0].BlendEnable = true;
@@ -74,15 +77,52 @@ void PSOFinalRenderLayer::buildPSO(ID3D12Device* device)
 	blend_desc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 	psoDescLayer1.BlendState = CD3DX12_BLEND_DESC(blend_desc);
 
-	// PSO for Layer_2: Skinned Opaque objects
+	// PSO for Layer_2: Skinned Opaque objects: [SKINNEDOPAQUELAYER]
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer2 = buildCommonPSODescription();
 	psoDescLayer2.InputLayout = { m_inputLayout[ILV2].data(),(UINT)m_inputLayout[ILV2].size() };
 	psoDescLayer2.VS = { reinterpret_cast<BYTE*>(m_shaders["vs_skinned"]->GetBufferPointer()), m_shaders["vs_skinned"]->GetBufferSize() };
 	psoDescLayer2.PS = { reinterpret_cast<BYTE*>(m_shaders["ps_skinned"]->GetBufferPointer()), m_shaders["ps_skinned"]->GetBufferSize() };
 
-	// PSO for Layer_3: Skinned Not Opaque objects
+	// PSO for Layer_3: Skinned Not Opaque objects: [SKINNEDNOTOPAQUELAYER]
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer3 = psoDescLayer1;
 	psoDescLayer3.InputLayout = { m_inputLayout[ILV2].data(),(UINT)m_inputLayout[ILV2].size() };
 	psoDescLayer3.VS = { reinterpret_cast<BYTE*>(m_shaders["vs_skinned"]->GetBufferPointer()), m_shaders["vs_skinned"]->GetBufferSize() };
 	psoDescLayer3.PS = { reinterpret_cast<BYTE*>(m_shaders["ps_skinned"]->GetBufferPointer()), m_shaders["ps_skinned"]->GetBufferSize() };
+
+	// Create PSO objects
+	//OPAQUELAYER
+	HRESULT res = m_device->CreateGraphicsPipelineState(&psoDescLayer0, IID_PPV_ARGS(&m_pso[OPAQUELAYER]));
+	if (res != S_OK)
+	{
+		_com_error err(res);
+		wstring errMsg = err.ErrorMessage() + std::wstring(L" ");
+		throw MyCommonRuntimeException(errMsg, L"PSO creation");
+	}
+
+	//NOTOPAQUELAYER
+	res = m_device->CreateGraphicsPipelineState(&psoDescLayer1, IID_PPV_ARGS(&m_pso[NOTOPAQUELAYER]));
+	if (res != S_OK)
+	{
+		_com_error err(res);
+		wstring errMsg = err.ErrorMessage() + std::wstring(L" ");
+		throw MyCommonRuntimeException(errMsg, L"PSO creation");
+	}
+
+	//SKINNEDOPAQUELAYER
+	res = m_device->CreateGraphicsPipelineState(&psoDescLayer2, IID_PPV_ARGS(&m_pso[SKINNEDOPAQUELAYER]));
+	if (res != S_OK)
+	{
+		_com_error err(res);
+		wstring errMsg = err.ErrorMessage() + std::wstring(L" ");
+		throw MyCommonRuntimeException(errMsg, L"PSO creation");
+	}
+
+	//SKINNEDNOTOPAQUELAYER
+	res = m_device->CreateGraphicsPipelineState(&psoDescLayer3, IID_PPV_ARGS(&m_pso[SKINNEDNOTOPAQUELAYER]));
+	if (res != S_OK)
+	{
+		_com_error err(res);
+		wstring errMsg = err.ErrorMessage() + std::wstring(L" ");
+		throw MyCommonRuntimeException(errMsg, L"PSO creation");
+	}
 }

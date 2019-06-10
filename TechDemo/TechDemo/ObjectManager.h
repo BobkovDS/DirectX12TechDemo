@@ -27,6 +27,6 @@ public:
 	const std::vector<std::unique_ptr<RenderItem>>& getNotOpaqueLayer();
 	const std::vector<std::unique_ptr<RenderItem>>& getSkinnedOpaqueLayer();
 	const std::vector<std::unique_ptr<RenderItem>>& getSkinnedNotOpaqueLayer();
-
+	UINT getCommonInstancesCount();
 };
 

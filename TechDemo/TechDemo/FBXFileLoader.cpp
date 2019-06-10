@@ -102,7 +102,7 @@ void FBXFileLoader::createScene()
 		//build_Animation();
 	build_GeoMeshes();
 
-	m_resourceManager->buildTexurePathList();
+	m_resourceManager->buildTexturePathList();
 
 		//build_Skeleton();
 	process_NodeInstances();

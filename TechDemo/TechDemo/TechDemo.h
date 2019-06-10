@@ -21,6 +21,7 @@ class TechDemo :
 protected:
 	void init3D();
 	void update();
+	void work();
 	
 public:
 	TechDemo(HINSTANCE hInstance, const std::wstring& applName, int width, int height);

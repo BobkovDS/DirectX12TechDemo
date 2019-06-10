@@ -9,10 +9,10 @@ FinalRender::~FinalRender()
 }
 
 void FinalRender::initialize(const RenderMessager& renderParams)
-{
-	m_swapChain = dynamic_cast<IDXGISwapChain3*>(renderParams.SwapChain);
+{	
+	m_swapChain = renderParams.SwapChain;
 
-	RenderBase::initialize(renderParams);
+	RenderBase::initialize(renderParams);	
 }
 
 void FinalRender::build()
@@ -29,13 +29,23 @@ void FinalRender::build()
 	//RenderTarget resources. This class do not own no one RTV resources (neither RT Resources, nor rtvHeap)
 	{
 		m_swapChain->GetBuffer(0, IID_PPV_ARGS(&m_swapChainBuffers[0]));
-		m_swapChain->GetBuffer(1, IID_PPV_ARGS(&m_swapChainBuffers[2]));
+		m_swapChain->GetBuffer(1, IID_PPV_ARGS(&m_swapChainBuffers[1]));
 
 		ID3D12Resource* lSwapChainResources[2] = { m_swapChainBuffers[0].Get(), m_swapChainBuffers[1].Get() };
 		
 		set_Resource_RT(m_swapChainBuffers[0].Get());
 		set_Resource_RT(m_swapChainBuffers[1].Get());			
 	}
+
+	// Initialize PSO layer
+	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat);
+
+	// Initialize both DescriptorHandles: Tech_DescriptorHandle and Texture_DescriptorHandle	
+	m_techSRVHandle = m_descriptorHeap->GetGPUDescriptorHandleForHeapStart();
+		UINT lSrvSize =m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+		CD3DX12_GPU_DESCRIPTOR_HANDLE lhDescriptor(m_techSRVHandle);
+		lhDescriptor.Offset(TECHSRVCOUNT, lSrvSize); 	
+	m_textureSRVHandle = lhDescriptor;
 }
 
 void FinalRender::draw(int flags)
@@ -65,8 +75,8 @@ void FinalRender::draw(int flags)
 	m_cmdList->SetGraphicsRootSignature(m_psoLayer.getRootSignature());
 
 	// Set DescriptorHeaps  
-	m_cmdList->SetDescriptorHeaps(m_descriptorHeaps.size(), m_descriptorHeaps.data());
-	
+	ID3D12DescriptorHeap* ldescriptorHeaps[] = { m_descriptorHeap };
+	m_cmdList->SetDescriptorHeaps(1, ldescriptorHeaps);
 
 	// Set RootArguments
 	auto objectCB = m_frameResourceManager->getCurrentObjectCBResource();
@@ -79,8 +89,8 @@ void FinalRender::draw(int flags)
 	//m_cmdList->SetGraphicsRootShaderResourceView(2, m_scene.getMaterialsResource()->GetGPUVirtualAddress());
 	m_cmdList->SetGraphicsRootShaderResourceView(3, boneCB->GetGPUVirtualAddress()); // bones constant buffer array data
 	m_cmdList->SetGraphicsRootConstantBufferView(4, passCB->GetGPUVirtualAddress()); // Pass constant buffer data
-	m_cmdList->SetGraphicsRootDescriptorTable(5, m_descriptorHeaps[0]->GetGPUDescriptorHandleForHeapStart()); // Technical SRV (ViewNormal, SSAO maps and etc)
-	m_cmdList->SetGraphicsRootDescriptorTable(6, m_descriptorHeaps[1]->GetGPUDescriptorHandleForHeapStart()); // Textures SRV
+	m_cmdList->SetGraphicsRootDescriptorTable(5, m_techSRVHandle); // Technical SRV (ViewNormal, SSAO maps and etc)
+	m_cmdList->SetGraphicsRootDescriptorTable(6, m_textureSRVHandle); // Textures SRV
 	
 	//--- draw calls	
 	for (int i = 0; i < m_scene->getLayersCount(); i++) // Draw all Layers
@@ -101,7 +111,7 @@ void FinalRender::draw(int flags)
 
 				m_cmdList->IASetVertexBuffers(0, 1, &lMesh->Geometry->vertexBufferView());
 				m_cmdList->IASetIndexBuffer(&lMesh->Geometry->indexBufferView());
-
+				m_cmdList->IASetPrimitiveTopology(lMesh->Geometry->PrimitiveType);
 				m_cmdList->DrawIndexedInstanced(drawArg.IndexCount, lInstancesCount, drawArg.StartIndexLocation, 0, 0);
 			}
 		}

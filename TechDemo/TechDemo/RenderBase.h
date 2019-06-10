@@ -4,10 +4,12 @@
 #include "PSOManager.h"
 #include "FrameResourcesManager.h"
 
+#define TECHSRVCOUNT 10
+
 struct RenderMessager {
 	ID3D12Device* Device;
 	ID3D12GraphicsCommandList* CmdList;
-	IDXGISwapChain* SwapChain;	
+	IDXGISwapChain3* SwapChain;		
 	DXGI_FORMAT DSResourceFormat; //DXGI_FORMAT_D24_UNORM_S8_UINT
 	DXGI_FORMAT RTResourceFormat;
 	UINT Width;
@@ -41,6 +43,7 @@ protected:
 	D3D12_RECT m_scissorRect;
 
 	UINT m_rtvDescriptorSize;
+	
 
 	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> m_own_resources;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_own_dsvHeap;
@@ -49,9 +52,12 @@ protected:
 	// "Resource interface"
 	ID3D12Resource* m_dsResource;
 	std::vector<ID3D12Resource*> m_rtResources; 
-	std::vector<ID3D12DescriptorHeap*> m_descriptorHeaps; // we do not own these Descriptor Heaps	
+	ID3D12DescriptorHeap* m_descriptorHeap; // we do not own this SRV Descriptor Heap	
 	ID3D12DescriptorHeap* m_dsvHeap;
 	ID3D12DescriptorHeap* m_rtvHeap;
+	D3D12_GPU_DESCRIPTOR_HANDLE m_techSRVHandle;
+	D3D12_GPU_DESCRIPTOR_HANDLE m_textureSRVHandle;
+
 
 public:
 	ID3D12Resource* create_Resource(DXGI_FORMAT resourceFormat, UINT width, UINT height);
@@ -63,7 +69,8 @@ public:
 	void create_RTV(DXGI_FORMAT viewFormat = DXGI_FORMAT_UNKNOWN);
 	void set_Resource_DS(ID3D12Resource* Resource);
 	void set_Resource_RT(ID3D12Resource* Resource);
-	void set_DescriptorHeap_RTV(ID3D12DescriptorHeap* rtvHeap);
+	void set_DescriptorHeap_RTV(ID3D12DescriptorHeap* rtvHeap); // set Descriptor Heap for RT view
+	void set_DescriptorHeap(ID3D12DescriptorHeap* srvDescriptorHeap); // set Descriptor Heap for Textures SRVs
 
 	ID3D12Resource* get_Resource(int resourceIndex);
 	ID3D12Resource* get_Resource_DS();
@@ -72,7 +79,7 @@ public:
 	const ID3D12DescriptorHeap* get_rtvHeapPointer();
 	const ID3D12DescriptorHeap* get_dsvHeapPointer();
 
-	void add_DescriptorHeap();
+	
 
 	void initialize(const RenderMessager& renderParams); // initialize the Render
 	void build(); // Do any other operations to build Render (to add more resources, create SRVs and etc)
