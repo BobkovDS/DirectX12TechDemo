@@ -64,6 +64,21 @@ void TechDemo::init3D()
 void TechDemo::update()
 {
 	m_scene.update();
+	update_BoneData();
+}
+
+void TechDemo::update_BoneData()
+{
+	auto currBoneCB = m_frameResourceManager.currentFR()->getBoneCB();
+
+	float t = 0;
+
+	const std::vector<DirectX::XMFLOAT4X4>& lFinalMatrices = m_skinnedData.getFinalTransforms(t,0);
+		
+	for (int i = 0; i < lFinalMatrices.size(); i++)
+	{
+		currBoneCB->CopyData(i, lFinalMatrices[i]);
+	}
 }
 
 void TechDemo::work()

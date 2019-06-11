@@ -22,6 +22,12 @@
     <Filter Include="Resource Files\Sahders">
       <UniqueIdentifier>{18804083-f463-4006-9045-cf5dee808819}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\SkinnedData">
+      <UniqueIdentifier>{5abcb026-0ef9-415a-a874-9b8db869c1be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SkinnedData">
+      <UniqueIdentifier>{9602e862-3f23-4874-880d-d7ae618f48ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BasicDXGI.cpp">
@@ -80,6 +86,15 @@
     </ClCompile>
     <ClCompile Include="PSOBaseLayer.cpp">
       <Filter>Source Files\PSO</Filter>
+    </ClCompile>
+    <ClCompile Include="BoneAnimation.cpp">
+      <Filter>Source Files\SkinnedData</Filter>
+    </ClCompile>
+    <ClCompile Include="BoneData.cpp">
+      <Filter>Source Files\SkinnedData</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedData.cpp">
+      <Filter>Source Files\SkinnedData</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -163,6 +178,15 @@
     </ClInclude>
     <ClInclude Include="PSOBaseLayer.h">
       <Filter>Header Files\PSO</Filter>
+    </ClInclude>
+    <ClInclude Include="BoneAnimation.h">
+      <Filter>Header Files\SkinnedData</Filter>
+    </ClInclude>
+    <ClInclude Include="BoneData.h">
+      <Filter>Header Files\SkinnedData</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedData.h">
+      <Filter>Header Files\SkinnedData</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
