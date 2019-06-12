@@ -4,6 +4,8 @@
 #define PASSCONSTBUFCOUNT 1/*Frame*/ + 0/*Shadow*/ +0/*Mirror*/ + PASSCONSTBUFCOUNTDCM
 #define SSAOCONSTBUFCOUNT 1
 
+using namespace DirectX;
+
 TechDemo::TechDemo(HINSTANCE hInstance, const std::wstring& applName, int width, int height)
 	:BasicDXGI(hInstance, applName, width, height)	
 {
@@ -27,7 +29,7 @@ void TechDemo::init3D()
 	
 	Utilit3D::initialize(m_device.Get(), m_cmdList.Get());
 
-	m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager);
+	m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
 	m_fbx_loader.loadSceneFile("Models\\Wolf.fbx");
 
 	m_resourceManager.loadTexture();	
@@ -64,21 +66,93 @@ void TechDemo::init3D()
 void TechDemo::update()
 {
 	m_scene.update();
+	update_camera();	
+	update_objectCB();
 	update_BoneData();
+	update_passCB();
+}
+
+void TechDemo::update_camera()
+{
+
+}
+
+void TechDemo::update_objectCB()
+{
+
 }
 
 void TechDemo::update_BoneData()
 {
 	auto currBoneCB = m_frameResourceManager.currentFR()->getBoneCB();
-
 	float t = 0;
+	float lBoneCBID= 0;
 
-	const std::vector<DirectX::XMFLOAT4X4>& lFinalMatrices = m_skinnedData.getFinalTransforms(t,0);
-		
-	for (int i = 0; i < lFinalMatrices.size(); i++)
+	int lSkeletonCount = m_skeletonManager.getSkeletonCount();
+	for (int si = 0; si < lSkeletonCount; si++)
 	{
-		currBoneCB->CopyData(i, lFinalMatrices[i]);
+		SkinnedData& lSkeleton = m_skeletonManager.getSkeleton(si);
+		const std::vector<DirectX::XMFLOAT4X4>& lFinalMatrices = lSkeleton.getFinalTransforms(t, 0);
+
+		for (int i = 0; i < lFinalMatrices.size(); i++)
+		{
+			currBoneCB->CopyData(lBoneCBID++, lFinalMatrices[i]);
+		}
 	}
+}
+
+void TechDemo::update_passCB()
+{
+	auto mMainPassCB = m_frameResourceManager.tmpPassConsts;
+
+	XMMATRIX view = m_camera.getView();
+	XMMATRIX proj = m_camera.lens->getProj();
+
+	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
+	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
+	XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
+	XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
+
+	XMStoreFloat4x4(&mMainPassCB.View, XMMatrixTranspose(view));
+	XMStoreFloat4x4(&mMainPassCB.InvView, XMMatrixTranspose(invView));
+	XMStoreFloat4x4(&mMainPassCB.Proj, XMMatrixTranspose(proj));
+	XMStoreFloat4x4(&mMainPassCB.InvProj, XMMatrixTranspose(invProj));
+	XMStoreFloat4x4(&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));
+	XMStoreFloat4x4(&mMainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
+	//XMStoreFloat4x4(&mMainPassCB.ReflectWord, XMMatrixTranspose(perpectViewProj)); // Reflection here is used for Projector Proj matrix
+
+	mMainPassCB.RenderTargetSize = XMFLOAT2((float)width(), (float)height());
+	mMainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / width(), 1.0f / height());
+	mMainPassCB.NearZ = 1.0f;
+	mMainPassCB.FarZ = 1000.0f;
+	mMainPassCB.EyePosW = m_camera.getPosition3f();
+	mMainPassCB.TotalTime = m_animationTimer.totalTime();
+	mMainPassCB.doesUseMirrorLight = 0; // should we use Mirror light?
+
+	const std::vector<CPULight>& lights = m_scene.getLights();
+
+	for (size_t i = 0; i < lights.size(); i++)
+	{
+		mMainPassCB.Lights[i].Direction = lights.at(i).Direction;
+		mMainPassCB.Lights[i].Strength = lights.at(i).Strength;
+		mMainPassCB.Lights[i].Position = lights.at(i).Position;
+		mMainPassCB.Lights[i].spotPower = lights.at(i).spotPower;
+		mMainPassCB.Lights[i].falloffStart = lights.at(i).falloffStart;
+		mMainPassCB.Lights[i].falloffEnd = lights.at(i).falloffEnd;
+		mMainPassCB.Lights[i].lightType = lights.at(i).lightType + 1; // 0 - is undefined type of light
+		mMainPassCB.Lights[i].turnOn = lights.at(i).turnOn;		
+	}
+	
+	auto currPassCB = m_frameResourceManager.currentFR()->getPassCB();
+	currPassCB->CopyData(0, mMainPassCB);	
+}
+
+void TechDemo::build_defaultCamera()
+{
+	DirectX::XMVECTOR pos = DirectX::XMVectorSet(-1.0, 3.0f, -13.0f, 1.0f);
+	DirectX::XMVECTOR target = DirectX::XMVectorZero();
+	DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	m_camera.lookAt(pos, target, up);
 }
 
 void TechDemo::work()
@@ -103,4 +177,16 @@ void TechDemo::work()
 	m_swapChain->Present(0, 0);
 	m_frameResourceManager.currentFR()->setFenceValue(getFenceValue());
 	setFence();
+}
+
+void TechDemo::onReSize(int newWidth, int newHeight)
+{
+	BasicDXGI::onReSize(newWidth, newHeight);
+
+	float w = static_cast<float>(width());
+	float h = static_cast<float>(height());
+	float aspect = w / h;
+
+	m_camera.lens->setLens(0.25f*XM_PI, aspect, 1.0f, 100.0f);
+	m_camera.buildFrustumBounding();
 }

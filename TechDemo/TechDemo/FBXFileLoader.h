@@ -2,6 +2,7 @@
 #include <fbxsdk.h>
 #include "ObjectManager.h"
 #include "ResourceManager.h"
+#include "SkeletonManager.h"
 #include "Utilit3D.h"
 #include <map>
 
@@ -65,6 +66,7 @@ private:
 	//static int m_lastMaterialID;
 	ObjectManager* m_objectManager;
 	ResourceManager* m_resourceManager;	
+	SkeletonManager* m_skeletonManager;
 	bool m_initialized;
 
 	std::string m_sceneName;
@@ -75,7 +77,7 @@ private:
 	std::map<std::string, std::string> m_texturesPath;	
 	std::map<std::string, std::pair<int, fbx_TreeBoneNode*>> m_BonesIDByName;
 	std::vector<FbxNode*> m_bones; //the list of bones, ordered by Bone ID
-	fbx_TreeBoneNode* m_rootBone;
+	std::vector<fbx_TreeBoneNode*> m_rootBones; // We can have some amount of Skeleton
 	//std::unique_ptr<FbxSkinnedData> m_fbxSkinnedData;
 	UINT m_materialLastAddedID;
 	int m_BoneGlobalID;
@@ -84,15 +86,20 @@ private:
 	void createScene();
 	void build_GeoMeshes();
 	void build_Materials(std::string& pMaterialName);	
-	void build_Animation();
+	void build_Animation();	
 	void build_Skeleton();
+	void add_SkeletonBone(SkinnedData& skeleton, fbx_TreeBoneNode* parentNode);
 	void add_InstanceToRenderItem(const fbx_NodeInstance& nodeRI);
+	void add_AnimationStack(FbxAnimStack* animationStack);
+	void add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData* skeleton, fbx_TreeBoneNode* bone, std::string& animationName);
+	void get_BindMatrix(std::string boneName, DirectX::XMFLOAT4X4& m);
 	void process_NodeInstances();
 	void process_Skeleton(const FbxNode* pNode, fbx_TreeBoneNode* parent);
 	void move_RenderItems();	
 
 	int getNextMaterialID();
 	void convertFbxMatrixToFloat4x4(FbxAMatrix& fbxm, DirectX::XMFLOAT4X4& m);	
+	void convertFbxVector4ToFloat4(FbxVector4& fbxv, DirectX::XMFLOAT4& v);	
 
 	// FBX process functions
 	void process_node(const FbxNode* pNode);
@@ -103,7 +110,7 @@ public:
 	FBXFileLoader();
 	~FBXFileLoader();
 
-	void Initialize(ObjectManager* imngrObject, ResourceManager* mngrResource);
+	void Initialize(ObjectManager* imngrObject, ResourceManager* mngrResource, SkeletonManager* mngrSkeleton);
 	void loadSceneFile(const std::string& fileName);
 };
 

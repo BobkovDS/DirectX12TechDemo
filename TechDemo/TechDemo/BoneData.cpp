@@ -4,7 +4,7 @@ using namespace DirectX;
 
 int BoneData::m_commonID = 0;
 
-BoneData::BoneData()
+BoneData::BoneData(std::string name): m_name(name), m_ID(m_commonID++)
 {
 }
 

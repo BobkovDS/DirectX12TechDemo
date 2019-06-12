@@ -76,6 +76,51 @@ void Scene::updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<Ren
 		layer.addSceneObject(lSceneObject);
 	}
 }
+
+const std::vector<CPULight>& Scene::getLights()
+{
+	if (m_lights.size() == 0) //if we do not have any light, lets add default one
+	{
+		/*directional light.  We should know:
+			1) position
+			2) strenght
+			3) diraction
+		*/
+
+		DirectX::XMVECTOR pos, direction;
+
+		pos = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+		direction = DirectX::XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
+
+		CPULight tmpLight = {};
+		tmpLight.lightType = LightType::Directional;
+		tmpLight.mPhi = 0;
+		tmpLight.mTheta = 0;
+		tmpLight.mRadius = 0;
+
+		XMStoreFloat3(&tmpLight.Direction, direction);
+		XMStoreFloat3(&tmpLight.initDirection, direction);
+		XMStoreFloat3(&tmpLight.Position, pos);
+
+		tmpLight.Strength = DirectX::XMFLOAT3(0.8f, 0.8f, 0.8f);
+
+		tmpLight.spotPower = 4;
+		tmpLight.falloffStart = 1;
+		tmpLight.falloffEnd = tmpLight.mRadius;
+		tmpLight.shapeID = -1;
+
+		tmpLight.posRadius = 0;
+		tmpLight.posTheta = 0;
+		tmpLight.posPhi = 0;
+
+		tmpLight.needToUpdateRI = 1;
+		tmpLight.needToUpdateLight = 1;
+
+		m_lights.push_back(tmpLight);
+	}
+
+	return m_lights;
+}
 // ================================================================ [Scene::SceneLayer] =============================== 
 
 void Scene::SceneLayer::clearLayer()

@@ -11,7 +11,7 @@ BoneAnimation::~BoneAnimation()
 {
 }
 
-void BoneAnimation::addKeyFrame(KeyFrame keyFrame)
+void BoneAnimation::addKeyFrame(KeyFrame& keyFrame)
 {
 	m_keyFrames.push_back(keyFrame);
 }
@@ -50,6 +50,25 @@ void BoneAnimation::interpolate(float t, XMFLOAT4X4& interpolatedValue) const
 					float lLerpPercent = (t - m_keyFrames[i].TimePos) / (m_keyFrames[i+1].TimePos - m_keyFrames[i].TimePos);
 					
 					// interpolation job here
+					XMVECTOR s0 = XMLoadFloat4(&m_keyFrames[i].Scale);
+					XMVECTOR s1 = XMLoadFloat4(&m_keyFrames[i+1].Scale);
+
+					XMVECTOR t0 = XMLoadFloat4(&m_keyFrames[i].Translation);
+					XMVECTOR t1 = XMLoadFloat4(&m_keyFrames[i+1].Translation);
+
+					XMVECTOR r0 = XMLoadFloat4(&m_keyFrames[i].Rotation);
+					XMVECTOR r1 = XMLoadFloat4(&m_keyFrames[i + 1].Rotation);
+
+					XMVECTOR S = XMVectorLerp(s0, s1, lLerpPercent);
+					XMVECTOR T = XMVectorLerp(t0, t1, lLerpPercent);
+					XMVECTOR R = XMVectorLerp(r0, r1, lLerpPercent);
+
+					XMMATRIX Sm = XMMatrixScalingFromVector(S);
+					XMMATRIX Tm = XMMatrixScalingFromVector(T);
+					XMMATRIX Rm = XMMatrixScalingFromVector(R);
+
+					XMMATRIX C = Sm * Tm * Rm;
+					XMStoreFloat4x4(&interpolatedValue, C);
 				}
 		}
 }

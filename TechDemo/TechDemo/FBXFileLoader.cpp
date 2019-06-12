@@ -19,13 +19,15 @@ FBXFileLoader::~FBXFileLoader()
 	m_sdkManager->Destroy();
 }
 
-void FBXFileLoader::Initialize(ObjectManager* mngrObject, ResourceManager* mngrResource)
+void FBXFileLoader::Initialize(ObjectManager* mngrObject, ResourceManager* mngrResource, SkeletonManager* mngrSkeleton)
 {
 	assert(mngrObject);
 	assert(mngrResource);	
+	assert(mngrSkeleton);
 
 	m_objectManager = mngrObject;	
 	m_resourceManager = mngrResource;	
+	m_skeletonManager = mngrSkeleton;
 	m_initialized = true;
 }
 
@@ -99,13 +101,14 @@ void FBXFileLoader::createScene()
 	int child_count = m_scene->GetRootNode()->GetChildCount();
 	for (int i = 0; i < child_count; i++)
 		process_node(m_scene->GetRootNode()->GetChild(i));
-		//build_Animation();
+	
 	build_GeoMeshes();
 
-	m_resourceManager->buildTexturePathList();
-
-		//build_Skeleton();
+	m_resourceManager->buildTexturePathList();	
 	process_NodeInstances();
+
+	build_Skeleton();
+	build_Animation();
 }
 
 void FBXFileLoader::build_GeoMeshes()
@@ -199,45 +202,136 @@ void FBXFileLoader::build_GeoMeshes()
 void FBXFileLoader::build_Animation()
 {
 	// get animation steck count
-	int lAnimationStackCount = m_scene->GetSrcObjectCount<FbxAnimStack>(); // (FBX_TYPE(FbxAnimStack)); i++);
-	//for (int i = 0; i < lAnimationStackCount; i++)
+	int lAnimationStackCount = m_scene->GetSrcObjectCount<FbxAnimStack>();
 
-	if (lAnimationStackCount == 0) return;
-	FbxAnimStack* lpAnimStack = FbxCast<FbxAnimStack>(m_scene->GetSrcObject<FbxAnimStack>(2)); //run 3
-	string lAnimStackName = lpAnimStack->GetName();
-	int lAnimLayerCount = lpAnimStack->GetMemberCount<FbxAnimLayer>();
-	int a = 1;
+	lAnimationStackCount = 1;//TEST
+	for (int i = 0; i < lAnimationStackCount; i++)
+	{		
+		FbxAnimStack* lpAnimStack = FbxCast<FbxAnimStack>(m_scene->GetSrcObject<FbxAnimStack>(i)); //run 3
+		add_AnimationStack(lpAnimStack);
+	}
+}
 
-	FbxAnimLayer* lAnimLayer = lpAnimStack->GetMember<FbxAnimLayer>(0);
+void FBXFileLoader::add_AnimationStack(FbxAnimStack* animationStack)
+{
+	m_scene->SetCurrentAnimationStack(animationStack);
+	
+	string lAnimStackName = animationStack->GetName();
+	int lAnimLayerCount = animationStack->GetMemberCount<FbxAnimLayer>();
+	assert(lAnimLayerCount);
+	FbxAnimLayer* lAnimLayer = animationStack->GetMember<FbxAnimLayer>(0); // we use the first layer only
+	
+	for (int i = 0; i < m_rootBones.size(); i++)
+	{
+		SkinnedData* lSkeleton = &m_skeletonManager->getSkeleton(m_rootBones[i]->Name);
+		add_AnimationInfo(lAnimLayer, lSkeleton, m_rootBones[i], lAnimStackName);
+	}	
+}
 
-	m_scene->SetCurrentAnimationStack(lpAnimStack);
+void  FBXFileLoader::add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData* skeleton, fbx_TreeBoneNode* bone, string& animationName)
+{
+	BoneAnimation lBoneAnimation = {};	
+	BoneData* lBoneData = skeleton->getBone(bone->Name);
 
-	//FbxNode* currentNode = m_scene->FindNodeByName("Bone");
-	//assert(currentNode);
+	FbxAnimCurve* lAnimCurve = NULL;		
+	// we think that all Curves for node have the same first and last Time values, so let's use Translation_X to get it
+	lAnimCurve = bone->Node->LclTranslation.GetCurve(animationLayer, FBXSDK_CURVENODE_COMPONENT_X); 
+				
+	if (lAnimCurve != NULL)
+	{
+		int lKeyCount = lAnimCurve->KeyGetCount();
+		FbxTime lFirstKeyTimeValue = lAnimCurve->KeyGetTime(0);
+		FbxTime lLastKeyTimeValue = lAnimCurve->KeyGetTime(lKeyCount - 1);
 
-	//// get list of Animation Curve Nodes
-	//FbxAnimCurve* lAnimCurve = currentNode->LclTranslation.GetCurve(lAnimLayer, FBXSDK_CURVENODE_COMPONENT_X);
+		char lTimeString[256];
+		string lsFirstValue = lFirstKeyTimeValue.GetTimeString(lTimeString, FbxUShort(256));
+		string lsLastValue = lLastKeyTimeValue.GetTimeString(lTimeString, FbxUShort(256));
+		float lfFirstTime = atof(lsFirstValue.c_str());
+		float lfLastTime = atof(lsLastValue.c_str());
 
-	//int count = lAnimCurve->KeyGetCount();
-	//FbxAnimCurveKey key =  lAnimCurve->KeyGet(1);
 
-	//FbxTime time = key.GetTime();
-	//float value =key.GetValue();
-	//int a1 = 1;
+		FbxTime lFrameTime;
+		for (float i = lfFirstTime; i <= lfLastTime; i++)
+		{
+			lFrameTime.SetSecondDouble(i);
 
+			FbxAMatrix lTrasformation = bone->Node->EvaluateLocalTransform(lFrameTime);
+			FbxVector4 lTranslation = bone->Node->EvaluateLocalTranslation(lFrameTime);
+			FbxVector4 lScaling = bone->Node->EvaluateLocalScaling(lFrameTime);
+			FbxVector4 lRotation = bone->Node->EvaluateLocalRotation(lFrameTime);
+
+			KeyFrame lKeyFrame = {};
+			convertFbxMatrixToFloat4x4(lTrasformation, lKeyFrame.Transform);
+			convertFbxVector4ToFloat4(lTranslation, lKeyFrame.Translation);
+			convertFbxVector4ToFloat4(lScaling, lKeyFrame.Scale);
+			convertFbxVector4ToFloat4(lRotation, lKeyFrame.Rotation);
+			lKeyFrame.TimePos = i;
+			lBoneAnimation.addKeyFrame(lKeyFrame);
+		}
+		lBoneData->addAnimation(animationName, lBoneAnimation);
+	}
+	// Get Bind Matrix
+	get_BindMatrix(bone->Name, lBoneData->m_bindTransform);
+
+	//Get the same data for children-nodes
+	for (int i = 0; i < bone->Childs.size(); i++)
+		add_AnimationInfo(animationLayer, skeleton, bone->Childs[i], animationName);
+}
+
+void FBXFileLoader::get_BindMatrix(std::string boneName, DirectX::XMFLOAT4X4& m)
+{
+	int pose_count = m_scene->GetPoseCount();
+
+	for (int i = 0; i < pose_count; i++) // we will look for the Bind Matrix in all Poses, but will leave once we found the first one
+	{
+		FbxPose* pose = m_scene->GetPose(i);
+		std::string pose_name = pose->GetName();
+
+		int lPosecount = pose->GetCount();
+		for ( int pose_node_id = 0; pose_node_id < lPosecount; pose_node_id++)
+		{
+			std::string pose_node_name = pose->GetNodeName(pose_node_id).GetCurrentName();
+			if (pose_node_name == boneName)
+			{				
+				FbxMatrix pose_matrix = pose->GetMatrix(pose_node_id);
+				pose_matrix = pose_matrix.Inverse();
+
+				FbxAMatrix bindMatrix;
+				FbxVector4 r0 = pose_matrix.GetRow(0);
+				FbxVector4 r1 = pose_matrix.GetRow(1);
+				FbxVector4 r2 = pose_matrix.GetRow(2);
+				FbxVector4 r3 = pose_matrix.GetRow(3);
+
+				bindMatrix.SetRow(0, r0);
+				bindMatrix.SetRow(1, r1);
+				bindMatrix.SetRow(2, r2);
+				bindMatrix.SetRow(3, r3);
+
+				convertFbxMatrixToFloat4x4(bindMatrix, m);
+				return;
+			}
+		}
+	}
 }
 
 void FBXFileLoader::build_Skeleton()
 {
-	//m_bones.resize(m_BonesIDByName.size());
+	for (int i = 0; i < m_rootBones.size(); i++)
+	{
+		string lRootBoneName = m_rootBones[i]->Name;
+		SkinnedData& lSkeleton = m_skeletonManager->getSkeleton(lRootBoneName);
+		lSkeleton.addRootBone(lRootBoneName);
+		add_SkeletonBone(lSkeleton, m_rootBones[i]);
+	}
+}
 
-	//auto begin_it = m_BonesIDByName.begin();
-	//for (; begin_it != m_BonesIDByName.end(); begin_it++)
-	//	m_bones[begin_it->second.first] = begin_it->second.second->Node;
-
-	////m_fbxSkinnedData = std::make_unique<FbxSkinnedData>(&m_bones, m_bones.size(), m_scene);
-	//m_fbxSkinnedData = std::make_unique<FbxSkinnedData>(m_rootBone, m_BonesIDByName.size(), m_scene);
-	//addSkinnedData(m_fbxSkinnedData);
+void FBXFileLoader::add_SkeletonBone(SkinnedData& skeleton, fbx_TreeBoneNode* parentNode)
+{
+	for (int i = 0; i < parentNode->Childs.size(); i++)
+	{
+		skeleton.addBone(parentNode->Name, parentNode->Childs[i]->Name);
+		add_SkeletonBone(skeleton, parentNode->Childs[i]);
+	}
 }
 
 void FBXFileLoader::process_NodeInstances()
@@ -385,6 +479,12 @@ void FBXFileLoader::convertFbxMatrixToFloat4x4(FbxAMatrix& fbxm, DirectX::XMFLOA
 	XMStoreFloat4x4(&m4x4, m);
 }
 
+void FBXFileLoader::convertFbxVector4ToFloat4(FbxVector4& fbxv, DirectX::XMFLOAT4& v)
+{
+	FbxDouble* lData = fbxv.Buffer();	
+	v = XMFLOAT4(lData[0], lData[1], lData[2], lData[3]);
+}
+
 // ---------------- FBX functions -----------------------------
 void FBXFileLoader::process_node(const FbxNode* pNode)
 {
@@ -492,21 +592,16 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 			break;
 		case fbxsdk::FbxNodeAttribute::eSkeleton:
 		{
-			if (m_rootBone == NULL)
-			{
-
-				m_rootBone = new fbx_TreeBoneNode();
+				fbx_TreeBoneNode* lRootBone = new fbx_TreeBoneNode();
 				FbxNode* parentNode = const_cast<FbxNode*>(pNode->GetParent());
 				std::string name = parentNode->GetName();
-				m_rootBone->Name = name;
-				m_rootBone->Node = parentNode;
-				m_BonesIDByName[name].first = m_BoneGlobalID++;
-				m_BonesIDByName[name].second = m_rootBone;
+				lRootBone->Name = name;
+				lRootBone->Node = parentNode;
+				m_BonesIDByName[name].first = m_BoneGlobalID++; /*TO_DO: here can be wrong as several Skeleton can have same name for Bone, check it*/
+				m_BonesIDByName[name].second = lRootBone; 
 
-				process_Skeleton(pNode, m_rootBone);
-			}
-			else
-				assert(0);// we should not come here one more time
+				process_Skeleton(pNode, lRootBone);
+				m_rootBones.push_back(lRootBone);
 		}
 		break;
 		case fbxsdk::FbxNodeAttribute::eMesh:

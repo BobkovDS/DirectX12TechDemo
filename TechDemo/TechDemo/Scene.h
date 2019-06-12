@@ -10,6 +10,8 @@ class Scene
 	std::vector<SceneLayer> m_Layers;
 	ObjectManager* m_objectManager;
 
+	std::vector<CPULight> m_lights; //lights in the scene
+
 	bool m_doesItNeedUpdate;
 public:
 	class SceneLayer
@@ -48,5 +50,6 @@ public:
 	void update();
 	SceneLayer* getLayer(UINT layerIndex);
 	void updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<RenderItem>>& RI);
+	const std::vector<CPULight>& getLights();
 };
 

@@ -124,6 +124,7 @@
     <ClCompile Include="BasicDXGI.cpp" />
     <ClCompile Include="BoneAnimation.cpp" />
     <ClCompile Include="BoneData.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="FBXFileLoader.cpp" />
     <ClCompile Include="FinalRender.cpp" />
@@ -136,6 +137,7 @@
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SkeletonManager.cpp" />
     <ClCompile Include="SkinnedData.cpp" />
     <ClCompile Include="TechDemo.cpp" />
     <ClCompile Include="TextureLoader\DDSTextureLoader.cpp" />
@@ -150,6 +152,7 @@
     <ClInclude Include="BasicDXGI.h" />
     <ClInclude Include="BoneAnimation.h" />
     <ClInclude Include="BoneData.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Canvas.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="Defines.h" />
@@ -166,6 +169,7 @@
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="SkeletonManager.h" />
     <ClInclude Include="SkinnedData.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TechDemo.h" />

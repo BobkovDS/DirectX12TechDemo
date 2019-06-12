@@ -8,9 +8,19 @@ SkinnedData::~SkinnedData()
 {
 }
 
-void SkinnedData::addRootBone(BoneData* root)
+void SkinnedData::addRootBone(std::string& rootBoneName)
 {
-	m_root_bones.push_back(root);
+	BoneData* lNewBone = new BoneData(rootBoneName);
+	m_root_bones.push_back(lNewBone);
+	m_bonesByNames[rootBoneName] = lNewBone;
+}
+
+BoneData* SkinnedData::addBone(std::string& parentName, std::string newBoneName)
+{
+	BoneData* lNewBone = new BoneData(newBoneName);
+	m_bonesByNames[newBoneName] = lNewBone;
+	m_bonesByNames[parentName]->addChild(lNewBone);
+	return lNewBone;
 }
 
 BoneData* SkinnedData::getRootBone(UINT id)
@@ -21,6 +31,21 @@ BoneData* SkinnedData::getRootBone(UINT id)
 		return nullptr;
 }
 
+BoneData* SkinnedData::getBone(std::string& boneName)
+{
+	return m_bonesByNames[boneName];
+}
+
+void SkinnedData::addAnimationName(std::string animName)
+{
+	m_animations.push_back(animName);
+}
+
+
+
+
+
+
 void SkinnedData::interpolate(float t, UINT animationID)
 {
 	if (animationID < m_animations.size())
@@ -29,8 +54,8 @@ void SkinnedData::interpolate(float t, UINT animationID)
 			m_root_bones[i]->interpolate(t, m_animations[animationID]);
 	}
 
-	if (m_bonesFinalTransforms.size() < BoneData::m_commonID) //if we have more bones then we expect
-		m_bonesFinalTransforms.resize(BoneData::m_commonID);
+	if (m_bonesFinalTransforms.size() < BoneData::getCommonIDValue()) //if we have more bones then we expect
+		m_bonesFinalTransforms.resize(BoneData::getCommonIDValue());
 
 	for (int i = 0; i < m_root_bones.size(); i++)
 		m_root_bones[i]->getFinalMatrices(m_bonesFinalTransforms);

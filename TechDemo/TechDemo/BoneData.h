@@ -4,18 +4,17 @@
 class BoneData
 {
 	DirectX::XMFLOAT4X4 m_finalTransform;
-public:
-
 	static int m_commonID;
 	int m_ID;
 	std::string m_name;
+	std::map<std::string, BoneAnimation> m_animations;
+	std::vector<BoneData*> m_childs;
+public:
 	DirectX::XMFLOAT4X4 m_toParentTransform; // is used for interpolation
 	DirectX::XMFLOAT4X4 m_toRootTransform;
 	DirectX::XMFLOAT4X4 m_bindTransform;
-	std::map<std::string, BoneAnimation> m_animations;
-	std::vector<BoneData*> m_childs;	
 
-	BoneData();
+	BoneData(std::string name);
 	~BoneData();
 
 	void addChild(BoneData* child);
@@ -27,5 +26,6 @@ public:
 	void interpolate(float t, std::string& animationName);
 	void buildToRoot(BoneData* parent);
 	void getFinalMatrices(std::vector<DirectX::XMFLOAT4X4>& finalMatrices);
+	static int getCommonIDValue() { return m_commonID; }
 };
 

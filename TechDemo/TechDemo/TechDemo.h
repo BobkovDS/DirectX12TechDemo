@@ -4,9 +4,10 @@
 #include "ObjectManager.h"
 #include "Scene.h"
 #include "ResourceManager.h"
-#include "SkinnedData.h"
+#include "SkeletonManager.h"
 #include "FBXFileLoader.h"
 #include "RenderManager.h"
+#include "Camera.h"
 
 class TechDemo :
 	public BasicDXGI
@@ -15,17 +16,23 @@ class TechDemo :
 	Scene m_scene;
 	ResourceManager m_resourceManager;
 	RenderManager m_renderManager;
-	SkinnedData m_skinnedData;
+	SkeletonManager m_skeletonManager;
 	FrameResourcesManager<InstanceDataGPU, PassConstantsGPU, SSAO_GPU> m_frameResourceManager;
 	Utilit3D m_utilit3D;
 	FBXFileLoader m_fbx_loader;
-	
+	Camera m_camera;
+	Timer m_animationTimer;
+
 protected:
 	void init3D();
 	void update();
 	void update_BoneData();
+	void update_camera();
+	void update_passCB();
+	void update_objectCB();
+	void build_defaultCamera();
 	void work();
-	
+	void onReSize(int newWidth, int newHeight);
 public:
 	TechDemo(HINSTANCE hInstance, const std::wstring& applName, int width, int height);
 	~TechDemo();

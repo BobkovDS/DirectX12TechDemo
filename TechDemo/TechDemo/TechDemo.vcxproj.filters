@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
@@ -16,17 +12,21 @@
     <Filter Include="Header Files\PSO">
       <UniqueIdentifier>{c7452331-60ae-4438-a285-0c7b36b8474a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\PSO">
-      <UniqueIdentifier>{e3fb9991-7638-458f-92b6-e9671bbded28}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files\Sahders">
       <UniqueIdentifier>{18804083-f463-4006-9045-cf5dee808819}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\SkinnedData">
-      <UniqueIdentifier>{5abcb026-0ef9-415a-a874-9b8db869c1be}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\SkinnedData">
       <UniqueIdentifier>{9602e862-3f23-4874-880d-d7ae618f48ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\PSO">
+      <UniqueIdentifier>{e3fb9991-7638-458f-92b6-e9671bbded28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SkinnedData">
+      <UniqueIdentifier>{5abcb026-0ef9-415a-a874-9b8db869c1be}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -95,6 +95,12 @@
     </ClCompile>
     <ClCompile Include="SkinnedData.cpp">
       <Filter>Source Files\SkinnedData</Filter>
+    </ClCompile>
+    <ClCompile Include="SkeletonManager.cpp">
+      <Filter>Source Files\SkinnedData</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -187,6 +193,12 @@
     </ClInclude>
     <ClInclude Include="SkinnedData.h">
       <Filter>Header Files\SkinnedData</Filter>
+    </ClInclude>
+    <ClInclude Include="SkeletonManager.h">
+      <Filter>Header Files\SkinnedData</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
