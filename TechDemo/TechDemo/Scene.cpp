@@ -31,8 +31,22 @@ int Scene::getLayerInstanceOffset(UINT layerCount)
 
 	int offset = 0;
 	for (int i = 0; i < layerCount; i++)
+		if (m_Layers[i].isLayerVisible())
 		offset += m_Layers[i].getLayerInstancesCount();
 	return offset;
+}
+
+std::vector<const InstanceDataGPU*>& Scene::getInstances()
+{
+	m_tmp_Intances.clear();
+
+	for (int i = 0; i < m_Layers.size(); i++)	
+		if (m_Layers[i].isLayerVisible())
+		{
+			m_Layers[i].getInstances(m_tmp_Intances);
+		}	
+
+	return m_tmp_Intances;
 }
 
 void Scene::build(ObjectManager* objectManager)
@@ -143,6 +157,12 @@ int Scene::SceneLayer::getLayerInstancesCount()
 	return 0;// test
 }
 
+void Scene::SceneLayer::getInstances(std::vector<const InstanceDataGPU*>& out_Instances)
+{
+	for (int i = 0; i < m_objects.size(); i++)
+		m_objects[i].getInstances(out_Instances);
+}
+
 int Scene::SceneLayer::getSceneObjectCount()
 {
 	return m_objects.size();
@@ -181,9 +201,14 @@ void Scene::SceneLayer::SceneLayerObject::addInstance(const InstanceDataGPU* ins
 	m_instances.push_back(instance);
 }
 
-std::vector<const InstanceDataGPU*>& Scene::SceneLayer::SceneLayerObject::getInstances()
+void Scene::SceneLayer::SceneLayerObject::getInstances(std::vector<const InstanceDataGPU*>& out_Instances)
 {
-	return m_instances;
+	int lPrevSize = out_Instances.size();
+	out_Instances.resize(lPrevSize + m_instances.size());
+	
+	for (int i = 0; i < m_instances.size(); i++)
+		out_Instances[lPrevSize + i] = m_instances[i];
+	
 }
 
 

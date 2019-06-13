@@ -19,6 +19,36 @@ void ResourceManager::addMaterial(std::unique_ptr<MaterialCPU>& material)
 	m_materials.push_back(std::move(material));
 }
 
+
+void ResourceManager::loadMaterials()
+{
+	vector<MaterialConstantsGPU> materialsGPU;
+	MaterialCPU df;
+	for (size_t i = 0; i < m_materials.size(); i++)
+	{
+		MaterialConstantsGPU tmpMat = {};
+		tmpMat.DiffuseAlbedo = m_materials[i]->DiffuseAlbedo;
+		tmpMat.FresnelR0 = m_materials[i]->FresnelR0;
+		tmpMat.Roughness = m_materials[i]->Roughness;
+		tmpMat.MatTransform = m_materials[i]->MatTransform;
+		tmpMat.flags = m_materials[i]->TexturesMask;
+		
+		for (int ti = 0; ti < TEXTURESCOUNT; ti++)
+				tmpMat.DiffuseMapIndex[ti] = m_materials[i]->DiffuseColorTextureIDs[ti];
+
+		materialsGPU.push_back(tmpMat);
+	}
+
+	m_materialsResource.RessourceInDefaultHeap = Utilit3D::createDefaultBuffer(	
+		materialsGPU.data(),
+		materialsGPU.size() * sizeof(MaterialConstantsGPU),
+		m_materialsResource.RessourceInUploadHeap);
+}
+ID3D12Resource* ResourceManager::getMaterialsResource()
+{
+	return m_materialsResource.RessourceInDefaultHeap.Get();
+}
+
 void ResourceManager::addTexturePathByName(const string& textureName, const string& texturePath)
 {
 	auto it = m_texturePathsByNames.find(textureName);
@@ -87,6 +117,7 @@ void ResourceManager::loadTexture()
 
 	buildTextureSRVs();
 }
+
 
 
 void ResourceManager::buildTextureSRVs()

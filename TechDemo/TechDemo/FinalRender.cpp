@@ -21,20 +21,9 @@ void FinalRender::build()
 
 	// DepthStencil resources. This class own it.
 	{
-		create_Resource_DS(m_dsResourceFormat);
 		create_DescriptorHeap_DSV();
+		create_Resource_DS(m_dsResourceFormat);	
 		create_DSV();
-	}
-
-	//RenderTarget resources. This class do not own no one RTV resources (neither RT Resources, nor rtvHeap)
-	{
-		m_swapChain->GetBuffer(0, IID_PPV_ARGS(&m_swapChainBuffers[0]));
-		m_swapChain->GetBuffer(1, IID_PPV_ARGS(&m_swapChainBuffers[1]));
-
-		ID3D12Resource* lSwapChainResources[2] = { m_swapChainBuffers[0].Get(), m_swapChainBuffers[1].Get() };
-		
-		set_Resource_RT(m_swapChainBuffers[0].Get());
-		set_Resource_RT(m_swapChainBuffers[1].Get());			
 	}
 
 	// Initialize PSO layer
@@ -48,11 +37,24 @@ void FinalRender::build()
 	m_textureSRVHandle = lhDescriptor;
 }
 
+
+void FinalRender::setSwapChainResources(ComPtr<ID3D12Resource>* swapChainResources)
+{
+	m_swapChainResources = swapChainResources;
+}
+
+void FinalRender::resize(UINT iwidth, UINT iheight)
+{
+	RenderBase::resize(iwidth, iheight);	
+	m_dsResource->resize(iwidth, iheight);
+	create_DSV();
+}
+
 void FinalRender::draw(int flags)
 {	
 	int lResourceIndex = m_swapChain->GetCurrentBackBufferIndex();
 	m_cmdList->ResourceBarrier(1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(m_rtResources[lResourceIndex],
+		&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
 			D3D12_RESOURCE_STATE_PRESENT,
 			D3D12_RESOURCE_STATE_RENDER_TARGET));
 
@@ -80,13 +82,13 @@ void FinalRender::draw(int flags)
 
 	// Set RootArguments
 	auto objectCB = m_frameResourceManager->getCurrentObjectCBResource();
-	auto passCB = m_frameResourceManager->getCurrentObjectCBResource();
-	auto boneCB = m_frameResourceManager->getCurrentObjectCBResource();
+	auto passCB = m_frameResourceManager->getCurrentPassCBResource();
+	auto boneCB = m_frameResourceManager->getCurrentBoneCBResource();
 
 	UINT lTechFlags = 0;//Test
 	m_cmdList->SetGraphicsRoot32BitConstant(0, lTechFlags, 1); // Tech Flags
 	m_cmdList->SetGraphicsRootShaderResourceView(1, objectCB->GetGPUVirtualAddress()); // Instances constant buffer arrray data
-	//m_cmdList->SetGraphicsRootShaderResourceView(2, m_scene.getMaterialsResource()->GetGPUVirtualAddress());
+	m_cmdList->SetGraphicsRootShaderResourceView(2, m_resourceManager->getMaterialsResource()->GetGPUVirtualAddress());
 	m_cmdList->SetGraphicsRootShaderResourceView(3, boneCB->GetGPUVirtualAddress()); // bones constant buffer array data
 	m_cmdList->SetGraphicsRootConstantBufferView(4, passCB->GetGPUVirtualAddress()); // Pass constant buffer data
 	m_cmdList->SetGraphicsRootDescriptorTable(5, m_techSRVHandle); // Technical SRV (ViewNormal, SSAO maps and etc)
@@ -106,7 +108,7 @@ void FinalRender::draw(int flags)
 			for (int ri = 0; ri < lObjectLayer->getSceneObjectCount(); ri++) // One layer has several RenderItems
 			{
 				const RenderItem* lMesh = lObjectLayer->getSceneObject(ri)->getObjectMesh();
-				int lInstancesCount = lObjectLayer->getSceneObject(ri)->getInstances().size(); // How much instances for this RenderItem we should draw
+				int lInstancesCount = lObjectLayer->getSceneObject(ri)->getInstancesCount(); // How much instances for this RenderItem we should draw
 				auto drawArg = lMesh->Geometry->DrawArgs[lMesh->Geometry->Name];
 
 				m_cmdList->IASetVertexBuffers(0, 1, &lMesh->Geometry->vertexBufferView());
@@ -119,7 +121,7 @@ void FinalRender::draw(int flags)
 
 	//-----------------------
 	m_cmdList->ResourceBarrier(1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(m_rtResources[lResourceIndex],
+		&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
 			D3D12_RESOURCE_STATE_RENDER_TARGET,
 			D3D12_RESOURCE_STATE_PRESENT));
 }

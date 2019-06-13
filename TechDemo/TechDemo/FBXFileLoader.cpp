@@ -171,7 +171,6 @@ void FBXFileLoader::build_GeoMeshes()
 			meshVertices[vi] = vertex;
 			meshIndices[vi] = vi;
 		}
-
 		
 		lgeoMesh->IsSkinnedMesh = lIsSkinnedMesh; // Does this mesh use at leas one skinned vertex
 		
@@ -225,6 +224,7 @@ void FBXFileLoader::add_AnimationStack(FbxAnimStack* animationStack)
 	{
 		SkinnedData* lSkeleton = &m_skeletonManager->getSkeleton(m_rootBones[i]->Name);
 		add_AnimationInfo(lAnimLayer, lSkeleton, m_rootBones[i], lAnimStackName);
+		lSkeleton->addAnimationName(lAnimStackName);
 	}	
 }
 

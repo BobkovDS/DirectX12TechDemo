@@ -197,7 +197,10 @@ void BasicDXGI::create_RTV()
 
 	// Reset SwapChain buffers (Release the previous resources)
 	for (int i = 0; i < m_swapChainsBufferCount; i++)
+	{
+		//if (m_swapChainBuffers[i])			m_swapChainBuffers[i].Get()->Release();
 		m_swapChainBuffers[i].Reset();
+	}
 		
 	// Resize SwapChain
 	/* MSDN:

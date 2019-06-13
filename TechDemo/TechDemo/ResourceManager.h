@@ -11,6 +11,7 @@ class ResourceManager
 
 	bool m_textureIsUploaded;
 	std::vector<ResourceWithUploader> m_textures;
+	ResourceWithUploader m_materialsResource;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_textureSRVHeap;
 
 	void buildTextureFullNameList();
@@ -23,7 +24,9 @@ public:
 	void buildTexturePathList();
 	void buildTextureSRVs();
 	void loadTexture();
+	void loadMaterials();
 	int getTexturePathIDByName(const std::string& textureName);
+	ID3D12Resource* getMaterialsResource();
 	ID3D12DescriptorHeap* getTexturesSRVDescriptorHeap();
 };
 

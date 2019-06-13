@@ -41,11 +41,6 @@ void SkinnedData::addAnimationName(std::string animName)
 	m_animations.push_back(animName);
 }
 
-
-
-
-
-
 void SkinnedData::interpolate(float t, UINT animationID)
 {
 	if (animationID < m_animations.size())
@@ -58,11 +53,15 @@ void SkinnedData::interpolate(float t, UINT animationID)
 		m_bonesFinalTransforms.resize(BoneData::getCommonIDValue());
 
 	for (int i = 0; i < m_root_bones.size(); i++)
+		m_root_bones[i]->buildToRoot(NULL);
+
+	for (int i = 0; i < m_root_bones.size(); i++)
 		m_root_bones[i]->getFinalMatrices(m_bonesFinalTransforms);
 }
 
 const std::vector<DirectX::XMFLOAT4X4>& SkinnedData::getFinalTransforms(float t, UINT animationID)
 {
 	interpolate(t, animationID);
+
 	return m_bonesFinalTransforms;
 }

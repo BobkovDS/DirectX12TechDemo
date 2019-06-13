@@ -47,51 +47,23 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
         float4x4 boneTr = cbBoneData[boneID].Transform;
         
         Final += boneTr * boneWeight;
-    }
-    
-    //vin.PosL = (weight1 +  weight2 + weight3 + weight4) * mul(float4(vin.PosL, 1.0f), boneTr1).xyz;
-   //vin.PosL = mul(Final, float4(vin.PosL, 1.0f)).xyz;    
-    //vin.PosL = mul(float4(vin.PosL, 1.0f), Final).xyz; // ------------!!!!!
+    }    
 
-    if (gInstancesOffset)
-    {
-        InstanceData instDataForInstancesDraw = gInstanceData[gShapeIDOffset + gInstancesOffset + instID];
-        float4x4 commonMatrix = instDataForInstancesDraw.World;
-        commonMatrix = transpose(commonMatrix); // Why it was transposed!!!!!
-        wordMatrix = mul(wordMatrix, commonMatrix);
-    }
-
-   // wordMatrix = mul(Final, wordMatrix);
-
-	//if (gShadowUsed) // if we draw a Shadow // turn of for testing NormalMapping
-	//{
-	//	float4x4 shadowMatrix = cbPass.ShadowWord;
- //       shadowMatrix = transpose(shadowMatrix); // Why it was transposed!!!!!
-	//	wordMatrix = mul(wordMatrix, shadowMatrix);
-	//}
-
-	//make reflection for a mirror if it is reflection
-    if (cbPass.doesUseMirrorLight > 100)
-    {
-        float4x4 commonMatrix = cbPass.MirWord;
-        commonMatrix = transpose(commonMatrix); // Why it was transposed!!!!!
-        wordMatrix = mul(wordMatrix, commonMatrix);
-    }	
+    wordMatrix = mul(Final, wordMatrix);	
     
     //get World transform
     float4 posW = mul(float4(vin.PosL, 1.0f), wordMatrix);
+    //float4 posW = mul(wordMatrix, float4(vin.PosL, 1.0f) );
    // float4 posW = float4(vin.PosL, 1.0f);
-    posW = mul(Final, posW);
+   // posW = mul(Final, posW);
 	vout.PosW = posW.xyz;
 
     float4x4 ViewProj = cbPass.ViewProj;
-    if (gShadowUsed)
-    {
-        ViewProj = cbPass.MirWord;
-    }
 
     // Transform to homogeneous clip space.    
     vout.PosH = mul(posW, ViewProj);
+    
+   
     
     vout.NormalW = mul(vin.Normal, (float3x3) wordMatrix);
     float3 tangentNU = vin.TangentU;//   normalize(vin.TangentU - dot(vin.TangentU, vin.Normal));
@@ -131,7 +103,8 @@ struct PixelOut
 float4 PS(VertexOut pin) : SV_Target
 //PixelOut PS(VertexOut pin)
 {
-    if (gShadowUsed) return float4(0.05f ,0.0f ,0.0f ,1.0f); //For Stencil exercises 
+    //if (gShadowUsed) return float4(0.05f ,0.0f ,0.0f ,1.0f); //For Stencil exercises 
+   // return float4(0.5f ,0.0f ,0.0f ,1.0f); //For Stencil exercises 
 	
     pin.NormalW = normalize(pin.NormalW);
     float3 toEyeW = cbPass.EyePosW - pin.PosW;
@@ -147,7 +120,7 @@ float4 PS(VertexOut pin) : SV_Target
     float3 Normal = pin.NormalW;
 
     if ((material.textureFlags & 0x01))
-        diffuseAlbedo = gDiffuseMap[material.DiffuseMapIndex[0]+4].Sample(gsamPointWrap, pin.UVText);    
+        diffuseAlbedo = gDiffuseMap[material.DiffuseMapIndex[0]].Sample(gsamPointWrap, pin.UVText);    
       
     //if ((material.textureFlags & 0x02) && gShadowUsed && 0) //&& gShadowUsed
     //{
@@ -169,7 +142,7 @@ float4 PS(VertexOut pin) : SV_Target
     float4 directLight = ComputeLighting(cbPass.Lights, matLight, pin.PosW, Normal, toEyeW, shadow_depth);
 
     float4 litColor = directLight;//  +ambient;
-   // litColor = diffuseAlbedo; //  +ambient;
+    litColor = diffuseAlbedo; //  +ambient;
     
     if (cbPass.FogRange > 0)
     {

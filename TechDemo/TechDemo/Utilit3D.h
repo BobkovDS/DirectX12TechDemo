@@ -38,6 +38,11 @@ public:
 		const void* initData,
 		UINT64 byteSize, 
 		Microsoft::WRL::ComPtr<ID3D12Resource>& uploadBuffer);
+	
+	static Microsoft::WRL::ComPtr<ID3D12Resource> createDefaultBuffer(		
+		const void* initData,
+		UINT64 byteSize,
+		Microsoft::WRL::ComPtr<ID3D12Resource>& uploadBuffer);
 
 	// for wstring file name
 	static Microsoft::WRL::ComPtr<ID3DBlob> compileShader(

@@ -80,6 +80,13 @@ ComPtr<ID3D12Resource> Utilit3D::createDefaultBuffer(ID3D12Device* device, ID3D1
 	return defaultBuffer;
 };
 
+ComPtr<ID3D12Resource> Utilit3D::createDefaultBuffer(const void* initData, UINT64 byteSize, 
+	ComPtr<ID3D12Resource>& uploadBuffer)
+{
+	assert(m_initialized); //should be initialized at first
+
+	return Utilit3D::createDefaultBuffer(m_device, m_cmdList, initData, byteSize, uploadBuffer);
+}
 
 ComPtr<ID3DBlob> Utilit3D::compileShader(
 	const wstring& filename, 

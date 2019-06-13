@@ -1,14 +1,56 @@
 #include "RenderBase.h"
 
+void RenderResource::createResource(ID3D12Device* device, DXGI_FORMAT resourceFormat, UINT width, UINT height, D3D12_CLEAR_VALUE* optClear)
+{
+	m_resourceFormat = resourceFormat;
+	m_device = device;
+	if (optClear)
+	{
+		m_optClear = new D3D12_CLEAR_VALUE(*optClear);
+	}
+	resize(width, height);
+}
 
+RenderResource::~RenderResource()
+{
+	if (m_optClear) delete m_optClear;
+}
+void RenderResource::resize(UINT width, UINT height)
+{
+	if (m_device == nullptr)
+		return;
+
+	m_resource.Reset();
+
+	//Create Resource for any purposes
+	D3D12_RESOURCE_DESC resourceDesriptor = {};
+	resourceDesriptor.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+	resourceDesriptor.Alignment = 0;
+	resourceDesriptor.Width = width;
+	resourceDesriptor.Height = height;
+	resourceDesriptor.DepthOrArraySize = 1;
+	resourceDesriptor.MipLevels = 1;
+	resourceDesriptor.Format = m_resourceFormat;
+	resourceDesriptor.SampleDesc.Count = 1;
+	resourceDesriptor.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+	resourceDesriptor.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+		
+	HRESULT res = m_device->CreateCommittedResource(&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE,
+		&resourceDesriptor, D3D12_RESOURCE_STATE_COMMON, m_optClear, IID_PPV_ARGS(&m_resource));
+}
+ID3D12Resource* RenderResource::getResource()
+{
+	return m_resource.Get();
+}
+
+// --------------------------------- RenderBase -------------------------------------------------------------
 RenderBase::RenderBase() : m_initialized(false), m_rtResourceWasSetBefore(false), m_rtvDescriptorSize(0)
 {
 	m_dsResource = nullptr;	
-
 }
 
 RenderBase::~RenderBase()
-{
+{		
 }
 
 void RenderBase::initialize(const RenderMessager& renderParams)
@@ -21,6 +63,7 @@ void RenderBase::initialize(const RenderMessager& renderParams)
 	m_scene= renderParams.Scene;
 	m_psoManager = renderParams.PSOMngr;
 	m_frameResourceManager= renderParams.FrameResourceMngr;
+	m_resourceManager = renderParams.ResourceMngr;
 	m_dsResourceFormat = renderParams.DSResourceFormat;
 	m_rtResourceFormat = renderParams.RTResourceFormat;
 	m_rtvDescriptorSize = m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
@@ -44,7 +87,7 @@ void RenderBase::resize(UINT newWidth, UINT newHeight)
 }
 
 // -------------------------------- RESOURCE -------------------------------------------------------------------------------
-ID3D12Resource* RenderBase::create_Resource(DXGI_FORMAT resourceFormat, UINT width=0, UINT height=0)
+RenderResource* RenderBase::create_Resource(DXGI_FORMAT resourceFormat, UINT width=0, UINT height=0, D3D12_CLEAR_VALUE* optClear)
 {
 	assert(m_initialized == true); // Render should be initialized before
 
@@ -57,39 +100,24 @@ ID3D12Resource* RenderBase::create_Resource(DXGI_FORMAT resourceFormat, UINT wid
 	if (lheight == 0) lheight= m_height;
 
 	//Create Resource for any purposes
-	D3D12_RESOURCE_DESC resourceDesriptor = {};
-	resourceDesriptor.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-	resourceDesriptor.Alignment = 0;
-	resourceDesriptor.Width = lwidth;
-	resourceDesriptor.Height = lheight;
-	resourceDesriptor.DepthOrArraySize = 1;
-	resourceDesriptor.MipLevels = 1;
-	resourceDesriptor.Format = resourceFormat;
-	resourceDesriptor.SampleDesc.Count = 1;
-	resourceDesriptor.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-	resourceDesriptor.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
-
-	HRESULT res = m_device->CreateCommittedResource(&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE,
-		&resourceDesriptor, D3D12_RESOURCE_STATE_COMMON, NULL, IID_PPV_ARGS(&m_own_resources[m_own_resources.size()-1]));
-	
-	return m_own_resources[m_own_resources.size() - 1].Get();
+	m_own_resources[m_own_resources.size() - 1].createResource(m_device, resourceFormat, lwidth, lheight, optClear);
+	return &m_own_resources[m_own_resources.size() - 1];
 }
 
 void RenderBase::create_Resource_DS(DXGI_FORMAT resourceFormat)
 {
-	m_dsResource = create_Resource(resourceFormat);
+	D3D12_CLEAR_VALUE optClear;
+	optClear.Format = resourceFormat;
+	optClear.DepthStencil.Depth = 1.0f;
+	optClear.DepthStencil.Stencil = 0;
+	m_dsResource = create_Resource(resourceFormat,0,0,&optClear);
 }
 
 void RenderBase::create_Resource_RT(DXGI_FORMAT resourceFormat)
 {
-	m_rtResources.clear(); // if we have RTV resources previously set - claer it. Because we do not own it here, we do not need delete it.
-	m_rtResources.push_back(create_Resource(resourceFormat));
-	m_rtResourceWasSetBefore = false; // clear flag that RT resources could be set before.
-}
-
-void RenderBase::set_Resource_DS(ID3D12Resource* resource)
-{
-	m_dsResource = resource;
+	//m_rtResources.clear(); // if we have RTV resources previously set - claer it. Because we do not own it here, we do not need delete it.
+	//m_rtResources.push_back(create_Resource(resourceFormat));
+	//m_rtResourceWasSetBefore = false; // clear flag that RT resources could be set before.
 }
 
 void RenderBase::set_Resource_RT(ID3D12Resource* resource)
@@ -149,10 +177,10 @@ void RenderBase::create_DSV(DXGI_FORMAT viewFormat)
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 	dsvDesc.Format = lViewFormat;
 	dsvDesc.Texture2D.MipSlice = 0;
-	m_device->CreateDepthStencilView(m_dsResource, &dsvDesc, m_dsvHeap->GetCPUDescriptorHandleForHeapStart());
+	m_device->CreateDepthStencilView(m_dsResource->getResource(), &dsvDesc, m_dsvHeap->GetCPUDescriptorHandleForHeapStart());
 
 	// Transition the resource from its initial state to be used as a depth buffer.
-	m_cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_dsResource,
+	m_cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_dsResource->getResource(),
 		D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_DEPTH_WRITE));
 }
 

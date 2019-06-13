@@ -4,6 +4,7 @@
 
 struct RenderManagerMessanger {
 	ID3D12DescriptorHeap* RTVHeap;
+	ComPtr<ID3D12Resource>* RTResources;
 	ID3D12DescriptorHeap* SRVHeap; // Textures SRV heap
 	RenderMessager commonRenderData;
 };
@@ -14,6 +15,7 @@ class RenderManager
 	ID3D12GraphicsCommandList* m_cmdList;
 	IDXGISwapChain* m_swapChain;	
 	IDXGISwapChain3* m_swapChain3;	
+	ComPtr<ID3D12Resource>* m_swapChainResources;
 	ID3D12DescriptorHeap* m_applicationRTVHeap;
 	ID3D12DescriptorHeap* m_texturesDescriptorHeap;
 	DXGI_FORMAT m_rtResourceFormat;
@@ -35,5 +37,8 @@ public:
 	
 	void buildRenders();
 	void draw(int flags);
+	void resize(int newWidth, int newHeight);
+	void releaseExternalResources();
+	void connectExternalResourcesBack();
 };
 

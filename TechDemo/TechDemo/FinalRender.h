@@ -13,8 +13,8 @@
 class FinalRender :
 	public RenderBase
 {
-	IDXGISwapChain3* m_swapChain;	
-	ComPtr<ID3D12Resource> m_swapChainBuffers[2];
+	IDXGISwapChain3* m_swapChain;		
+	ComPtr<ID3D12Resource>* m_swapChainResources;
 	PSOFinalRenderLayer m_psoLayer;
 public:
 	FinalRender();
@@ -23,5 +23,9 @@ public:
 	void initialize(const RenderMessager& renderParams);
 	void build();
 	void draw(int flag);
+	void releaseExternalResources();
+	void connectExternalResourcesBack();
+	void resize(UINT newWidth, UINT newHeight);
+	void setSwapChainResources(ComPtr<ID3D12Resource>* swapChainResources);
 };
 

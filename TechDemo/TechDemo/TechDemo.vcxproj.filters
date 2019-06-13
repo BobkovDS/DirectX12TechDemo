@@ -12,9 +12,6 @@
     <Filter Include="Header Files\PSO">
       <UniqueIdentifier>{c7452331-60ae-4438-a285-0c7b36b8474a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Sahders">
-      <UniqueIdentifier>{18804083-f463-4006-9045-cf5dee808819}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\SkinnedData">
       <UniqueIdentifier>{9602e862-3f23-4874-880d-d7ae618f48ae}</UniqueIdentifier>
     </Filter>
@@ -27,6 +24,9 @@
     </Filter>
     <Filter Include="Source Files\SkinnedData">
       <UniqueIdentifier>{5abcb026-0ef9-415a-a874-9b8db869c1be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders">
+      <UniqueIdentifier>{18804083-f463-4006-9045-cf5dee808819}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -203,22 +203,22 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\commonPart.hlsl">
-      <Filter>Resource Files\Sahders</Filter>
+      <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\FinalRender_shaders.hlsl">
-      <Filter>Resource Files\Sahders</Filter>
+      <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\FinalRender_skinnedShaders.hlsl">
-      <Filter>Resource Files\Sahders</Filter>
+      <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\Lighting.hlsl">
-      <Filter>Resource Files\Sahders</Filter>
+      <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\RootSignature.hlsl">
-      <Filter>Resource Files\Sahders</Filter>
+      <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\SkinnedCommonPart.hlsl">
-      <Filter>Resource Files\Sahders</Filter>
+      <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

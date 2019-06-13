@@ -4,7 +4,7 @@
 #include "GraphicDataStructures.h"
 
 #define MAX_FRAMERESOURCE_COUNT 3
-
+#define TEXTURESCOUNT 6
 enum RenderItemType {
 	RIT_Opaque = 'opaq', 
 	RIT_Transparent = 'tran',
@@ -42,7 +42,7 @@ struct MaterialCPU
 	DirectX::XMFLOAT3 FresnelR0 = { 0.5f, 0.1f, 0.1f };
 	float Roughness = 0.1f;
 	DirectX::XMFLOAT4X4 MatTransform = MathHelper::Identity4x4();
-	int DiffuseColorTextureIDs[6]; //see TextureMask for texture meaning
+	int DiffuseColorTextureIDs[TEXTURESCOUNT]; //see TextureMask for texture meaning
 	bool IsTransparent; // float factor is used for Transparent factor
 	bool IsTransparencyFactorUsed; // Texture is used for transparency
 };

@@ -23,6 +23,17 @@ class TechDemo :
 	Camera m_camera;
 	Timer m_animationTimer;
 
+	bool m_init3D_done;
+	bool m_mouseDown;
+	bool m_isFog;
+	POINT m_mouseDownPoint;
+	float m_animTime;
+
+	void onMouseDown(WPARAM btnState, int x, int y);
+	void onMouseUp(WPARAM btnState, int x, int y);
+	void onMouseMove(WPARAM btnState, int x, int y);
+	void onKeyDown(WPARAM btnState);
+
 protected:
 	void init3D();
 	void update();

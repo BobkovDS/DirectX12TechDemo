@@ -133,7 +133,9 @@ struct MaterialConstantsGPU
 	// Used in texture mapping.
 	DirectX::XMFLOAT4X4 MatTransform = MathHelper::Identity4x4();
 	UINT flags; //0bit - DefuseTextureIsUsed
-	UINT DiffuseMapIndex[3];
+	UINT DiffuseMapIndex[6];
+	// not used
+	UINT pad0;
 };
 
 struct ObjectContantsGPU

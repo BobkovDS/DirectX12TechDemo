@@ -63,11 +63,13 @@ void BoneAnimation::interpolate(float t, XMFLOAT4X4& interpolatedValue) const
 					XMVECTOR T = XMVectorLerp(t0, t1, lLerpPercent);
 					XMVECTOR R = XMVectorLerp(r0, r1, lLerpPercent);
 
-					XMMATRIX Sm = XMMatrixScalingFromVector(S);
-					XMMATRIX Tm = XMMatrixScalingFromVector(T);
-					XMMATRIX Rm = XMMatrixScalingFromVector(R);
+					XMMATRIX Sm = XMMatrixScalingFromVector(s0);
+					XMMATRIX Tm = XMMatrixTranslationFromVector(t0);
+					XMMATRIX Rm = XMMatrixRotationRollPitchYawFromVector(r0);
 
-					XMMATRIX C = Sm * Tm * Rm;
+					XMMATRIX C = XMMatrixMultiply( Tm, Sm);// *Rm;
+					//C = XMMatrixTranspose(C);
+					//XMMATRIX C = XMLoadFloat4x4(&m_keyFrames[i].Transform); // TEST
 					XMStoreFloat4x4(&interpolatedValue, C);
 				}
 		}
