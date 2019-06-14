@@ -11,7 +11,7 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
 {
 	VertexOut vout;
 
-    uint shapeID = instID + gShapeIDOffset; // we do not use vin.ShapeID anymore in this variant
+    uint shapeID = instID + gInstancesOffset; // we do not use vin.ShapeID anymore in this variant
     InstanceData instData = gInstanceData[shapeID];
     float4x4 wordMatrix = instData.World;  
     
@@ -20,10 +20,6 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
 	vout.PosW = posW.xyz;
 
     float4x4 ViewProj = cbPass.ViewProj;
-    if (gShadowUsed)
-    {
-        ViewProj = cbPass.MirWord;
-    }
 
     // Transform to homogeneous clip space.    
     vout.PosH = mul(posW, ViewProj);
@@ -66,8 +62,7 @@ struct PixelOut
 float4 PS(VertexOut pin) : SV_Target
 //PixelOut PS(VertexOut pin)
 {
-    if (gShadowUsed) return float4(0.05f ,0.0f ,0.0f ,1.0f); //For Stencil exercises 
-	
+   	
     pin.NormalW = normalize(pin.NormalW);
     float3 toEyeW = cbPass.EyePosW - pin.PosW;
     float distToEye = length(toEyeW);

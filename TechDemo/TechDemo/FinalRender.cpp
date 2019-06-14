@@ -95,6 +95,7 @@ void FinalRender::draw(int flags)
 	m_cmdList->SetGraphicsRootDescriptorTable(6, m_textureSRVHandle); // Textures SRV
 	
 	//--- draw calls	
+	int lInstanceOffset = 0;
 	for (int i = 0; i < m_scene->getLayersCount(); i++) // Draw all Layers
 	{
 		Scene::SceneLayer* lObjectLayer = m_scene->getLayer(i);
@@ -102,11 +103,11 @@ void FinalRender::draw(int flags)
 		{
 			m_cmdList->SetPipelineState(m_psoLayer.getPSO(i)); // Here we change shaders. As we have the one RootSignauture for Render, so Root areguments are not reset when we set new PSO
 
-			int lInstanceOffset = m_scene->getLayerInstanceOffset(i); // How many Instances were on prev layers
-			m_cmdList->SetGraphicsRoot32BitConstant(0, lInstanceOffset, 0); // Instances offset for current layer objects
+			//int lInstanceOffset = m_scene->getLayerInstanceOffset(i); // How many Instances were on prev layers
 
 			for (int ri = 0; ri < lObjectLayer->getSceneObjectCount(); ri++) // One layer has several RenderItems
 			{
+				m_cmdList->SetGraphicsRoot32BitConstant(0, lInstanceOffset, 0); // Instances offset for current layer objects
 				const RenderItem* lMesh = lObjectLayer->getSceneObject(ri)->getObjectMesh();
 				int lInstancesCount = lObjectLayer->getSceneObject(ri)->getInstancesCount(); // How much instances for this RenderItem we should draw
 				auto drawArg = lMesh->Geometry->DrawArgs[lMesh->Geometry->Name];
@@ -115,6 +116,7 @@ void FinalRender::draw(int flags)
 				m_cmdList->IASetIndexBuffer(&lMesh->Geometry->indexBufferView());
 				m_cmdList->IASetPrimitiveTopology(lMesh->Geometry->PrimitiveType);
 				m_cmdList->DrawIndexedInstanced(drawArg.IndexCount, lInstancesCount, drawArg.StartIndexLocation, 0, 0);
+				lInstanceOffset += lInstancesCount;
 			}
 		}
 	}

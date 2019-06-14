@@ -10,9 +10,11 @@ class BoneData
 	std::map<std::string, BoneAnimation> m_animations;
 	std::vector<BoneData*> m_childs;
 public:
-	DirectX::XMFLOAT4X4 m_toParentTransform; // is used for interpolation
+	DirectX::XMFLOAT4X4 m_toParentTransform; 
+	DirectX::XMFLOAT4X4 m_toParentTransformAnimated; // is used for interpolation
 	DirectX::XMFLOAT4X4 m_toRootTransform;
 	DirectX::XMFLOAT4X4 m_bindTransform;
+	
 
 	BoneData(std::string name);
 	~BoneData();

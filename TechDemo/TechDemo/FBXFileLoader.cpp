@@ -96,7 +96,7 @@ void FBXFileLoader::createScene()
 	true  /* mConvertCameraClipPlanes */
 	};
 
-	FbxSystemUnit::m.ConvertScene(m_scene, lConversionOptions);
+	//FbxSystemUnit::m.ConvertScene(m_scene, lConversionOptions);
 
 	int child_count = m_scene->GetRootNode()->GetChildCount();
 	for (int i = 0; i < child_count; i++)
@@ -203,7 +203,7 @@ void FBXFileLoader::build_Animation()
 	// get animation steck count
 	int lAnimationStackCount = m_scene->GetSrcObjectCount<FbxAnimStack>();
 
-	lAnimationStackCount = 1;//TEST
+	lAnimationStackCount = 2;//TEST
 	for (int i = 0; i < lAnimationStackCount; i++)
 	{		
 		FbxAnimStack* lpAnimStack = FbxCast<FbxAnimStack>(m_scene->GetSrcObject<FbxAnimStack>(i)); //run 3
@@ -236,7 +236,7 @@ void  FBXFileLoader::add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData
 	FbxAnimCurve* lAnimCurve = NULL;		
 	// we think that all Curves for node have the same first and last Time values, so let's use Translation_X to get it
 	lAnimCurve = bone->Node->LclTranslation.GetCurve(animationLayer, FBXSDK_CURVENODE_COMPONENT_X); 
-				
+	
 	if (lAnimCurve != NULL)
 	{
 		int lKeyCount = lAnimCurve->KeyGetCount();
@@ -253,7 +253,8 @@ void  FBXFileLoader::add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData
 		FbxTime lFrameTime;
 		for (float i = lfFirstTime; i <= lfLastTime; i++)
 		{
-			lFrameTime.SetSecondDouble(i);
+			float lTime = 1.0f / 30.0f * i;
+			lFrameTime.SetSecondDouble(lTime);
 
 			FbxAMatrix lTrasformation = bone->Node->EvaluateLocalTransform(lFrameTime);
 			FbxVector4 lTranslation = bone->Node->EvaluateLocalTranslation(lFrameTime);
@@ -272,6 +273,9 @@ void  FBXFileLoader::add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData
 	}
 	// Get Bind Matrix
 	get_BindMatrix(bone->Name, lBoneData->m_bindTransform);
+	
+	//Get Node LocalTransformation data
+	//get_LcTransformationData(bone, lBoneData);
 
 	//Get the same data for children-nodes
 	for (int i = 0; i < bone->Childs.size(); i++)
@@ -312,6 +316,64 @@ void FBXFileLoader::get_BindMatrix(std::string boneName, DirectX::XMFLOAT4X4& m)
 			}
 		}
 	}
+}
+void FBXFileLoader::get_LcTransformationData(fbx_TreeBoneNode* src_bone, BoneData* dst_bone)
+{
+	string name = src_bone->Name;
+	FbxDouble3 lTranslation = src_bone->Node->LclTranslation;
+	FbxDouble3 lScaling= src_bone->Node->LclScaling;
+	FbxDouble3 lRotation= src_bone->Node->LclRotation;
+	FbxAMatrix lTransformationM = src_bone->Node->EvaluateLocalTransform();
+
+	XMVECTOR lT = XMVectorSet(lTranslation.mData[0], lTranslation.mData[1], lTranslation.mData[2], 0.0f);
+	XMVECTOR lS = XMVectorSet(lScaling.mData[0], lScaling.mData[1], lScaling.mData[2], 0.0f);
+	XMVECTOR lR = XMVectorSet(lRotation.mData[0], lRotation.mData[1], lRotation.mData[2], 0.0f);
+
+	XMFLOAT4X4 lMlc;
+	convertFbxMatrixToFloat4x4(lTransformationM, lMlc);
+	XMMATRIX lM = XMLoadFloat4x4(&lMlc);
+
+	XMMATRIX lTm = XMMatrixTranslationFromVector(lT);
+	XMMATRIX lSm = XMMatrixScalingFromVector(lS);
+	XMMATRIX lRxm = XMMatrixRotationX(lRotation.mData[0]);
+	XMMATRIX lRym = XMMatrixRotationX(lRotation.mData[1]);
+	XMMATRIX lRzm = XMMatrixRotationX(lRotation.mData[2]);
+	//XMMATRIX lRm = lRzm * lRym * lRxm;
+	XMMATRIX lRm = lRxm * lRym *lRzm;
+	XMMATRIX lRm2 = XMMatrixRotationRollPitchYawFromVector(lR);
+
+	//XMMATRIX lResult = lTm* lRm * lSm;
+	XMMATRIX lResult = lSm * lRm * lTm;
+	//lResult = XMMatrixTranspose(lResult);
+
+	// evaluating
+
+	FbxAMatrix leTrasformation = src_bone->Node->EvaluateLocalTransform(0);
+	FbxVector4 leTranslation = src_bone->Node->EvaluateLocalTranslation(0);
+	FbxVector4 leScaling = src_bone->Node->EvaluateLocalScaling(0);
+	FbxVector4 leRotation = src_bone->Node->EvaluateLocalRotation(0);
+	XMFLOAT4X4 leTrns4x4;
+	XMFLOAT4 leTransl4;
+	XMFLOAT4 leScal4;
+	XMFLOAT4 leRot4;
+
+	convertFbxMatrixToFloat4x4(leTrasformation, leTrns4x4);
+	convertFbxVector4ToFloat4(leTranslation, leTransl4);
+	convertFbxVector4ToFloat4(leScaling, leScal4);
+	convertFbxVector4ToFloat4(leRotation, leRot4);
+
+	XMMATRIX leTrnsM = XMLoadFloat4x4(&leTrns4x4);
+	XMVECTOR leTranslV = XMLoadFloat4(&leTransl4);
+	XMVECTOR leScalingV= XMLoadFloat4(&leScal4);
+	XMVECTOR leRotatV = XMLoadFloat4(&leRot4);
+
+	XMMATRIX leTranslM = XMMatrixTranslationFromVector(leTranslV);
+	XMMATRIX leScalM= XMMatrixScalingFromVector(leScalingV);
+	XMMATRIX leRotatM= XMMatrixRotationRollPitchYawFromVector(leRotatV);
+	
+
+
+	int a = 1;
 }
 
 void FBXFileLoader::build_Skeleton()
@@ -393,7 +455,7 @@ void FBXFileLoader::build_Materials(string& pMaterialName)
 				if (liTextureType >= 0)
 				{
 					lMaterial->TexturesMask |= (1 << liTextureType);
-					int index = (1 << liTextureType) - 1;
+					int index = liTextureType;
 					lMaterial->DiffuseColorTextureIDs[index] = textureID;
 				}
 
@@ -474,7 +536,7 @@ void FBXFileLoader::convertFbxMatrixToFloat4x4(FbxAMatrix& fbxm, DirectX::XMFLOA
 		r2.mData[0], r2.mData[1], r2.mData[2], r2.mData[3],
 		r3.mData[0], r3.mData[1], r3.mData[2], r3.mData[3]);
 
-	m = XMMatrixTranspose(m);
+	//m = XMMatrixTranspose(m);
 	//m = XMMatrixIdentity();
 	XMStoreFloat4x4(&m4x4, m);
 }

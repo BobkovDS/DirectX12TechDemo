@@ -20,9 +20,13 @@ struct MaterialData
     float4 DiffuseAlbedo;
     float3 FresnelR0;
     float Roughness;
+
     float4x4 MatTransform;
+
     uint textureFlags;
-	uint DiffuseMapIndex[3];    
+	uint DiffuseMapIndex[6];    
+     //for alignment
+    uint Pad0;
 };
 
 struct VertexIn

@@ -56,16 +56,24 @@ void BoneData::interpolate(float t, std::string& animationName)
 void BoneData::buildToRoot(BoneData* parent)
 {
 	if (parent == nullptr)
+	{
 		m_toRootTransform = m_toParentTransform;
+		XMMATRIX lBindMatrix = XMLoadFloat4x4(&m_bindTransform);
+		XMMATRIX lToRoot = XMLoadFloat4x4(&m_toRootTransform);
+		XMStoreFloat4x4(&m_finalTransform, XMMatrixMultiply(lBindMatrix, lToRoot));
+		int a = 1;
+	}
+
 	else
 	{
 		XMMATRIX lToParent = XMLoadFloat4x4(&m_toParentTransform);
 		XMMATRIX lParentToRoot = XMLoadFloat4x4(&parent->m_toRootTransform);
 		XMMATRIX lBindMatrix = XMLoadFloat4x4(&m_bindTransform);
 
-		XMMATRIX lToRoot = XMMatrixMultiply(lParentToRoot, lToParent);
+		XMMATRIX lToRoot = XMMatrixMultiply(lToParent, lParentToRoot);
 		XMStoreFloat4x4(&m_toRootTransform, lToRoot);
-		XMStoreFloat4x4(&m_finalTransform, XMMatrixMultiply(lToRoot, lBindMatrix));
+		XMStoreFloat4x4(&m_finalTransform, XMMatrixMultiply(lBindMatrix, lToRoot));
+		int a = 10;
 	}
 	
 	for (int i = 0; i < m_childs.size(); i++)

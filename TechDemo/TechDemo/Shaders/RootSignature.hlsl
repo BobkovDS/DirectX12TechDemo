@@ -1,5 +1,5 @@
 #define rootSignatureC1 "RootFlags(ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT),\
- RootConstants(num32BitConstants=3, b0),\
+ RootConstants(num32BitConstants=2, b0),\
  SRV(t0, space=1),\
  SRV(t1, space=1),\
  SRV(t0, space=2),\
@@ -11,9 +11,8 @@
  
 //StaticSampler(s1, filter = FILTER_ANISOTROPIC, comparisonFunc = COMPARISON_LESS_EQUAL, visibility = SHADER_VISIBILITY_ALL)"
 
-uint gShapeIDOffset:register(b0);
-uint gInstancesOffset:register(b1);
-uint gShadowUsed:register(b2);
+uint gInstancesOffset:register(b0);
+uint gTechFlags:register(b1);
 StructuredBuffer<InstanceData> gInstanceData: register(t0, space1);
 StructuredBuffer<MaterialData> gMaterialData: register(t1, space1);
 StructuredBuffer<BoneData> cbBoneData : register(t0, space2);

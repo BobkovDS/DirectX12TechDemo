@@ -10,7 +10,7 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
 {
 	VertexOut vout;
 
-    uint shapeID = instID + gShapeIDOffset; // we do not use vin.ShapeID anymore in this variant
+    uint shapeID = instID + gInstancesOffset; // we do not use vin.ShapeID anymore in this variant
     InstanceData instData = gInstanceData[shapeID];
     float4x4 wordMatrix = instData.World;
     
@@ -29,16 +29,7 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
         vin.BoneWeight2.x, vin.BoneWeight2.y, vin.BoneWeight2.z, vin.BoneWeight2.w,
         vin.BoneWeight3.x, vin.BoneWeight3.y, vin.BoneWeight3.z, vin.BoneWeight3.w,
     };
-
-    float4x4 boneTr1 = cbBoneData[vin.BoneIndices0.x].Transform;
-    float4x4 boneTr2 = cbBoneData[vin.BoneIndices0.y].Transform;
-    float4x4 boneTr3 = cbBoneData[vin.BoneIndices0.z].Transform;
-    float4x4 boneTr4 = cbBoneData[vin.BoneIndices0.w].Transform;
-    float4x4 boneTr5 = cbBoneData[vin.BoneIndices1.x].Transform;
-    float4x4 boneTr6 = cbBoneData[vin.BoneIndices1.y].Transform;
-    float4x4 boneTr7 = cbBoneData[vin.BoneIndices1.z].Transform;
-    float4x4 boneTr8 = cbBoneData[vin.BoneIndices1.w].Transform;
-
+       
     float4x4 Final;
     for (int i = 0; i < 16; i++)
     {
@@ -49,13 +40,13 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
         Final += boneTr * boneWeight;
     }    
 
-    wordMatrix = mul(Final, wordMatrix);	
+   // wordMatrix = mul(Final, wordMatrix);
     
     //get World transform
-    float4 posW = mul(float4(vin.PosL, 1.0f), wordMatrix);
-    //float4 posW = mul(wordMatrix, float4(vin.PosL, 1.0f) );
+    //float4 posW = mul(float4(vin.PosL, 1.0f), wordMatrix);
+    float4 posW = mul(wordMatrix, float4(vin.PosL, 1.0f) );
    // float4 posW = float4(vin.PosL, 1.0f);
-   // posW = mul(Final, posW);
+    posW = mul(Final, posW);
 	vout.PosW = posW.xyz;
 
     float4x4 ViewProj = cbPass.ViewProj;
@@ -117,11 +108,23 @@ float4 PS(VertexOut pin) : SV_Target
     MaterialData material = gMaterialData[instData.MaterialIndex];
     
     float4 diffuseAlbedo = material.DiffuseAlbedo;
+    float diffuseTranspFactor = 0.0f;
+
     float3 Normal = pin.NormalW;
 
     if ((material.textureFlags & 0x01))
         diffuseAlbedo = gDiffuseMap[material.DiffuseMapIndex[0]].Sample(gsamPointWrap, pin.UVText);    
+    
+    if ((material.textureFlags & 0x10))
+    {
+        //diffuseAlbedo = gDiffuseMap[material.DiffuseMapIndex[4]].Sample(gsamPointWrap, pin.UVText);
+        //diffuseTranspFactor = diffuseAlbedo.x;
+        diffuseTranspFactor = gDiffuseMap[material.DiffuseMapIndex[4]].Sample(gsamPointWrap, pin.UVText);
+        
+    }
+     
       
+    
     //if ((material.textureFlags & 0x02) && gShadowUsed && 0) //&& gShadowUsed
     //{
     //   float4 readNormal = gDiffuseMap[material.DiffuseMapIndex[1]].Sample(gsamPointWrap, pin.UVText);
@@ -144,7 +147,8 @@ float4 PS(VertexOut pin) : SV_Target
     float4 litColor = directLight;//  +ambient;
     litColor = diffuseAlbedo; //  +ambient;
     
-    if (cbPass.FogRange > 0)
+    //if (cbPass.FogRange > 0)
+    if (0> 1)
     {
         float fogAmount = saturate((distToEye - cbPass.FogStart) / cbPass.FogRange);
         litColor = lerp(litColor, cbPass.FogColor, fogAmount);
@@ -156,7 +160,7 @@ float4 PS(VertexOut pin) : SV_Target
     //float3 fresnelFactor = SchlickFresnel(material.FresnelR0, Normal, r);    
     
     //litColor.rgb += (1.0f - material.Roughness) * fresnelFactor * reflectionColor.rgb;       
-    litColor.a = diffuseAlbedo.a;  	
+    litColor.a = diffuseTranspFactor; //   diffuseAlbedo.a;
 	return litColor;
 }
 

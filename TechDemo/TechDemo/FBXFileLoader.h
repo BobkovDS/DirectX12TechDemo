@@ -93,6 +93,7 @@ private:
 	void add_AnimationStack(FbxAnimStack* animationStack);
 	void add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData* skeleton, fbx_TreeBoneNode* bone, std::string& animationName);
 	void get_BindMatrix(std::string boneName, DirectX::XMFLOAT4X4& m);
+	void get_LcTransformationData(fbx_TreeBoneNode* src_bone, BoneData* dst_bone);
 	void process_NodeInstances();
 	void process_Skeleton(const FbxNode* pNode, fbx_TreeBoneNode* parent);
 	void move_RenderItems();	
