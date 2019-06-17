@@ -19,7 +19,6 @@ class TechDemo :
 	SkeletonManager m_skeletonManager;
 	FrameResourcesManager<InstanceDataGPU, PassConstantsGPU, SSAO_GPU> m_frameResourceManager;
 	Utilit3D m_utilit3D;
-	FBXFileLoader m_fbx_loader;
 	Camera m_camera;
 	Timer m_animationTimer;
 

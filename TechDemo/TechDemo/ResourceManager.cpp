@@ -78,7 +78,7 @@ void ResourceManager::buildTexturePathList()
 
 	// Build unique texture names list and set ID for it
 	{
-		int ltextureID = 0;
+		int ltextureID = m_texturePathID.size();
 		auto it_begin = m_texturePathsByNames.begin();
 		for (; it_begin != m_texturePathsByNames.end(); it_begin++)
 		{

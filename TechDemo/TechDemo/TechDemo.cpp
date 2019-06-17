@@ -83,9 +83,28 @@ void TechDemo::init3D()
 	
 	Utilit3D::initialize(m_device.Get(), m_cmdList.Get());
 
-	m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
-	//m_fbx_loader.loadSceneFile("Models\\Wolf.fbx");
-	m_fbx_loader.loadSceneFile("Models\\Cottage.fbx");
+
+	//// Load Wolf with Animation
+	//{
+	//	FBXFileLoader m_fbx_loader;
+	//	m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
+	//	m_fbx_loader.loadSceneFile("Models\\Wolf.fbx");
+	//}
+
+	////Load a house
+	//{
+	//	FBXFileLoader m_fbx_loader;
+	//	m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
+	//	m_fbx_loader.loadSceneFile("Models\\Cottage.fbx");
+	//}
+	//	
+
+	// Load a Tree
+	{
+		FBXFileLoader m_fbx_loader;
+		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
+		m_fbx_loader.loadSceneFile("Models\\Tree1.fbx");
+	}
 
 	m_skeletonManager.evaluateAnimationsTime();
 	m_resourceManager.loadTexture();	
@@ -172,6 +191,8 @@ void TechDemo::update_objectCB()
 	auto currCBObject = m_frameResourceManager.currentFR()->getObjectCB();
 
 	InstanceDataGPU lInst;
+
+	lInst = *lInstances[0];
 
 	for (int i=0; i< lInstances.size(); i++)
 		currCBObject->CopyData(i, *lInstances[i]);

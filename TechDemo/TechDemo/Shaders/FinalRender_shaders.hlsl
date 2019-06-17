@@ -16,7 +16,8 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
     float4x4 wordMatrix = instData.World;  
     
     //get World transform
-    float4 posW = mul(float4(vin.PosL, 1.0f), wordMatrix);   
+    //float4 posW = mul(float4(vin.PosL, 1.0f), wordMatrix);   
+    float4 posW = mul(wordMatrix, float4(vin.PosL, 1.0f));
 	vout.PosW = posW.xyz;
 
     float4x4 ViewProj = cbPass.ViewProj;
@@ -63,6 +64,8 @@ float4 PS(VertexOut pin) : SV_Target
 //PixelOut PS(VertexOut pin)
 {
    	
+    //return float4(1.0f, 0.0f, 0.0f, 0.0f);
+
     pin.NormalW = normalize(pin.NormalW);
     float3 toEyeW = cbPass.EyePosW - pin.PosW;
     float distToEye = length(toEyeW);
@@ -77,7 +80,7 @@ float4 PS(VertexOut pin) : SV_Target
     float3 Normal = pin.NormalW;
 
     if ((material.textureFlags & 0x01))
-        diffuseAlbedo = gDiffuseMap[material.DiffuseMapIndex[0]+4].Sample(gsamPointWrap, pin.UVText);    
+        diffuseAlbedo = gDiffuseMap[material.DiffuseMapIndex[0]].Sample(gsamPointWrap, pin.UVText);    
       
     //if ((material.textureFlags & 0x02) && gShadowUsed && 0) //&& gShadowUsed
     //{
@@ -99,9 +102,10 @@ float4 PS(VertexOut pin) : SV_Target
     float4 directLight = ComputeLighting(cbPass.Lights, matLight, pin.PosW, Normal, toEyeW, shadow_depth);
 
     float4 litColor = directLight;//  +ambient;
-   // litColor = diffuseAlbedo; //  +ambient;
+    litColor = diffuseAlbedo; //  +ambient;
     
-    if (cbPass.FogRange > 0)
+    //if (cbPass.FogRange > 0)
+    if (0 > 1)
     {
         float fogAmount = saturate((distToEye - cbPass.FogStart) / cbPass.FogRange);
         litColor = lerp(litColor, cbPass.FogColor, fogAmount);

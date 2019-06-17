@@ -5,10 +5,13 @@
 using namespace std;
 using namespace DirectX;
 
+int FBXFileLoader::m_materialCountForPrevCalling = 0;
+
 FBXFileLoader::FBXFileLoader()
 {
 	m_sdkManager = FbxManager::Create();
 	m_materialLastAddedID = 0;
+	m_materialCountForThisCall = 0;
 	m_initialized = false;
 }
 
@@ -29,6 +32,11 @@ void FBXFileLoader::Initialize(ObjectManager* mngrObject, ResourceManager* mngrR
 	m_resourceManager = mngrResource;	
 	m_skeletonManager = mngrSkeleton;
 	m_initialized = true;
+}
+
+void FBXFileLoader::initLoader()
+{
+	m_meshesByName.clear();
 }
 
 void FBXFileLoader::loadSceneFile(const string& fileName)
@@ -98,6 +106,8 @@ void FBXFileLoader::createScene()
 
 	FbxSystemUnit::m.ConvertScene(m_scene, lConversionOptions);
 
+	initLoader();
+
 	int child_count = m_scene->GetRootNode()->GetChildCount();
 	for (int i = 0; i < child_count; i++)
 		process_node(m_scene->GetRootNode()->GetChild(i));
@@ -109,6 +119,8 @@ void FBXFileLoader::createScene()
 
 	build_Skeleton();
 	build_Animation();
+
+	m_materialCountForPrevCalling += m_materialCountForThisCall;
 }
 
 void FBXFileLoader::build_GeoMeshes()
@@ -139,7 +151,10 @@ void FBXFileLoader::build_GeoMeshes()
 		fbx_Mesh* lMesh = mesh_it_begin->second.get();
 		SubMesh submesh = {};
 
-		lgeoMesh->Name = lMesh->Name;
+		std::string lInnerRIName = lMesh->Name;
+		std::string lOuterRIName = m_sceneName + "_" + lInnerRIName;
+
+		lgeoMesh->Name = lInnerRIName;
 
 		meshVertices.resize(lMesh->Indices.size());
 		meshIndices.resize(lMesh->Indices.size());
@@ -175,13 +190,13 @@ void FBXFileLoader::build_GeoMeshes()
 		lgeoMesh->IsSkinnedMesh = lIsSkinnedMesh; // Does this mesh use at leas one skinned vertex
 		
 		submesh.IndexCount = meshVertices.size();
-		lgeoMesh->DrawArgs[lMesh->Name] = submesh;
+		lgeoMesh->DrawArgs[lInnerRIName] = submesh;
 
 		//Create RenderItem for this mesh		
-		m_RenderItems[lMesh->Name] = std::make_unique<RenderItem>();
-		RenderItem& lNewRI = *m_RenderItems[lMesh->Name].get();
+		m_RenderItems[lInnerRIName] = std::make_unique<RenderItem>();
+		RenderItem& lNewRI = *m_RenderItems[lInnerRIName].get();
 		BoundingBox::CreateFromPoints(lNewRI.AABB, lMesh->Vertices.size(), &lMesh->Vertices[0], sizeof(lMesh->Vertices[0]));
-		lNewRI.Name = lMesh->Name;
+		lNewRI.Name = lOuterRIName;
 		lNewRI.Geometry = lgeoMesh.get();
 
 		if (lMesh->VertexPerPolygon == 3 || lMesh->VertexPerPolygon == 4)
@@ -194,7 +209,7 @@ void FBXFileLoader::build_GeoMeshes()
 		Utilit3D::UploadMeshToDefaultBuffer<Mesh, VertexExtGPU, uint32_t>(lgeoMesh.get(), meshVertices, meshIndices);
 
 		//move geoMeshUp		
-	 	m_objectManager->addMesh(lgeoMesh->Name, lgeoMesh);
+	 	m_objectManager->addMesh(lOuterRIName, lgeoMesh);
 	}
 }
 
@@ -203,6 +218,7 @@ void FBXFileLoader::build_Animation()
 	// get animation steck count
 	int lAnimationStackCount = m_scene->GetSrcObjectCount<FbxAnimStack>();
 
+	if (lAnimationStackCount == 0) return; 
 	lAnimationStackCount = 2;//TEST
 	for (int i = lAnimationStackCount-1; i < lAnimationStackCount; i++)
 	{		
@@ -378,8 +394,6 @@ void FBXFileLoader::get_LcTransformationData(fbx_TreeBoneNode* src_bone, BoneDat
 	XMMATRIX leTranslM = XMMatrixTranslationFromVector(leTranslV);
 	XMMATRIX leScalM= XMMatrixScalingFromVector(leScalingV);
 	XMMATRIX leRotatM= XMMatrixRotationRollPitchYawFromVector(leRotatV);
-	
-
 
 	int a = 1;
 }
@@ -471,6 +485,7 @@ void FBXFileLoader::build_Materials(string& pMaterialName)
 				lMaterial->IsTransparencyFactorUsed= (*mat_it).second.IsTransparencyUsed;
 			}
 			m_resourceManager->addMaterial(lMaterial);
+			m_materialCountForThisCall++;
 		}
 	}
 	else
@@ -486,6 +501,8 @@ void FBXFileLoader::add_InstanceToRenderItem(const fbx_NodeInstance& nodeRIInsta
 		lBaseInstance.World = nodeRIInstance.LocalTransformation;
 		if (nodeRIInstance.Materials.size())
 			lBaseInstance.MaterialIndex = nodeRIInstance.Materials[0]->MatCBIndex;
+
+		ri_it->second->Visable = nodeRIInstance.Visible;
 
 		//define a type for RenderItem, let's use the first Instance for this and his material
 		if (ri_it->second->Type == 0)
@@ -528,7 +545,7 @@ void FBXFileLoader::move_RenderItems()
 
 int FBXFileLoader::getNextMaterialID()
 {
-	return  m_materialLastAddedID++;
+	return  m_materialCountForPrevCalling + m_materialLastAddedID++;
 }
 
 void FBXFileLoader::convertFbxMatrixToFloat4x4(FbxAMatrix& fbxm, DirectX::XMFLOAT4X4& m4x4)
@@ -564,6 +581,7 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 
 	fbx_NodeInstance newNodeInstance = {};
 	newNodeInstance.MeshName = pNodeAtrib->GetName();
+	newNodeInstance.Visible = pNode->GetVisibility();
 
 	FbxNode::EShadingMode lshadingMode = pNode->GetShadingMode();
 
@@ -677,11 +695,7 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 		case fbxsdk::FbxNodeAttribute::eMesh:
 		{
 			process_mesh(pNodeAtrib);
-
-			FbxDouble3 transaltion = pNode->LclTranslation;
-			FbxDouble3 rotation = pNode->LclRotation;
-			FbxDouble3 scaling = pNode->LclScaling;
-
+					   
 			FbxNode* lNode2 = const_cast<FbxNode*>(pNode);
 			string name = lNode2->GetName();
 
@@ -691,6 +705,12 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 			convertFbxMatrixToFloat4x4(lGlobalTransform, newNodeInstance.GlobalTransformation);
 			convertFbxMatrixToFloat4x4(lLocalTransform, newNodeInstance.LocalTransformation);
 			newNodeInstance.Nodetype = NT_Mesh;
+
+			int lChildCount = pNode->GetChildCount();
+
+			// Mesh can have sub-meshes"
+			for (int i = 0; i < lChildCount; i++)
+				process_node(pNode->GetChild(i));
 		}
 		break;
 		
@@ -710,36 +730,119 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 
 void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute)
 {
-	const FbxMesh* lpMesh = static_cast<const FbxMesh*>(pNodeAtribute);
-	string name = lpMesh->GetName();
+	const FbxMesh* lpcMesh = static_cast<const FbxMesh*>(pNodeAtribute);
+	FbxMesh* lpMesh = const_cast<FbxMesh*>(lpcMesh);
+
+	string name = lpcMesh->GetName();
 
 	if (m_meshesByName.find(name) != m_meshesByName.end()) return;
 
-	FbxVector4* vertexData = lpMesh->GetControlPoints();
-	int* indicesData = lpMesh->GetPolygonVertices(); //get a point to Indices data
-	int polygon_vert_count = lpMesh->GetPolygonVertexCount(); // get count of indices
-	int vertex_count = lpMesh->GetControlPointsCount();//get count unique vertices
-	int polygon_count = lpMesh->GetPolygonCount();// how many polygons we have
-	int polygon_size = lpMesh->GetPolygonSize(0); // how many vertices uses a one polygon
-
-	assert(polygon_vert_count == (polygon_size* polygon_count)); // we think that all polygons should have the same size
-	assert(polygon_size <= 4);
-
+	FbxVector4* vertexData = lpcMesh->GetControlPoints();
+	int vertex_count = lpcMesh->GetControlPointsCount();//get count unique vertices	
+	int polygon_count = lpcMesh->GetPolygonCount();// how many polygons we have
+	
 	auto lmesh = std::make_unique<fbx_Mesh>();
 	lmesh->Name = name;
-	lmesh->VertexPerPolygon = polygon_size;
 
+	// Copy All Vertices
 	for (int i = 0; i < vertex_count; i++, vertexData++)
 		lmesh->Vertices.push_back(XMFLOAT3(vertexData->mData[0], vertexData->mData[1], vertexData->mData[2]));
 
-	for (int i = 0; i < polygon_vert_count; i++)
+	const FbxLayerElementUV* UVLayer = lpcMesh->GetElementUV();
+	if (UVLayer)
 	{
-		if (polygon_size == 4)
+		FbxGeometryElement::EMappingMode mappingMode = UVLayer->GetMappingMode();
+		FbxGeometryElement::EReferenceMode referenceMode = UVLayer->GetReferenceMode();
+
+		bool lWeAreOkWithUVLayerMapping = mappingMode == FbxGeometryElement::EMappingMode::eByPolygonVertex &&
+			referenceMode == FbxGeometryElement::EReferenceMode::eIndexToDirect;
+
+		assert(lWeAreOkWithUVLayerMapping);
+	}
+
+	// Prepare data for Normals
+	const FbxLayerElementNormal* normalLayer = lpcMesh->GetElementNormal();
+	vector<XMFLOAT3> averageNormal(lmesh->Vertices.size());
+	if (normalLayer)
+	{
+		FbxGeometryElement::EMappingMode mappingMode = normalLayer->GetMappingMode();
+		FbxGeometryElement::EReferenceMode referenceMode = normalLayer->GetReferenceMode();
+
+		bool lWeAreOkWithNormalMappingMode = mappingMode == FbxGeometryElement::EMappingMode::eByPolygonVertex &&
+			referenceMode == FbxGeometryElement::EReferenceMode::eDirect;
+
+		assert(lWeAreOkWithNormalMappingMode);
+
+		int normalCount = normalLayer->GetDirectArray().GetCount();
+
+		//// We should sum all normals for the same vertex and normalize it later
+		int* indicesData = lpcMesh->GetPolygonVertices(); //get a point to Indices data
+		for (int i = 0; i < normalCount; i++)
 		{
-			int i0 = *(indicesData++);
-			int i1 = *(indicesData++);
-			int i2 = *(indicesData++);
-			int i3 = *(indicesData++);
+			FbxVector4 normal = normalLayer->GetDirectArray().GetAt(i);
+			XMFLOAT3 fnormal = XMFLOAT3(normal.mData[0], normal.mData[1], normal.mData[2]);
+			int vertexID = *(indicesData++);
+			XMVECTOR n = XMLoadFloat3(&averageNormal[vertexID]);
+			XMVECTOR n0 = XMLoadFloat3(&fnormal);
+			n = n + n0;
+			XMStoreFloat3(&averageNormal[vertexID], n);
+		}
+	}
+	
+	int lVertexID = 0;
+	// Copy All Indices, but we "triangulate" a polygon if PolygonSize = 4
+	for (int pi = 0; pi < polygon_count; pi++)
+	{		
+		
+		int polygon_size = lpcMesh->GetPolygonSize(pi); // how many vertices this polygon uses		
+		assert(polygon_size == 3 || polygon_size == 4);			   		
+
+		lmesh->VertexPerPolygon = polygon_size;
+
+		if (polygon_size == 3)
+		{
+			int i0 = lpcMesh->GetPolygonVertex(pi, 0);
+			int i1 = lpcMesh->GetPolygonVertex(pi, 1);
+			int i2 = lpcMesh->GetPolygonVertex(pi, 2);			
+
+			lmesh->Indices.push_back(i0);
+			lmesh->Indices.push_back(i1);
+			lmesh->Indices.push_back(i2);
+
+			// UV
+			if (UVLayer)
+			{
+				int lUVID0 = lpMesh->GetTextureUVIndex(pi, 0);
+				int lUVID1 = lpMesh->GetTextureUVIndex(pi, 1);
+				int lUVID2 = lpMesh->GetTextureUVIndex(pi, 2);
+
+				FbxVector2 uv0 = UVLayer->GetDirectArray().GetAt(lUVID0);
+				FbxVector2 uv1 = UVLayer->GetDirectArray().GetAt(lUVID1);
+				FbxVector2 uv2 = UVLayer->GetDirectArray().GetAt(lUVID2);
+
+				lmesh->UVs.push_back(XMFLOAT2(uv0.mData[0], 1.0f - uv0.mData[1]));
+				lmesh->UVs.push_back(XMFLOAT2(uv1.mData[0], 1.0f - uv1.mData[1]));
+				lmesh->UVs.push_back(XMFLOAT2(uv2.mData[0], 1.0f - uv2.mData[1]));
+			}
+
+			// Normal
+			if (normalLayer)
+			{
+				XMFLOAT3 normal0 = averageNormal[i0];
+				XMFLOAT3 normal1 = averageNormal[i1];
+				XMFLOAT3 normal2 = averageNormal[i2];				
+
+				lmesh->Normals.push_back(normal0);
+				lmesh->Normals.push_back(normal1);
+				lmesh->Normals.push_back(normal2);
+			}
+		}
+		else if (polygon_size == 4)
+		{
+			int i0 = lpcMesh->GetPolygonVertex(pi, 0);
+			int i1 = lpcMesh->GetPolygonVertex(pi, 1);
+			int i2 = lpcMesh->GetPolygonVertex(pi, 2);
+			int i3 = lpcMesh->GetPolygonVertex(pi, 3);
 
 			lmesh->Indices.push_back(i0);
 			lmesh->Indices.push_back(i1);
@@ -748,16 +851,58 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute)
 			lmesh->Indices.push_back(i0);
 			lmesh->Indices.push_back(i2);
 			lmesh->Indices.push_back(i3);
-			i += 3;
+
+			// UV
+			if (UVLayer)
+			{
+				int lUVID0 = lpMesh->GetTextureUVIndex(pi, 0);
+				int lUVID1 = lpMesh->GetTextureUVIndex(pi, 1);
+				int lUVID2 = lpMesh->GetTextureUVIndex(pi, 2);
+				int lUVID3 = lpMesh->GetTextureUVIndex(pi, 3);
+
+				FbxVector2 uv0 = UVLayer->GetDirectArray().GetAt(lUVID0);
+				FbxVector2 uv1 = UVLayer->GetDirectArray().GetAt(lUVID1);
+				FbxVector2 uv2 = UVLayer->GetDirectArray().GetAt(lUVID2);
+				FbxVector2 uv3 = UVLayer->GetDirectArray().GetAt(lUVID3);
+
+				lmesh->UVs.push_back(XMFLOAT2(uv0.mData[0], 1.0f - uv0.mData[1]));
+				lmesh->UVs.push_back(XMFLOAT2(uv1.mData[0], 1.0f - uv1.mData[1]));
+				lmesh->UVs.push_back(XMFLOAT2(uv2.mData[0], 1.0f - uv2.mData[1]));
+
+				lmesh->UVs.push_back(XMFLOAT2(uv0.mData[0], 1.0f - uv0.mData[1]));
+				lmesh->UVs.push_back(XMFLOAT2(uv2.mData[0], 1.0f - uv2.mData[1]));
+				lmesh->UVs.push_back(XMFLOAT2(uv3.mData[0], 1.0f - uv3.mData[1]));
+			}
+
+			// Normal
+			if (normalLayer)
+			{
+				XMFLOAT3 normal0 = averageNormal[i0];
+				XMFLOAT3 normal1 = averageNormal[i1];
+				XMFLOAT3 normal2 = averageNormal[i2];
+				XMFLOAT3 normal3 = averageNormal[i3];
+
+				lmesh->Normals.push_back(normal0);
+				lmesh->Normals.push_back(normal1);
+				lmesh->Normals.push_back(normal2);
+
+				lmesh->Normals.push_back(normal0);
+				lmesh->Normals.push_back(normal2);
+				lmesh->Normals.push_back(normal3);
+			}
 		}
 		else
-			lmesh->Indices.push_back(*(indicesData++));
+		{
+			bool PolygonSizeNot_3_or_4 = false;
+			assert(PolygonSizeNot_3_or_4);
+		}
+			
 	}
 
 	// get Material ID for mesh/polygons
 	{
-		int count = lpMesh->GetElementMaterialCount(); //just to know. now we will use the 0 material;
-		const FbxLayerElementMaterial* materialLayer = lpMesh->GetElementMaterial();
+		int count = lpcMesh->GetElementMaterialCount(); //just to know. now we will use the 0 material;
+		const FbxLayerElementMaterial* materialLayer = lpcMesh->GetElementMaterial();
 		FbxGeometryElement::EMappingMode mappingMode = materialLayer->GetMappingMode();
 
 		if (mappingMode == FbxGeometryElement::EMappingMode::eAllSame) // the same Material is used for all mesh
@@ -769,132 +914,18 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute)
 			bool MaterialByPolygonIsUsed = false;
 			assert(MaterialByPolygonIsUsed); // to catch when we have this variant
 		}
-	}
-
-	//Normals
-	{
-		int count = lpMesh->GetElementNormalCount();
-		const FbxLayerElementNormal* normalLayer = lpMesh->GetElementNormal();
-		FbxGeometryElement::EMappingMode mappingMode = normalLayer->GetMappingMode();
-		FbxGeometryElement::EReferenceMode referenceMode = normalLayer->GetReferenceMode();
-
-		if (mappingMode == FbxGeometryElement::EMappingMode::eByPolygonVertex &&
-			referenceMode == FbxGeometryElement::EReferenceMode::eDirect)
-		{
-			int normalCount = normalLayer->GetDirectArray().GetCount();
-
-			//// We should sum all normals for the same vertex and normalize it later
-			vector<XMFLOAT3> averageNormal(lmesh->Vertices.size());
-			indicesData = lpMesh->GetPolygonVertices(); //get a point to Indices data
-			for (int i = 0; i < normalCount; i++)
-			{
-				FbxVector4 normal = normalLayer->GetDirectArray().GetAt(i);
-				XMFLOAT3 fnormal = XMFLOAT3(normal.mData[0], normal.mData[1], normal.mData[2]);
-				int vertexID = *(indicesData++);
-				XMVECTOR n = XMLoadFloat3(&averageNormal[vertexID]);
-				XMVECTOR n0 = XMLoadFloat3(&fnormal);
-				n = n + n0;
-				XMStoreFloat3(&averageNormal[vertexID], n);
-			}
-
-			indicesData = lpMesh->GetPolygonVertices(); //get a point to Indices data
-			for (int i = 0; i < normalCount; i++)
-			{
-				if (polygon_size == 4)
-				{
-					XMFLOAT3 normal0 = averageNormal[*(indicesData++)];
-					XMFLOAT3 normal1 = averageNormal[*(indicesData++)];
-					XMFLOAT3 normal2 = averageNormal[*(indicesData++)];
-					XMFLOAT3 normal3 = averageNormal[*(indicesData++)];
-
-					lmesh->Normals.push_back(normal0);
-					lmesh->Normals.push_back(normal1);
-					lmesh->Normals.push_back(normal2);
-
-					lmesh->Normals.push_back(normal0);
-					lmesh->Normals.push_back(normal2);
-					lmesh->Normals.push_back(normal3);
-					i += 3;
-				}
-				else
-				{
-					//FbxVector4 normal = normalLayer->GetDirectArray().GetAt(i);
-					//lmesh->Normals.push_back(XMFLOAT3(normal.mData[0], normal.mData[1], normal.mData[2]));
-
-					XMFLOAT3 normal = averageNormal[*(indicesData++)];
-					lmesh->Normals.push_back(normal);
-				}
-			}
-		}
-		else
-		{
-			bool NormalNotByVertexPolygon = false;
-			assert(NormalNotByVertexPolygon);
-		}
-	}
-
-	//UV
-	{
-		int count = lpMesh->GetElementUVCount();
-		const FbxLayerElementUV* UVLayer = lpMesh->GetElementUV();
-		if (UVLayer)
-		{
-			FbxGeometryElement::EMappingMode mappingMode = UVLayer->GetMappingMode();
-			FbxGeometryElement::EReferenceMode referenceMode = UVLayer->GetReferenceMode();
-
-			if (mappingMode == FbxGeometryElement::EMappingMode::eByPolygonVertex &&
-				referenceMode == FbxGeometryElement::EReferenceMode::eIndexToDirect)
-			{
-				int uvCount = UVLayer->GetIndexArray().GetCount();
-
-				for (int i = 0; i < uvCount; i++)
-				{
-					if (polygon_size == 4)
-					{
-						int uvID0 = UVLayer->GetIndexArray().GetAt(i++);
-						int uvID1 = UVLayer->GetIndexArray().GetAt(i++);
-						int uvID2 = UVLayer->GetIndexArray().GetAt(i++);
-						int uvID3 = UVLayer->GetIndexArray().GetAt(i);
-
-						FbxVector2 uv0 = UVLayer->GetDirectArray().GetAt(uvID0);
-						FbxVector2 uv1 = UVLayer->GetDirectArray().GetAt(uvID1);
-						FbxVector2 uv2 = UVLayer->GetDirectArray().GetAt(uvID2);
-						FbxVector2 uv3 = UVLayer->GetDirectArray().GetAt(uvID3);
-
-						lmesh->UVs.push_back(XMFLOAT2(uv0.mData[0], 1.0f - uv0.mData[1]));
-						lmesh->UVs.push_back(XMFLOAT2(uv1.mData[0], 1.0f - uv1.mData[1]));
-						lmesh->UVs.push_back(XMFLOAT2(uv2.mData[0], 1.0f - uv2.mData[1]));
-
-						lmesh->UVs.push_back(XMFLOAT2(uv0.mData[0], 1.0f - uv0.mData[1]));
-						lmesh->UVs.push_back(XMFLOAT2(uv2.mData[0], 1.0f - uv2.mData[1]));
-						lmesh->UVs.push_back(XMFLOAT2(uv3.mData[0], 1.0f - uv3.mData[1]));
-					}
-					else
-					{
-						int uvID = UVLayer->GetIndexArray().GetAt(i);
-						FbxVector2 uv = UVLayer->GetDirectArray().GetAt(uvID);
-						lmesh->UVs.push_back(XMFLOAT2(uv.mData[0], uv.mData[1]));
-					}
-				}
-			}
-			else
-			{
-				bool Mesh_UV_MappingRef = false;
-				assert(Mesh_UV_MappingRef);
-			}
-		}
-	}
+	}	
 
 	// get Skin Data
 	// If Bone X uses vertex Y with weight W, we will map it with VertexWeightByBoneID[Y]=pair{X, W}
 	lmesh->VertexWeightByBoneName.resize(lmesh->Vertices.size());
 	{
 		int lCommonIndicesCount = 0;
-		int lskinCount = lpMesh->GetDeformerCount(FbxDeformer::eSkin);
+		int lskinCount = lpcMesh->GetDeformerCount(FbxDeformer::eSkin);
 
 		for (int s = 0; s < lskinCount; s++)
 		{
-			FbxSkin* lSkin = (FbxSkin*)lpMesh->GetDeformer(s, FbxDeformer::eSkin);
+			FbxSkin* lSkin = (FbxSkin*)lpcMesh->GetDeformer(s, FbxDeformer::eSkin);
 			int lClusterCount = lSkin->GetClusterCount();
 
 			for (int clusterID = 0; clusterID < lClusterCount; clusterID++)

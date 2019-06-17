@@ -43,6 +43,7 @@ struct fbx_Material {
 struct fbx_NodeInstance {
 	std::string MeshName;
 	fbx_NodeType Nodetype;
+	bool Visible;
 	std::vector<fbx_Material*> Materials;
 	DirectX::XMFLOAT3 Transformation;
 	DirectX::XMFLOAT3 Translation;
@@ -59,7 +60,10 @@ struct fbx_TreeBoneNode
 
 class FBXFileLoader
 {
+	void initLoader();
 private:
+	static int m_materialCountForPrevCalling;
+	int m_materialCountForThisCall;
 	FbxManager* m_sdkManager;
 	FbxScene* m_scene;
 
