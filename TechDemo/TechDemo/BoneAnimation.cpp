@@ -6,7 +6,6 @@ BoneAnimation::BoneAnimation()
 {
 }
 
-
 BoneAnimation::~BoneAnimation()
 {
 }
@@ -24,17 +23,17 @@ KeyFrame& BoneAnimation::getKeyFrame(UINT i)
 		return m_keyFrames.back();
 }
 
-float BoneAnimation::getEndTime() const
+void BoneAnimation::evaluateBeginEndTime()
 {
-	//if (m_keyFrames.size() == 0) return 0;
-	return m_keyFrames.back().TimePos;
-}
+	m_beginTime = MAX_ANIM_TIME;
+	m_endTime = 0;
 
-float BoneAnimation::getStartTime()	const
-{
-	return m_keyFrames.front().TimePos;
+	for (int i = 0; i < m_keyFrames.size(); i++)
+	{
+		if (m_keyFrames[i].TimePos < m_beginTime) m_beginTime = m_keyFrames[i].TimePos;
+		if (m_keyFrames[i].TimePos > m_endTime) m_endTime= m_keyFrames[i].TimePos;
+	}
 }
-
 void BoneAnimation::interpolate(float t, XMFLOAT4X4& interpolatedValue) const
 {
 	if (t < getStartTime())
@@ -48,7 +47,7 @@ void BoneAnimation::interpolate(float t, XMFLOAT4X4& interpolatedValue) const
 				if (t >= m_keyFrames[i].TimePos && t < m_keyFrames[i + 1].TimePos)
 				{
 					float lLerpPercent = (t - m_keyFrames[i].TimePos) / (m_keyFrames[i+1].TimePos - m_keyFrames[i].TimePos);
-					
+						
 					// interpolation job here
 					XMVECTOR s0 = XMLoadFloat4(&m_keyFrames[i].Scale);
 					XMVECTOR s1 = XMLoadFloat4(&m_keyFrames[i+1].Scale);
@@ -59,17 +58,19 @@ void BoneAnimation::interpolate(float t, XMFLOAT4X4& interpolatedValue) const
 					XMVECTOR r0 = XMLoadFloat4(&m_keyFrames[i].Rotation);
 					XMVECTOR r1 = XMLoadFloat4(&m_keyFrames[i + 1].Rotation);
 
-					XMVECTOR S = XMVectorLerp(s0, s1, lLerpPercent);
-					XMVECTOR T = XMVectorLerp(t0, t1, lLerpPercent);
-					XMVECTOR R = XMVectorLerp(r0, r1, lLerpPercent);
+					XMVECTOR s = XMVectorLerp(s0, s1, lLerpPercent);
+					XMVECTOR t = XMVectorLerp(t0, t1, lLerpPercent);
+					XMVECTOR r = XMVectorLerp(r0, r1, lLerpPercent);
 
-					XMMATRIX Sm = XMMatrixScalingFromVector(s0);
-					XMMATRIX Tm = XMMatrixTranslationFromVector(t0);
-					XMMATRIX Rm = XMMatrixRotationRollPitchYawFromVector(r0);
+					XMMATRIX Sm = XMMatrixScalingFromVector(s);
+					XMMATRIX Tm = XMMatrixTranslationFromVector(t);					
+					XMMATRIX Rxm = XMMatrixRotationX(XMVectorGetX(r));
+					XMMATRIX Rym = XMMatrixRotationY(XMVectorGetY(r));
+					XMMATRIX Rzm = XMMatrixRotationZ(XMVectorGetZ(r));
+					XMMATRIX Rm = Rxm * Rym * Rzm;				
 
-					XMMATRIX C = Sm * Rm *Tm;
-					//C = XMMatrixTranspose(C);
-					C = XMLoadFloat4x4(&m_keyFrames[i].Transform); // TEST
+					XMMATRIX C = Sm * Rm *Tm;									
+					//C = XMLoadFloat4x4(&m_keyFrames[i].Transform); // TEST
 					XMStoreFloat4x4(&interpolatedValue, C);
 
 					break;

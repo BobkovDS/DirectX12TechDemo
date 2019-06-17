@@ -28,6 +28,7 @@ public:
 	void interpolate(float t, std::string& animationName);
 	void buildToRoot(BoneData* parent);
 	void getFinalMatrices(std::vector<DirectX::XMFLOAT4X4>& finalMatrices);
+	void get_begin_end_animationTime(std::string& animationName, float& beginT, float& endT);
 	static int getCommonIDValue() { return m_commonID; }
 };
 

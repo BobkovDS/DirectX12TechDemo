@@ -2,7 +2,7 @@
 
 
 
-SkeletonManager::SkeletonManager()
+SkeletonManager::SkeletonManager(): m_animationTimeWasEvaluated(false)
 {
 }
 
@@ -37,4 +37,22 @@ SkinnedData& SkeletonManager::getSkeleton(UINT id)
 		it_begin++;
 
 	return it_begin->second;
+}
+
+void SkeletonManager::evaluateAnimationsTime()
+{
+	auto begin_it = m_skeletons.begin();
+	for (; begin_it != m_skeletons.end(); begin_it++)
+		begin_it->second.evaluateBeginEndTime();
+
+	m_animationTimeWasEvaluated = false;
+}
+
+void SkeletonManager::getAnimationsTime(float& beginT, float& endT)
+{
+	assert(m_animationTimeWasEvaluated);
+
+	//auto begin_it = m_skeletons.begin();
+	//for (; begin_it != m_skeletons.end(); begin_it++)
+	//	begin_it->second.
 }

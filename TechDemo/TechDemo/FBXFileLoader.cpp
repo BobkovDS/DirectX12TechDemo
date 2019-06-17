@@ -96,7 +96,7 @@ void FBXFileLoader::createScene()
 	true  /* mConvertCameraClipPlanes */
 	};
 
-	//FbxSystemUnit::m.ConvertScene(m_scene, lConversionOptions);
+	FbxSystemUnit::m.ConvertScene(m_scene, lConversionOptions);
 
 	int child_count = m_scene->GetRootNode()->GetChildCount();
 	for (int i = 0; i < child_count; i++)
@@ -204,7 +204,7 @@ void FBXFileLoader::build_Animation()
 	int lAnimationStackCount = m_scene->GetSrcObjectCount<FbxAnimStack>();
 
 	lAnimationStackCount = 2;//TEST
-	for (int i = 0; i < lAnimationStackCount; i++)
+	for (int i = lAnimationStackCount-1; i < lAnimationStackCount; i++)
 	{		
 		FbxAnimStack* lpAnimStack = FbxCast<FbxAnimStack>(m_scene->GetSrcObject<FbxAnimStack>(i)); //run 3
 		add_AnimationStack(lpAnimStack);
@@ -256,17 +256,20 @@ void  FBXFileLoader::add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData
 			float lTime = 1.0f / 30.0f * i;
 			lFrameTime.SetSecondDouble(lTime);
 
-			FbxAMatrix lTrasformation = bone->Node->EvaluateLocalTransform(lFrameTime);
+			//FbxAMatrix lTrasformation = bone->Node->EvaluateLocalTransform(lFrameTime);
 			FbxVector4 lTranslation = bone->Node->EvaluateLocalTranslation(lFrameTime);
 			FbxVector4 lScaling = bone->Node->EvaluateLocalScaling(lFrameTime);
 			FbxVector4 lRotation = bone->Node->EvaluateLocalRotation(lFrameTime);
 
 			KeyFrame lKeyFrame = {};
-			convertFbxMatrixToFloat4x4(lTrasformation, lKeyFrame.Transform);
+			//convertFbxMatrixToFloat4x4(lTrasformation, lKeyFrame.Transform);
 			convertFbxVector4ToFloat4(lTranslation, lKeyFrame.Translation);
 			convertFbxVector4ToFloat4(lScaling, lKeyFrame.Scale);
 			convertFbxVector4ToFloat4(lRotation, lKeyFrame.Rotation);
-			lKeyFrame.TimePos = i;
+			lKeyFrame.Rotation.x *= XM_PI / 180;
+			lKeyFrame.Rotation.y *= XM_PI / 180;
+			lKeyFrame.Rotation.z *= XM_PI / 180;
+			lKeyFrame.TimePos = lTime;
 			lBoneAnimation.addKeyFrame(lKeyFrame);
 		}
 		lBoneData->addAnimation(animationName, lBoneAnimation);
@@ -335,7 +338,9 @@ void FBXFileLoader::get_LcTransformationData(fbx_TreeBoneNode* src_bone, BoneDat
 
 	XMMATRIX lTm = XMMatrixTranslationFromVector(lT);
 	XMMATRIX lSm = XMMatrixScalingFromVector(lS);
-	XMMATRIX lRxm = XMMatrixRotationX(lRotation.mData[0]);
+	float lAngle = lRotation.mData[0];
+	float lInRadians = lAngle * XM_PI / 180;
+	XMMATRIX lRxm = XMMatrixRotationX(lInRadians);
 	XMMATRIX lRym = XMMatrixRotationX(lRotation.mData[1]);
 	XMMATRIX lRzm = XMMatrixRotationX(lRotation.mData[2]);
 	//XMMATRIX lRm = lRzm * lRym * lRxm;
@@ -348,10 +353,13 @@ void FBXFileLoader::get_LcTransformationData(fbx_TreeBoneNode* src_bone, BoneDat
 
 	// evaluating
 
-	FbxAMatrix leTrasformation = src_bone->Node->EvaluateLocalTransform(0);
-	FbxVector4 leTranslation = src_bone->Node->EvaluateLocalTranslation(0);
-	FbxVector4 leScaling = src_bone->Node->EvaluateLocalScaling(0);
-	FbxVector4 leRotation = src_bone->Node->EvaluateLocalRotation(0);
+	float lt = 0;
+	FbxTime lFrameTime;
+	lFrameTime.SetSecondDouble(lt);
+	FbxAMatrix leTrasformation = src_bone->Node->EvaluateLocalTransform(lFrameTime);
+	FbxVector4 leTranslation = src_bone->Node->EvaluateLocalTranslation(lFrameTime);
+	FbxVector4 leScaling = src_bone->Node->EvaluateLocalScaling(lFrameTime);
+	FbxVector4 leRotation = src_bone->Node->EvaluateLocalRotation(lFrameTime);
 	XMFLOAT4X4 leTrns4x4;
 	XMFLOAT4 leTransl4;
 	XMFLOAT4 leScal4;

@@ -84,8 +84,10 @@ void TechDemo::init3D()
 	Utilit3D::initialize(m_device.Get(), m_cmdList.Get());
 
 	m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
-	m_fbx_loader.loadSceneFile("Models\\Wolf.fbx");
+	//m_fbx_loader.loadSceneFile("Models\\Wolf.fbx");
+	m_fbx_loader.loadSceneFile("Models\\Cottage.fbx");
 
+	m_skeletonManager.evaluateAnimationsTime();
 	m_resourceManager.loadTexture();	
 	m_resourceManager.loadMaterials();
 
@@ -178,10 +180,8 @@ void TechDemo::update_objectCB()
 
 void TechDemo::update_BoneData()
 {
-	m_animTime += m_animationTimer.deltaTime();
-	//m_animTime++;
-	if (m_animTime > 40) //idle - 15, run 0.55f
-		m_animTime = 0;
+	
+	float lTickTime = m_animationTimer.deltaTime();
 
 	//m_animTime = 0;
 	auto currBoneCB = m_frameResourceManager.currentFR()->getBoneCB();
@@ -191,7 +191,7 @@ void TechDemo::update_BoneData()
 	for (int si = 0; si < lSkeletonCount; si++)
 	{
 		SkinnedData& lSkeleton = m_skeletonManager.getSkeleton(si);
-		const std::vector<DirectX::XMFLOAT4X4>& lFinalMatrices = lSkeleton.getFinalTransforms(m_animTime, 1);
+		const std::vector<DirectX::XMFLOAT4X4>& lFinalMatrices = lSkeleton.getFinalTransforms(lTickTime, 0);
 
 		InstanceDataGPU ltmp;
 		for (int i = 0; i < lFinalMatrices.size(); i++)

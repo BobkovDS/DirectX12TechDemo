@@ -30,6 +30,7 @@ BoneData* BoneData::getChild(UINT id)
 void BoneData::addAnimation(std::string animationName, BoneAnimation animation)
 {
 	m_animations[animationName] = animation;
+	m_animations[animationName].evaluateBeginEndTime();
 }
 
 BoneAnimation* BoneData::getAnimation(std::string& animationName)
@@ -85,4 +86,17 @@ void BoneData::getFinalMatrices(std::vector<DirectX::XMFLOAT4X4>& finalMatrices)
 	finalMatrices[m_ID] = m_finalTransform;
 	for (int i = 0; i < m_childs.size(); i++)
 		m_childs[i]->getFinalMatrices(finalMatrices);
+}
+
+void BoneData::get_begin_end_animationTime(std::string& animationName, float& beginT, float& endT)
+{
+	BoneAnimation* ltAnimation = getAnimation(animationName);
+	if (ltAnimation)
+	{
+		beginT = ltAnimation->getStartTime();
+		endT = ltAnimation->getEndTime();
+	}
+
+	for (int i = 0; i < m_childs.size(); i++)
+		m_childs[i]->get_begin_end_animationTime(animationName, beginT, endT);
 }

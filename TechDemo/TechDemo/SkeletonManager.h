@@ -5,7 +5,7 @@
 class SkeletonManager
 {
 	std::map<std::string, SkinnedData> m_skeletons;
-
+	bool m_animationTimeWasEvaluated;
 public:	
 
 	SkeletonManager();
@@ -14,6 +14,8 @@ public:
 	//SkinnedData* addSkeleton(std::string& skeletonName); /*TO_DO: delete*/
 	SkinnedData& getSkeleton(std::string& skeletonName);
 	SkinnedData& getSkeleton(UINT i);
+	void getAnimationsTime(float& beginT, float& endT);
 	int getSkeletonCount();
+	void evaluateAnimationsTime();
 };
 
