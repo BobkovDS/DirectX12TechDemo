@@ -50,6 +50,25 @@ struct VertexOut
 	//uint instID : SV_INSTANCEID;
 };
 
+struct GeometryIn// Vertex shader output - Geometry Shader input
+{
+    float3 PosL : POSITION;
+    float3 Normal : NORMAL;    
+    float2 UVText : TEXCOORD;
+    //uint instID : SV_INSTANCEID;
+    uint instID : SHAPEID;
+};
+
+struct GeometryOut
+{
+    float4 PosH : SV_POSITION;
+    float3 PosW : POSITION;
+    float3 NormalW : NORMAL;    
+    float2 UVText : TEXCOORD;        	
+    uint ShapeID : SHAPEID;
+  //  uint instID : SV_INSTANCEID;
+};
+
 struct PassStruct
 {
     float4x4 View;
@@ -108,5 +127,6 @@ float3 NormalSampleToWorldSpace(float3 normaleSample, float3 unitNormalW, float4
     float3x3 TBN = float3x3(T, B, N);
 
     float3 bumpedNormaleW = mul(normalT, TBN);
+    bumpedNormaleW = normalize(bumpedNormaleW);
     return bumpedNormaleW;
 }

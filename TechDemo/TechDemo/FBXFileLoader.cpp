@@ -82,6 +82,7 @@ void FBXFileLoader::loadSceneFile(const string& fileName)
 	l_importer->Destroy();
 
 	m_scene->SetName(lSceneName.c_str());
+	m_resourceManager->setPrefixName(lSceneName);
 	createScene();
 }
 
@@ -166,10 +167,11 @@ void FBXFileLoader::build_GeoMeshes()
 			if (lMesh->Normals.size())
 			{
 				XMVECTOR n = XMLoadFloat3(&lMesh->Normals[vi]);
-				n = XMVector3Normalize(n);
+				//n = XMVector3Normalize(n);
 				XMStoreFloat3(&vertex.Normal, n);
 			}
 			if (lMesh->UVs.size())	vertex.UVText = lMesh->UVs[vi];
+			if (lMesh->Tangents.size()) vertex.TangentU = lMesh->Tangents[vi];
 			vertex.ShapeID = 0;
 
 			// write vertex/bone weight information		
@@ -336,6 +338,7 @@ void FBXFileLoader::get_BindMatrix(std::string boneName, DirectX::XMFLOAT4X4& m)
 		}
 	}
 }
+
 void FBXFileLoader::get_LcTransformationData(fbx_TreeBoneNode* src_bone, BoneData* dst_bone)
 {
 	string name = src_bone->Name;
@@ -637,6 +640,11 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 						read_texture_data(&lMaterial, &lphongMaterial->Specular, "specular");
 					}
 
+					// Get Normal data
+					{							
+						read_texture_data(&lMaterial, &lphongMaterial->NormalMap, "normal");
+					}
+
 					// Get Transparency data
 					{
 						/*WARNING we do not use Transparent factor now, only Transparency texture;*/
@@ -647,7 +655,8 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 						float f4 = lphongMaterial->TransparencyFactor;
 						
 						lMaterial.IsTransparent = (f4 != 1.0f);
-						lMaterial.IsTransparent = false;// we do not process Transparent factor now;
+						lMaterial.IsTransparent = ((f1 == f2 == f3) != 1.0f);
+						//lMaterial.IsTransparent = false;// we do not process Transparent factor now;
 
 						lMaterial.TransparencyColor = XMFLOAT4(f1, f2, f3, f4);
 						//read_texture_data(&lMaterial, &lphongMaterial->TransparentColor, "transparentC");						
@@ -680,24 +689,26 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 			break;
 		case fbxsdk::FbxNodeAttribute::eSkeleton:
 		{
-				fbx_TreeBoneNode* lRootBone = new fbx_TreeBoneNode();
-				FbxNode* parentNode = const_cast<FbxNode*>(pNode->GetParent());
-				std::string name = parentNode->GetName();
-				lRootBone->Name = name;
-				lRootBone->Node = parentNode;
-				m_BonesIDByName[name].first = m_BoneGlobalID++; /*TO_DO: here can be wrong as several Skeleton can have same name for Bone, check it*/
-				m_BonesIDByName[name].second = lRootBone; 
+			fbx_TreeBoneNode* lRootBone = new fbx_TreeBoneNode();
+			FbxNode* parentNode = const_cast<FbxNode*>(pNode->GetParent());
+			std::string name = parentNode->GetName();
+			lRootBone->Name = name;
+			lRootBone->Node = parentNode;
+			m_BonesIDByName[name].first = m_BoneGlobalID++; /*TO_DO: here can be wrong as several Skeleton can have same name for Bone, check it*/
+			m_BonesIDByName[name].second = lRootBone;
 
-				process_Skeleton(pNode, lRootBone);
-				m_rootBones.push_back(lRootBone);
+			process_Skeleton(pNode, lRootBone);
+			m_rootBones.push_back(lRootBone);
 		}
 		break;
 		case fbxsdk::FbxNodeAttribute::eMesh:
 		{
+		
 			process_mesh(pNodeAtrib);
 					   
 			FbxNode* lNode2 = const_cast<FbxNode*>(pNode);
 			string name = lNode2->GetName();
+			FbxLODGroup* lLODFr = lNode2->GetLodGroup();
 
 			FbxAMatrix lGlobalTransform = lNode2->EvaluateGlobalTransform();
 			FbxAMatrix lLocalTransform = lNode2->EvaluateGlobalTransform();
@@ -734,7 +745,7 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute)
 	FbxMesh* lpMesh = const_cast<FbxMesh*>(lpcMesh);
 
 	string name = lpcMesh->GetName();
-
+		
 	if (m_meshesByName.find(name) != m_meshesByName.end()) return;
 
 	FbxVector4* vertexData = lpcMesh->GetControlPoints();
@@ -748,6 +759,7 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute)
 	for (int i = 0; i < vertex_count; i++, vertexData++)
 		lmesh->Vertices.push_back(XMFLOAT3(vertexData->mData[0], vertexData->mData[1], vertexData->mData[2]));
 
+	// Prepare for UV
 	const FbxLayerElementUV* UVLayer = lpcMesh->GetElementUV();
 	if (UVLayer)
 	{
@@ -789,13 +801,25 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute)
 		}
 	}
 	
+	const FbxLayerElementTangent* tangentLayer = lpcMesh->GetElementTangent();
+	if (tangentLayer)
+	{
+		FbxGeometryElement::EMappingMode mappingMode = tangentLayer->GetMappingMode();
+		FbxGeometryElement::EReferenceMode referenceMode = tangentLayer->GetReferenceMode();
+
+		bool lWeAreOkWithTangentLayerMapping = mappingMode == FbxGeometryElement::EMappingMode::eByPolygonVertex &&
+			referenceMode == FbxGeometryElement::EReferenceMode::eDirect;
+
+		assert(lWeAreOkWithTangentLayerMapping);
+	}
+
 	int lVertexID = 0;
 	// Copy All Indices, but we "triangulate" a polygon if PolygonSize = 4
 	for (int pi = 0; pi < polygon_count; pi++)
 	{		
 		
 		int polygon_size = lpcMesh->GetPolygonSize(pi); // how many vertices this polygon uses		
-		assert(polygon_size == 3 || polygon_size == 4);			   		
+		//assert(polygon_size == 3 || polygon_size == 4);			   		
 
 		lmesh->VertexPerPolygon = polygon_size;
 
@@ -828,14 +852,40 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute)
 			// Normal
 			if (normalLayer)
 			{
-				XMFLOAT3 normal0 = averageNormal[i0];
+				FbxVector4 normalv0 = normalLayer->GetDirectArray().GetAt(lVertexID + 0);
+				FbxVector4 normalv1 = normalLayer->GetDirectArray().GetAt(lVertexID + 1);
+				FbxVector4 normalv2 = normalLayer->GetDirectArray().GetAt(lVertexID + 2);
+				
+				XMFLOAT3 normal0 = XMFLOAT3(normalv0.mData[0], normalv0.mData[1], normalv0.mData[2]);
+				XMFLOAT3 normal1 = XMFLOAT3(normalv1.mData[0], normalv1.mData[1], normalv1.mData[2]);
+				XMFLOAT3 normal2 = XMFLOAT3(normalv2.mData[0], normalv2.mData[1], normalv2.mData[2]);
+
+				/*XMFLOAT3 normal0 = averageNormal[i0];
 				XMFLOAT3 normal1 = averageNormal[i1];
-				XMFLOAT3 normal2 = averageNormal[i2];				
+				XMFLOAT3 normal2 = averageNormal[i2];*/				
 
 				lmesh->Normals.push_back(normal0);
 				lmesh->Normals.push_back(normal1);
 				lmesh->Normals.push_back(normal2);
 			}
+
+			// Tangent
+			if (tangentLayer)
+			{				
+				FbxVector4 tanV0 = tangentLayer->GetDirectArray().GetAt(lVertexID + 0);
+				FbxVector4 tanV1 = tangentLayer->GetDirectArray().GetAt(lVertexID + 1);
+				FbxVector4 tanV2 = tangentLayer->GetDirectArray().GetAt(lVertexID + 2);
+
+				XMFLOAT3 tangent0(tanV0.mData[0], tanV0.mData[1], tanV0.mData[2]);
+				XMFLOAT3 tangent1(tanV1.mData[0], tanV1.mData[1], tanV1.mData[2]);
+				XMFLOAT3 tangent2(tanV2.mData[0], tanV2.mData[1], tanV2.mData[2]);
+
+				lmesh->Tangents.push_back(tangent0);
+				lmesh->Tangents.push_back(tangent1);
+				lmesh->Tangents.push_back(tangent2);
+			}
+			
+			lVertexID += 3;
 		}
 		else if (polygon_size == 4)
 		{
@@ -877,10 +927,20 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute)
 			// Normal
 			if (normalLayer)
 			{
-				XMFLOAT3 normal0 = averageNormal[i0];
+				FbxVector4 normalv0 = normalLayer->GetDirectArray().GetAt(lVertexID + 0);
+				FbxVector4 normalv1 = normalLayer->GetDirectArray().GetAt(lVertexID + 1);
+				FbxVector4 normalv2 = normalLayer->GetDirectArray().GetAt(lVertexID + 2);
+				FbxVector4 normalv3 = normalLayer->GetDirectArray().GetAt(lVertexID + 2);
+
+				XMFLOAT3 normal0 = XMFLOAT3(normalv0.mData[0], normalv0.mData[1], normalv0.mData[2]);
+				XMFLOAT3 normal1 = XMFLOAT3(normalv1.mData[0], normalv1.mData[1], normalv1.mData[2]);
+				XMFLOAT3 normal2 = XMFLOAT3(normalv2.mData[0], normalv2.mData[1], normalv2.mData[2]);
+				XMFLOAT3 normal3 = XMFLOAT3(normalv3.mData[0], normalv3.mData[1], normalv3.mData[2]);
+
+				/*XMFLOAT3 normal0 = averageNormal[i0];
 				XMFLOAT3 normal1 = averageNormal[i1];
 				XMFLOAT3 normal2 = averageNormal[i2];
-				XMFLOAT3 normal3 = averageNormal[i3];
+				XMFLOAT3 normal3 = averageNormal[i3];*/
 
 				lmesh->Normals.push_back(normal0);
 				lmesh->Normals.push_back(normal1);
@@ -890,6 +950,30 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute)
 				lmesh->Normals.push_back(normal2);
 				lmesh->Normals.push_back(normal3);
 			}
+
+			// Tangent
+			if (tangentLayer)
+			{				
+				FbxVector4 tanV0 = tangentLayer->GetDirectArray().GetAt(lVertexID + 0);
+				FbxVector4 tanV1 = tangentLayer->GetDirectArray().GetAt(lVertexID + 1);
+				FbxVector4 tanV2 = tangentLayer->GetDirectArray().GetAt(lVertexID + 2);
+				FbxVector4 tanV3 = tangentLayer->GetDirectArray().GetAt(lVertexID + 3);
+
+				XMFLOAT3 tangent0(tanV0.mData[0], tanV0.mData[1], tanV0.mData[2]);
+				XMFLOAT3 tangent1(tanV1.mData[0], tanV1.mData[1], tanV1.mData[2]);
+				XMFLOAT3 tangent2(tanV2.mData[0], tanV2.mData[1], tanV2.mData[2]);
+				XMFLOAT3 tangent3(tanV3.mData[0], tanV3.mData[1], tanV3.mData[2]);
+
+				lmesh->Tangents.push_back(tangent0);
+				lmesh->Tangents.push_back(tangent1);
+				lmesh->Tangents.push_back(tangent2);
+
+				lmesh->Tangents.push_back(tangent0);
+				lmesh->Tangents.push_back(tangent2);
+				lmesh->Tangents.push_back(tangent3);
+			}
+
+			lVertexID += 4;
 		}
 		else
 		{

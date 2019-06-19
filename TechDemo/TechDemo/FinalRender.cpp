@@ -85,8 +85,8 @@ void FinalRender::draw(int flags)
 	auto passCB = m_frameResourceManager->getCurrentPassCBResource();
 	auto boneCB = m_frameResourceManager->getCurrentBoneCBResource();
 
-	UINT lTechFlags = 0;//Test
-	m_cmdList->SetGraphicsRoot32BitConstant(0, lTechFlags, 1); // Tech Flags
+	UINT lTechFlags = flags;
+	m_cmdList->SetGraphicsRoot32BitConstant(0, lTechFlags, 1); // Tech Flags	
 	m_cmdList->SetGraphicsRootShaderResourceView(1, objectCB->GetGPUVirtualAddress()); // Instances constant buffer arrray data
 	m_cmdList->SetGraphicsRootShaderResourceView(2, m_resourceManager->getMaterialsResource()->GetGPUVirtualAddress());
 	m_cmdList->SetGraphicsRootShaderResourceView(3, boneCB->GetGPUVirtualAddress()); // bones constant buffer array data
@@ -111,7 +111,7 @@ void FinalRender::draw(int flags)
 				const RenderItem* lMesh = lObjectLayer->getSceneObject(ri)->getObjectMesh();
 				int lInstancesCount = lObjectLayer->getSceneObject(ri)->getInstancesCount(); // How much instances for this RenderItem we should draw
 				auto drawArg = lMesh->Geometry->DrawArgs[lMesh->Geometry->Name];
-
+								
 				m_cmdList->IASetVertexBuffers(0, 1, &lMesh->Geometry->vertexBufferView());
 				m_cmdList->IASetIndexBuffer(&lMesh->Geometry->indexBufferView());
 				m_cmdList->IASetPrimitiveTopology(lMesh->Geometry->PrimitiveType);

@@ -1,5 +1,7 @@
 #include "Scene.h"
 
+using namespace DirectX;
+
 Scene::Scene()
 {
 	m_Layers.resize(4);
@@ -36,7 +38,7 @@ int Scene::getLayerInstanceOffset(UINT layerCount)
 	return offset;
 }
 
-std::vector<const InstanceDataGPU*>& Scene::getInstances()
+std::vector<const InstanceDataGPU*>& Scene::getInstancesUpdate()
 {
 	m_tmp_Intances.clear();
 
@@ -45,14 +47,22 @@ std::vector<const InstanceDataGPU*>& Scene::getInstances()
 		{
 			m_Layers[i].getInstances(m_tmp_Intances);
 		}	
+	m_instancesDataReadTimes--;
 
 	return m_tmp_Intances;
 }
 
-void Scene::build(ObjectManager* objectManager)
+std::vector<const InstanceDataGPU*>& Scene::getInstances()
+{
+	return m_tmp_Intances;
+}
+
+void Scene::build(ObjectManager* objectManager, Camera* camera)
 {
 	assert(objectManager);
+	assert(camera);
 	m_objectManager = objectManager;
+	m_camera = camera;
 
 	m_Layers[0].setVisibility(true);
 	m_Layers[1].setVisibility(true);
@@ -71,12 +81,24 @@ void Scene::update()
 	updateLayer(m_Layers[2], m_objectManager->getSkinnedOpaqueLayer());
 	updateLayer(m_Layers[3], m_objectManager->getSkinnedNotOpaqueLayer());	
 	
+	m_instancesDataReadTimes = FRAMERESOURCECOUNT;
 	m_doesItNeedUpdate = false;
+}
+
+bool Scene::isInstancesDataUpdateRequred()
+{
+	return m_instancesDataReadTimes > 0;
+}
+
+void Scene::cameraListener()
+{
+	m_doesItNeedUpdate = true;
 }
 
 void Scene::updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<RenderItem>>& arrayRI)
 {
 	layer.clearLayer();
+	BoundingFrustum& lBoundingFrustom = m_camera->getFrustomBoundingWorld();
 
 	for (int i = 0; i < arrayRI.size(); i++)
 	{
@@ -85,7 +107,16 @@ void Scene::updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<Ren
 		RenderItem* lRI = arrayRI[i].get();
 		lSceneObject.setObjectMesh(lRI);
 		for (int j = 0; j < lRI->Instances.size(); j++)
+		{
+			
+			XMMATRIX lInstanceWord = XMLoadFloat4x4(&lRI->Instances[j].World);
+			XMMATRIX lInstanceWordInv = XMMatrixInverse(&XMMatrixDeterminant(lInstanceWord), lInstanceWord);
+			BoundingFrustum lLocalSpaceFrustom;
+			lBoundingFrustom.Transform(lLocalSpaceFrustom, lInstanceWordInv);
+
+			if (lLocalSpaceFrustom.Contains(lRI->AABB) != DirectX::DISJOINT)
 			lSceneObject.addInstance(&lRI->Instances[j]);
+		}
 
 		layer.addSceneObject(lSceneObject);
 	}

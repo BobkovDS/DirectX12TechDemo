@@ -14,11 +14,15 @@ ResourceManager::~ResourceManager()
 {
 }
 
+void ResourceManager::setPrefixName(std::string& prefixName)
+{
+	m_prefixName = prefixName;
+}
+
 void ResourceManager::addMaterial(std::unique_ptr<MaterialCPU>& material)
 {
 	m_materials.push_back(std::move(material));
 }
-
 
 void ResourceManager::loadMaterials()
 {
@@ -51,17 +55,20 @@ ID3D12Resource* ResourceManager::getMaterialsResource()
 
 void ResourceManager::addTexturePathByName(const string& textureName, const string& texturePath)
 {
-	auto it = m_texturePathsByNames.find(textureName);
+	std::string lFullTextureName = m_prefixName + textureName;
+	auto it = m_texturePathsByNames.find(lFullTextureName);
 	if (it == m_texturePathsByNames.end())
-		m_texturePathsByNames[textureName] = texturePath;
+		m_texturePathsByNames[lFullTextureName] = texturePath;
 }
 
 int ResourceManager::getTexturePathIDByName(const string& textureName)
 {
-	auto it1 = m_texturePathsByNames.find(textureName);
+	std::string lFullTextureName = m_prefixName + textureName;
+
+	auto it1 = m_texturePathsByNames.find(lFullTextureName);
 	assert(it1 != m_texturePathsByNames.end());
 
-	string& lTexutrePath = m_texturePathsByNames[textureName];
+	string& lTexutrePath = m_texturePathsByNames[lFullTextureName];
 	auto it2 = m_texturePathID.find(lTexutrePath);
 	assert(it2 != m_texturePathID.end());
 

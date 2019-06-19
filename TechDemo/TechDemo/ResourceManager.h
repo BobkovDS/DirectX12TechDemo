@@ -4,6 +4,7 @@
 
 class ResourceManager
 {
+	std::string m_prefixName; //Prefix name for resources name (like Texture name)
 	std::vector<std::unique_ptr<MaterialCPU>> m_materials;
 	std::map<std::string, std::string> m_texturePathsByNames;
 	std::map<std::string, int> m_texturePathID;
@@ -19,6 +20,7 @@ public:
 	ResourceManager();
 	~ResourceManager();
 
+	void setPrefixName(std::string& prefixName);
 	void addMaterial(std::unique_ptr<MaterialCPU>& material);
 	void addTexturePathByName(const std::string& textureName, const std::string& texturePath);
 	void buildTexturePathList();

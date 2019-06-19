@@ -10,6 +10,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 
 	cout << "created\n";
 
+	int gC = 11;
+	int lc1 = gC % 1;
+	int lc2 = gC % 2;
+	int lc3 = gC % 3;
+	int lc4 = gC % 4;
+	int a = 1;
 	try
 	{
 		TechDemo my3DAppl(hInstance, L"my 3D application", 1000, 1000);

@@ -2,18 +2,21 @@
 #include "ApplDataStructures.h"
 #include "Defines.h"
 #include "ObjectManager.h"
+#include "Camera.h"
 
-
+#define FRAMERESOURCECOUNT 3
 class Scene
 {
 	class SceneLayer;
 	std::vector<SceneLayer> m_Layers;
 	std::vector<const InstanceDataGPU*> m_tmp_Intances;
 	ObjectManager* m_objectManager;
+	Camera* m_camera;
 
 	std::vector<CPULight> m_lights; //lights in the scene
 
 	bool m_doesItNeedUpdate;
+	int m_instancesDataReadTimes; // How many times we need provide Instances Data for FrameResource Manager;
 public:
 	class SceneLayer
 	{
@@ -48,12 +51,16 @@ public:
 	~Scene();
 
 	int getLayersCount();
-	int getLayerInstanceOffset(UINT layerIndex);
-	std::vector<const InstanceDataGPU*>& getInstances();
-	void build(ObjectManager* objectManager);
-	void update();
 	SceneLayer* getLayer(UINT layerIndex);
-	void updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<RenderItem>>& RI);
+	int getLayerInstanceOffset(UINT layerIndex);
+	std::vector<const InstanceDataGPU*>& getInstancesUpdate();
+	std::vector<const InstanceDataGPU*>& getInstances();
 	const std::vector<CPULight>& getLights();
+	void build(ObjectManager* objectManager, Camera* camera);
+	void update();
+	void updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<RenderItem>>& RI);
+	bool isInstancesDataUpdateRequred();
+	void cameraListener();
+
 };
 

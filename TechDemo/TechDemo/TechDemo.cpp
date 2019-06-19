@@ -10,6 +10,7 @@ TechDemo::TechDemo(HINSTANCE hInstance, const std::wstring& applName, int width,
 	:BasicDXGI(hInstance, applName, width, height)	
 {
 	m_init3D_done = false;
+	m_isTechFlag = false;
 	//Utilit3D::nullitizator();
 }
 TechDemo::~TechDemo()
@@ -67,9 +68,24 @@ void TechDemo::onKeyDown(WPARAM btnState)
 		toLimitFPS = !toLimitFPS;	
 
 	if (btnState == VK_SPACE)
-		m_animationTimer.tt_Pause();
+	{
+		m_isTechFlag = !m_isTechFlag;
+		m_animationTimer.tt_Pause();	
+	}
 }
 
+std::string TechDemo::addTextToWindow()
+{
+	int lInstanceCount = m_scene.getInstances().size();
+	std::string text = " InstCount: " + std::to_string(lInstanceCount);
+	
+	if (m_isTechFlag)
+		text += " TechFlag=1";
+	else
+		text += " TechFlag=0";
+
+	return text;
+}
 
 void TechDemo::init3D()
 {
@@ -92,20 +108,32 @@ void TechDemo::init3D()
 	//}
 
 	////Load a house
-	//{
-	//	FBXFileLoader m_fbx_loader;
-	//	m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
-	//	m_fbx_loader.loadSceneFile("Models\\Cottage.fbx");
-	//}
-	//	
-
-	// Load a Tree
+	/*{
+		FBXFileLoader m_fbx_loader;
+		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
+		m_fbx_loader.loadSceneFile("Models\\Cottage.fbx");
+	}*/
+		
 	{
 		FBXFileLoader m_fbx_loader;
 		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
-		m_fbx_loader.loadSceneFile("Models\\Tree1.fbx");
+		m_fbx_loader.loadSceneFile("Models\\Grass.fbx");
 	}
+	
+	//// Load a Tree
+	//{
+	//	FBXFileLoader m_fbx_loader;
+	//	m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
+	//	m_fbx_loader.loadSceneFile("Models\\Tree1.fbx");
+	//}
 
+	//{
+	//	FBXFileLoader m_fbx_loader;
+	//	m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
+	//	m_fbx_loader.loadSceneFile("Models\\mount2.fbx");
+	//}
+		   
+	m_tempVal = 0;
 	m_skeletonManager.evaluateAnimationsTime();
 	m_resourceManager.loadTexture();	
 	m_resourceManager.loadMaterials();
@@ -129,7 +157,13 @@ void TechDemo::init3D()
 	m_frameResourceManager.Initialize(m_device.Get(), m_fence.Get(), m_objectManager.getCommonInstancesCount(),
 		PASSCONSTBUFCOUNT, SSAOCONSTBUFCOUNT, lBonesCount);
 	
-	m_scene.build(&m_objectManager);
+	build_defaultCamera();
+
+	ExecuterVoidVoid<Scene>* sceneCameraListener =
+		new ExecuterVoidVoid<Scene>(&m_scene, &Scene::cameraListener);
+	m_camera.addObserver(sceneCameraListener);
+
+	m_scene.build(&m_objectManager, &m_camera);
 	m_renderManager.initialize(lRenderManagerParams);
 	m_renderManager.buildRenders();	
 	
@@ -143,7 +177,6 @@ void TechDemo::init3D()
 
 	m_animationTimer.tt_RunStop();
 
-	build_defaultCamera();
 }
 
 void TechDemo::update()
@@ -183,20 +216,21 @@ void TechDemo::update_camera()
 }
 
 void TechDemo::update_objectCB()
-{
-	auto lInstances = m_scene.getInstances();
+{	
+	if (!m_scene.isInstancesDataUpdateRequred()) return;
+	
+	auto lInstances = m_scene.getInstancesUpdate();
 
 	if (lInstances.size() == 0) return;
 
 	auto currCBObject = m_frameResourceManager.currentFR()->getObjectCB();
 
-	InstanceDataGPU lInst;
-
+	InstanceDataGPU lInst; /*TO_DO: delete*/
 	lInst = *lInstances[0];
 
 	for (int i=0; i< lInstances.size(); i++)
-		currCBObject->CopyData(i, *lInstances[i]);
-		//0currCBObject->CopyData(i, lInst);
+		currCBObject->CopyData(i, *lInstances[i]);	
+	m_tempVal++;
 }
 
 void TechDemo::update_BoneData()
@@ -289,7 +323,14 @@ void TechDemo::work()
 	update();
 
 	// draw data
-	m_renderManager.draw(1);
+	int lTechFlag;
+	
+	if (m_isTechFlag)
+		lTechFlag |= 0x01;
+	else
+		lTechFlag &= ~0x01;
+
+	m_renderManager.draw(lTechFlag);
 
 
 	m_cmdList->Close();

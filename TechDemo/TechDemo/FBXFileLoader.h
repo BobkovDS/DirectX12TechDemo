@@ -17,6 +17,7 @@ struct fbx_Mesh {
 	std::vector<DirectX::XMFLOAT3> Vertices;
 	std::vector<std::vector<std::pair<std::string, float>>> VertexWeightByBoneName;
 	std::vector<DirectX::XMFLOAT3> Normals;
+	std::vector<DirectX::XMFLOAT3> Tangents;
 	std::vector<DirectX::XMFLOAT2> UVs;
 	std::vector<INT32> Indices;
 	std::vector<INT32> Materials;

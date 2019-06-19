@@ -15,10 +15,12 @@ void PSOFinalRenderLayer::buildShadersBlob()
 	// Compile shaders and store it
 	string basedir = "Shaders\\";
 	string shaderName = "FinalRender_shaders.hlsl";
+	//string shaderName = "FinalRender_LOD_shaders.hlsl";
 	string skinedShaderName = "FinalRender_skinnedShaders.hlsl";
 	string fullFileName = basedir + shaderName;
 	string skinnedFullFileName = basedir + skinedShaderName;
 
+	bool lGS = false;
 	string shaderType = "none";
 	try
 	{
@@ -34,6 +36,11 @@ void PSOFinalRenderLayer::buildShadersBlob()
 		shaderType = "ps_skinned";
 		m_shaders[shaderType] = Utilit3D::compileShader(skinnedFullFileName, NULL, "PS", "ps_5_1");
 
+		if (lGS)
+		{
+			shaderType = "gs";
+			m_shaders[shaderType] = Utilit3D::compileShader(fullFileName, NULL, "GS", "gs_5_1");
+		}
 	}
 	catch (MyCommonRuntimeException& e)
 	{
@@ -63,6 +70,9 @@ void PSOFinalRenderLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, D
 	psoDescLayer0.VS = { reinterpret_cast<BYTE*>(m_shaders["vs"]->GetBufferPointer()), m_shaders["vs"]->GetBufferSize() };
 	psoDescLayer0.PS = { reinterpret_cast<BYTE*>(m_shaders["ps"]->GetBufferPointer()), m_shaders["ps"]->GetBufferSize() };
 	
+	if (m_shaders.find("gs") != m_shaders.end())
+		psoDescLayer0.GS = { reinterpret_cast<BYTE*>(m_shaders["gs"]->GetBufferPointer()), m_shaders["gs"]->GetBufferSize() };
+
 	// PSO for Layer_1:  Non-skinned Not Opaque objects: [NOTOPAQUELAYER]
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer1 = psoDescLayer0;
 	D3D12_BLEND_DESC  blend_desc = {};
@@ -88,7 +98,7 @@ void PSOFinalRenderLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, D
 	psoDescLayer3.InputLayout = { m_inputLayout[ILV2].data(),(UINT)m_inputLayout[ILV2].size() };
 	psoDescLayer3.VS = { reinterpret_cast<BYTE*>(m_shaders["vs_skinned"]->GetBufferPointer()), m_shaders["vs_skinned"]->GetBufferSize() };
 	psoDescLayer3.PS = { reinterpret_cast<BYTE*>(m_shaders["ps_skinned"]->GetBufferPointer()), m_shaders["ps_skinned"]->GetBufferSize() };
-
+	psoDescLayer3.GS = psoDescLayer2.GS;
 	// Create PSO objects
 	//OPAQUELAYER
 	HRESULT res = m_device->CreateGraphicsPipelineState(&psoDescLayer0, IID_PPV_ARGS(&m_pso[OPAQUELAYER]));
