@@ -8,7 +8,7 @@
 
 [RootSignature(rootSignatureC1)]
 VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
-{
+{   
 	VertexOut vout;
 
     uint shapeID = instID + gInstancesOffset; // we do not use vin.ShapeID anymore in this variant
@@ -75,13 +75,13 @@ float4 PS(VertexOut pin) : SV_Target
     float4 diffuseAlbedo = material.DiffuseAlbedo;
     
     float3 Normal = pin.NormalW;
-    float diffuseTranspFactor = 0.0f;
+    float diffuseTranspFactor = 1.0f;
 
     // Diffuse Color
     if ((material.textureFlags & 0x01))
         diffuseAlbedo = gDiffuseMap[material.DiffuseMapIndex[0]].Sample(gsamPointWrap, pin.UVText);        
 
-    diffuseTranspFactor = 1.0f- diffuseAlbedo.a;
+    diffuseTranspFactor = diffuseAlbedo.a;
        
     // Get Normal
 

@@ -35,8 +35,39 @@ void FinalRender::build()
 		CD3DX12_GPU_DESCRIPTOR_HANDLE lhDescriptor(m_techSRVHandle);
 		lhDescriptor.Offset(TECHSRVCOUNT, lSrvSize); 	
 	m_textureSRVHandle = lhDescriptor;
+
+	build_SkyDescriptor();// Let think that only FinalRender will use Sky cube map
 }
 
+void FinalRender::build_SkyDescriptor()
+{
+	Scene::SceneLayer* lSkyLayer = m_scene->getLayer(SKY);
+	if (lSkyLayer)
+	{
+		std::vector<const InstanceDataGPU*> lInstances;
+		lSkyLayer->getInstances(lInstances);
+		if (lInstances.size() != 0)
+		{
+			int lMaterialIndex = lInstances[0]->MaterialIndex; // use only the first Sky (we think we have it only one)
+			int lTextureID = m_resourceManager->getMaterial(lMaterialIndex)->DiffuseColorTextureIDs[0];
+
+			UINT lSrvSize = m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+			CD3DX12_CPU_DESCRIPTOR_HANDLE lhDescriptor(m_descriptorHeap->GetCPUDescriptorHandleForHeapStart());
+			lhDescriptor.Offset(TECHSLOT_SKY, lSrvSize);		
+
+			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+			srvDesc.Format = m_resourceManager->getTextureResource(lTextureID)->GetDesc().Format;
+			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+			srvDesc.TextureCube.MipLevels = m_resourceManager->getTextureResource(lTextureID)->GetDesc().MipLevels;
+			srvDesc.TextureCube.MostDetailedMip = 0;
+			srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+
+			m_device->CreateShaderResourceView(m_resourceManager->getTextureResource(lTextureID),
+				&srvDesc, lhDescriptor);
+		}
+	}
+}
 
 void FinalRender::setSwapChainResources(ComPtr<ID3D12Resource>* swapChainResources)
 {
@@ -91,7 +122,7 @@ void FinalRender::draw(int flags)
 	m_cmdList->SetGraphicsRootShaderResourceView(2, m_resourceManager->getMaterialsResource()->GetGPUVirtualAddress());
 	m_cmdList->SetGraphicsRootShaderResourceView(3, boneCB->GetGPUVirtualAddress()); // bones constant buffer array data
 	m_cmdList->SetGraphicsRootConstantBufferView(4, passCB->GetGPUVirtualAddress()); // Pass constant buffer data
-	m_cmdList->SetGraphicsRootDescriptorTable(5, m_techSRVHandle); // Technical SRV (ViewNormal, SSAO maps and etc)
+	m_cmdList->SetGraphicsRootDescriptorTable(5, m_techSRVHandle); // Technical SRV (CubeMap ViewNormal, SSAO maps and etc)
 	m_cmdList->SetGraphicsRootDescriptorTable(6, m_textureSRVHandle); // Textures SRV
 	
 	//--- draw calls	
@@ -110,11 +141,16 @@ void FinalRender::draw(int flags)
 				m_cmdList->SetGraphicsRoot32BitConstant(0, lInstanceOffset, 0); // Instances offset for current layer objects
 				const RenderItem* lMesh = lObjectLayer->getSceneObject(ri)->getObjectMesh();
 				int lInstancesCount = lObjectLayer->getSceneObject(ri)->getInstancesCount(); // How much instances for this RenderItem we should draw
+				if (lInstancesCount == 0) continue;
 				auto drawArg = lMesh->Geometry->DrawArgs[lMesh->Geometry->Name];
 								
 				m_cmdList->IASetVertexBuffers(0, 1, &lMesh->Geometry->vertexBufferView());
 				m_cmdList->IASetIndexBuffer(&lMesh->Geometry->indexBufferView());
+				if (i!=5)
 				m_cmdList->IASetPrimitiveTopology(lMesh->Geometry->PrimitiveType);
+				else
+					m_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
+					
 				m_cmdList->DrawIndexedInstanced(drawArg.IndexCount, lInstancesCount, drawArg.StartIndexLocation, 0, 0);
 				lInstanceOffset += lInstancesCount;
 			}

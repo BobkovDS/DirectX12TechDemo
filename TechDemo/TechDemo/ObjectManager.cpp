@@ -21,6 +21,11 @@ void ObjectManager::addTransparentObject(unique_ptr<RenderItem>& p)
 	m_notOpaqueLayer.push_back(std::move(p));
 }
 
+void ObjectManager::addTransparentObjectGH(unique_ptr<RenderItem>& p)
+{
+	m_notOpaqueLayerGH.push_back(std::move(p));
+}
+
 void ObjectManager::addSkinnedOpaqueObject(unique_ptr<RenderItem>& p)
 {
 	m_skinnedOpaqueLayer.push_back(std::move(p));
@@ -31,6 +36,16 @@ void ObjectManager::addSkinnedNotOpaqueObject(unique_ptr<RenderItem>& p)
 	m_skinnedNotOpaqueLayer.push_back(std::move(p));
 }
 
+void ObjectManager::addSky(std::unique_ptr<RenderItem>& p)
+{
+	m_skyLayer.push_back(std::move(p));
+}
+
+const vector<unique_ptr<RenderItem>>& ObjectManager::getSky()
+{
+	return m_skyLayer;
+}
+
 const vector<unique_ptr<RenderItem>>& ObjectManager::getOpaqueLayer()
 {
 	return m_opaqueLayer;
@@ -39,6 +54,11 @@ const vector<unique_ptr<RenderItem>>& ObjectManager::getOpaqueLayer()
 const vector<unique_ptr<RenderItem>>& ObjectManager::getNotOpaqueLayer()
 {
 	return m_notOpaqueLayer;
+}
+
+const vector<unique_ptr<RenderItem>>& ObjectManager::getNotOpaqueLayerGH()
+{
+	return m_notOpaqueLayerGH;
 }
 
 const vector<unique_ptr<RenderItem>>& ObjectManager::getSkinnedOpaqueLayer()
@@ -55,6 +75,9 @@ UINT ObjectManager::getCommonInstancesCount()
 {
 	UINT lCommonInstancesCount = 0;
 
+	for (int ri = 0; ri < m_skyLayer.size(); ri++)
+		lCommonInstancesCount += m_skyLayer[ri]->Instances.size();
+
 	for (int ri = 0; ri < m_opaqueLayer.size(); ri++)
 		lCommonInstancesCount += m_opaqueLayer[ri]->Instances.size();
 
@@ -67,6 +90,9 @@ UINT ObjectManager::getCommonInstancesCount()
 	for (int ri = 0; ri < m_skinnedNotOpaqueLayer.size(); ri++)
 		lCommonInstancesCount += m_skinnedNotOpaqueLayer[ri]->Instances.size();
 	
+	for (int ri = 0; ri < m_notOpaqueLayerGH.size(); ri++)
+		lCommonInstancesCount += m_notOpaqueLayerGH[ri]->Instances.size();
+
 	return lCommonInstancesCount;
 }
 

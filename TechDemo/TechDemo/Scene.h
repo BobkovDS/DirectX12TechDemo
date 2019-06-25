@@ -58,7 +58,7 @@ public:
 	const std::vector<CPULight>& getLights();
 	void build(ObjectManager* objectManager, Camera* camera);
 	void update();
-	void updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<RenderItem>>& RI);
+	void updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<RenderItem>>& RI, bool isFrustumCullingRequired=true);
 	bool isInstancesDataUpdateRequred();
 	void cameraListener();
 

@@ -121,6 +121,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ApplLogger.cpp" />
     <ClCompile Include="BasicDXGI.cpp" />
     <ClCompile Include="BoneAnimation.cpp" />
     <ClCompile Include="BoneData.cpp" />
@@ -149,6 +150,7 @@
   <ItemGroup>
     <ClInclude Include="ApplDataStructures.h" />
     <ClInclude Include="ApplException.h" />
+    <ClInclude Include="ApplLogger.h" />
     <ClInclude Include="BasicDXGI.h" />
     <ClInclude Include="BoneAnimation.h" />
     <ClInclude Include="BoneData.h" />
@@ -184,6 +186,9 @@
     <FxCompile Include="Shaders\commonPart.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
+    <FxCompile Include="Shaders\FinalRender_GH_shaders.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="Shaders\FinalRender_LOD_shaders.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
@@ -191,6 +196,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Shaders\FinalRender_skinnedShaders.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Shaders\FinalRender_SKY_shaders.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Shaders\Lighting.hlsl">

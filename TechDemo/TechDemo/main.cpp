@@ -1,6 +1,7 @@
 #include "TechDemo.h"
 #include "ApplException.h"
-#include <iostream>
+#include "ApplLogger.h"
+
 using namespace std;
 
 Canvas* Canvas::m_ptrThisCanvas = nullptr;
@@ -8,14 +9,8 @@ Canvas* Canvas::m_ptrThisCanvas = nullptr;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, int showCmd) {
 
-	cout << "created\n";
+	ApplLogger::getLogger().log("Application begin to work");
 
-	int gC = 11;
-	int lc1 = gC % 1;
-	int lc2 = gC % 2;
-	int lc3 = gC % 3;
-	int lc4 = gC % 4;
-	int a = 1;
 	try
 	{
 		TechDemo my3DAppl(hInstance, L"my 3D application", 1000, 1000);
@@ -24,12 +19,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 	}
 	catch (Canvas::CanvasException& exc)
 	{
-		cout << exc.what();
+		ApplLogger::getLogger().log(exc.what());
 		OutputDebugStringA(exc.what());
 	}
 	catch (MyCommonRuntimeException& runTimeException)
 	{
 		MessageBox(0, runTimeException.what().c_str(), runTimeException.where().c_str(), 0);
-	}
+	}	
+
+	ApplLogger::getLogger().log("Application finish the work\n");
+	
 	return 0;
 }

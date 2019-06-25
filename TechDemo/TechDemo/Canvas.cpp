@@ -1,4 +1,7 @@
 #include "Canvas.h"
+#include "ApplLogger.h"
+
+ApplLogger ApplLogger::m_logger("LogFile");
 
 using namespace std;// ::ostream;
 

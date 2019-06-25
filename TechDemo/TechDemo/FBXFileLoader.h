@@ -4,10 +4,11 @@
 #include "ResourceManager.h"
 #include "SkeletonManager.h"
 #include "Utilit3D.h"
+#include "ApplLogger.h"
 #include <map>
 
 enum fbx_NodeType {
-	NT_Mesh = 'mesh',
+	NT_Mesh = 'mesh',	
 	NT_Light,
 	NT_Camera
 };
@@ -39,6 +40,8 @@ struct fbx_Material {
 	std::vector<std::pair<std::string, std::string>> TexturesNameByType;
 	bool IsTransparencyUsed; //here Transparency Factor as texture is used
 	bool IsTransparent; // here Transparency Factor as float is used
+	bool IsWater;
+	bool IsSky;
 };
 
 struct fbx_NodeInstance {
@@ -67,12 +70,14 @@ private:
 	int m_materialCountForThisCall;
 	FbxManager* m_sdkManager;
 	FbxScene* m_scene;
+	ApplLogger* m_logger;
 
 	//static int m_lastMaterialID;
 	ObjectManager* m_objectManager;
 	ResourceManager* m_resourceManager;	
 	SkeletonManager* m_skeletonManager;
 	bool m_initialized;
+	int m_currentShiftLogCount;
 
 	std::string m_sceneName;
 	std::map<std::string, std::unique_ptr<fbx_Mesh>> m_meshesByName;
@@ -109,8 +114,12 @@ private:
 
 	// FBX process functions
 	void process_node(const FbxNode* pNode);
-	void process_mesh(const FbxNodeAttribute* pNodeAtribute);
+	void process_mesh(const FbxNodeAttribute* pNodeAtribute, bool meshForTesselation=false);
+	void process_camera(const FbxNodeAttribute* pNodeAtribute);
 	bool read_texture_data(fbx_Material* destMaterial, FbxProperty* matProperty, std::string textureType); //FbxSurfacePhong* srcMaterial,
+
+	template<class T>
+	inline void add_quadInfo_to_mesh(std::vector<T>&, T t0, T t1, T t2, T t3, bool isTesselated=false);
 public:
 	
 	FBXFileLoader();

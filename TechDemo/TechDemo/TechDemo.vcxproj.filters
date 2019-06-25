@@ -28,6 +28,12 @@
     <Filter Include="Resource Files\Shaders">
       <UniqueIdentifier>{18804083-f463-4006-9045-cf5dee808819}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Render">
+      <UniqueIdentifier>{4ecc54f8-abd9-4758-a245-05dad3293161}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Render">
+      <UniqueIdentifier>{5c8eb2d1-bbc9-401f-b2ae-8c2ac61395ff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BasicDXGI.cpp">
@@ -66,23 +72,11 @@
     <ClCompile Include="TextureLoader\ResourceUploadBatch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RenderBase.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FinalRender.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PSOManager.cpp">
       <Filter>Source Files\PSO</Filter>
-    </ClCompile>
-    <ClCompile Include="PSOFinalRenderLayer.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PSOBaseLayer.cpp">
       <Filter>Source Files\PSO</Filter>
@@ -100,6 +94,21 @@
       <Filter>Source Files\SkinnedData</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PSOFinalRenderLayer.cpp">
+      <Filter>Source Files\PSO</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderBase.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderManager.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="FinalRender.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="ApplLogger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -158,16 +167,7 @@
     <ClInclude Include="TextureLoader\ResourceUploadBatch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RenderBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FinalRender.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FrameResourcesManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
@@ -178,9 +178,6 @@
     </ClInclude>
     <ClInclude Include="PSOManager.h">
       <Filter>Header Files\PSO</Filter>
-    </ClInclude>
-    <ClInclude Include="PSOFinalRenderLayer.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PSOBaseLayer.h">
       <Filter>Header Files\PSO</Filter>
@@ -198,6 +195,21 @@
       <Filter>Header Files\SkinnedData</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PSOFinalRenderLayer.h">
+      <Filter>Header Files\PSO</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderBase.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderManager.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="FinalRender.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="ApplLogger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -221,6 +233,12 @@
       <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\FinalRender_LOD_shaders.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\FinalRender_GH_shaders.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\FinalRender_SKY_shaders.hlsl">
       <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
   </ItemGroup>

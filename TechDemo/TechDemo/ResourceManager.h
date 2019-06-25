@@ -29,6 +29,8 @@ public:
 	void loadMaterials();
 	int getTexturePathIDByName(const std::string& textureName);
 	ID3D12Resource* getMaterialsResource();
+	ID3D12Resource* getTextureResource(UINT textureID);
+	MaterialCPU* getMaterial(UINT i);
 	ID3D12DescriptorHeap* getTexturesSRVDescriptorHeap();
 };
 

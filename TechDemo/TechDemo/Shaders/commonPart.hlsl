@@ -61,9 +61,10 @@ struct GeometryIn// Vertex shader output - Geometry Shader input
 
 struct GeometryOut
 {
-    float4 PosH : SV_POSITION;
+    float4 PosH : SV_POSITION;    
     float3 PosW : POSITION;
-    float3 NormalW : NORMAL;    
+    float3 NormalW : NORMAL;  
+    float4 TangentW : TANGENT;
     float2 UVText : TEXCOORD;        	
     uint ShapeID : SHAPEID;
   //  uint instID : SV_INSTANCEID;

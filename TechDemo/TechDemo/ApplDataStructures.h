@@ -10,7 +10,8 @@ enum RenderItemType {
 	RIT_Transparent = 'tran',
 	RIT_SkinnedOpaque= 'skop', 
 	RIT_SkinnedNotOpaque= 'skno',
-	RIT_GH = 'gesh' // object which will be processed by Geometry Shader
+	RIT_GH = 'gesh', // object which will be processed by Geometry Shader
+	RIT_Sky = 'sky' // object which will be processed by like a Sky
 };
 
 struct RenderItem {

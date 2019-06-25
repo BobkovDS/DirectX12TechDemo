@@ -4,10 +4,9 @@ using namespace DirectX;
 
 Scene::Scene()
 {
-	m_Layers.resize(4);
+	m_Layers.resize(6);
 	m_doesItNeedUpdate = true;
 }
-
 
 Scene::~Scene()
 {
@@ -17,7 +16,6 @@ int Scene::getLayersCount()
 {
 	return m_Layers.size();
 }
-
 
 Scene::SceneLayer* Scene::getLayer(UINT layerIndex)
 {
@@ -68,6 +66,8 @@ void Scene::build(ObjectManager* objectManager, Camera* camera)
 	m_Layers[1].setVisibility(true);
 	m_Layers[2].setVisibility(true);
 	m_Layers[3].setVisibility(true);
+	m_Layers[4].setVisibility(true);
+	m_Layers[5].setVisibility(true);
 
 	update();
 }
@@ -76,10 +76,13 @@ void Scene::update()
 {
 	if (!m_doesItNeedUpdate) return;
 	
-	updateLayer(m_Layers[0], m_objectManager->getOpaqueLayer());
-	updateLayer(m_Layers[1], m_objectManager->getNotOpaqueLayer());
-	updateLayer(m_Layers[2], m_objectManager->getSkinnedOpaqueLayer());
-	updateLayer(m_Layers[3], m_objectManager->getSkinnedNotOpaqueLayer());	
+	bool lFrustomCulling = false;
+	updateLayer(m_Layers[0], m_objectManager->getSky(), lFrustomCulling);
+	updateLayer(m_Layers[1], m_objectManager->getOpaqueLayer());
+	updateLayer(m_Layers[2], m_objectManager->getNotOpaqueLayer());
+	updateLayer(m_Layers[3], m_objectManager->getSkinnedOpaqueLayer());
+	updateLayer(m_Layers[4], m_objectManager->getSkinnedNotOpaqueLayer());	
+	updateLayer(m_Layers[5], m_objectManager->getNotOpaqueLayerGH());
 	
 	m_instancesDataReadTimes = FRAMERESOURCECOUNT;
 	m_doesItNeedUpdate = false;
@@ -95,7 +98,7 @@ void Scene::cameraListener()
 	m_doesItNeedUpdate = true;
 }
 
-void Scene::updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<RenderItem>>& arrayRI)
+void Scene::updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<RenderItem>>& arrayRI, bool isFrustumCullingRequired)
 {
 	layer.clearLayer();
 	BoundingFrustum& lBoundingFrustom = m_camera->getFrustomBoundingWorld();
@@ -107,15 +110,19 @@ void Scene::updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<Ren
 		RenderItem* lRI = arrayRI[i].get();
 		lSceneObject.setObjectMesh(lRI);
 		for (int j = 0; j < lRI->Instances.size(); j++)
-		{
-			
-			XMMATRIX lInstanceWord = XMLoadFloat4x4(&lRI->Instances[j].World);
-			XMMATRIX lInstanceWordInv = XMMatrixInverse(&XMMatrixDeterminant(lInstanceWord), lInstanceWord);
-			BoundingFrustum lLocalSpaceFrustom;
-			lBoundingFrustom.Transform(lLocalSpaceFrustom, lInstanceWordInv);
+		{	
+			if (isFrustumCullingRequired)
+			{
+				XMMATRIX lInstanceWord = XMLoadFloat4x4(&lRI->Instances[j].World);
+				XMMATRIX lInstanceWordInv = XMMatrixInverse(&XMMatrixDeterminant(lInstanceWord), lInstanceWord);
+				BoundingFrustum lLocalSpaceFrustom;
+				lBoundingFrustom.Transform(lLocalSpaceFrustom, lInstanceWordInv);
 
-			if (lLocalSpaceFrustom.Contains(lRI->AABB) != DirectX::DISJOINT)
-			lSceneObject.addInstance(&lRI->Instances[j]);
+				if (lLocalSpaceFrustom.Contains(lRI->AABB) != DirectX::DISJOINT)
+					lSceneObject.addInstance(&lRI->Instances[j]);
+			}
+			else
+				lSceneObject.addInstance(&lRI->Instances[j]);
 		}
 
 		layer.addSceneObject(lSceneObject);

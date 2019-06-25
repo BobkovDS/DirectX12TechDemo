@@ -13,6 +13,8 @@ FBXFileLoader::FBXFileLoader()
 	m_materialLastAddedID = 0;
 	m_materialCountForThisCall = 0;
 	m_initialized = false;
+	m_logger = &ApplLogger::getLogger();
+	m_currentShiftLogCount = 0;
 }
 
 
@@ -31,7 +33,7 @@ void FBXFileLoader::Initialize(ObjectManager* mngrObject, ResourceManager* mngrR
 	m_objectManager = mngrObject;	
 	m_resourceManager = mngrResource;	
 	m_skeletonManager = mngrSkeleton;
-	m_initialized = true;
+	m_initialized = true;	
 }
 
 void FBXFileLoader::initLoader()
@@ -40,7 +42,11 @@ void FBXFileLoader::initLoader()
 }
 
 void FBXFileLoader::loadSceneFile(const string& fileName)
-{
+{	
+	m_currentShiftLogCount = 0;
+	ApplLogger::getLogger().log("Loading of " + fileName, m_currentShiftLogCount);
+	m_currentShiftLogCount++;
+
 	if (!m_initialized) assert(0);
 
 	// Create the IO settings object
@@ -83,7 +89,10 @@ void FBXFileLoader::loadSceneFile(const string& fileName)
 
 	m_scene->SetName(lSceneName.c_str());
 	m_resourceManager->setPrefixName(lSceneName);
+	ApplLogger::getLogger().log("Creating scene [" + lSceneName + "]", m_currentShiftLogCount);
 	createScene();
+	m_currentShiftLogCount--;
+	ApplLogger::getLogger().log("Loading of " + fileName + " is done", m_currentShiftLogCount);
 }
 
 void FBXFileLoader::createScene()
@@ -510,7 +519,11 @@ void FBXFileLoader::add_InstanceToRenderItem(const fbx_NodeInstance& nodeRIInsta
 		//define a type for RenderItem, let's use the first Instance for this and his material
 		if (ri_it->second->Type == 0)
 		{
-			if (nodeRIInstance.Materials[0]->IsTransparent || nodeRIInstance.Materials[0]->IsTransparencyUsed)
+			if (nodeRIInstance.Materials[0]->IsWater)
+				ri_it->second->Type = RenderItemType::RIT_GH; 
+			else if (nodeRIInstance.Materials[0]->IsSky)
+				ri_it->second->Type = RenderItemType::RIT_Sky;
+			else if (nodeRIInstance.Materials[0]->IsTransparent || nodeRIInstance.Materials[0]->IsTransparencyUsed)
 				ri_it->second->Type = RenderItemType::RIT_Transparent;
 			else
 				ri_it->second->Type = RenderItemType::RIT_Opaque;
@@ -539,7 +552,13 @@ void FBXFileLoader::move_RenderItems()
 				m_objectManager->addSkinnedNotOpaqueObject(begin_it->second);
 			else
 				m_objectManager->addTransparentObject(begin_it->second);
-		}			
+		}
+		else if (begin_it->second->Type == RenderItemType::RIT_GH)
+		{
+			m_objectManager->addTransparentObjectGH(begin_it->second);
+		}
+		else if (begin_it->second->Type == RenderItemType::RIT_Sky)		
+			m_objectManager->addSky(begin_it->second);
 		else
 			assert(0); 		
 	}
@@ -578,7 +597,9 @@ void FBXFileLoader::convertFbxVector4ToFloat4(FbxVector4& fbxv, DirectX::XMFLOAT
 // ---------------- FBX functions -----------------------------
 void FBXFileLoader::process_node(const FbxNode* pNode)
 {
+	m_currentShiftLogCount++;
 	string nodeName = pNode->GetName();
+	m_logger->log("processing a node: " + nodeName, m_currentShiftLogCount);
 	const FbxNodeAttribute* pNodeAtrib = pNode->GetNodeAttribute();
 	int atribCount = pNode->GetNodeAttributeCount();
 
@@ -593,9 +614,12 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 		fbx_Material lMaterial = {};
 		int mCount = pNode->GetMaterialCount();
 		for (int i = 0; i < mCount; i++)
-		{
+		{			
 			FbxSurfaceMaterial* materialSuface = pNode->GetMaterial(i);
 			lMaterial.Name = materialSuface->GetName();
+
+			m_logger->log("loading new material: " + lMaterial.Name, m_currentShiftLogCount);
+
 			if (m_materials.find(lMaterial.Name) == m_materials.end()) //if we do not have this material, lets add it
 			{
 				FbxSurfacePhong* lphongMaterial = NULL;
@@ -603,7 +627,7 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 				if (materialSuface->ShadingModel.Get() == "Phong")
 				{
 					lphongMaterial = static_cast<FbxSurfacePhong*>(materialSuface);
-					/*
+					
 					int difuseTextureCount = lphongMaterial->Diffuse.GetSrcObjectCount<FbxTexture>();
 					int specularTextureCount = lphongMaterial->Specular.GetSrcObjectCount<FbxTexture>();
 					int transparentTextureCount = lphongMaterial->TransparentColor.GetSrcObjectCount<FbxTexture>();
@@ -614,8 +638,18 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 					int reflectionTextureCount = lphongMaterial->Reflection.GetSrcObjectCount<FbxTexture>();
 					int vecotorDisplTextureCount = lphongMaterial->VectorDisplacementColor.GetSrcObjectCount<FbxTexture>();
 					int transparencyFactorTextureCount = lphongMaterial->TransparencyFactor.GetSrcObjectCount<FbxTexture>();
-					*/
 					
+					//Check Custom Property
+					FbxProperty lcustomProperty = lphongMaterial->FindProperty("myCustomProperty");
+					if (lcustomProperty != NULL)
+					{						
+						int lValue = lcustomProperty.Get<int>();
+						if (lValue == 1)
+							lMaterial.IsWater = true;
+						else if (lValue == 2)
+							lMaterial.IsSky= true;
+					}
+
 					// Get Diffuse data
 					{
 						FbxDouble* lData = lphongMaterial->Diffuse.Get().Buffer();
@@ -662,7 +696,7 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 						//read_texture_data(&lMaterial, &lphongMaterial->TransparentColor, "transparentC");						
 						if (read_texture_data(&lMaterial, &lphongMaterial->TransparencyFactor, "transparencyF"))
 							lMaterial.IsTransparencyUsed = true;
-					}
+					}					
 				}
 				else if (materialSuface->ShadingModel.Get() == "Lambert")
 					llambertMaterial = static_cast<FbxSurfaceLambert*>(materialSuface);
@@ -702,9 +736,23 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 		}
 		break;
 		case fbxsdk::FbxNodeAttribute::eMesh:
-		{
-		
-			process_mesh(pNodeAtrib);
+		{		
+			// We use the first material for ndoe to identify which kind this Mesh is: simple mesh or mesh for Tessalation 
+			bool lSimpleMesh = true;
+			{			
+				int mCount = pNode->GetMaterialCount();
+				if (mCount)
+				{
+					fbx_Material lMaterial = {};
+					std::string lMaterialName = pNode->GetMaterial(0)->GetName();
+					if (m_materials.find(lMaterialName) != m_materials.end())
+						lMaterial = m_materials[lMaterialName];
+					if (lMaterial.IsWater)
+						lSimpleMesh = false;
+				}				
+			}
+
+			process_mesh(pNodeAtrib, !lSimpleMesh);
 					   
 			FbxNode* lNode2 = const_cast<FbxNode*>(pNode);
 			string name = lNode2->GetName();
@@ -715,10 +763,10 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 
 			convertFbxMatrixToFloat4x4(lGlobalTransform, newNodeInstance.GlobalTransformation);
 			convertFbxMatrixToFloat4x4(lLocalTransform, newNodeInstance.LocalTransformation);
+			
 			newNodeInstance.Nodetype = NT_Mesh;
 
-			int lChildCount = pNode->GetChildCount();
-
+			int lChildCount = pNode->GetChildCount();			
 			// Mesh can have sub-meshes"
 			for (int i = 0; i < lChildCount; i++)
 				process_node(pNode->GetChild(i));
@@ -726,6 +774,7 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 		break;
 		
 		case fbxsdk::FbxNodeAttribute::eCamera:
+			process_camera(pNodeAtrib);
 			break;		
 		case fbxsdk::FbxNodeAttribute::eLight:
 			break;				
@@ -737,9 +786,10 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 	}
 
 	m_NodeInstances.push_back(newNodeInstance);
+	m_currentShiftLogCount--;
 }
 
-void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute)
+void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool meshForTesselation)
 {
 	const FbxMesh* lpcMesh = static_cast<const FbxMesh*>(pNodeAtribute);
 	FbxMesh* lpMesh = const_cast<FbxMesh*>(lpcMesh);
@@ -825,6 +875,9 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute)
 
 		if (polygon_size == 3)
 		{
+			if (meshForTesselation)
+				assert(!meshForTesselation); //we do not process Triangles for Tesselation
+
 			int i0 = lpcMesh->GetPolygonVertex(pi, 0);
 			int i1 = lpcMesh->GetPolygonVertex(pi, 1);
 			int i2 = lpcMesh->GetPolygonVertex(pi, 2);			
@@ -894,13 +947,7 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute)
 			int i2 = lpcMesh->GetPolygonVertex(pi, 2);
 			int i3 = lpcMesh->GetPolygonVertex(pi, 3);
 
-			lmesh->Indices.push_back(i0);
-			lmesh->Indices.push_back(i1);
-			lmesh->Indices.push_back(i2);
-
-			lmesh->Indices.push_back(i0);
-			lmesh->Indices.push_back(i2);
-			lmesh->Indices.push_back(i3);
+			add_quadInfo_to_mesh<int>(lmesh->Indices, i0, i1, i2, i3, meshForTesselation);
 
 			// UV
 			if (UVLayer)
@@ -915,13 +962,13 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute)
 				FbxVector2 uv2 = UVLayer->GetDirectArray().GetAt(lUVID2);
 				FbxVector2 uv3 = UVLayer->GetDirectArray().GetAt(lUVID3);
 
-				lmesh->UVs.push_back(XMFLOAT2(uv0.mData[0], 1.0f - uv0.mData[1]));
-				lmesh->UVs.push_back(XMFLOAT2(uv1.mData[0], 1.0f - uv1.mData[1]));
-				lmesh->UVs.push_back(XMFLOAT2(uv2.mData[0], 1.0f - uv2.mData[1]));
 
-				lmesh->UVs.push_back(XMFLOAT2(uv0.mData[0], 1.0f - uv0.mData[1]));
-				lmesh->UVs.push_back(XMFLOAT2(uv2.mData[0], 1.0f - uv2.mData[1]));
-				lmesh->UVs.push_back(XMFLOAT2(uv3.mData[0], 1.0f - uv3.mData[1]));
+				XMFLOAT2 xmuv0 = XMFLOAT2(uv0.mData[0], 1.0f - uv0.mData[1]);
+				XMFLOAT2 xmuv1 = XMFLOAT2(uv1.mData[0], 1.0f - uv1.mData[1]);
+				XMFLOAT2 xmuv2 = XMFLOAT2(uv2.mData[0], 1.0f - uv2.mData[1]);
+				XMFLOAT2 xmuv3 = XMFLOAT2(uv3.mData[0], 1.0f - uv3.mData[1]);
+
+				add_quadInfo_to_mesh<XMFLOAT2>(lmesh->UVs, xmuv0, xmuv1, xmuv2, xmuv3, meshForTesselation);
 			}
 
 			// Normal
@@ -937,18 +984,7 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute)
 				XMFLOAT3 normal2 = XMFLOAT3(normalv2.mData[0], normalv2.mData[1], normalv2.mData[2]);
 				XMFLOAT3 normal3 = XMFLOAT3(normalv3.mData[0], normalv3.mData[1], normalv3.mData[2]);
 
-				/*XMFLOAT3 normal0 = averageNormal[i0];
-				XMFLOAT3 normal1 = averageNormal[i1];
-				XMFLOAT3 normal2 = averageNormal[i2];
-				XMFLOAT3 normal3 = averageNormal[i3];*/
-
-				lmesh->Normals.push_back(normal0);
-				lmesh->Normals.push_back(normal1);
-				lmesh->Normals.push_back(normal2);
-
-				lmesh->Normals.push_back(normal0);
-				lmesh->Normals.push_back(normal2);
-				lmesh->Normals.push_back(normal3);
+				add_quadInfo_to_mesh<XMFLOAT3>(lmesh->Normals, normal0, normal1, normal2, normal3, meshForTesselation);
 			}
 
 			// Tangent
@@ -964,13 +1000,7 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute)
 				XMFLOAT3 tangent2(tanV2.mData[0], tanV2.mData[1], tanV2.mData[2]);
 				XMFLOAT3 tangent3(tanV3.mData[0], tanV3.mData[1], tanV3.mData[2]);
 
-				lmesh->Tangents.push_back(tangent0);
-				lmesh->Tangents.push_back(tangent1);
-				lmesh->Tangents.push_back(tangent2);
-
-				lmesh->Tangents.push_back(tangent0);
-				lmesh->Tangents.push_back(tangent2);
-				lmesh->Tangents.push_back(tangent3);
+				add_quadInfo_to_mesh<XMFLOAT3>(lmesh->Tangents, tangent0, tangent1, tangent2, tangent3, meshForTesselation);
 			}
 
 			lVertexID += 4;
@@ -1045,6 +1075,18 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute)
 	m_meshesByName[name] = std::move(lmesh);
 }
 
+void FBXFileLoader::process_camera(const FbxNodeAttribute* pNodeAtribute)
+{
+	const FbxCamera* lpcCamera= static_cast<const FbxCamera*>(pNodeAtribute);
+	
+	FbxDouble3 lCameraPosition = lpcCamera->Position;
+	FbxDouble3 lCameraUpVector= lpcCamera->UpVector;
+	float lNearPlane = lpcCamera->NearPlane;
+	float lFar= lpcCamera->FarPlane;
+
+	int a = 10;
+}
+
 bool FBXFileLoader::read_texture_data(
 	fbx_Material* destMaterial,	FbxProperty* matProperty, std::string textureType)
 {	
@@ -1067,6 +1109,7 @@ bool FBXFileLoader::read_texture_data(
 		auto ltextureTypeName = std::make_pair(textureType, lTextureName);
 		destMaterial->TexturesNameByType.push_back(ltextureTypeName);
 		AtleasOneTextureWasAdded = true;
+		m_logger->log("Texture("+ textureType +"): "+ lTextureName+"["+ lTexturePath +"]", m_currentShiftLogCount);
 	}
 
 	return AtleasOneTextureWasAdded;
@@ -1087,4 +1130,26 @@ void FBXFileLoader::process_Skeleton(const FbxNode* pNode, fbx_TreeBoneNode* par
 
 	for (int i = 0; i < pNode->GetChildCount(); i++)
 		process_Skeleton(pNode->GetChild(i), currentNode);
+}
+
+template<class T>
+inline void FBXFileLoader::add_quadInfo_to_mesh(std::vector<T>& m, T t0, T t1, T t2, T t3, bool isTesselated)
+{
+	if (isTesselated)
+	{
+		m.push_back(t0);
+		m.push_back(t1);
+		m.push_back(t3);
+		m.push_back(t2);
+	}
+	else
+	{
+		m.push_back(t0);
+		m.push_back(t1);
+		m.push_back(t2);
+
+		m.push_back(t0);
+		m.push_back(t2);
+		m.push_back(t3);
+	}
 }

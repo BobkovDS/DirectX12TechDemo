@@ -40,6 +40,11 @@ Camera::~Camera()
 
 void Camera::updateViewMatrix()
 {
+	/*
+		Calculate a View matrix - for transformation from World space to View space (Camera space)
+		for this we need to know Camera position, Up vector and targent point
+	*/
+
 	if (!m_viewToUpdate) return; //nothin to update
 	m_viewToUpdate = false;
 

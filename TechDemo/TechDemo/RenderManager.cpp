@@ -50,14 +50,23 @@ void RenderManager::draw(int flags)
 void RenderManager::buildTechSRVs()
 {
 	/*
-		Add [TECHSRVCOUNT] 'NULL' SRVs for technical Textures (Results for other Renders) in the beggining of
+		Add [TECHSRVCOUNT] 'NULL' SRVs for technical Textures (Results for other Renders) in the beginning of
 		common DescriptorHeap (m_texturesDescriptorHeap). Later each Render will use his slot(s) and will create 'normal' SRV
+		0 - Sky Cube map
+		1 - 'NULL'
+		2 - 'NULL'
+		3 - 'NULL'
+		4 - 'NULL'
+		5 - 'NULL'
+		6 - 'NULL'
+		7 - 'NULL'
+		8 - 'NULL'
+		9 - 'NULL'
 	*/
 	assert(m_texturesDescriptorHeap);
 
 	UINT lSrvSize = m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	CD3DX12_CPU_DESCRIPTOR_HANDLE lhDescriptor(m_texturesDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
-
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;

@@ -53,6 +53,18 @@ ID3D12Resource* ResourceManager::getMaterialsResource()
 	return m_materialsResource.RessourceInDefaultHeap.Get();
 }
 
+ID3D12Resource* ResourceManager::getTextureResource(UINT textureID)
+{
+	if (textureID < m_textures.size())
+		return m_textures[textureID].RessourceInDefaultHeap.Get();
+}
+
+MaterialCPU* ResourceManager::getMaterial(UINT i)
+{
+	if (i < m_materials.size())
+		return m_materials[i].get();
+}
+
 void ResourceManager::addTexturePathByName(const string& textureName, const string& texturePath)
 {
 	std::string lFullTextureName = m_prefixName + textureName;

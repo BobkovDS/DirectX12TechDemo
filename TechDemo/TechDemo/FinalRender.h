@@ -16,15 +16,15 @@ class FinalRender :
 	IDXGISwapChain3* m_swapChain;		
 	ComPtr<ID3D12Resource>* m_swapChainResources;
 	PSOFinalRenderLayer m_psoLayer;
+
+	void build_SkyDescriptor();
 public:
 	FinalRender();
 	~FinalRender();
 
 	void initialize(const RenderMessager& renderParams);
 	void build();
-	void draw(int flag);
-	void releaseExternalResources();
-	void connectExternalResourcesBack();
+	void draw(int flag);	
 	void resize(UINT newWidth, UINT newHeight);
 	void setSwapChainResources(ComPtr<ID3D12Resource>* swapChainResources);
 };

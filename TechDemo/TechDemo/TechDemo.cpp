@@ -1,4 +1,5 @@
 #include "TechDemo.h"
+#include "ApplLogger.h"
 
 #define PASSCONSTBUFCOUNTDCM 6
 #define PASSCONSTBUFCOUNT 1/*Frame*/ + 0/*Shadow*/ +0/*Mirror*/ + PASSCONSTBUFCOUNTDCM
@@ -108,18 +109,12 @@ void TechDemo::init3D()
 	//}
 
 	////Load a house
-	/*{
-		FBXFileLoader m_fbx_loader;
-		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
-		m_fbx_loader.loadSceneFile("Models\\Cottage.fbx");
-	}*/
-		
 	{
 		FBXFileLoader m_fbx_loader;
 		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
-		m_fbx_loader.loadSceneFile("Models\\Grass.fbx");
-	}
-	
+		m_fbx_loader.loadSceneFile("Models\\The Scene.fbx");		
+	}	
+
 	//// Load a Tree
 	//{
 	//	FBXFileLoader m_fbx_loader;
@@ -191,7 +186,7 @@ void TechDemo::update()
 
 void TechDemo::update_camera()
 {
-	float dt = 0.005f;
+	float dt = 0.01f;
 	float da = XMConvertToRadians(0.1f);
 
 	if (toLimitFPS)
@@ -351,7 +346,7 @@ void TechDemo::onReSize(int newWidth, int newHeight)
 	float h = static_cast<float>(height());
 	float aspect = w / h;
 
-	m_camera.lens->setLens(0.25f*XM_PI, aspect, 1.0f, 100.0f);
+	m_camera.lens->setLens(0.25f*XM_PI, aspect, 1.0f, 1000.0f);
 	m_camera.buildFrustumBounding();
 
 	if (!m_init3D_done) return; // onResize call it before how 3D part was init

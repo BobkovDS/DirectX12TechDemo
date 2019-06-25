@@ -7,6 +7,8 @@
 
 #define TECHSRVCOUNT 10
 
+#define TECHSLOT_SKY 0
+
 struct RenderResource {
 	void createResource(ID3D12Device* device, DXGI_FORMAT resourceFormat, UINT width, UINT height, D3D12_CLEAR_VALUE* optClear = NULL);
 	void resize(UINT width, UINT height);
