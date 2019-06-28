@@ -101,6 +101,7 @@ struct VertexGPU // Simple Vertex structure
 {
 	DirectX::XMFLOAT3 Pos;
 	DirectX::XMFLOAT3 Normal;
+	DirectX::XMFLOAT3 TangentU;
 	DirectX::XMFLOAT2 UVText;
 };
 

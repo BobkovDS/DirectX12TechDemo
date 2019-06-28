@@ -118,7 +118,7 @@ void Scene::updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<Ren
 				BoundingFrustum lLocalSpaceFrustom;
 				lBoundingFrustom.Transform(lLocalSpaceFrustom, lInstanceWordInv);
 
-				if (lLocalSpaceFrustom.Contains(lRI->AABB) != DirectX::DISJOINT)
+				//if (lLocalSpaceFrustom.Contains(lRI->AABB) != DirectX::DISJOINT)
 					lSceneObject.addInstance(&lRI->Instances[j]);
 			}
 			else
@@ -245,8 +245,7 @@ void Scene::SceneLayer::SceneLayerObject::getInstances(std::vector<const Instanc
 	out_Instances.resize(lPrevSize + m_instances.size());
 	
 	for (int i = 0; i < m_instances.size(); i++)
-		out_Instances[lPrevSize + i] = m_instances[i];
-	
+		out_Instances[lPrevSize + i] = m_instances[i];	
 }
 
 

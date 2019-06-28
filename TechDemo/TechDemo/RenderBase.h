@@ -30,7 +30,7 @@ struct RenderMessager {
 	UINT Width;
 	UINT Height;
 	Scene* Scene;
-	PSOManager* PSOMngr;
+	PSOManager* PSOMngr; 
 	IFrameResourcesManager* FrameResourceMngr;
 	ResourceManager* ResourceMngr;
 };

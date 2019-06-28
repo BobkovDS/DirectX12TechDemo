@@ -17,11 +17,19 @@ FBXFileLoader::FBXFileLoader()
 	m_currentShiftLogCount = 0;
 }
 
-
 FBXFileLoader::~FBXFileLoader()
 {
 	if (m_scene != NULL) m_scene->Destroy();
 	m_sdkManager->Destroy();
+
+	for (int i = 0; i < m_rootBones.size(); i++)
+		delete m_rootBones[i];
+
+	for (int i = 0; i < m_cameraNodes.size(); i++)
+		delete m_cameraNodes[i];
+
+	for (int i = 0; i < m_lightsNodes.size(); i++)
+		delete m_lightsNodes[i];
 }
 
 void FBXFileLoader::Initialize(ObjectManager* mngrObject, ResourceManager* mngrResource, SkeletonManager* mngrSkeleton)
@@ -173,6 +181,7 @@ void FBXFileLoader::build_GeoMeshes()
 		{
 			vertex = {};
 			vertex.Pos = lMesh->Vertices[lMesh->Indices[vi]];
+			
 			if (lMesh->Normals.size())
 			{
 				XMVECTOR n = XMLoadFloat3(&lMesh->Normals[vi]);
@@ -230,8 +239,9 @@ void FBXFileLoader::build_Animation()
 	int lAnimationStackCount = m_scene->GetSrcObjectCount<FbxAnimStack>();
 
 	if (lAnimationStackCount == 0) return; 
-	lAnimationStackCount = 2;//TEST
-	for (int i = lAnimationStackCount-1; i < lAnimationStackCount; i++)
+
+	//for (int i = lAnimationStackCount-1; i < lAnimationStackCount; i++)
+	for (int i = 0; i < lAnimationStackCount; i++)
 	{		
 		FbxAnimStack* lpAnimStack = FbxCast<FbxAnimStack>(m_scene->GetSrcObject<FbxAnimStack>(i)); //run 3
 		add_AnimationStack(lpAnimStack);
@@ -247,16 +257,29 @@ void FBXFileLoader::add_AnimationStack(FbxAnimStack* animationStack)
 	assert(lAnimLayerCount);
 	FbxAnimLayer* lAnimLayer = animationStack->GetMember<FbxAnimLayer>(0); // we use the first layer only
 	
+	// Check and add Animation data for Skeleton objects - SkinnedAnimated objects
 	for (int i = 0; i < m_rootBones.size(); i++)
 	{
-		SkinnedData* lSkeleton = &m_skeletonManager->getSkeleton(m_rootBones[i]->Name);
+		SkinnedData* lSkeleton = &m_skeletonManager->getSkeletonSkinnedAnimated(m_rootBones[i]->Name); // Here Skeleton should be already created
 		add_AnimationInfo(lAnimLayer, lSkeleton, m_rootBones[i], lAnimStackName);
 		lSkeleton->addAnimationName(lAnimStackName);
 	}	
+
+	// Check and add Animation data for Objects without Skeletons (Camera and Lights) - NodeAnimated objects
+	{
+		// Camera
+		for (int i = 0; i < m_cameraNodes.size(); i++)
+		{
+			SkinnedData* lSkeleton = &m_skeletonManager->getSkeletonNodeAnimated(m_cameraNodes[i]->Name); // Here Skeleton should be already created
+			if (add_AnimationInfo(lAnimLayer, lSkeleton, m_cameraNodes[i], lAnimStackName))
+				lSkeleton->addAnimationName(lAnimStackName);
+		}
+	}
 }
 
-void  FBXFileLoader::add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData* skeleton, fbx_TreeBoneNode* bone, string& animationName)
+bool  FBXFileLoader::add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData* skeleton, fbx_TreeBoneNode* bone, string& animationName)
 {
+	bool lHasAnimation = false;
 	BoneAnimation lBoneAnimation = {};	
 	BoneData* lBoneData = skeleton->getBone(bone->Name);
 
@@ -266,6 +289,8 @@ void  FBXFileLoader::add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData
 	
 	if (lAnimCurve != NULL)
 	{
+		lHasAnimation = true;
+
 		int lKeyCount = lAnimCurve->KeyGetCount();
 		FbxTime lFirstKeyTimeValue = lAnimCurve->KeyGetTime(0);
 		FbxTime lLastKeyTimeValue = lAnimCurve->KeyGetTime(lKeyCount - 1);
@@ -276,11 +301,10 @@ void  FBXFileLoader::add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData
 		float lfFirstTime = atof(lsFirstValue.c_str());
 		float lfLastTime = atof(lsLastValue.c_str());
 
-
 		FbxTime lFrameTime;
 		for (float i = lfFirstTime; i <= lfLastTime; i++)
 		{
-			float lTime = 1.0f / 30.0f * i;
+			float lTime = 1.0f / 24.0f * i;
 			lFrameTime.SetSecondDouble(lTime);
 
 			//FbxAMatrix lTrasformation = bone->Node->EvaluateLocalTransform(lFrameTime);
@@ -309,7 +333,9 @@ void  FBXFileLoader::add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData
 
 	//Get the same data for children-nodes
 	for (int i = 0; i < bone->Childs.size(); i++)
-		add_AnimationInfo(animationLayer, skeleton, bone->Childs[i], animationName);
+		lHasAnimation |= add_AnimationInfo(animationLayer, skeleton, bone->Childs[i], animationName);
+
+	return lHasAnimation;
 }
 
 void FBXFileLoader::get_BindMatrix(std::string boneName, DirectX::XMFLOAT4X4& m)
@@ -412,12 +438,32 @@ void FBXFileLoader::get_LcTransformationData(fbx_TreeBoneNode* src_bone, BoneDat
 
 void FBXFileLoader::build_Skeleton()
 {
+	// Create Skeletons for Skeleton-Animations (Wolf)
 	for (int i = 0; i < m_rootBones.size(); i++)
 	{
 		string lRootBoneName = m_rootBones[i]->Name;
-		SkinnedData& lSkeleton = m_skeletonManager->getSkeleton(lRootBoneName);
+		SkinnedData& lSkeleton = m_skeletonManager->getSkeletonSkinnedAnimated(lRootBoneName); // Here Skeleton will be "created"
 		lSkeleton.addRootBone(lRootBoneName);
 		add_SkeletonBone(lSkeleton, m_rootBones[i]);
+	}
+
+	// Create Skeletons for Node-Animations (Camera, Lights)
+	{
+		// Camera
+		for (int i = 0; i < m_cameraNodes.size(); i++)
+		{
+			string lCameraName = m_cameraNodes[i]->Name;
+			SkinnedData& lSkeleton = m_skeletonManager->getSkeletonNodeAnimated(lCameraName); // Here Skeleton will be "created"
+			lSkeleton.addRootBone(lCameraName);			
+		}
+
+		// Lights
+		for (int i = 0; i < m_lightsNodes.size(); i++)
+		{
+			string lLightName = m_lightsNodes[i]->Name;
+			SkinnedData& lSkeleton = m_skeletonManager->getSkeletonNodeAnimated(lLightName); // Here Skeleton will be "created"
+			lSkeleton.addRootBone(lLightName);			
+		}
 	}
 }
 
@@ -760,7 +806,8 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 
 			FbxAMatrix lGlobalTransform = lNode2->EvaluateGlobalTransform();
 			FbxAMatrix lLocalTransform = lNode2->EvaluateGlobalTransform();
-
+			FbxVector4 lLocRot = lNode2->EvaluateLocalRotation(); /*TO_DO: remove*/
+			
 			convertFbxMatrixToFloat4x4(lGlobalTransform, newNodeInstance.GlobalTransformation);
 			convertFbxMatrixToFloat4x4(lLocalTransform, newNodeInstance.LocalTransformation);
 			
@@ -774,7 +821,19 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 		break;
 		
 		case fbxsdk::FbxNodeAttribute::eCamera:
-			process_camera(pNodeAtrib);
+		{
+			FbxNode* lNode2 = const_cast<FbxNode*>(pNode);
+			string name = lNode2->GetName();			
+			
+			process_camera(pNodeAtrib, lNode2);
+
+			fbx_TreeBoneNode* lCameraBone = new fbx_TreeBoneNode();			
+			
+			lCameraBone->Name = name;
+			lCameraBone->Node = lNode2;
+			m_cameraNodes.push_back(lCameraBone);
+		}
+
 			break;		
 		case fbxsdk::FbxNodeAttribute::eLight:
 			break;				
@@ -1075,16 +1134,48 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool mes
 	m_meshesByName[name] = std::move(lmesh);
 }
 
-void FBXFileLoader::process_camera(const FbxNodeAttribute* pNodeAtribute)
-{
+void FBXFileLoader::process_camera(const FbxNodeAttribute* pNodeAtribute, FbxNode* pNode)
+{	
 	const FbxCamera* lpcCamera= static_cast<const FbxCamera*>(pNodeAtribute);
 	
 	FbxDouble3 lCameraPosition = lpcCamera->Position;
+	FbxDouble3 lCameraInterestPosition = lpcCamera->InterestPosition;
+	
 	FbxDouble3 lCameraUpVector= lpcCamera->UpVector;
 	float lNearPlane = lpcCamera->NearPlane;
 	float lFar= lpcCamera->FarPlane;
+	
+	std::unique_ptr<Camera> lCamera = std::make_unique<Camera>();
+	
+	FbxAMatrix lLocalTransform = pNode->EvaluateLocalTransform();
+	DirectX::XMFLOAT4X4 lLocalTransformation;
+	convertFbxMatrixToFloat4x4(lLocalTransform, lLocalTransformation);
+	lCamera->setLocalTransformation(lLocalTransformation);
 
-	int a = 10;
+	DirectX::XMVECTOR lPos = DirectX::XMVectorSet(lCameraPosition.mData[0], lCameraPosition.mData[1], lCameraPosition.mData[2], 1.0f);	
+	DirectX::XMVECTOR lTarget = DirectX::XMVectorSet(lCameraInterestPosition.mData[0], lCameraInterestPosition.mData[1], lCameraInterestPosition.mData[2], 1.0f);
+
+	DirectX::XMVECTOR lLook = lTarget - lPos;	
+	DirectX::XMVECTOR lUpVector = DirectX::XMVectorSet(lCameraUpVector.mData[0], lCameraUpVector.mData[1], lCameraUpVector.mData[2], 0.0f);
+	
+	DirectX::XMVECTOR lWordUpVector = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+	DirectX::XMVECTOR lRight = XMVector3Normalize(XMVector3Cross(lWordUpVector, lLook));
+	DirectX::XMVECTOR lNewLook = XMVector3Cross(lUpVector, lRight);
+	DirectX::XMVECTOR lNewLook2 = XMVector3Cross(lRight, lUpVector);
+
+	lPos = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);	
+	lLook = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+	
+	XMMATRIX lCameraLcTr = lCamera->getLocalTransformationMatrix();
+	lPos = XMVector3Transform(lPos, lCamera->getLocalTransformationMatrix());	
+	lLook = XMVector3Normalize(XMVector3TransformNormal(lLook, lCamera->getLocalTransformationMatrix()));
+		
+	lCamera->lookTo(lPos, lLook, lWordUpVector);
+
+	lCamera->lens->setLens(0.25f*XM_PI, 1.0f, lNearPlane, lFar);	
+
+	m_objectManager->addCamera(lCamera);	
 }
 
 bool FBXFileLoader::read_texture_data(

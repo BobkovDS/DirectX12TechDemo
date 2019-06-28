@@ -47,16 +47,18 @@ void Camera::updateViewMatrix()
 
 	if (!m_viewToUpdate) return; //nothin to update
 	m_viewToUpdate = false;
-
+	
 	XMVECTOR R = XMLoadFloat3(&m_right);
 	XMVECTOR U = XMLoadFloat3(&m_up);
 	XMVECTOR L = XMLoadFloat3(&m_look);
-	XMVECTOR P = XMLoadFloat3(&m_position);
-
+	XMVECTOR P = XMLoadFloat3(&m_position);	
+	
 	// Keep camera's axes orthogonal to each other and of unit lenght
 	L = XMVector3Normalize(L);
 	U = XMVector3Normalize(XMVector3Cross(L,R));
 	R = XMVector3Cross(U, L);
+
+	//XMMATRIX lviewM = XMMatrixLookAtRH(P, L, U);
 
 	XMStoreFloat3(&m_right, R);
 	XMStoreFloat3(&m_up, U);
@@ -86,15 +88,31 @@ void Camera::updateViewMatrix()
 	m_viewMatrix(2, 3) = 0.0f;
 	m_viewMatrix(3, 3) = 1.0f;	
 
+	//XMStoreFloat4x4(&m_viewMatrix, lviewM);
 	updateObservers();
 	m_frustumBoundingWorldToUpdate = true;
+}
+
+void Camera::lookTo(DirectX::FXMVECTOR pos, DirectX::FXMVECTOR lookDir, DirectX::FXMVECTOR worldUp)
+{	
+	XMVECTOR L = XMVector3Normalize(lookDir);	
+	L = XMVectorSet(XMVectorGetX(L), XMVectorGetY(L), XMVectorGetZ(L), 0.0f);
+	XMVECTOR R = XMVector3Normalize(XMVector3Cross(worldUp, L));
+	XMVECTOR U = XMVector3Cross(L, R);
+
+	XMStoreFloat3(&m_position, pos);
+	XMStoreFloat3(&m_right, R);
+	XMStoreFloat3(&m_up, U);
+	XMStoreFloat3(&m_look, L);
+
+	m_viewToUpdate = true;
 }
 
 void Camera::lookAt(DirectX::FXMVECTOR pos, DirectX::FXMVECTOR target, DirectX::FXMVECTOR worldUp)
 {
 	XMVECTOR L = XMVector3Normalize(XMVectorSubtract(target, pos));
 	XMVECTOR R = XMVector3Normalize(XMVector3Cross(worldUp, L));
-	XMVECTOR U = XMVector3Cross(L, R);
+	XMVECTOR U = XMVector3Cross(L, R);	
 
 	XMStoreFloat3(&m_position, pos);
 	XMStoreFloat3(&m_right, R);
@@ -171,6 +189,23 @@ void Camera::rotateY(float angle)
 	m_viewToUpdate = true;
 }
 
+void Camera::transform(XMFLOAT4X4& transformM)
+{
+	XMMATRIX lAnimTransform = XMLoadFloat4x4(&transformM);
+	
+	if (XMMatrixIsIdentity(lAnimTransform)) return;
+	
+	//transformM = XMMatrixTranspose(transformM);	
+
+	XMVECTOR lPos = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	XMVECTOR lLook = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);	
+	
+	lPos = XMVector3Transform(lPos, lAnimTransform);
+	lLook = XMVector3TransformNormal(lLook, lAnimTransform);	
+
+	lookTo(lPos, lLook, XMVectorSet(0.0f, 1.0f, 0.0, 0.0f));
+}
+
 inline XMVECTOR Camera::getPosition() const
 {
 	return XMLoadFloat3(&m_position);
@@ -231,6 +266,24 @@ XMFLOAT3 Camera::getTarget3f()
 	return target;
 }
 
+void Camera::setLocalTransformation(XMFLOAT4X4& lcTransformation)
+{
+	XMMATRIX lLcTransformationM = XMLoadFloat4x4(&lcTransformation);
+	//lLcTransformationM = XMMatrixTranspose(lLcTransformationM);
+	XMStoreFloat4x4(&m_localTransformation, lLcTransformationM);
+}
+
+const XMFLOAT4X4& Camera::getLocalTransformation()
+{
+	return m_localTransformation;
+}
+
+DirectX::XMMATRIX Camera::getLocalTransformationMatrix()
+{
+	XMMATRIX lM = XMLoadFloat4x4(&m_localTransformation);
+	return lM;
+}
+
 void Camera::buildFrustumBounding()
 {
 	BoundingFrustum::CreateFromMatrix(m_frustumBounding, lens->getProj());
@@ -265,19 +318,21 @@ inline void Camera::updateObservers()
 
 inline DirectX::XMMATRIX Camera::CameraLens::getProj() const
 {
+	assert(m_lensWasSet);
 	return DirectX::XMLoadFloat4x4(&m_projectionMatrix);
 }
 
 inline const DirectX::XMFLOAT4X4& Camera::CameraLens::getProj4x4f()
 {
+	assert(m_lensWasSet);
 	return m_projectionMatrix;
 }
 
 PerspectiveCameraLens::PerspectiveCameraLens():
-	m_nearZ(0), 
-	m_farZ(0),
+	m_nearZ(1), 
+	m_farZ(100),
 	m_aspect(0),
-	m_fovY(0), 
+	m_fovY(0), 	
 m_nearWindowHeight(0), m_farWindowHeight(0)
 {
 	
@@ -309,6 +364,12 @@ void PerspectiveCameraLens::setLens(float fovY, float aspect, float zn, float zf
 
 	XMMATRIX P = XMMatrixPerspectiveFovLH(m_fovY, m_aspect, m_nearZ, m_farZ);
 	XMStoreFloat4x4(&m_projectionMatrix, P);
+	m_lensWasSet = true;
+}
+
+void PerspectiveCameraLens::setAspectRatio(float aspectRatio)
+{
+	setLens(m_fovY, aspectRatio, m_nearZ, m_farZ);	
 }
 
 // ------------ Orthographic Camera Lens --------------------------------
@@ -323,6 +384,7 @@ void OrthographicCameraLesn::setLens(float x, float y, float z, float radius)
 {	
 	XMMATRIX P = XMMatrixOrthographicLH(10, 10, 1.0f, 100.0f);	
 	XMStoreFloat4x4(&m_projectionMatrix, P);
+	m_lensWasSet = true;
 }
 
 void OrthographicCameraLesn::setLens(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents)
@@ -338,4 +400,5 @@ void OrthographicCameraLesn::setLens(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3
 
 	XMMATRIX P = XMMatrixOrthographicOffCenterLH(l, r, b, t, n, f);
 	XMStoreFloat4x4(&m_projectionMatrix, P);
+	m_lensWasSet = true;
 }

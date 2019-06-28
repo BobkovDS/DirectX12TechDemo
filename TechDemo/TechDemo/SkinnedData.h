@@ -8,7 +8,8 @@ class SkinnedData
 	std::map<std::string, BoneData*> m_bonesByNames;
 	std::vector<std::string> m_animations;
 	std::map<std::string, std::pair<float, float>> m_animationsBeginEndTimes;
-	std::vector<DirectX::XMFLOAT4X4> m_bonesFinalTransforms;	
+	std::vector<DirectX::XMFLOAT4X4> m_bonesFinalTransforms;
+	DirectX::XMFLOAT4X4 m_identityMatrix;
 	float m_beginTimeMinForAllAnimations;
 	float m_endTimeMaxForAllAnimations;
 	float m_animationTime;
@@ -26,5 +27,6 @@ public:
 	void addAnimationName(std::string animationName);
 	void evaluateBeginEndTime();
 	const std::vector<DirectX::XMFLOAT4X4>& getFinalTransforms(float dt, UINT animationID);
+	DirectX::XMFLOAT4X4& getNodeTransform(float dt, UINT animationID);
 };
 

@@ -41,6 +41,11 @@ void ObjectManager::addSky(std::unique_ptr<RenderItem>& p)
 	m_skyLayer.push_back(std::move(p));
 }
 
+const vector<std::unique_ptr<Camera>>& ObjectManager::getCameras()
+{
+	return m_cameras;
+}
+
 const vector<unique_ptr<RenderItem>>& ObjectManager::getSky()
 {
 	return m_skyLayer;
@@ -103,3 +108,28 @@ void ObjectManager::addMesh(std::string name, std::unique_ptr<Mesh>& iMesh)
 	m_meshes[name] = std::move(iMesh);
 }
 
+void ObjectManager::addCamera(std::unique_ptr<Camera>& camera)
+{
+	m_cameras.push_back(std::move(camera));
+}
+
+void ObjectManager::mirrorZ()
+{
+	DirectX::XMMATRIX mirrZM = DirectX::XMMatrixReflect(DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+	mirrorZLayer(m_opaqueLayer, mirrZM);
+}
+
+void ObjectManager::mirrorZLayer(std::vector<std::unique_ptr<RenderItem>>& layer, DirectX::XMMATRIX& mirrZM)
+{
+	for (int ri = 0; ri < layer.size(); ri++)
+	{
+		RenderItem* lRI = layer[ri].get();
+
+		for (int i = 0; i < lRI->Instances.size(); i++)
+		{
+			DirectX::XMMATRIX lWorld = DirectX::XMLoadFloat4x4(&lRI->Instances[i].World);
+			lWorld = mirrZM* lWorld;
+			DirectX::XMStoreFloat4x4(&lRI->Instances[i].World, lWorld);
+		}
+	}
+}

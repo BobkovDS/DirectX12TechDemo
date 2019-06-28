@@ -12,10 +12,13 @@ TechDemo::TechDemo(HINSTANCE hInstance, const std::wstring& applName, int width,
 {
 	m_init3D_done = false;
 	m_isTechFlag = false;
+	m_isCameraManualControl = true;
 	//Utilit3D::nullitizator();
 }
 TechDemo::~TechDemo()
 {
+	if (m_defaultCamera)
+		delete m_camera;
 }
 
 void TechDemo::onMouseDown(WPARAM btnState, int x, int y)
@@ -53,8 +56,8 @@ void TechDemo::onMouseMove(WPARAM btnState, int x, int y)
 			float dx = XMConvertToRadians(0.25f*static_cast<float>(x - m_mouseDownPoint.x));
 			float dy = XMConvertToRadians(0.25f*static_cast<float>(y - m_mouseDownPoint.y));
 
-			m_camera.pitch(dy);
-			m_camera.rotateY(dx);
+			m_camera->pitch(dy);
+			m_camera->rotateY(dx);
 		}
 		m_mouseDownPoint.x = x;
 		m_mouseDownPoint.y = y;
@@ -71,8 +74,10 @@ void TechDemo::onKeyDown(WPARAM btnState)
 	if (btnState == VK_SPACE)
 	{
 		m_isTechFlag = !m_isTechFlag;
-		m_animationTimer.tt_Pause();	
+		m_animationTimer.tt_Pause();
 	}
+	else if (btnState == 'C')
+		m_isCameraManualControl = !m_isCameraManualControl;
 }
 
 std::string TechDemo::addTextToWindow()
@@ -84,6 +89,11 @@ std::string TechDemo::addTextToWindow()
 		text += " TechFlag=1";
 	else
 		text += " TechFlag=0";
+
+	if (m_isCameraManualControl)
+		text += " CameraMC=1";
+	else
+		text += " CameraMC=0";
 
 	return text;
 }
@@ -114,6 +124,7 @@ void TechDemo::init3D()
 		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
 		m_fbx_loader.loadSceneFile("Models\\The Scene.fbx");		
 	}	
+
 
 	//// Load a Tree
 	//{
@@ -152,13 +163,30 @@ void TechDemo::init3D()
 	m_frameResourceManager.Initialize(m_device.Get(), m_fence.Get(), m_objectManager.getCommonInstancesCount(),
 		PASSCONSTBUFCOUNT, SSAOCONSTBUFCOUNT, lBonesCount);
 	
-	build_defaultCamera();
+	//build_defaultCamera();
+
+	if (m_objectManager.getCameras().size() == 0)
+		build_defaultCamera();	
+	else
+	{
+		m_defaultCamera = false;
+		m_camera =m_objectManager.getCameras()[0].get();
+		PerspectiveCameraLens* lPerspectiveLens = dynamic_cast<PerspectiveCameraLens*> (m_camera->lens);
+		float w = static_cast<float>(width());
+		float h = static_cast<float>(height());
+		float aspect = w / h;
+
+		lPerspectiveLens->setAspectRatio(aspect);		
+		m_camera->buildFrustumBounding();		
+	}
 
 	ExecuterVoidVoid<Scene>* sceneCameraListener =
 		new ExecuterVoidVoid<Scene>(&m_scene, &Scene::cameraListener);
-	m_camera.addObserver(sceneCameraListener);
+	m_camera->addObserver(sceneCameraListener);
 
-	m_scene.build(&m_objectManager, &m_camera);
+	//m_objectManager.mirrorZ();
+
+	m_scene.build(&m_objectManager, m_camera);
 	m_renderManager.initialize(lRenderManagerParams);
 	m_renderManager.buildRenders();	
 	
@@ -171,7 +199,6 @@ void TechDemo::init3D()
 	m_init3D_done = true;
 
 	m_animationTimer.tt_RunStop();
-
 }
 
 void TechDemo::update()
@@ -186,28 +213,44 @@ void TechDemo::update()
 
 void TechDemo::update_camera()
 {
-	float dt = 0.01f;
-	float da = XMConvertToRadians(0.1f);
-
-	if (toLimitFPS)
+	if (m_isCameraManualControl) // Camera manual control is On
 	{
-		dt *= 10.0f;
-		da = XMConvertToRadians(0.1f*10.0f);
+		float dt = 0.01f;
+		float da = XMConvertToRadians(0.1f);
+
+		if (toLimitFPS)
+		{
+			dt *= 10.0f;
+			da = XMConvertToRadians(0.1f*10.0f);
+		}
+
+		if (GetAsyncKeyState('W') & 0x8000)
+			m_camera->walk(dt);
+
+		if (GetAsyncKeyState('S') & 0x8000)
+			m_camera->walk(-dt);
+
+		if (GetAsyncKeyState('A') & 0x8000)
+			m_camera->strafe(-dt);
+
+		if (GetAsyncKeyState('D') & 0x8000)
+			m_camera->strafe(dt);
+
+		m_camera->updateViewMatrix();
 	}
+	else // Camera manual control is Off, we use Animation for Camera, if it does exist
+	{
+		int lSkeletonCount = m_skeletonManager.getSkeletonNodeAnimatedCount();
+		if (lSkeletonCount)
+		{
+			float lTickTime = m_animationTimer.deltaTime()/10.0f;
 
-	if (GetAsyncKeyState('W') & 0x8000)
-		m_camera.walk(dt);
+			SkinnedData& lSkeleton = m_skeletonManager.getSkeletonNodeAnimated(0); /*TO_DO: now we use the first Skeleton. fix to get Skeleton by ID from Camera object*/
+			XMFLOAT4X4 &lFinalMatrices = lSkeleton.getNodeTransform(lTickTime, 0);			
 
-	if (GetAsyncKeyState('S') & 0x8000)
-		m_camera.walk(-dt);
-
-	if (GetAsyncKeyState('A') & 0x8000)
-		m_camera.strafe(-dt);
-
-	if (GetAsyncKeyState('D') & 0x8000)
-		m_camera.strafe(dt);
-
-	m_camera.updateViewMatrix();
+			m_camera->transform(lFinalMatrices);
+		}
+	}
 }
 
 void TechDemo::update_objectCB()
@@ -229,18 +272,17 @@ void TechDemo::update_objectCB()
 }
 
 void TechDemo::update_BoneData()
-{
-	
+{	
 	float lTickTime = m_animationTimer.deltaTime();
 
 	//m_animTime = 0;
 	auto currBoneCB = m_frameResourceManager.currentFR()->getBoneCB();
 	float lBoneCBID= 0;
 
-	int lSkeletonCount = m_skeletonManager.getSkeletonCount();
+	int lSkeletonCount = m_skeletonManager.getSkeletonSkinnedAnimatedCount();
 	for (int si = 0; si < lSkeletonCount; si++)
 	{
-		SkinnedData& lSkeleton = m_skeletonManager.getSkeleton(si);
+		SkinnedData& lSkeleton = m_skeletonManager.getSkeletonSkinnedAnimated(si);
 		const std::vector<DirectX::XMFLOAT4X4>& lFinalMatrices = lSkeleton.getFinalTransforms(lTickTime, 0);
 
 		InstanceDataGPU ltmp;
@@ -256,8 +298,8 @@ void TechDemo::update_passCB()
 {
 	auto mMainPassCB = m_frameResourceManager.tmpPassConsts;
 
-	XMMATRIX view = m_camera.getView();
-	XMMATRIX proj = m_camera.lens->getProj();
+	XMMATRIX view = m_camera->getView();
+	XMMATRIX proj = m_camera->lens->getProj();
 
 	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
 	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
@@ -276,7 +318,7 @@ void TechDemo::update_passCB()
 	mMainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / width(), 1.0f / height());
 	mMainPassCB.NearZ = 1.0f;
 	mMainPassCB.FarZ = 1000.0f;
-	mMainPassCB.EyePosW = m_camera.getPosition3f();
+	mMainPassCB.EyePosW = m_camera->getPosition3f();
 	mMainPassCB.TotalTime = m_animationTimer.totalTime();
 	mMainPassCB.doesUseMirrorLight = 0; // should we use Mirror light?
 
@@ -300,10 +342,23 @@ void TechDemo::update_passCB()
 
 void TechDemo::build_defaultCamera()
 {
-	DirectX::XMVECTOR pos = DirectX::XMVectorSet(-1.0, 3.0f, -13.0f, 1.0f);
-	DirectX::XMVECTOR target = DirectX::XMVectorZero();
+	m_camera = new Camera();
+	//DirectX::XMVECTOR pos = DirectX::XMVectorSet(-1.0, 3.0f, -13.0f, 1.0f);
+	DirectX::XMVECTOR pos = DirectX::XMVectorSet(4.0, 5.0f, 0.0f, 1.0f);
+	DirectX::XMVECTOR target = DirectX::XMVectorSet(0.0, 0.0f, 0.0f, 1.0f);// DirectX::XMVectorZero();
 	DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	m_camera.lookAt(pos, target, up);
+
+	m_camera->lookAt(pos, target, up);
+
+
+	float w = static_cast<float>(width());
+	float h = static_cast<float>(height());
+	float aspect = w / h;
+	m_camera->lens->setLens(0.25f*XM_PI, aspect, 1.0f, 100.0f);
+
+	m_camera->buildFrustumBounding();
+
+	m_defaultCamera = true;
 }
 
 void TechDemo::work()
@@ -342,12 +397,16 @@ void TechDemo::onReSize(int newWidth, int newHeight)
 	BasicDXGI::onReSize(newWidth, newHeight);	
 	// Here we have cmdList is closed 
 
-	float w = static_cast<float>(width());
-	float h = static_cast<float>(height());
-	float aspect = w / h;
+	if (m_camera)
+	{
+		float w = static_cast<float>(width());
+		float h = static_cast<float>(height());
+		float aspect = w / h;		
 
-	m_camera.lens->setLens(0.25f*XM_PI, aspect, 1.0f, 1000.0f);
-	m_camera.buildFrustumBounding();
+		PerspectiveCameraLens* lPerspectiveLens = dynamic_cast<PerspectiveCameraLens*> (m_camera->lens);
+		lPerspectiveLens->setAspectRatio(aspect);		
+		m_camera->buildFrustumBounding();
+	}	
 
 	if (!m_init3D_done) return; // onResize call it before how 3D part was init
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "ApplDataStructures.h"
+#include "Camera.h"
 #include <map>
 
 class ObjectManager
@@ -13,9 +14,11 @@ class ObjectManager
 	std::vector<std::unique_ptr<RenderItem>> m_skinnedNotOpaqueLayer;
 
 	std::map<std::string, std::unique_ptr<Mesh>> m_meshes;
+	std::vector<std::unique_ptr<Camera>> m_cameras;
 
 	ObjectManager(const ObjectManager& p)=delete;
 	ObjectManager& operator=(const ObjectManager* p) = delete;
+	void mirrorZLayer(std::vector<std::unique_ptr<RenderItem>>& layer, DirectX::XMMATRIX& mirrZM);
 public:
 	ObjectManager();
 	~ObjectManager();
@@ -26,9 +29,10 @@ public:
 	void addSkinnedOpaqueObject(std::unique_ptr<RenderItem>& object);
 	void addSkinnedNotOpaqueObject(std::unique_ptr<RenderItem>& object);
 	void addSky(std::unique_ptr<RenderItem>& object);
-	
-	
 	void addMesh(std::string name, std::unique_ptr<Mesh>& iMesh);
+	void addCamera(std::unique_ptr<Camera>& camera);
+	
+	const std::vector<std::unique_ptr<Camera>>& getCameras();
 	const std::vector<std::unique_ptr<RenderItem>>& getSky();
 	const std::vector<std::unique_ptr<RenderItem>>& getOpaqueLayer();
 	const std::vector<std::unique_ptr<RenderItem>>& getNotOpaqueLayer();
@@ -36,5 +40,6 @@ public:
 	const std::vector<std::unique_ptr<RenderItem>>& getSkinnedOpaqueLayer();
 	const std::vector<std::unique_ptr<RenderItem>>& getSkinnedNotOpaqueLayer();
 	UINT getCommonInstancesCount();
+	void mirrorZ();
 };
 

@@ -26,8 +26,11 @@ public:
 	BoneAnimation* getAnimation(std::string& animationName);
 
 	void interpolate(float t, std::string& animationName);
-	void buildToRoot(BoneData* parent);
+	void interpolateNode(float t, std::string& animationName); //only for Node - Animated objects(Camera, Lights)
+	void buildToRoot(BoneData* parent);	
+
 	void getFinalMatrices(std::vector<DirectX::XMFLOAT4X4>& finalMatrices);
+	DirectX::XMFLOAT4X4& getFinalMatrix();
 	void get_begin_end_animationTime(std::string& animationName, float& beginT, float& endT);
 	static int getCommonIDValue() { return m_commonID; }
 };

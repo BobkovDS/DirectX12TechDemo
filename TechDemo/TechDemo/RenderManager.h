@@ -1,6 +1,7 @@
 #pragma once
 #include "RenderBase.h"
 #include "FinalRender.h"
+#include "DebugRender_Axis.h"
 
 struct RenderManagerMessanger {
 	ID3D12DescriptorHeap* RTVHeap;
@@ -26,6 +27,7 @@ class RenderManager
 
 	bool m_initialized;
 	FinalRender m_finalRender;
+	DebugRender_Axis m_debugRenderAxes;
 
 	void buildTechSRVs();
 

@@ -24,7 +24,7 @@ public:
 	virtual ~PSOBaseLayer();
 
 	//virtual void initialized()=0;
-	virtual void buildPSO(ID3D12Device* m_device, DXGI_FORMAT rtFormat, DXGI_FORMAT dsFormat)=0;
+	virtual void buildPSO(ID3D12Device* m_device, DXGI_FORMAT rtFormat, DXGI_FORMAT dsFormat) = 0;
 	ID3D12PipelineState* getPSO(UINT layerID);
 	ID3D12RootSignature* getRootSignature();	
 };

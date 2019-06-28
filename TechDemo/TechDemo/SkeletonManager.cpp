@@ -18,20 +18,15 @@ SkeletonManager::~SkeletonManager()
 //}
 
 
-SkinnedData& SkeletonManager::getSkeleton(std::string& skeletonName)
+SkinnedData& SkeletonManager::getSkeletonSkinnedAnimated(std::string& skeletonName)
 {
-	return m_skeletons[skeletonName]; // it will be created, if we do not have this skeleton yet
+	return m_skeletons_SkinnedAnimated[skeletonName]; // it will be created, if we do not have this skeleton yet
 }
 
-int SkeletonManager::getSkeletonCount()
+SkinnedData& SkeletonManager::getSkeletonSkinnedAnimated(UINT id)
 {
-	return m_skeletons.size();
-}
-
-SkinnedData& SkeletonManager::getSkeleton(UINT id)
-{
-	auto it_begin = m_skeletons.begin();
-	if (id > m_skeletons.size()) id = m_skeletons.size();
+	auto it_begin = m_skeletons_SkinnedAnimated.begin();
+	if (id > m_skeletons_SkinnedAnimated.size()) id = m_skeletons_SkinnedAnimated.size();
 
 	for (int i = 0; i < id; i++)
 		it_begin++;
@@ -39,12 +34,45 @@ SkinnedData& SkeletonManager::getSkeleton(UINT id)
 	return it_begin->second;
 }
 
+int SkeletonManager::getSkeletonSkinnedAnimatedCount()
+{
+	return m_skeletons_SkinnedAnimated.size();
+}
+
+SkinnedData& SkeletonManager::getSkeletonNodeAnimated(std::string& skeletonName)
+{
+	return m_skeletons_NodeAnimated[skeletonName]; // it will be created, if we do not have this skeleton yet
+}
+
+SkinnedData& SkeletonManager::getSkeletonNodeAnimated(UINT id)
+{
+	auto it_begin = m_skeletons_NodeAnimated.begin();
+	if (id > m_skeletons_NodeAnimated.size()) id = m_skeletons_NodeAnimated.size();
+
+	for (int i = 0; i < id; i++)
+		it_begin++;
+
+	return it_begin->second;
+}
+
+int SkeletonManager::getSkeletonNodeAnimatedCount()
+{
+	return m_skeletons_NodeAnimated.size();
+}
+
 void SkeletonManager::evaluateAnimationsTime()
 {
-	auto begin_it = m_skeletons.begin();
-	for (; begin_it != m_skeletons.end(); begin_it++)
-		begin_it->second.evaluateBeginEndTime();
+	{
+		auto begin_it = m_skeletons_SkinnedAnimated.begin();
+		for (; begin_it != m_skeletons_SkinnedAnimated.end(); begin_it++)
+			begin_it->second.evaluateBeginEndTime();
+	}
 
+	{
+		auto begin_it = m_skeletons_NodeAnimated.begin();
+		for (; begin_it != m_skeletons_NodeAnimated.end(); begin_it++)
+			begin_it->second.evaluateBeginEndTime();
+	}
 	m_animationTimeWasEvaluated = false;
 }
 

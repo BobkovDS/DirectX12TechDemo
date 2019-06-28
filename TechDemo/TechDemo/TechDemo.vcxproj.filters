@@ -111,6 +111,12 @@
     <ClCompile Include="ApplLogger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DebugRender_Axis.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="PSODebugLayer_Axis.cpp">
+      <Filter>Source Files\PSO</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BasicDXGI.h">
@@ -212,6 +218,12 @@
     <ClInclude Include="ApplLogger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PSODebugLayer_Axis.h">
+      <Filter>Header Files\PSO</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugRender_Axis.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\commonPart.hlsl">
@@ -239,6 +251,12 @@
       <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\FinalRender_SKY_shaders.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\DebugAxesRender_shaders.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\DebugRootSignature.hlsl">
       <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
   </ItemGroup>

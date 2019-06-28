@@ -8,8 +8,7 @@ std::vector<D3D12_INPUT_ELEMENT_DESC> PSOBaseLayer::m_inputLayout[] =
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 36, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 36, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },		
 	},
 	// SKINNED variant
 	{
@@ -86,7 +85,7 @@ D3D12_GRAPHICS_PIPELINE_STATE_DESC PSOBaseLayer::buildCommonPSODescription()
 	
 	psoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
 	// Define which winding is for Front-face: CounterClockwise or Clockwise
-	psoDesc.RasterizerState.FrontCounterClockwise = false; // Vertex winding order which we got from Obj(?) is Clockwise,	
+	psoDesc.RasterizerState.FrontCounterClockwise = true; // Vertex winding order which we got from Obj(?) is Clockwise,	
 	psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE; // we have it only for our Flashing Red
 	//psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // Do not draw Back-faces. For performances
 	psoDesc.RasterizerState.DepthBias = 100000;

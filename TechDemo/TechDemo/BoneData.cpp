@@ -54,6 +54,15 @@ void BoneData::interpolate(float t, std::string& animationName)
 		m_childs[i]->interpolate(t, animationName);
 }
 
+void BoneData::interpolateNode(float t, std::string& animationName) 
+{
+	BoneAnimation* animation = getAnimation(animationName);
+	if (animation)
+	{
+		animation->interpolate(t, m_finalTransform);
+	}	
+}
+
 void BoneData::buildToRoot(BoneData* parent)
 {
 	if (parent == nullptr)
@@ -87,6 +96,12 @@ void BoneData::getFinalMatrices(std::vector<DirectX::XMFLOAT4X4>& finalMatrices)
 	for (int i = 0; i < m_childs.size(); i++)
 		m_childs[i]->getFinalMatrices(finalMatrices);
 }
+
+DirectX::XMFLOAT4X4& BoneData::getFinalMatrix()
+{
+	return m_finalTransform;	
+}
+
 
 void BoneData::get_begin_end_animationTime(std::string& animationName, float& beginT, float& endT)
 {

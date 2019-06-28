@@ -15,10 +15,12 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
     InstanceData instData = gInstanceData[shapeID];
     float4x4 wordMatrix = instData.World;  
     
-    //get World transform
-    //float4 posW = mul(float4(vin.PosL, 1.0f), wordMatrix);   
-    float4 posW = mul(wordMatrix, float4(vin.PosL, 1.0f));
+    //get World transform    
+    float4 posW = mul(wordMatrix, float4(vin.PosL, 1.0f));    
+    //float4 posW = float4(vin.PosL, 1.0f);    
+    //posW.z = posW.z * (-1.0f);
 	vout.PosW = posW.xyz;
+    
 
     float4x4 ViewProj = cbPass.ViewProj;
 

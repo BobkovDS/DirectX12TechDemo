@@ -4,7 +4,8 @@
 
 class SkeletonManager
 {
-	std::map<std::string, SkinnedData> m_skeletons;
+	std::map<std::string, SkinnedData> m_skeletons_SkinnedAnimated; // Skeletons for Skinned-animated object (Wolf)
+	std::map<std::string, SkinnedData> m_skeletons_NodeAnimated; // skeletons for animated Objects like Camera or Light
 	bool m_animationTimeWasEvaluated;
 public:	
 
@@ -12,10 +13,15 @@ public:
 	~SkeletonManager();
 
 	//SkinnedData* addSkeleton(std::string& skeletonName); /*TO_DO: delete*/
-	SkinnedData& getSkeleton(std::string& skeletonName);
-	SkinnedData& getSkeleton(UINT i);
+	SkinnedData& getSkeletonSkinnedAnimated(std::string& skeletonName);
+	SkinnedData& getSkeletonSkinnedAnimated(UINT i);
+	SkinnedData& getSkeletonNodeAnimated(std::string& skeletonName);
+	SkinnedData& getSkeletonNodeAnimated(UINT i);
+
+	int getSkeletonSkinnedAnimatedCount();
+	int getSkeletonNodeAnimatedCount();
+
 	void getAnimationsTime(float& beginT, float& endT);
-	int getSkeletonCount();
 	void evaluateAnimationsTime();
 };
 

@@ -24,7 +24,7 @@ public:
 	float getStartTime() const { return m_beginTime; };
 	float getEndTime() const { return m_endTime; };	
 	void evaluateBeginEndTime();
-	void interpolate(float t, DirectX::XMFLOAT4X4& interpolatedValue) const;
+	void interpolate(float t, DirectX::XMFLOAT4X4& interpolatedValue) const;	
 	void addKeyFrame(KeyFrame& keyFrame);
 	KeyFrame& getKeyFrame(UINT i);
 };

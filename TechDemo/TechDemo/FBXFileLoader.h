@@ -88,6 +88,9 @@ private:
 	std::map<std::string, std::pair<int, fbx_TreeBoneNode*>> m_BonesIDByName;
 	std::vector<FbxNode*> m_bones; //the list of bones, ordered by Bone ID
 	std::vector<fbx_TreeBoneNode*> m_rootBones; // We can have some amount of Skeleton
+	std::vector<fbx_TreeBoneNode*> m_cameraNodes; // "Bones" for Camera, we need it to fill Camera Animation to Skeleton object
+	std::vector<fbx_TreeBoneNode*> m_lightsNodes; // "Bones" for Lights, we need it to fill Lights Animation to Skeleton object
+
 	//std::unique_ptr<FbxSkinnedData> m_fbxSkinnedData;
 	UINT m_materialLastAddedID;
 	int m_BoneGlobalID;
@@ -101,7 +104,7 @@ private:
 	void add_SkeletonBone(SkinnedData& skeleton, fbx_TreeBoneNode* parentNode);
 	void add_InstanceToRenderItem(const fbx_NodeInstance& nodeRI);
 	void add_AnimationStack(FbxAnimStack* animationStack);
-	void add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData* skeleton, fbx_TreeBoneNode* bone, std::string& animationName);
+	bool add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData* skeleton, fbx_TreeBoneNode* bone, std::string& animationName);
 	void get_BindMatrix(std::string boneName, DirectX::XMFLOAT4X4& m);
 	void get_LcTransformationData(fbx_TreeBoneNode* src_bone, BoneData* dst_bone);
 	void process_NodeInstances();
@@ -115,7 +118,7 @@ private:
 	// FBX process functions
 	void process_node(const FbxNode* pNode);
 	void process_mesh(const FbxNodeAttribute* pNodeAtribute, bool meshForTesselation=false);
-	void process_camera(const FbxNodeAttribute* pNodeAtribute);
+	void process_camera(const FbxNodeAttribute* pNodeAtribute, FbxNode* pNode);
 	bool read_texture_data(fbx_Material* destMaterial, FbxProperty* matProperty, std::string textureType); //FbxSurfacePhong* srcMaterial,
 
 	template<class T>

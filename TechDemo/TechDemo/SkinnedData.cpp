@@ -2,6 +2,7 @@
 
 SkinnedData::SkinnedData():m_animationTime(0)
 {
+	DirectX::XMStoreFloat4x4(&m_identityMatrix, DirectX::XMMatrixIdentity());		
 }
 
 SkinnedData::~SkinnedData()
@@ -110,4 +111,28 @@ const std::vector<DirectX::XMFLOAT4X4>& SkinnedData::getFinalTransforms(float dt
 	interpolate(m_animationTime, animationID);
 
 	return m_bonesFinalTransforms;
+}
+
+DirectX::XMFLOAT4X4& SkinnedData::getNodeTransform(float dt, UINT animationID)
+{
+	m_animationTime += dt;
+	
+	if (animationID < m_animations.size())
+	{
+		float lAnimBeginTime = m_animationsBeginEndTimes[m_animations[animationID]].first;
+		float lAnimEndTime = m_animationsBeginEndTimes[m_animations[animationID]].second;
+
+		if (m_animationTime > lAnimEndTime)
+			m_animationTime = lAnimBeginTime;
+
+		assert(m_root_bones.size() == 1);// we think that for NodeAnimated object should be 1 root bone
+		
+		m_root_bones[0]->interpolateNode(m_animationTime, m_animations[animationID]);
+			
+		return m_root_bones[0]->getFinalMatrix();		
+	}
+	else
+		return m_identityMatrix;
+
+	
 }

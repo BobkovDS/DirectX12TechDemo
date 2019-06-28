@@ -46,7 +46,7 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
     //float4 posW = mul(float4(vin.PosL, 1.0f), wordMatrix);
     float4 posW = mul(wordMatrix, float4(vin.PosL, 1.0f) );
    // float4 posW = float4(vin.PosL, 1.0f);
-    posW = mul(Final, posW);
+    posW = mul(Final, posW);    
 	vout.PosW = posW.xyz;
 
     float4x4 ViewProj = cbPass.ViewProj;

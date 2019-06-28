@@ -24,7 +24,7 @@ void RenderManager::initialize(const RenderManagerMessanger& renderParams)
 	m_frameResourceManager= renderParams.commonRenderData.FrameResourceMngr;
 	m_texturesDescriptorHeap = renderParams.SRVHeap;
 	m_finalRender.initialize(renderParams.commonRenderData);
-
+	m_debugRenderAxes.initialize(renderParams.commonRenderData);
 	m_initialized = true;
 }
 
@@ -37,6 +37,11 @@ void RenderManager::buildRenders()
 	m_finalRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
 	m_finalRender.build();
 	m_finalRender.setSwapChainResources(m_swapChainResources);
+
+	// build Debug Axes Render
+	m_debugRenderAxes.set_DescriptorHeap_RTV(m_applicationRTVHeap);
+	m_debugRenderAxes.build();
+	m_debugRenderAxes.setSwapChainResources(m_swapChainResources);
 }
 
 void RenderManager::draw(int flags)
@@ -45,6 +50,7 @@ void RenderManager::draw(int flags)
 
 	int updatedFlags = flags;
 	m_finalRender.draw(updatedFlags);
+	m_debugRenderAxes.draw(updatedFlags);
 }
 
 void RenderManager::buildTechSRVs()
@@ -87,14 +93,4 @@ void RenderManager::resize(int iwidth, int iheight)
 	{
 		m_finalRender.resize(iwidth, iheight);
 	}	
-}
-
-void RenderManager::releaseExternalResources()
-{
-	
-}
-
-void RenderManager::connectExternalResourcesBack()
-{
-
 }
