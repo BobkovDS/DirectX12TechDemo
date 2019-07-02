@@ -2,6 +2,9 @@
 #include "RenderBase.h"
 #include "FinalRender.h"
 #include "DebugRender_Axis.h"
+#include "DebugRender_Light.h"
+#include "DebugRender_Normals.h"
+
 
 struct RenderManagerMessanger {
 	ID3D12DescriptorHeap* RTVHeap;
@@ -28,6 +31,13 @@ class RenderManager
 	bool m_initialized;
 	FinalRender m_finalRender;
 	DebugRender_Axis m_debugRenderAxes;
+	DebugRender_Light m_debugRenderLights;
+	DebugRender_Normals m_debugRenderNormals;
+	
+	bool m_debugMode;
+	bool m_debug_Axes;
+	bool m_debug_Lights;
+	bool m_debug_Normals_Vertex;
 
 	void buildTechSRVs();
 
@@ -39,8 +49,12 @@ public:
 	
 	void buildRenders();
 	void draw(int flags);
-	void resize(int newWidth, int newHeight);
-	void releaseExternalResources();
-	void connectExternalResourcesBack();
+	void resize(int newWidth, int newHeight);	
+
+	void toggleDebugMode();
+	void toggleDebug_Normals_Vertex();
+	void toggleDebug_Axes();
+	void toggleDebug_Lights();
+	bool isDebugMode() { return m_debugMode; }
 };
 

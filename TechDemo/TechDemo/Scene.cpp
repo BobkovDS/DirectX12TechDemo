@@ -1,5 +1,6 @@
 #include "Scene.h"
 
+
 using namespace DirectX;
 
 Scene::Scene()
@@ -55,12 +56,14 @@ std::vector<const InstanceDataGPU*>& Scene::getInstances()
 	return m_tmp_Intances;
 }
 
-void Scene::build(ObjectManager* objectManager, Camera* camera)
+void Scene::build(ObjectManager* objectManager, Camera* camera, SkeletonManager* skeletonManager)
 {
 	assert(objectManager);
 	assert(camera);
+	assert(skeletonManager);
 	m_objectManager = objectManager;
 	m_camera = camera;
+	m_skeletonManager = skeletonManager;
 
 	m_Layers[0].setVisibility(true);
 	m_Layers[1].setVisibility(true);
@@ -68,6 +71,10 @@ void Scene::build(ObjectManager* objectManager, Camera* camera)
 	m_Layers[3].setVisibility(true);
 	m_Layers[4].setVisibility(true);
 	m_Layers[5].setVisibility(true);
+
+	// Copy lights once to Scene		
+	for (int i = 0; i < m_objectManager->getLights().size(); i++)
+		m_lights.push_back(m_objectManager->getLights()[i]);
 
 	update();
 }
@@ -85,7 +92,32 @@ void Scene::update()
 	updateLayer(m_Layers[5], m_objectManager->getNotOpaqueLayerGH());
 	
 	m_instancesDataReadTimes = FRAMERESOURCECOUNT;
-	m_doesItNeedUpdate = false;
+	m_doesItNeedUpdate = false;	
+}
+
+void Scene::updateLight(float time)
+{
+	for (int i = 0; i < m_lights.size(); i++)
+	{
+		if (m_skeletonManager->isExistSkeletonNodeAnimated(m_lights[i].Name))
+		{
+			SkinnedData& lSkeleton = m_skeletonManager->getSkeletonNodeAnimated(m_lights[i].Name);
+
+			XMFLOAT4X4 &lFinalMatrix = lSkeleton.getNodeTransform(time, 0);
+			XMMATRIX lLcTr = DirectX::XMLoadFloat4x4(&lFinalMatrix);
+			if (XMMatrixIsIdentity(lLcTr)) continue;
+
+			DirectX::XMVECTOR lPos = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+			DirectX::XMVECTOR lLook = XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f);
+			
+			lPos = XMVector3Transform(lPos, lLcTr);
+			lLook = XMVector3Normalize(XMVector3TransformNormal(lLook, lLcTr));
+
+			XMStoreFloat3(&m_lights[i].Position, lPos);
+			XMStoreFloat3(&m_lights[i].Direction, lLook);
+			XMStoreFloat3(&m_lights[i].initDirection, lLook);
+		}
+	}
 }
 
 bool Scene::isInstancesDataUpdateRequred()
@@ -136,7 +168,7 @@ const std::vector<CPULight>& Scene::getLights()
 		/*directional light.  We should know:
 			1) position
 			2) strenght
-			3) diraction
+			3) direction
 		*/
 
 		DirectX::XMVECTOR pos, direction;

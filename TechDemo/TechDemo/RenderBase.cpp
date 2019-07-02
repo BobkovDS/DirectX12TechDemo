@@ -167,6 +167,12 @@ void RenderBase::set_DescriptorHeap_RTV(ID3D12DescriptorHeap* rtvHeap)
 	m_rtvHeapWasSetBefore = true;
 }
 
+void RenderBase::set_DescriptorHeap_DSV(ID3D12DescriptorHeap* dsvHeap)
+{
+	m_dsvHeap= dsvHeap;
+	m_dsvHeapWasSetBefore = true;
+}
+
 void RenderBase::create_DSV(DXGI_FORMAT viewFormat)
 {
 	DXGI_FORMAT lViewFormat = viewFormat;
@@ -197,12 +203,12 @@ void RenderBase::create_RTV(DXGI_FORMAT viewFormat)
 	}
 }
 
-const ID3D12DescriptorHeap* RenderBase::get_dsvHeapPointer()
+ID3D12DescriptorHeap* RenderBase::get_dsvHeapPointer()
 {
 	return m_dsvHeap;
 }
 
-const ID3D12DescriptorHeap* RenderBase::get_rtvHeapPointer()
+ID3D12DescriptorHeap* RenderBase::get_rtvHeapPointer()
 {
 	return m_rtvHeap;
 }

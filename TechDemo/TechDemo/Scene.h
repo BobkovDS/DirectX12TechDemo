@@ -2,6 +2,7 @@
 #include "ApplDataStructures.h"
 #include "Defines.h"
 #include "ObjectManager.h"
+#include "SkeletonManager.h"
 #include "Camera.h"
 
 #define FRAMERESOURCECOUNT 3
@@ -11,6 +12,7 @@ class Scene
 	std::vector<SceneLayer> m_Layers;
 	std::vector<const InstanceDataGPU*> m_tmp_Intances;
 	ObjectManager* m_objectManager;
+	SkeletonManager* m_skeletonManager;
 	Camera* m_camera;
 
 	std::vector<CPULight> m_lights; //lights in the scene
@@ -56,8 +58,9 @@ public:
 	std::vector<const InstanceDataGPU*>& getInstancesUpdate();
 	std::vector<const InstanceDataGPU*>& getInstances();
 	const std::vector<CPULight>& getLights();
-	void build(ObjectManager* objectManager, Camera* camera);
+	void build(ObjectManager* objectManager, Camera* camera, SkeletonManager* skeletonManagers);
 	void update();
+	void updateLight(float time);
 	void updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<RenderItem>>& RI, bool isFrustumCullingRequired=true);
 	bool isInstancesDataUpdateRequred();
 	void cameraListener();

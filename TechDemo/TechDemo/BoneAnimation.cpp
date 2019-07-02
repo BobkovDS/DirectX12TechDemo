@@ -34,19 +34,20 @@ void BoneAnimation::evaluateBeginEndTime()
 		if (m_keyFrames[i].TimePos > m_endTime) m_endTime= m_keyFrames[i].TimePos;
 	}
 }
-void BoneAnimation::interpolate(float t, XMFLOAT4X4& interpolatedValue) const
+void BoneAnimation::interpolate(float time, XMFLOAT4X4& interpolatedValue) const
 {
-	if (t < getStartTime())
-		interpolatedValue = m_keyFrames.front().Transform;
+	KeyFrame lKeyFrame = {};
+	if (time < getStartTime())
+		lKeyFrame = m_keyFrames.front();
 	else
-		if (t>getEndTime())
-		interpolatedValue = m_keyFrames.back().Transform;
+		if (time >getEndTime())
+			lKeyFrame = m_keyFrames.back();
 		else
 		{
 			for (int i=0; i<m_keyFrames.size()-1; i++)
-				if (t >= m_keyFrames[i].TimePos && t < m_keyFrames[i + 1].TimePos)
+				if (time >= m_keyFrames[i].TimePos && time < m_keyFrames[i + 1].TimePos)
 				{
-					float lLerpPercent = (t - m_keyFrames[i].TimePos) / (m_keyFrames[i+1].TimePos - m_keyFrames[i].TimePos);
+					float lLerpPercent = (time- m_keyFrames[i].TimePos) / (m_keyFrames[i+1].TimePos - m_keyFrames[i].TimePos);
 						
 					// interpolation job here
 					XMVECTOR s0 = XMLoadFloat4(&m_keyFrames[i].Scale);
@@ -73,7 +74,23 @@ void BoneAnimation::interpolate(float t, XMFLOAT4X4& interpolatedValue) const
 					//C = XMLoadFloat4x4(&m_keyFrames[i].Transform); // TEST
 					XMStoreFloat4x4(&interpolatedValue, C);
 
-					break;
+					return;
 				}
 		}
+
+	// interpolation job here for bound-keys
+	XMVECTOR s = XMLoadFloat4(&lKeyFrame.Scale);
+	XMVECTOR t = XMLoadFloat4(&lKeyFrame.Translation);
+	XMVECTOR r = XMLoadFloat4(&lKeyFrame.Rotation);
+
+	XMMATRIX Sm = XMMatrixScalingFromVector(s);
+	XMMATRIX Tm = XMMatrixTranslationFromVector(t);
+	XMMATRIX Rxm = XMMatrixRotationX(XMVectorGetX(r));
+	XMMATRIX Rym = XMMatrixRotationY(XMVectorGetY(r));
+	XMMATRIX Rzm = XMMatrixRotationZ(XMVectorGetZ(r));
+	XMMATRIX Rm = Rxm * Rym * Rzm;
+
+	XMMATRIX C = Sm * Rm *Tm;	
+	XMStoreFloat4x4(&interpolatedValue, C);
+	
 }

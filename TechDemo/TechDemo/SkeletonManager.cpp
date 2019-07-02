@@ -44,6 +44,12 @@ SkinnedData& SkeletonManager::getSkeletonNodeAnimated(std::string& skeletonName)
 	return m_skeletons_NodeAnimated[skeletonName]; // it will be created, if we do not have this skeleton yet
 }
 
+bool SkeletonManager::isExistSkeletonNodeAnimated(std::string& skeletonName)
+{
+	auto it = m_skeletons_NodeAnimated.find(skeletonName);
+	return (it != m_skeletons_NodeAnimated.end());
+}
+
 SkinnedData& SkeletonManager::getSkeletonNodeAnimated(UINT id)
 {
 	auto it_begin = m_skeletons_NodeAnimated.begin();

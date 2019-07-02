@@ -42,6 +42,7 @@ protected:
 	void update();
 	void update_BoneData();
 	void update_camera();
+	void update_light();
 	void update_passCB();
 	void update_objectCB();
 	void build_defaultCamera();

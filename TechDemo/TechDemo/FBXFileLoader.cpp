@@ -1,9 +1,10 @@
 #include "FBXFileLoader.h"
 #include "ApplException.h"
 
-
 using namespace std;
 using namespace DirectX;
+
+#define NORMALMODE 
 
 int FBXFileLoader::m_materialCountForPrevCalling = 0;
 
@@ -274,6 +275,14 @@ void FBXFileLoader::add_AnimationStack(FbxAnimStack* animationStack)
 			if (add_AnimationInfo(lAnimLayer, lSkeleton, m_cameraNodes[i], lAnimStackName))
 				lSkeleton->addAnimationName(lAnimStackName);
 		}
+
+		// Lights
+		for (int i = 0; i < m_lightsNodes.size(); i++)
+		{
+			SkinnedData* lSkeleton = &m_skeletonManager->getSkeletonNodeAnimated(m_lightsNodes[i]->Name); // Here Skeleton should be already created
+			if (add_AnimationInfo(lAnimLayer, lSkeleton, m_lightsNodes[i], lAnimStackName))
+				lSkeleton->addAnimationName(lAnimStackName);
+		}
 	}
 }
 
@@ -285,8 +294,8 @@ bool  FBXFileLoader::add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData
 
 	FbxAnimCurve* lAnimCurve = NULL;		
 	// we think that all Curves for node have the same first and last Time values, so let's use Translation_X to get it
-	lAnimCurve = bone->Node->LclTranslation.GetCurve(animationLayer, FBXSDK_CURVENODE_COMPONENT_X); 
-	
+	lAnimCurve = get_AnimationCurve(bone->Node, animationLayer);	
+
 	if (lAnimCurve != NULL)
 	{
 		lHasAnimation = true;
@@ -304,7 +313,7 @@ bool  FBXFileLoader::add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData
 		FbxTime lFrameTime;
 		for (float i = lfFirstTime; i <= lfLastTime; i++)
 		{
-			float lTime = 1.0f / 24.0f * i;
+			float lTime = 1.0f / 30.0f * i;
 			lFrameTime.SetSecondDouble(lTime);
 
 			//FbxAMatrix lTrasformation = bone->Node->EvaluateLocalTransform(lFrameTime);
@@ -327,15 +336,43 @@ bool  FBXFileLoader::add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData
 	}
 	// Get Bind Matrix
 	get_BindMatrix(bone->Name, lBoneData->m_bindTransform);
-	
-	//Get Node LocalTransformation data
-	//get_LcTransformationData(bone, lBoneData);
 
 	//Get the same data for children-nodes
 	for (int i = 0; i < bone->Childs.size(); i++)
 		lHasAnimation |= add_AnimationInfo(animationLayer, skeleton, bone->Childs[i], animationName);
 
 	return lHasAnimation;
+}
+
+FbxAnimCurve* FBXFileLoader::get_AnimationCurve(FbxNode* node, FbxAnimLayer* animationLayer)
+{
+	FbxAnimCurve* lCurve = node->LclTranslation.GetCurve(animationLayer, FBXSDK_CURVENODE_COMPONENT_X);
+	if (lCurve != NULL) return lCurve;
+	else
+	{
+		lCurve = node->LclTranslation.GetCurve(animationLayer, FBXSDK_CURVENODE_COMPONENT_Y);
+		if (lCurve != NULL) return lCurve;
+		else
+		{
+			lCurve = node->LclTranslation.GetCurve(animationLayer, FBXSDK_CURVENODE_COMPONENT_Z);
+			if (lCurve != NULL) return lCurve;
+			else
+			{
+				lCurve = node->LclRotation.GetCurve(animationLayer, FBXSDK_CURVENODE_COMPONENT_X);
+				if (lCurve != NULL) return lCurve;
+				else
+				{
+					lCurve = node->LclRotation.GetCurve(animationLayer, FBXSDK_CURVENODE_COMPONENT_Y);
+					if (lCurve != NULL) return lCurve;
+					else
+					{
+						lCurve = node->LclRotation.GetCurve(animationLayer, FBXSDK_CURVENODE_COMPONENT_Z);
+						return lCurve;						
+					}
+				}
+			}
+		}
+	}
 }
 
 void FBXFileLoader::get_BindMatrix(std::string boneName, DirectX::XMFLOAT4X4& m)
@@ -372,68 +409,6 @@ void FBXFileLoader::get_BindMatrix(std::string boneName, DirectX::XMFLOAT4X4& m)
 			}
 		}
 	}
-}
-
-void FBXFileLoader::get_LcTransformationData(fbx_TreeBoneNode* src_bone, BoneData* dst_bone)
-{
-	string name = src_bone->Name;
-	FbxDouble3 lTranslation = src_bone->Node->LclTranslation;
-	FbxDouble3 lScaling= src_bone->Node->LclScaling;
-	FbxDouble3 lRotation= src_bone->Node->LclRotation;
-	FbxAMatrix lTransformationM = src_bone->Node->EvaluateLocalTransform();
-
-	XMVECTOR lT = XMVectorSet(lTranslation.mData[0], lTranslation.mData[1], lTranslation.mData[2], 0.0f);
-	XMVECTOR lS = XMVectorSet(lScaling.mData[0], lScaling.mData[1], lScaling.mData[2], 0.0f);
-	XMVECTOR lR = XMVectorSet(lRotation.mData[0], lRotation.mData[1], lRotation.mData[2], 0.0f);
-
-	XMFLOAT4X4 lMlc;
-	convertFbxMatrixToFloat4x4(lTransformationM, lMlc);
-	XMMATRIX lM = XMLoadFloat4x4(&lMlc);
-
-	XMMATRIX lTm = XMMatrixTranslationFromVector(lT);
-	XMMATRIX lSm = XMMatrixScalingFromVector(lS);
-	float lAngle = lRotation.mData[0];
-	float lInRadians = lAngle * XM_PI / 180;
-	XMMATRIX lRxm = XMMatrixRotationX(lInRadians);
-	XMMATRIX lRym = XMMatrixRotationX(lRotation.mData[1]);
-	XMMATRIX lRzm = XMMatrixRotationX(lRotation.mData[2]);
-	//XMMATRIX lRm = lRzm * lRym * lRxm;
-	XMMATRIX lRm = lRxm * lRym *lRzm;
-	XMMATRIX lRm2 = XMMatrixRotationRollPitchYawFromVector(lR);
-
-	//XMMATRIX lResult = lTm* lRm * lSm;
-	XMMATRIX lResult = lSm * lRm * lTm;
-	//lResult = XMMatrixTranspose(lResult);
-
-	// evaluating
-
-	float lt = 0;
-	FbxTime lFrameTime;
-	lFrameTime.SetSecondDouble(lt);
-	FbxAMatrix leTrasformation = src_bone->Node->EvaluateLocalTransform(lFrameTime);
-	FbxVector4 leTranslation = src_bone->Node->EvaluateLocalTranslation(lFrameTime);
-	FbxVector4 leScaling = src_bone->Node->EvaluateLocalScaling(lFrameTime);
-	FbxVector4 leRotation = src_bone->Node->EvaluateLocalRotation(lFrameTime);
-	XMFLOAT4X4 leTrns4x4;
-	XMFLOAT4 leTransl4;
-	XMFLOAT4 leScal4;
-	XMFLOAT4 leRot4;
-
-	convertFbxMatrixToFloat4x4(leTrasformation, leTrns4x4);
-	convertFbxVector4ToFloat4(leTranslation, leTransl4);
-	convertFbxVector4ToFloat4(leScaling, leScal4);
-	convertFbxVector4ToFloat4(leRotation, leRot4);
-
-	XMMATRIX leTrnsM = XMLoadFloat4x4(&leTrns4x4);
-	XMVECTOR leTranslV = XMLoadFloat4(&leTransl4);
-	XMVECTOR leScalingV= XMLoadFloat4(&leScal4);
-	XMVECTOR leRotatV = XMLoadFloat4(&leRot4);
-
-	XMMATRIX leTranslM = XMMatrixTranslationFromVector(leTranslV);
-	XMMATRIX leScalM= XMMatrixScalingFromVector(leScalingV);
-	XMMATRIX leRotatM= XMMatrixRotationRollPitchYawFromVector(leRotatV);
-
-	int a = 1;
 }
 
 void FBXFileLoader::build_Skeleton()
@@ -836,6 +811,18 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 
 			break;		
 		case fbxsdk::FbxNodeAttribute::eLight:
+		{
+			FbxNode* lNode2 = const_cast<FbxNode*>(pNode);
+			string name = lNode2->GetName();
+
+			process_light(pNodeAtrib, lNode2);
+
+			fbx_TreeBoneNode* lLightBone = new fbx_TreeBoneNode();
+
+			lLightBone->Name = name;
+			lLightBone->Node = lNode2;
+			m_lightsNodes.push_back(lLightBone);
+		}
 			break;				
 		case fbxsdk::FbxNodeAttribute::eLODGroup:
 			break;		
@@ -896,7 +883,7 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool mes
 
 		int normalCount = normalLayer->GetDirectArray().GetCount();
 
-		//// We should sum all normals for the same vertex and normalize it later
+		// We should sum all normals for the same vertex and normalize it later
 		int* indicesData = lpcMesh->GetPolygonVertices(); //get a point to Indices data
 		for (int i = 0; i < normalCount; i++)
 		{
@@ -964,17 +951,20 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool mes
 			// Normal
 			if (normalLayer)
 			{
+
+#ifdef NORMALMODE
 				FbxVector4 normalv0 = normalLayer->GetDirectArray().GetAt(lVertexID + 0);
 				FbxVector4 normalv1 = normalLayer->GetDirectArray().GetAt(lVertexID + 1);
 				FbxVector4 normalv2 = normalLayer->GetDirectArray().GetAt(lVertexID + 2);
-				
+
 				XMFLOAT3 normal0 = XMFLOAT3(normalv0.mData[0], normalv0.mData[1], normalv0.mData[2]);
 				XMFLOAT3 normal1 = XMFLOAT3(normalv1.mData[0], normalv1.mData[1], normalv1.mData[2]);
 				XMFLOAT3 normal2 = XMFLOAT3(normalv2.mData[0], normalv2.mData[1], normalv2.mData[2]);
-
-				/*XMFLOAT3 normal0 = averageNormal[i0];
+#else
+				XMFLOAT3 normal0 = averageNormal[i0];
 				XMFLOAT3 normal1 = averageNormal[i1];
-				XMFLOAT3 normal2 = averageNormal[i2];*/				
+				XMFLOAT3 normal2 = averageNormal[i2];
+#endif // NORMALMODE
 
 				lmesh->Normals.push_back(normal0);
 				lmesh->Normals.push_back(normal1);
@@ -1021,7 +1011,6 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool mes
 				FbxVector2 uv2 = UVLayer->GetDirectArray().GetAt(lUVID2);
 				FbxVector2 uv3 = UVLayer->GetDirectArray().GetAt(lUVID3);
 
-
 				XMFLOAT2 xmuv0 = XMFLOAT2(uv0.mData[0], 1.0f - uv0.mData[1]);
 				XMFLOAT2 xmuv1 = XMFLOAT2(uv1.mData[0], 1.0f - uv1.mData[1]);
 				XMFLOAT2 xmuv2 = XMFLOAT2(uv2.mData[0], 1.0f - uv2.mData[1]);
@@ -1033,15 +1022,22 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool mes
 			// Normal
 			if (normalLayer)
 			{
+#ifdef NORMALMODE
 				FbxVector4 normalv0 = normalLayer->GetDirectArray().GetAt(lVertexID + 0);
 				FbxVector4 normalv1 = normalLayer->GetDirectArray().GetAt(lVertexID + 1);
 				FbxVector4 normalv2 = normalLayer->GetDirectArray().GetAt(lVertexID + 2);
-				FbxVector4 normalv3 = normalLayer->GetDirectArray().GetAt(lVertexID + 2);
+				FbxVector4 normalv3 = normalLayer->GetDirectArray().GetAt(lVertexID + 3);
 
 				XMFLOAT3 normal0 = XMFLOAT3(normalv0.mData[0], normalv0.mData[1], normalv0.mData[2]);
 				XMFLOAT3 normal1 = XMFLOAT3(normalv1.mData[0], normalv1.mData[1], normalv1.mData[2]);
 				XMFLOAT3 normal2 = XMFLOAT3(normalv2.mData[0], normalv2.mData[1], normalv2.mData[2]);
 				XMFLOAT3 normal3 = XMFLOAT3(normalv3.mData[0], normalv3.mData[1], normalv3.mData[2]);
+#else
+				XMFLOAT3 normal0 = averageNormal[i0];
+				XMFLOAT3 normal1 = averageNormal[i1];
+				XMFLOAT3 normal2 = averageNormal[i2];
+				XMFLOAT3 normal3 = averageNormal[i3];
+#endif // NORMALMODE
 
 				add_quadInfo_to_mesh<XMFLOAT3>(lmesh->Normals, normal0, normal1, normal2, normal3, meshForTesselation);
 			}
@@ -1176,6 +1172,67 @@ void FBXFileLoader::process_camera(const FbxNodeAttribute* pNodeAtribute, FbxNod
 	lCamera->lens->setLens(0.25f*XM_PI, 1.0f, lNearPlane, lFar);	
 
 	m_objectManager->addCamera(lCamera);	
+}
+
+void FBXFileLoader::process_light(const FbxNodeAttribute* pNodeAtribute, FbxNode* pNode)
+{
+	CPULight lnewLight = {};
+
+	const FbxLight* lLight = static_cast<const FbxLight*>(pNodeAtribute);
+	string lName = lLight->GetName();
+	
+	FbxAMatrix lLocalTransform = pNode->EvaluateLocalTransform();
+	DirectX::XMFLOAT4X4 lLocalTransformation;
+	convertFbxMatrixToFloat4x4(lLocalTransform, lLocalTransformation);
+
+	FbxLight::EType lLightType = lLight->LightType;
+
+	DirectX::XMVECTOR lPos = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	DirectX::XMVECTOR lLook = XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f);
+
+	XMMATRIX lLcTr = DirectX::XMLoadFloat4x4(&lLocalTransformation);
+	lPos = XMVector3Transform(lPos, lLcTr);	
+	//lLook = XMVector3TransformNormal(lLook, lLcTr);
+	lLook = XMVector3Normalize(XMVector3TransformNormal(lLook, lLcTr));
+
+	lnewLight.Name = lName;
+	FbxDouble3 lColor = lLight->Color.Get();
+	float lIntensity = lLight->Intensity/100.0f;
+	lnewLight.Strength = XMFLOAT3(lColor[0] * lIntensity, lColor[1] * lIntensity, lColor[2] * lIntensity);
+	
+	float lOuterAngle = lLight->OuterAngle;
+	float lInnerAngle = lLight->InnerAngle;
+
+	XMStoreFloat3(&lnewLight.Position, lPos);
+	XMStoreFloat3(&lnewLight.Direction, lLook);
+	XMStoreFloat3(&lnewLight.initDirection, lLook);
+		
+	lnewLight.turnOn = pNode->GetVisibility(); // we use Node visibility to show/hide a Light
+	lnewLight.lightType = LightType::Directional;
+
+	if (lLightType == FbxLight::ePoint) // a Lamp
+	{
+		FbxLight::EDecayType lType = lLight->DecayType;
+		float lFallofStart = lLight->DecayStart;
+		lnewLight.falloffStart = 0;
+		lnewLight.falloffEnd = lFallofStart * 2;
+		lnewLight.lightType = LightType::Point;
+	}
+	else if (lLightType == FbxLight::eSpot) // a Lamp
+	{
+		FbxLight::EDecayType lType = lLight->DecayType;
+		float lFallofStart = lLight->DecayStart;
+		lnewLight.falloffStart = 0;
+		lnewLight.falloffEnd = lFallofStart * 2;
+
+		float lOuterAngle = lLight->OuterAngle;
+		float lInnerAngle = lLight->InnerAngle;
+				
+		lnewLight.lightType = LightType::Spot;
+	}
+
+	m_objectManager->addLight(lnewLight);
+
 }
 
 bool FBXFileLoader::read_texture_data(

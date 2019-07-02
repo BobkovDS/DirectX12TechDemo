@@ -61,6 +61,7 @@ struct CPULight
 	// Data from this struct will copy to RenderItem - Light (to set position and directioanl) and
 	// copy to ConstantBuffer Per Pass to set light parametrs for each light in lighting colculation
 
+	std::string Name;
 	bool  needToUpdateRI = false;
 	bool  needToUpdateLight = false;
 

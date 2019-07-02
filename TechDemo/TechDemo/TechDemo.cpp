@@ -78,6 +78,14 @@ void TechDemo::onKeyDown(WPARAM btnState)
 	}
 	else if (btnState == 'C')
 		m_isCameraManualControl = !m_isCameraManualControl;
+	else if (btnState == VK_NUMPAD0)
+		m_renderManager.toggleDebugMode();
+	else if (btnState == VK_NUMPAD1)
+		m_renderManager.toggleDebug_Axes();
+	else if (btnState == VK_NUMPAD2)
+		m_renderManager.toggleDebug_Lights();
+	else if (btnState == VK_NUMPAD3)
+		m_renderManager.toggleDebug_Normals_Vertex();
 }
 
 std::string TechDemo::addTextToWindow()
@@ -94,6 +102,9 @@ std::string TechDemo::addTextToWindow()
 		text += " CameraMC=1";
 	else
 		text += " CameraMC=0";
+
+	if (m_renderManager.isDebugMode())
+		text += " DEBUG ";
 
 	return text;
 }
@@ -125,20 +136,13 @@ void TechDemo::init3D()
 		m_fbx_loader.loadSceneFile("Models\\The Scene.fbx");		
 	}	
 
-
 	//// Load a Tree
 	//{
 	//	FBXFileLoader m_fbx_loader;
 	//	m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
 	//	m_fbx_loader.loadSceneFile("Models\\Tree1.fbx");
 	//}
-
-	//{
-	//	FBXFileLoader m_fbx_loader;
-	//	m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
-	//	m_fbx_loader.loadSceneFile("Models\\mount2.fbx");
-	//}
-		   
+ 
 	m_tempVal = 0;
 	m_skeletonManager.evaluateAnimationsTime();
 	m_resourceManager.loadTexture();	
@@ -165,6 +169,7 @@ void TechDemo::init3D()
 	
 	//build_defaultCamera();
 
+	// Camera
 	if (m_objectManager.getCameras().size() == 0)
 		build_defaultCamera();	
 	else
@@ -186,7 +191,7 @@ void TechDemo::init3D()
 
 	//m_objectManager.mirrorZ();
 
-	m_scene.build(&m_objectManager, m_camera);
+	m_scene.build(&m_objectManager, m_camera, &m_skeletonManager);
 	m_renderManager.initialize(lRenderManagerParams);
 	m_renderManager.buildRenders();	
 	
@@ -204,7 +209,10 @@ void TechDemo::init3D()
 void TechDemo::update()
 {
 	m_animationTimer.tick();
+	float lTickTime = m_animationTimer.deltaTime();
+
 	m_scene.update();
+	m_scene.updateLight(lTickTime/5);
 	update_camera();	
 	update_objectCB();
 	update_BoneData();
@@ -349,7 +357,6 @@ void TechDemo::build_defaultCamera()
 	DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 	m_camera->lookAt(pos, target, up);
-
 
 	float w = static_cast<float>(width());
 	float h = static_cast<float>(height());

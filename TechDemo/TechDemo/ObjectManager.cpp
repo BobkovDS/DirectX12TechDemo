@@ -41,6 +41,28 @@ void ObjectManager::addSky(std::unique_ptr<RenderItem>& p)
 	m_skyLayer.push_back(std::move(p));
 }
 
+void ObjectManager::addMesh(std::string name, std::unique_ptr<Mesh>& iMesh)
+{
+	auto it = m_meshes.find(name);
+	assert(it == m_meshes.end());// we do not expect more meshes with the same name
+	m_meshes[name] = std::move(iMesh);
+}
+
+void ObjectManager::addCamera(std::unique_ptr<Camera>& camera)
+{
+	m_cameras.push_back(std::move(camera));
+}
+
+void ObjectManager::addLight(CPULight light)
+{
+	m_lights.push_back(light);
+}
+
+vector<CPULight>& ObjectManager::getLights()
+{
+	return m_lights;
+}
+
 const vector<std::unique_ptr<Camera>>& ObjectManager::getCameras()
 {
 	return m_cameras;
@@ -101,35 +123,3 @@ UINT ObjectManager::getCommonInstancesCount()
 	return lCommonInstancesCount;
 }
 
-void ObjectManager::addMesh(std::string name, std::unique_ptr<Mesh>& iMesh)
-{
-	auto it = m_meshes.find(name);
-	assert(it == m_meshes.end());// we do not expect more meshes with the same name
-	m_meshes[name] = std::move(iMesh);
-}
-
-void ObjectManager::addCamera(std::unique_ptr<Camera>& camera)
-{
-	m_cameras.push_back(std::move(camera));
-}
-
-void ObjectManager::mirrorZ()
-{
-	DirectX::XMMATRIX mirrZM = DirectX::XMMatrixReflect(DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
-	mirrorZLayer(m_opaqueLayer, mirrZM);
-}
-
-void ObjectManager::mirrorZLayer(std::vector<std::unique_ptr<RenderItem>>& layer, DirectX::XMMATRIX& mirrZM)
-{
-	for (int ri = 0; ri < layer.size(); ri++)
-	{
-		RenderItem* lRI = layer[ri].get();
-
-		for (int i = 0; i < lRI->Instances.size(); i++)
-		{
-			DirectX::XMMATRIX lWorld = DirectX::XMLoadFloat4x4(&lRI->Instances[i].World);
-			lWorld = mirrZM* lWorld;
-			DirectX::XMStoreFloat4x4(&lRI->Instances[i].World, lWorld);
-		}
-	}
-}

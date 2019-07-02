@@ -105,8 +105,8 @@ private:
 	void add_InstanceToRenderItem(const fbx_NodeInstance& nodeRI);
 	void add_AnimationStack(FbxAnimStack* animationStack);
 	bool add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData* skeleton, fbx_TreeBoneNode* bone, std::string& animationName);
-	void get_BindMatrix(std::string boneName, DirectX::XMFLOAT4X4& m);
-	void get_LcTransformationData(fbx_TreeBoneNode* src_bone, BoneData* dst_bone);
+	FbxAnimCurve* get_AnimationCurve(FbxNode* node, FbxAnimLayer* animationLayer);
+	void get_BindMatrix(std::string boneName, DirectX::XMFLOAT4X4& m);	
 	void process_NodeInstances();
 	void process_Skeleton(const FbxNode* pNode, fbx_TreeBoneNode* parent);
 	void move_RenderItems();	
@@ -119,6 +119,7 @@ private:
 	void process_node(const FbxNode* pNode);
 	void process_mesh(const FbxNodeAttribute* pNodeAtribute, bool meshForTesselation=false);
 	void process_camera(const FbxNodeAttribute* pNodeAtribute, FbxNode* pNode);
+	void process_light(const FbxNodeAttribute* pNodeAtribute, FbxNode* pNode);
 	bool read_texture_data(fbx_Material* destMaterial, FbxProperty* matProperty, std::string textureType); //FbxSurfacePhong* srcMaterial,
 
 	template<class T>

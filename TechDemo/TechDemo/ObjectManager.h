@@ -15,10 +15,10 @@ class ObjectManager
 
 	std::map<std::string, std::unique_ptr<Mesh>> m_meshes;
 	std::vector<std::unique_ptr<Camera>> m_cameras;
+	std::vector<CPULight> m_lights; //lights in the scene
 
 	ObjectManager(const ObjectManager& p)=delete;
-	ObjectManager& operator=(const ObjectManager* p) = delete;
-	void mirrorZLayer(std::vector<std::unique_ptr<RenderItem>>& layer, DirectX::XMMATRIX& mirrZM);
+	ObjectManager& operator=(const ObjectManager* p) = delete;	
 public:
 	ObjectManager();
 	~ObjectManager();
@@ -31,7 +31,9 @@ public:
 	void addSky(std::unique_ptr<RenderItem>& object);
 	void addMesh(std::string name, std::unique_ptr<Mesh>& iMesh);
 	void addCamera(std::unique_ptr<Camera>& camera);
+	void addLight(CPULight light);
 	
+	std::vector<CPULight>& getLights();
 	const std::vector<std::unique_ptr<Camera>>& getCameras();
 	const std::vector<std::unique_ptr<RenderItem>>& getSky();
 	const std::vector<std::unique_ptr<RenderItem>>& getOpaqueLayer();
@@ -39,7 +41,6 @@ public:
 	const std::vector<std::unique_ptr<RenderItem>>& getNotOpaqueLayerGH();
 	const std::vector<std::unique_ptr<RenderItem>>& getSkinnedOpaqueLayer();
 	const std::vector<std::unique_ptr<RenderItem>>& getSkinnedNotOpaqueLayer();
-	UINT getCommonInstancesCount();
-	void mirrorZ();
+	UINT getCommonInstancesCount();	
 };
 

@@ -128,11 +128,15 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="DebugRender_Axis.cpp" />
+    <ClCompile Include="DebugRender_Light.cpp" />
+    <ClCompile Include="DebugRender_Normals.cpp" />
     <ClCompile Include="FBXFileLoader.cpp" />
     <ClCompile Include="FinalRender.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="PSODebugLayer_Axis.cpp" />
+    <ClCompile Include="PSODebugLayer_Light.cpp" />
+    <ClCompile Include="PSODebugLayer_Normals.cpp" />
     <ClCompile Include="PSOFinalRenderLayer.cpp" />
     <ClCompile Include="PSOBaseLayer.cpp" />
     <ClCompile Include="PSOManager.cpp" />
@@ -160,6 +164,8 @@
     <ClInclude Include="Canvas.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DebugRender_Axis.h" />
+    <ClInclude Include="DebugRender_Light.h" />
+    <ClInclude Include="DebugRender_Normals.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="FrameResourcesManager.h" />
     <ClInclude Include="FBXFileLoader.h" />
@@ -168,6 +174,8 @@
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="PSODebugLayer_Axis.h" />
+    <ClInclude Include="PSODebugLayer_Light.h" />
+    <ClInclude Include="PSODebugLayer_Normals.h" />
     <ClInclude Include="PSOFinalRenderLayer.h" />
     <ClInclude Include="PSOBaseLayer.h" />
     <ClInclude Include="PSOManager.h" />
@@ -191,6 +199,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Shaders\DebugAxesRender_shaders.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Shaders\DebugLightRender_shaders.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Shaders\DebugNormalsRender_shaders.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Shaders\DebugRootSignature.hlsl">

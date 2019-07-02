@@ -7,7 +7,7 @@
 //int instID : SV_INSTANCEID
 
 [RootSignature(rootSignatureC1)]
-VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
+VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID) 
 {   
 	VertexOut vout;
 
@@ -26,11 +26,11 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
 
     // Transform to homogeneous clip space.    
     vout.PosH = mul(posW, ViewProj);    
-    vout.NormalW = mul(vin.Normal, (float3x3) wordMatrix);
+    vout.NormalW = mul((float3x3) wordMatrix, vin.Normal);
     vout.UVText = vin.UVText;
 
     float3 tangentNU = vin.TangentU;//   normalize(vin.TangentU - dot(vin.TangentU, vin.Normal));
-    vout.TangentW = float4(mul(tangentNU, (float3x3) wordMatrix), 0.0f);
+    vout.TangentW = float4(mul((float3x3) wordMatrix, tangentNU), 0.0f);
 
    // // for projection
    // matrix<float, 4, 4> T;
@@ -87,8 +87,8 @@ float4 PS(VertexOut pin) : SV_Target
        
     // Get Normal
 
-    if (gTechFlags &0x01> 0)
-    {    
+    if (gTechFlags & 0x01 > 0)
+    {
         if ((material.textureFlags & 0x04))
         {
             float4 readNormal = gDiffuseMap[material.DiffuseMapIndex[2]].Sample(gsamPointWrap, pin.UVText);

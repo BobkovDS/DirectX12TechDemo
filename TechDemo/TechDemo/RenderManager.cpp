@@ -4,6 +4,10 @@
 
 RenderManager::RenderManager(): m_initialized(false)
 {
+	m_debugMode = false;
+	m_debug_Axes = true;
+	m_debug_Lights = false;
+	m_debug_Normals_Vertex = false;
 }
 
 RenderManager::~RenderManager()
@@ -25,6 +29,8 @@ void RenderManager::initialize(const RenderManagerMessanger& renderParams)
 	m_texturesDescriptorHeap = renderParams.SRVHeap;
 	m_finalRender.initialize(renderParams.commonRenderData);
 	m_debugRenderAxes.initialize(renderParams.commonRenderData);
+	m_debugRenderLights.initialize(renderParams.commonRenderData);
+	m_debugRenderNormals.initialize(renderParams.commonRenderData);
 	m_initialized = true;
 }
 
@@ -37,11 +43,23 @@ void RenderManager::buildRenders()
 	m_finalRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
 	m_finalRender.build();
 	m_finalRender.setSwapChainResources(m_swapChainResources);
+	
 
 	// build Debug Axes Render
 	m_debugRenderAxes.set_DescriptorHeap_RTV(m_applicationRTVHeap);
 	m_debugRenderAxes.build();
 	m_debugRenderAxes.setSwapChainResources(m_swapChainResources);
+
+	// build Debug Light Render
+	m_debugRenderLights.set_DescriptorHeap_RTV(m_applicationRTVHeap);
+	m_debugRenderLights.build();
+	m_debugRenderLights.setSwapChainResources(m_swapChainResources);
+
+	// build Debug Normals Render
+	m_debugRenderNormals.set_DescriptorHeap_RTV(m_applicationRTVHeap);
+	m_debugRenderNormals.set_DescriptorHeap_DSV(m_finalRender.get_dsvHeapPointer());
+	m_debugRenderNormals.build();
+	m_debugRenderNormals.setSwapChainResources(m_swapChainResources);
 }
 
 void RenderManager::draw(int flags)
@@ -50,7 +68,16 @@ void RenderManager::draw(int flags)
 
 	int updatedFlags = flags;
 	m_finalRender.draw(updatedFlags);
-	m_debugRenderAxes.draw(updatedFlags);
+
+	if (m_debugMode)
+	{
+		if (m_debug_Axes)
+			m_debugRenderAxes.draw(updatedFlags);
+		if (m_debug_Lights)
+			m_debugRenderLights.draw(updatedFlags);
+		if (m_debug_Normals_Vertex)
+			m_debugRenderNormals.draw(updatedFlags);
+	}
 }
 
 void RenderManager::buildTechSRVs()
@@ -93,4 +120,27 @@ void RenderManager::resize(int iwidth, int iheight)
 	{
 		m_finalRender.resize(iwidth, iheight);
 	}	
+}
+
+void RenderManager::toggleDebugMode()
+{	
+	m_debugMode = !m_debugMode;
+}
+
+void RenderManager::toggleDebug_Axes()
+{
+	if (m_debugMode)
+		m_debug_Axes = !m_debug_Axes;
+}
+
+void RenderManager::toggleDebug_Lights()
+{
+	if (m_debugMode)
+		m_debug_Lights = !m_debug_Lights;
+}
+
+void RenderManager::toggleDebug_Normals_Vertex()
+{
+	if (m_debugMode)
+		m_debug_Normals_Vertex = !m_debug_Normals_Vertex;
 }

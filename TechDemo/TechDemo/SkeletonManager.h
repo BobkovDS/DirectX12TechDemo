@@ -17,7 +17,7 @@ public:
 	SkinnedData& getSkeletonSkinnedAnimated(UINT i);
 	SkinnedData& getSkeletonNodeAnimated(std::string& skeletonName);
 	SkinnedData& getSkeletonNodeAnimated(UINT i);
-
+	bool isExistSkeletonNodeAnimated(std::string& skeletonName);
 	int getSkeletonSkinnedAnimatedCount();
 	int getSkeletonNodeAnimatedCount();
 

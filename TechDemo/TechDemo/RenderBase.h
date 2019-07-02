@@ -86,14 +86,16 @@ public:
 	//void set_Resource_DS(ID3D12Resource* Resource);
 	void set_Resource_RT(ID3D12Resource* Resource);
 	void set_DescriptorHeap_RTV(ID3D12DescriptorHeap* rtvHeap); // set Descriptor Heap for RT view
+	void set_DescriptorHeap_DSV(ID3D12DescriptorHeap* dsvHeap); // set Descriptor Heap for RT view
+
 	void set_DescriptorHeap(ID3D12DescriptorHeap* srvDescriptorHeap); // set Descriptor Heap for Textures SRVs
 
 	ID3D12Resource* get_Resource(int resourceIndex);
 	ID3D12Resource* get_Resource_DS();
 	ID3D12Resource* get_Resource_RT();
 	int get_ResourceCount();
-	const ID3D12DescriptorHeap* get_rtvHeapPointer();
-	const ID3D12DescriptorHeap* get_dsvHeapPointer();
+	ID3D12DescriptorHeap* get_rtvHeapPointer();
+	ID3D12DescriptorHeap* get_dsvHeapPointer();
 
 	
 
