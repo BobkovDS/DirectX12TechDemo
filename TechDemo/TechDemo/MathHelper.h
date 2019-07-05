@@ -19,7 +19,7 @@ public:
 	// Returns random float in [0, 1).
 	static float RandF()
 	{
-		return 0.0f;//(float)(rand()) / (float)RAND_MAX;
+		return (float)(rand()) / (float)RAND_MAX;
 	}
 
 	// Returns random float in [a, b).

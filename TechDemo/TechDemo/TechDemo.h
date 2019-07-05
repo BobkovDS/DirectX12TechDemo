@@ -12,6 +12,8 @@
 class TechDemo :
 	public BasicDXGI
 {
+	static const int MaxBlurRadius = 5;
+
 	ObjectManager m_objectManager;
 	Scene m_scene;
 	ResourceManager m_resourceManager;
@@ -21,6 +23,7 @@ class TechDemo :
 	Utilit3D m_utilit3D;
 	Camera* m_camera;
 	Timer m_animationTimer;
+	DirectX::XMFLOAT4 m_offsets[14];
 
 	bool m_init3D_done;
 	bool m_defaultCamera;
@@ -44,10 +47,13 @@ protected:
 	void update_camera();
 	void update_light();
 	void update_passCB();
+	void update_passSSAOCB();
 	void update_objectCB();
 	void build_defaultCamera();
+	void build_OffsetVectors();
 	void work();
 	void onReSize(int newWidth, int newHeight);
+	std::vector<float> calcGaussWeights(float sigma);
 public:
 	TechDemo(HINSTANCE hInstance, const std::wstring& applName, int width, int height);
 	~TechDemo();

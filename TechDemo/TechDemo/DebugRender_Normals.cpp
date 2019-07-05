@@ -89,7 +89,7 @@ void DebugRender_Normals::draw_layer(int layerID, int& instanseOffset, bool doDr
 			const RenderItem* lMesh = lObjectLayer->getSceneObject(ri)->getObjectMesh();
 			int lInstancesCount = lObjectLayer->getSceneObject(ri)->getInstancesCount(); // How much instances for this RenderItem we should draw
 			if (lInstancesCount == 0) return;
-			if (doDraw) // somwtimes we need not to Draw but count a number of instances it use
+			if (doDraw) // sometimes we need not to Draw but count a number of instances it use
 			{
 				auto drawArg = lMesh->Geometry->DrawArgs[lMesh->Geometry->Name];
 				m_cmdList->IASetVertexBuffers(0, 1, &lMesh->Geometry->vertexBufferView());
@@ -110,8 +110,12 @@ void DebugRender_Normals::setSwapChainResources(ComPtr<ID3D12Resource>* swapChai
 void DebugRender_Normals::resize(UINT iwidth, UINT iheight)
 {
 	RenderBase::resize(iwidth, iheight);
-	m_dsResource->resize(iwidth, iheight);
-	create_DSV();
+	
+	if (!m_dsvHeapWasSetBefore) // if we not use "our" DS. For DebugRender_Normals we should.
+	{
+		create_DSV();	
+		m_dsResource->resize(iwidth, iheight);
+	}
 }
 
 void DebugRender_Normals::buildGeometry()

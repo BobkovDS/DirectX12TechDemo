@@ -8,6 +8,7 @@ RenderManager::RenderManager(): m_initialized(false)
 	m_debug_Axes = true;
 	m_debug_Lights = false;
 	m_debug_Normals_Vertex = false;
+	m_renderMode = (1 << RM_FINAL);
 }
 
 RenderManager::~RenderManager()
@@ -31,6 +32,14 @@ void RenderManager::initialize(const RenderManagerMessanger& renderParams)
 	m_debugRenderAxes.initialize(renderParams.commonRenderData);
 	m_debugRenderLights.initialize(renderParams.commonRenderData);
 	m_debugRenderNormals.initialize(renderParams.commonRenderData);
+	m_ssaoRender.initialize(renderParams.commonRenderData);
+	m_debugRenderScreen.initialize(renderParams.commonRenderData);
+
+	RenderMessager lRenderParams = renderParams.commonRenderData;
+	lRenderParams.Width /= 2; // We think that SSAO gives us Map twice size less
+	lRenderParams.Height/= 2;
+	m_blurRender.initialize(lRenderParams);
+
 	m_initialized = true;
 }
 
@@ -42,8 +51,7 @@ void RenderManager::buildRenders()
 	m_finalRender.set_DescriptorHeap_RTV(m_applicationRTVHeap);	
 	m_finalRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
 	m_finalRender.build();
-	m_finalRender.setSwapChainResources(m_swapChainResources);
-	
+	m_finalRender.setSwapChainResources(m_swapChainResources);	
 
 	// build Debug Axes Render
 	m_debugRenderAxes.set_DescriptorHeap_RTV(m_applicationRTVHeap);
@@ -60,14 +68,60 @@ void RenderManager::buildRenders()
 	m_debugRenderNormals.set_DescriptorHeap_DSV(m_finalRender.get_dsvHeapPointer());
 	m_debugRenderNormals.build();
 	m_debugRenderNormals.setSwapChainResources(m_swapChainResources);
+
+	// build Debug Screen Render
+	m_debugRenderScreen.set_DescriptorHeap_RTV(m_applicationRTVHeap);
+	m_debugRenderScreen.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
+	m_debugRenderScreen.build();
+	m_debugRenderScreen.setSwapChainResources(m_swapChainResources);
+
+	// build SSAO Render
+	m_ssaoRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
+	m_ssaoRender.build();
+
+	// build BLur Render
+	m_blurRender.set_DescriptorHeap(m_texturesDescriptorHeap); 
+	m_blurRender.setInputResource(m_ssaoRender.getAOResource());
+	m_blurRender.build("BlurRender_shaders.hlsl", 6);
 }
 
 void RenderManager::draw(int flags)
 {
 	assert(m_initialized);
 
+	int lResourceIndex = m_swapChain->GetCurrentBackBufferIndex();
+
 	int updatedFlags = flags;
-	m_finalRender.draw(updatedFlags);
+	bool lSSAO = true;
+	bool lFinalRender = true;
+
+	// SSAO 
+	if (lSSAO)
+	{
+		{
+			m_ssaoRender.draw(updatedFlags);
+			m_blurRender.draw(0);
+		}
+		if (m_renderMode & (1 << RM_SSAO_MAP1))
+		{
+			m_cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
+				D3D12_RESOURCE_STATE_PRESENT,
+				D3D12_RESOURCE_STATE_COPY_DEST));
+			m_cmdList->CopyResource(m_swapChainResources[lResourceIndex].Get(), m_ssaoRender.getVNResource());
+
+			m_cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
+				D3D12_RESOURCE_STATE_COPY_DEST,
+				D3D12_RESOURCE_STATE_PRESENT));
+		}
+		else if (m_renderMode & (1 << RM_SSAO_MAP2))
+				m_debugRenderScreen.draw(4); // AO Map from SSAO render
+		else if (m_renderMode & (1 << RM_SSAO_MAP3))
+			m_debugRenderScreen.draw(5); // Blured AO Map from Blur render
+	}
+	
+	if (lFinalRender && !(m_renderMode & RM_SSAO_MAPS)) m_finalRender.draw(updatedFlags);
+
+
 
 	if (m_debugMode)
 	{
@@ -86,11 +140,11 @@ void RenderManager::buildTechSRVs()
 		Add [TECHSRVCOUNT] 'NULL' SRVs for technical Textures (Results for other Renders) in the beginning of
 		common DescriptorHeap (m_texturesDescriptorHeap). Later each Render will use his slot(s) and will create 'normal' SRV
 		0 - Sky Cube map
-		1 - 'NULL'
-		2 - 'NULL'
-		3 - 'NULL'
-		4 - 'NULL'
-		5 - 'NULL'
+		1 - Random Vector Map
+		2 - SSAO: View Normal Map
+		3 - SSAO: Depth Map
+		4 - SSAO: AO Map
+		5 - SSAO: Blur Map
 		6 - 'NULL'
 		7 - 'NULL'
 		8 - 'NULL'
@@ -118,7 +172,11 @@ void RenderManager::resize(int iwidth, int iheight)
 {
 	if (m_initialized)
 	{
+		m_ssaoRender.resize(iwidth, iheight);
 		m_finalRender.resize(iwidth, iheight);
+		m_debugRenderAxes.resize(iwidth, iheight);
+		m_debugRenderLights.resize(iwidth, iheight);		
+		m_debugRenderNormals.resize(iwidth, iheight);
 	}	
 }
 
@@ -143,4 +201,24 @@ void RenderManager::toggleDebug_Normals_Vertex()
 {
 	if (m_debugMode)
 		m_debug_Normals_Vertex = !m_debug_Normals_Vertex;
+}
+
+void RenderManager::setRenderMode_Final()
+{
+	m_renderMode = (1 << RM_FINAL);
+}
+
+void RenderManager::setRenderMode_SSAO_Map1()
+{
+	m_renderMode = (1 << RM_SSAO_MAP1);
+}
+
+void RenderManager::setRenderMode_SSAO_Map2()
+{
+	m_renderMode = (1 << RM_SSAO_MAP2);
+}
+
+void RenderManager::setRenderMode_SSAO_Map3()
+{
+	m_renderMode = (1 << RM_SSAO_MAP3);
 }

@@ -1,8 +1,10 @@
 #include "RenderBase.h"
 
-void RenderResource::createResource(ID3D12Device* device, DXGI_FORMAT resourceFormat, UINT width, UINT height, D3D12_CLEAR_VALUE* optClear)
+void RenderResource::createResource(ID3D12Device* device, DXGI_FORMAT resourceFormat, D3D12_RESOURCE_FLAGS resourceFlags, 
+	UINT width, UINT height, D3D12_CLEAR_VALUE* optClear)
 {
 	m_resourceFormat = resourceFormat;
+	m_resourceFlags = resourceFlags;
 	m_device = device;
 	if (optClear)
 	{
@@ -33,20 +35,23 @@ void RenderResource::resize(UINT width, UINT height)
 	resourceDesriptor.Format = m_resourceFormat;
 	resourceDesriptor.SampleDesc.Count = 1;
 	resourceDesriptor.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-	resourceDesriptor.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+	resourceDesriptor.Flags = m_resourceFlags;
 		
 	HRESULT res = m_device->CreateCommittedResource(&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE,
 		&resourceDesriptor, D3D12_RESOURCE_STATE_COMMON, m_optClear, IID_PPV_ARGS(&m_resource));
 }
+
 ID3D12Resource* RenderResource::getResource()
 {
 	return m_resource.Get();
 }
 
 // --------------------------------- RenderBase -------------------------------------------------------------
-RenderBase::RenderBase() : m_initialized(false), m_rtResourceWasSetBefore(false), m_rtvDescriptorSize(0)
+RenderBase::RenderBase() : m_initialized(false), m_rtResourceWasSetBefore(false), m_rtvDescriptorSize(0), 
+m_currentResourceID(0)
 {
 	m_dsResource = nullptr;	
+	m_own_resources.resize(1);
 }
 
 RenderBase::~RenderBase()
@@ -87,12 +92,11 @@ void RenderBase::resize(UINT newWidth, UINT newHeight)
 }
 
 // -------------------------------- RESOURCE -------------------------------------------------------------------------------
-RenderResource* RenderBase::create_Resource(DXGI_FORMAT resourceFormat, UINT width=0, UINT height=0, D3D12_CLEAR_VALUE* optClear)
+RenderResource* RenderBase::create_Resource(DXGI_FORMAT resourceFormat, D3D12_RESOURCE_FLAGS resourceFlags,
+	UINT width=0, UINT height=0, D3D12_CLEAR_VALUE* optClear)
 {
 	assert(m_initialized == true); // Render should be initialized before
-
-	m_own_resources.resize(m_own_resources.size() + 1);
-
+	
 	UINT lwidth = width;
 	UINT lheight = height;
 
@@ -100,8 +104,11 @@ RenderResource* RenderBase::create_Resource(DXGI_FORMAT resourceFormat, UINT wid
 	if (lheight == 0) lheight= m_height;
 
 	//Create Resource for any purposes
-	m_own_resources[m_own_resources.size() - 1].createResource(m_device, resourceFormat, lwidth, lheight, optClear);
-	return &m_own_resources[m_own_resources.size() - 1];
+
+	m_own_resources[m_currentResourceID].createResource(
+		m_device, resourceFormat, resourceFlags, lwidth, lheight, optClear);	
+
+	return &m_own_resources[m_currentResourceID++];
 }
 
 void RenderBase::create_Resource_DS(DXGI_FORMAT resourceFormat)
@@ -109,28 +116,38 @@ void RenderBase::create_Resource_DS(DXGI_FORMAT resourceFormat)
 	D3D12_CLEAR_VALUE optClear;
 	optClear.Format = resourceFormat;
 	optClear.DepthStencil.Depth = 1.0f;
+	optClear.DepthStencil.Stencil = 0;	
+
+	m_dsResource = create_Resource(resourceFormat, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL, 0,0,&optClear);
+}
+
+void RenderBase::create_Resource_RT(DXGI_FORMAT resourceFormat, UINT width, UINT height)
+{
+	FLOAT clearColor[4] = { 0.0f, 0.5f, 0.4f, 1.0f };
+	D3D12_CLEAR_VALUE optClear;
+	optClear.Format = resourceFormat;
+	optClear.DepthStencil.Depth = 1.0f;
 	optClear.DepthStencil.Stencil = 0;
-	m_dsResource = create_Resource(resourceFormat,0,0,&optClear);
+	std::copy(clearColor, clearColor + 4, optClear.Color);
+
+	if (m_rtResourceWasSetBefore)
+		m_rtResources.clear(); // if we have RTV resources previously set - claer it. Because we do not own it here, we do not need delete it.
+	m_rtResources.push_back(create_Resource(resourceFormat, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET, width, height, &optClear));
+	m_rtResourceWasSetBefore = false; // clear flag that RT resources could be set before.
 }
 
-void RenderBase::create_Resource_RT(DXGI_FORMAT resourceFormat)
-{
-	//m_rtResources.clear(); // if we have RTV resources previously set - claer it. Because we do not own it here, we do not need delete it.
-	//m_rtResources.push_back(create_Resource(resourceFormat));
-	//m_rtResourceWasSetBefore = false; // clear flag that RT resources could be set before.
-}
-
-void RenderBase::set_Resource_RT(ID3D12Resource* resource)
-{
-	if (m_rtResourceWasSetBefore == false)
-		m_rtResources.clear(); /*
-		 Maybe we has RT Resources which were create by this render, 
-		 but as we want to use RT resources from another source, we do not need current one
-		 */
-
-	m_rtResources.push_back(resource);
-	m_rtResourceWasSetBefore = true;
-}
+//TO_DO: delete
+//void RenderBase::set_Resource_RT(ID3D12Resource* resource)
+//{
+//	if (m_rtResourceWasSetBefore == false)
+//		m_rtResources.clear(); /*
+//		 Maybe we has RT Resources which were create by this render, 
+//		 but as we want to use RT resources from another source, we do not need current one
+//		 */
+//
+//	m_rtResources.push_back(resource);
+//	m_rtResourceWasSetBefore = true;
+//}
 
 // -------------------------------- DESCRIPTOR HEAP AND VIEWS --------------------------------------------------------------
 void RenderBase::create_DescriptorHeap_DSV()
@@ -198,9 +215,11 @@ void RenderBase::create_RTV(DXGI_FORMAT viewFormat)
 	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHeapHandle(m_rtvHeap->GetCPUDescriptorHandleForHeapStart());	
 	for (int i = 0; i < m_rtResources.size(); i++)
 	{		
-		m_device->CreateRenderTargetView(m_rtResources[i], nullptr, rtvHeapHandle);
+		m_device->CreateRenderTargetView(m_rtResources[i]->getResource(), nullptr, rtvHeapHandle);
 		rtvHeapHandle.Offset(1, m_rtvDescriptorSize);
 	}
+
+	/*Maybe here will be good place to change state for RT resources: to D3D12_RESOURCE_STATE_RENDER_TARGET*/
 }
 
 ID3D12DescriptorHeap* RenderBase::get_dsvHeapPointer()

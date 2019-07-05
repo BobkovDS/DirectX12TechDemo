@@ -8,15 +8,27 @@
 #define TECHSRVCOUNT 10
 
 #define TECHSLOT_SKY 0
+#define TECHSLOT_RNDVECTORMAP 1 // Random Vector Map
+#define TECHSLOT_SSAO_VSN 2 // ViewSpace Normal Map
+#define TECHSLOT_SSAO_DPT 3// Depth Map
+#define TECHSLOT_SSAO_AO 4// AO Map
+#define TECHSLOT_SSAO_BLUR 5// Blur Map 
+
 
 struct RenderResource {
-	void createResource(ID3D12Device* device, DXGI_FORMAT resourceFormat, UINT width, UINT height, D3D12_CLEAR_VALUE* optClear = NULL);
+	void createResource(ID3D12Device* device, DXGI_FORMAT resourceFormat, D3D12_RESOURCE_FLAGS resourceFlags, UINT width, UINT height, D3D12_CLEAR_VALUE* optClear = NULL);
 	void resize(UINT width, UINT height);
+	void changeState(ID3D12GraphicsCommandList* cmdList, D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter)
+	{
+		cmdList->ResourceBarrier(1,&CD3DX12_RESOURCE_BARRIER::Transition(m_resource.Get(),stateBefore, stateAfter));
+	}
+
 	ID3D12Resource* getResource();	
 	~RenderResource();
 private:
 	ID3D12Device* m_device;
 	DXGI_FORMAT m_resourceFormat;
+	D3D12_RESOURCE_FLAGS m_resourceFlags;
 	D3D12_CLEAR_VALUE* m_optClear;
 	Microsoft::WRL::ComPtr<ID3D12Resource> m_resource;
 };
@@ -60,6 +72,7 @@ protected:
 	D3D12_RECT m_scissorRect;
 
 	UINT m_rtvDescriptorSize;	
+	UINT m_currentResourceID;
 
 	std::vector<RenderResource> m_own_resources;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_own_dsvHeap;
@@ -67,24 +80,24 @@ protected:
 
 	// "Resource interface"
 	RenderResource* m_dsResource;
-	std::vector<ID3D12Resource*> m_rtResources; 
+	std::vector<RenderResource*> m_rtResources;
 	ID3D12DescriptorHeap* m_descriptorHeap; // we do not own this SRV Descriptor Heap	
 	ID3D12DescriptorHeap* m_dsvHeap;
 	ID3D12DescriptorHeap* m_rtvHeap;
 	D3D12_GPU_DESCRIPTOR_HANDLE m_techSRVHandle;
-	D3D12_GPU_DESCRIPTOR_HANDLE m_textureSRVHandle;
-
+	D3D12_GPU_DESCRIPTOR_HANDLE m_textureSRVHandle;	
 
 public:
-	RenderResource* create_Resource(DXGI_FORMAT resourceFormat, UINT width, UINT height, D3D12_CLEAR_VALUE* optClear=NULL);
+	RenderResource* create_Resource(DXGI_FORMAT resourceFormat, D3D12_RESOURCE_FLAGS resourceFlags,
+		UINT width, UINT height, D3D12_CLEAR_VALUE* optClear=NULL);
 	void create_Resource_DS(DXGI_FORMAT resourceFormat);
-	void create_Resource_RT(DXGI_FORMAT resourceFormat);
+	void create_Resource_RT(DXGI_FORMAT resourceFormat, UINT width = 0, UINT height = 0);
 	void create_DescriptorHeap_DSV();
 	void create_DescriptorHeap_RTV();
 	void create_DSV(DXGI_FORMAT viewFormat = DXGI_FORMAT_UNKNOWN);
 	void create_RTV(DXGI_FORMAT viewFormat = DXGI_FORMAT_UNKNOWN);
-	//void set_Resource_DS(ID3D12Resource* Resource);
-	void set_Resource_RT(ID3D12Resource* Resource);
+	//void set_Resource_DS(ID3D12Resource* Resource); //TO_DO: delete
+	//void set_Resource_RT(ID3D12Resource* Resource); //TO_DO: delete
 	void set_DescriptorHeap_RTV(ID3D12DescriptorHeap* rtvHeap); // set Descriptor Heap for RT view
 	void set_DescriptorHeap_DSV(ID3D12DescriptorHeap* dsvHeap); // set Descriptor Heap for RT view
 

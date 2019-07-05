@@ -20,3 +20,10 @@
 #define DRN_TANGENT 2 // To draw Tangent Normal and ID PSO for this
 #define PSO_NORMALS_COUNT 2
 
+// Render Mode
+#define RM_FINAL 0
+#define RM_SSAO_MAP1 1
+#define RM_SSAO_MAP2 2
+#define RM_SSAO_MAP3 3
+#define RM_SSAO_MAPS ((1 << RM_SSAO_MAP1)| (1 << RM_SSAO_MAP2) | (1 << RM_SSAO_MAP3))
+#define RM_CLEAR_ALL ~((1<<RM_FINAL) | (1<<RM_SSAO_MAP1)| (1<<RM_SSAO_MAP2) | (1<<RM_SSAO_MAP3))

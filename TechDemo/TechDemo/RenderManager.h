@@ -4,6 +4,9 @@
 #include "DebugRender_Axis.h"
 #include "DebugRender_Light.h"
 #include "DebugRender_Normals.h"
+#include "DebugRender_Screen.h"
+#include "SSAORender.h"
+#include "BlurRender.h"
 
 
 struct RenderManagerMessanger {
@@ -17,8 +20,7 @@ class RenderManager
 {
 	ID3D12Device* m_device;
 	ID3D12GraphicsCommandList* m_cmdList;
-	IDXGISwapChain* m_swapChain;	
-	IDXGISwapChain3* m_swapChain3;	
+	IDXGISwapChain3* m_swapChain;		
 	ComPtr<ID3D12Resource>* m_swapChainResources;
 	ID3D12DescriptorHeap* m_applicationRTVHeap;
 	ID3D12DescriptorHeap* m_texturesDescriptorHeap;
@@ -30,14 +32,18 @@ class RenderManager
 
 	bool m_initialized;
 	FinalRender m_finalRender;
+	SSAORender m_ssaoRender;
+	BlurRender m_blurRender;
 	DebugRender_Axis m_debugRenderAxes;
 	DebugRender_Light m_debugRenderLights;
 	DebugRender_Normals m_debugRenderNormals;
+	DebugRender_Screen m_debugRenderScreen;
 	
 	bool m_debugMode;
 	bool m_debug_Axes;
 	bool m_debug_Lights;
 	bool m_debug_Normals_Vertex;
+	UINT m_renderMode;
 
 	void buildTechSRVs();
 
@@ -55,6 +61,12 @@ public:
 	void toggleDebug_Normals_Vertex();
 	void toggleDebug_Axes();
 	void toggleDebug_Lights();
+	void setRenderMode_Final();
+	void setRenderMode_SSAO_Map1(); // ViewNormal Map
+	void setRenderMode_SSAO_Map2(); // AO Map
+	void setRenderMode_SSAO_Map3(); // AO Blured Map
+
+
 	bool isDebugMode() { return m_debugMode; }
 };
 

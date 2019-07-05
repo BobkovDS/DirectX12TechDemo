@@ -135,6 +135,24 @@
     <ClCompile Include="Utilit3D.cpp">
       <Filter>Source Files\Other</Filter>
     </ClCompile>
+    <ClCompile Include="SSAORender.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="PSOSSAOLayer2.cpp">
+      <Filter>Source Files\PSO</Filter>
+    </ClCompile>
+    <ClCompile Include="PSOSSAOLayer1.cpp">
+      <Filter>Source Files\PSO</Filter>
+    </ClCompile>
+    <ClCompile Include="PSOBlurLayer.cpp">
+      <Filter>Source Files\PSO</Filter>
+    </ClCompile>
+    <ClCompile Include="BlurRender.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugRender_Screen.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PSOManager.h">
@@ -254,6 +272,24 @@
     <ClInclude Include="Utilit3D.h">
       <Filter>Header Files\Other</Filter>
     </ClInclude>
+    <ClInclude Include="SSAORender.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="PSOSSAOLayer2.h">
+      <Filter>Header Files\PSO</Filter>
+    </ClInclude>
+    <ClInclude Include="PSOSSAOLayer1.h">
+      <Filter>Header Files\PSO</Filter>
+    </ClInclude>
+    <ClInclude Include="BlurRender.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="PSOBlurLayer.h">
+      <Filter>Header Files\PSO</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugRender_Screen.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\commonPart.hlsl">
@@ -286,13 +322,31 @@
     <FxCompile Include="Shaders\DebugAxesRender_shaders.hlsl">
       <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\DebugRootSignature.hlsl">
-      <Filter>Resource Files\Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shaders\DebugLightRender_shaders.hlsl">
       <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\DebugNormalsRender_shaders.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\SSAORender_shaders2.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\SSAORender_shaders1.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\SSAORender_shaders1_skinned.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\RootSignature_Debug.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\RootSignature_SSAO.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\BlurRender_shaders.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\DebugScreenRender_shaders.hlsl">
       <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
   </ItemGroup>

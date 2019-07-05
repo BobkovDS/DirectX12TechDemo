@@ -19,8 +19,7 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
     float4 posW = mul(wordMatrix, float4(vin.PosL, 1.0f));    
     //float4 posW = float4(vin.PosL, 1.0f);    
     //posW.z = posW.z * (-1.0f);
-	vout.PosW = posW.xyz;
-    
+	vout.PosW = posW.xyz;    
 
     float4x4 ViewProj = cbPass.ViewProj;
 
@@ -112,7 +111,7 @@ float4 PS(VertexOut pin) : SV_Target
     float4 directLight = ComputeLighting(cbPass.Lights, matLight, pin.PosW, Normal, toEyeW, shadow_depth);
 
     float4 litColor = directLight +ambient;
-   // litColor = diffuseAlbedo; //  +ambient;
+   // litColor = diffuseAlbedo +ambient;
     
     //if (cbPass.FogRange > 0)
     if (0 > 1)

@@ -1,7 +1,7 @@
 
 #include "Lighting.hlsl"
 #include "commonPart.hlsl"
-#include "DebugRootSignature.hlsl"
+#include "RootSignature_Debug.hlsl"
 
 [RootSignature(rootSignatureDebug)]
 GeometryIn VS(VertexIn vin)

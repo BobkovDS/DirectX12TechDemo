@@ -71,21 +71,25 @@ void TechDemo::onKeyDown(WPARAM btnState)
 	if (GetAsyncKeyState('0') & 0x8000)
 		toLimitFPS = !toLimitFPS;	
 
-	if (btnState == VK_SPACE)
+	switch (btnState)
+	{
+	case VK_SPACE:
 	{
 		m_isTechFlag = !m_isTechFlag;
 		m_animationTimer.tt_Pause();
 	}
-	else if (btnState == 'C')
-		m_isCameraManualControl = !m_isCameraManualControl;
-	else if (btnState == VK_NUMPAD0)
-		m_renderManager.toggleDebugMode();
-	else if (btnState == VK_NUMPAD1)
-		m_renderManager.toggleDebug_Axes();
-	else if (btnState == VK_NUMPAD2)
-		m_renderManager.toggleDebug_Lights();
-	else if (btnState == VK_NUMPAD3)
-		m_renderManager.toggleDebug_Normals_Vertex();
+	case 'C': m_isCameraManualControl = !m_isCameraManualControl; break;
+	case VK_NUMPAD0: m_renderManager.toggleDebugMode(); break;
+	case VK_NUMPAD1: m_renderManager.toggleDebug_Axes(); break;
+	case VK_NUMPAD2: m_renderManager.toggleDebug_Lights(); break;
+	case VK_NUMPAD3: m_renderManager.toggleDebug_Normals_Vertex(); break;
+	case '1': m_renderManager.setRenderMode_Final(); break;
+	case '2': m_renderManager.setRenderMode_SSAO_Map1(); break;
+	case '3': m_renderManager.setRenderMode_SSAO_Map2(); break;
+	case '4': m_renderManager.setRenderMode_SSAO_Map3(); break;
+	default:
+		break;
+	}
 }
 
 std::string TechDemo::addTextToWindow()
@@ -203,6 +207,8 @@ void TechDemo::init3D()
 	FlushCommandQueue();
 	m_init3D_done = true;
 
+	build_OffsetVectors();
+
 	m_animationTimer.tt_RunStop();
 }
 
@@ -217,6 +223,7 @@ void TechDemo::update()
 	update_objectCB();
 	update_BoneData();
 	update_passCB();
+	update_passSSAOCB();
 }
 
 void TechDemo::update_camera()
@@ -348,6 +355,45 @@ void TechDemo::update_passCB()
 	currPassCB->CopyData(0, mMainPassCB);	
 }
 
+void TechDemo::update_passSSAOCB()
+{
+	// For SSAO
+	auto mSSAOPassCB = m_frameResourceManager.tmpPassSSAOConsts;		
+	
+	XMMATRIX proj = m_camera->lens->getProj();	
+	XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
+
+	XMStoreFloat4x4(&mSSAOPassCB.Proj, XMMatrixTranspose(proj));
+	XMStoreFloat4x4(&mSSAOPassCB.InvProj, XMMatrixTranspose(invProj));
+
+	// Transform NDC space [-1,+1]^2 to texture space [0,1]^2
+	XMMATRIX T(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f);
+	
+	XMMATRIX view = m_camera->lens->getProj();
+	XMMATRIX textProj = XMMatrixMultiply(view, T);
+
+	XMStoreFloat4x4(&mSSAOPassCB.ProjTex, XMMatrixTranspose(textProj));
+	std::copy(&m_offsets[0], &m_offsets[14], &mSSAOPassCB.OffsetVectors[0]);
+
+	mSSAOPassCB.OcclusionRadius = 1.0f;
+	mSSAOPassCB.OcclusionFadeStart = 0.2;
+	mSSAOPassCB.OcclusionFadeEnd = 1.0f;
+	mSSAOPassCB.SurfaceEpsilon = 0.05f;
+
+	auto blurWeights = calcGaussWeights(2.5f);
+	mSSAOPassCB.BlurWeight[0] = XMFLOAT4(&blurWeights[0]);
+	mSSAOPassCB.BlurWeight[1] = XMFLOAT4(&blurWeights[4]);
+	mSSAOPassCB.BlurWeight[2] = XMFLOAT4(&blurWeights[8]);
+
+	mSSAOPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / width(), 1.0f / height());
+	auto currSsaoCB = m_frameResourceManager.currentFR()->getSSAOCB();
+	currSsaoCB->CopyData(0, mSSAOPassCB);
+}
+
 void TechDemo::build_defaultCamera()
 {
 	m_camera = new Camera();
@@ -427,4 +473,78 @@ void TechDemo::onReSize(int newWidth, int newHeight)
 	ID3D12CommandList* cmdsList[] = { m_cmdList.Get() };
 	m_cmdQueue->ExecuteCommandLists(1, cmdsList);
 	FlushCommandQueue();
+}
+
+std::vector<float> TechDemo::calcGaussWeights(float sigma)
+{
+	float twoSigma2 = 2.0f*sigma*sigma;
+
+	// Estimate the blur radius based on sigma since sigma controls the "width" of the bell curve.
+	// For example, for sigma = 3, the width of the bell curve is 
+	int blurRadius = (int)ceil(2.0f * sigma);
+
+	assert(blurRadius <= MaxBlurRadius);
+
+	std::vector<float> weights;
+	weights.resize(2 * blurRadius + 1);
+
+	float weightSum = 0.0f;
+
+	for (int i = -blurRadius; i <= blurRadius; ++i)
+	{
+		float x = (float)i;
+
+		weights[i + blurRadius] = expf(-x * x / twoSigma2);
+
+		weightSum += weights[i + blurRadius];
+	}
+
+	// Divide by the sum so all the weights add up to 1.0.
+	for (int i = 0; i < weights.size(); ++i)
+	{
+		weights[i] /= weightSum;
+	}
+
+	return weights;
+}
+
+void TechDemo::build_OffsetVectors()
+{
+	// Start with 14 uniformly distributed vectors.  We choose the 8 corners of the cube
+// and the 6 center points along each cube face.  We always alternate the points on 
+// opposites sides of the cubes.  This way we still get the vectors spread out even
+// if we choose to use less than 14 samples.
+
+// 8 cube corners
+	m_offsets[0] = XMFLOAT4(+1.0f, +1.0f, +1.0f, 0.0f);
+	m_offsets[1] = XMFLOAT4(-1.0f, -1.0f, -1.0f, 0.0f);
+
+	m_offsets[2] = XMFLOAT4(-1.0f, +1.0f, +1.0f, 0.0f);
+	m_offsets[3] = XMFLOAT4(+1.0f, -1.0f, -1.0f, 0.0f);
+
+	m_offsets[4] = XMFLOAT4(+1.0f, +1.0f, -1.0f, 0.0f);
+	m_offsets[5] = XMFLOAT4(-1.0f, -1.0f, +1.0f, 0.0f);
+
+	m_offsets[6] = XMFLOAT4(-1.0f, +1.0f, -1.0f, 0.0f);
+	m_offsets[7] = XMFLOAT4(+1.0f, -1.0f, +1.0f, 0.0f);
+
+	// 6 centers of cube faces
+	m_offsets[8] = XMFLOAT4(-1.0f, 0.0f, 0.0f, 0.0f);
+	m_offsets[9] = XMFLOAT4(+1.0f, 0.0f, 0.0f, 0.0f);
+
+	m_offsets[10] = XMFLOAT4(0.0f, -1.0f, 0.0f, 0.0f);
+	m_offsets[11] = XMFLOAT4(0.0f, +1.0f, 0.0f, 0.0f);
+
+	m_offsets[12] = XMFLOAT4(0.0f, 0.0f, -1.0f, 0.0f);
+	m_offsets[13] = XMFLOAT4(0.0f, 0.0f, +1.0f, 0.0f);
+
+	for (int i = 0; i < 14; ++i)
+	{
+		// Create random lengths in [0.25, 1.0].
+		float s = MathHelper::RandF(0.25f, 1.0f);
+
+		XMVECTOR v = s * XMVector4Normalize(XMLoadFloat4(&m_offsets[i]));
+
+		XMStoreFloat4(&m_offsets[i], v);
+	}
 }

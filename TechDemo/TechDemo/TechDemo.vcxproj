@@ -123,6 +123,7 @@
   <ItemGroup>
     <ClCompile Include="ApplLogger.cpp" />
     <ClCompile Include="BasicDXGI.cpp" />
+    <ClCompile Include="BlurRender.cpp" />
     <ClCompile Include="BoneAnimation.cpp" />
     <ClCompile Include="BoneData.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -130,22 +131,27 @@
     <ClCompile Include="DebugRender_Axis.cpp" />
     <ClCompile Include="DebugRender_Light.cpp" />
     <ClCompile Include="DebugRender_Normals.cpp" />
+    <ClCompile Include="DebugRender_Screen.cpp" />
     <ClCompile Include="FBXFileLoader.cpp" />
     <ClCompile Include="FinalRender.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
+    <ClCompile Include="PSOBlurLayer.cpp" />
     <ClCompile Include="PSODebugLayer_Axis.cpp" />
     <ClCompile Include="PSODebugLayer_Light.cpp" />
     <ClCompile Include="PSODebugLayer_Normals.cpp" />
     <ClCompile Include="PSOFinalRenderLayer.cpp" />
     <ClCompile Include="PSOBaseLayer.cpp" />
     <ClCompile Include="PSOManager.cpp" />
+    <ClCompile Include="PSOSSAOLayer1.cpp" />
+    <ClCompile Include="PSOSSAOLayer2.cpp" />
     <ClCompile Include="RenderBase.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SkeletonManager.cpp" />
     <ClCompile Include="SkinnedData.cpp" />
+    <ClCompile Include="SSAORender.cpp" />
     <ClCompile Include="TechDemo.cpp" />
     <ClCompile Include="TextureLoader\DDSTextureLoader.cpp" />
     <ClCompile Include="TextureLoader\DirectXHelpers.cpp" />
@@ -158,6 +164,7 @@
     <ClInclude Include="ApplException.h" />
     <ClInclude Include="ApplLogger.h" />
     <ClInclude Include="BasicDXGI.h" />
+    <ClInclude Include="BlurRender.h" />
     <ClInclude Include="BoneAnimation.h" />
     <ClInclude Include="BoneData.h" />
     <ClInclude Include="Camera.h" />
@@ -166,6 +173,7 @@
     <ClInclude Include="DebugRender_Axis.h" />
     <ClInclude Include="DebugRender_Light.h" />
     <ClInclude Include="DebugRender_Normals.h" />
+    <ClInclude Include="DebugRender_Screen.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="FrameResourcesManager.h" />
     <ClInclude Include="FBXFileLoader.h" />
@@ -173,18 +181,22 @@
     <ClInclude Include="GraphicDataStructures.h" />
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="ObjectManager.h" />
+    <ClInclude Include="PSOBlurLayer.h" />
     <ClInclude Include="PSODebugLayer_Axis.h" />
     <ClInclude Include="PSODebugLayer_Light.h" />
     <ClInclude Include="PSODebugLayer_Normals.h" />
     <ClInclude Include="PSOFinalRenderLayer.h" />
     <ClInclude Include="PSOBaseLayer.h" />
     <ClInclude Include="PSOManager.h" />
+    <ClInclude Include="PSOSSAOLayer1.h" />
+    <ClInclude Include="PSOSSAOLayer2.h" />
     <ClInclude Include="RenderBase.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SkeletonManager.h" />
     <ClInclude Include="SkinnedData.h" />
+    <ClInclude Include="SSAORender.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TechDemo.h" />
     <ClInclude Include="TextureLoader\DDSTextureLoader.h" />
@@ -195,6 +207,9 @@
     <ClInclude Include="Utilit3D.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Shaders\BlurRender_shaders.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="Shaders\commonPart.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
@@ -207,7 +222,10 @@
     <FxCompile Include="Shaders\DebugNormalsRender_shaders.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="Shaders\DebugRootSignature.hlsl">
+    <FxCompile Include="Shaders\DebugScreenRender_shaders.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Shaders\RootSignature_Debug.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Shaders\FinalRender_GH_shaders.hlsl">
@@ -231,7 +249,19 @@
     <FxCompile Include="Shaders\RootSignature.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
+    <FxCompile Include="Shaders\RootSignature_SSAO.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="Shaders\SkinnedCommonPart.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Shaders\SSAORender_shaders1.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Shaders\SSAORender_shaders1_skinned.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Shaders\SSAORender_shaders2.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
