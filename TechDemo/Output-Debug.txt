@@ -1,0 +1,167 @@
+﻿'TechDemo.exe' (Win32): Loaded 'G:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\x64\Debug\TechDemo.exe'. Symbols loaded.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\ntdll.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\kernel32.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\KernelBase.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\user32.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\win32u.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\gdi32.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\gdi32full.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\msvcp_win.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\ucrtbase.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\advapi32.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\msvcrt.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\sechost.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\rpcrt4.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\D3DCompiler_47.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\dxgi.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\msvcp140d.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\D3D12.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\combase.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\vcruntime140d.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\cryptsp.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\bcryptprimitives.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\ucrtbased.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\msvcp110_win.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\imm32.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\kernel.appcore.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\uxtheme.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\msctf.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\oleaut32.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Program Files (x86)\Common Files\Portrait Displays\Plugins\DP\MsgHook64.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\psapi.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\dwmapi.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\TextInputFramework.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\CoreUIComponents.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\CoreMessaging.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\SHCore.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\ntmarta.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\WinTypes.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\d3d12SDKLayers.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\DXGIDebug.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Unloaded 'C:\Windows\System32\DXGIDebug.dll'
+'TechDemo.exe' (Win32): Unloaded 'C:\Windows\System32\d3d12SDKLayers.dll'
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\ResourcePolicyClient.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Unloaded 'C:\Windows\System32\ResourcePolicyClient.dll'
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\DXGIDebug.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\DriverStore\FileRepository\nv_dispi.inf_amd64_edcffbdd101bbe5b\nvldumdx.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\version.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\crypt32.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\msasn1.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\wintrust.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\imagehlp.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\rsaenh.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\bcrypt.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\cryptbase.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\DriverStore\FileRepository\nv_dispi.inf_amd64_edcffbdd101bbe5b\nvwgf2umx.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\winmm.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\winmmbase.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\winmmbase.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\winmmbase.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Unloaded 'C:\Windows\System32\winmmbase.dll'
+'TechDemo.exe' (Win32): Unloaded 'C:\Windows\System32\winmmbase.dll'
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\cfgmgr32.dll'. Cannot find or open the PDB file.
+The thread 0x361c has exited with code 0 (0x0).
+'TechDemo.exe' (Win32): Loaded 'C:\Program Files\NVIDIA Corporation\Ansel\Tools\NvCameraWhitelisting64.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\shell32.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\windows.storage.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\shlwapi.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\profapi.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\powrprof.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\fltLib.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Unloaded 'C:\Windows\System32\profapi.dll'
+'TechDemo.exe' (Win32): Unloaded 'C:\Windows\System32\powrprof.dll'
+'TechDemo.exe' (Win32): Unloaded 'C:\Windows\System32\fltLib.dll'
+'TechDemo.exe' (Win32): Unloaded 'C:\Windows\System32\windows.storage.dll'
+'TechDemo.exe' (Win32): Unloaded 'C:\Windows\System32\shlwapi.dll'
+'TechDemo.exe' (Win32): Unloaded 'C:\Windows\System32\shell32.dll'
+'TechDemo.exe' (Win32): Unloaded 'C:\Program Files\NVIDIA Corporation\Ansel\Tools\NvCameraWhitelisting64.dll'
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\shell32.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\windows.storage.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\shlwapi.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\profapi.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\powrprof.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\fltLib.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\d3d12SDKLayers.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Unloaded 'C:\Windows\System32\d3d12SDKLayers.dll'
+'TechDemo.exe' (Win32): Unloaded 'C:\Windows\System32\winmmbase.dll'
+'TechDemo.exe' (Win32): Unloaded 'C:\Windows\System32\winmm.dll'
+'TechDemo.exe' (Win32): Unloaded 'C:\Windows\System32\DriverStore\FileRepository\nv_dispi.inf_amd64_edcffbdd101bbe5b\nvwgf2umx.dll'
+'TechDemo.exe' (Win32): Unloaded 'C:\Windows\System32\version.dll'
+'TechDemo.exe' (Win32): Unloaded 'C:\Windows\System32\DriverStore\FileRepository\nv_dispi.inf_amd64_edcffbdd101bbe5b\nvldumdx.dll'
+'TechDemo.exe' (Win32): Unloaded 'C:\Windows\System32\DXGIDebug.dll'
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\DXGIDebug.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\DriverStore\FileRepository\nv_dispi.inf_amd64_edcffbdd101bbe5b\nvldumdx.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\version.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\DriverStore\FileRepository\nv_dispi.inf_amd64_edcffbdd101bbe5b\nvwgf2umx.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\winmm.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\winmmbase.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\winmmbase.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Unloaded 'C:\Windows\System32\winmmbase.dll'
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\winmmbase.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Unloaded 'C:\Windows\System32\winmmbase.dll'
+The thread 0x1490 has exited with code 0 (0x0).
+'TechDemo.exe' (Win32): Loaded 'C:\Program Files\NVIDIA Corporation\Ansel\Tools\NvCameraWhitelisting64.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Unloaded 'C:\Program Files\NVIDIA Corporation\Ansel\Tools\NvCameraWhitelisting64.dll'
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\d3d12SDKLayers.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\dxilconv.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\D3DSCache.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\userenv.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\twinapi.appcore.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\rmclient.dll'. Cannot find or open the PDB file.
+'TechDemo.exe' (Win32): Unloaded 'C:\Windows\System32\dxilconv.dll'
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\dcomp.dll'. Cannot find or open the PDB file.
+G:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Shaders\FinalRender_shaders.hlsl(102,9-104): warning X3206: implicit truncation of vector type
+G:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Shaders\FinalRender_shaders.hlsl(10,12-55): warning X3578: Output value 'VS' is not completely initialized
+G:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Shaders\FinalRender_Sky_shaders.hlsl(10,12-55): warning X3578: Output value 'VS' is not completely initialized
+G:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Shaders\FinalRender_skinnedShaders.hlsl(120,9-104): warning X3206: implicit truncation of vector type
+G:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Shaders\FinalRender_shaders.hlsl(102,9-104): warning X3206: implicit truncation of vector type
+Lighting.hlsl(114,35): warning X4000: use of potentially uninitialized variable (ComputeSpotLight)
+Lighting.hlsl(91,35): warning X4000: use of potentially uninitialized variable (ComputePointLight)
+G:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Shaders\FinalRender_skinnedShaders.hlsl(120,9-104): warning X3206: implicit truncation of vector type
+G:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Shaders\FinalRender_GH_shaders.hlsl(89,14-106): warning X3578: Output value 'DS' is not completely initialized
+'TechDemo.exe' (Win32): Loaded 'C:\Windows\System32\dxilconv.dll'. Cannot find or open the PDB file.
+G:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Shaders\DebugAxesRender_shaders.hlsl(7,12-26): warning X3578: Output value 'VS' is not completely initialized
+G:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Shaders\DebugLightRender_shaders.hlsl(7,13-27): warning X3578: Output value 'VS' is not completely initialized
+G:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Shaders\SSAORender_shaders1.hlsl(7,12-55): warning X3578: Output value 'VS' is not completely initialized
+G:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Shaders\SSAORender_shaders1_skinned.hlsl(7,12-55): warning X3578: Output value 'VS' is not completely initialized
+G:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Shaders\ShadowRender_shaders.hlsl(7,12-55): warning X3578: Output value 'VS' is not completely initialized
+G:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Shaders\ShadowRender_shaders_skinned.hlsl(120,9-104): warning X3206: implicit truncation of vector type
+G:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Shaders\ShadowRender_shaders_skinned.hlsl(120,9-104): warning X3206: implicit truncation of vector type
+D3D12 WARNING: ID3D12Device::CreateGraphicsPipelineState: The Pixel Shader expects a Render Target View bound to slot 0, but the PSO indicates that none will be bound. This is OK, as writes of an unbound Render Target View are discarded. It is also possible the developer knows the data will not be used anyway. This is only a problem if the developer actually intended to bind a Render Target View here. [ STATE_CREATION WARNING #679: CREATEGRAPHICSPIPELINESTATE_RENDERTARGETVIEW_NOT_SET]
+D3D12 WARNING: ID3D12Device::CreateGraphicsPipelineState: The Pixel Shader expects a Render Target View bound to slot 0, but the PSO indicates that none will be bound. This is OK, as writes of an unbound Render Target View are discarded. It is also possible the developer knows the data will not be used anyway. This is only a problem if the developer actually intended to bind a Render Target View here. [ STATE_CREATION WARNING #679: CREATEGRAPHICSPIPELINESTATE_RENDERTARGETVIEW_NOT_SET]
+The thread 0x3a18 has exited with code 0 (0x0).
+The thread 0x35ac has exited with code 0 (0x0).
+The thread 0x1828 has exited with code 0 (0x0).
+The thread 0x558 has exited with code 0 (0x0).
+The thread 0x1e68 has exited with code 0 (0x0).
+The thread 0x5b4 has exited with code 0 (0x0).
+The thread 0x36a4 has exited with code 0 (0x0).
+The thread 0x3128 has exited with code 0 (0x0).
+The thread 0x2640 has exited with code 0 (0x0).
+The thread 0x1bf0 has exited with code 0 (0x0).
+The thread 0x14dc has exited with code 0 (0x0).
+The thread 0x2774 has exited with code 0 (0x0).
+The thread 0x2534 has exited with code 0 (0x0).
+The thread 0xc1c has exited with code 0 (0x0).
+D3D12 WARNING: Process is terminating. Using simple reporting. Please call ReportLiveObjects() at runtime for standard reporting. [ STATE_CREATION WARNING #0: UNKNOWN]
+D3D12 WARNING: Live Producer at 0x000001985DC5B068, Refcount: 6. [ STATE_CREATION WARNING #0: UNKNOWN]
+D3D12 WARNING: 	Live Object at 0x000001985DBC1790, Refcount: 0. [ STATE_CREATION WARNING #0: UNKNOWN]
+D3D12 WARNING: 	Live Object at 0x000001985DC26D70, Refcount: 0. [ STATE_CREATION WARNING #0: UNKNOWN]
+D3D12 WARNING: 	Live Object at 0x000001985DE071B0, Refcount: 0. [ STATE_CREATION WARNING #0: UNKNOWN]
+D3D12 WARNING: 	Live Object at 0x000001986846CBB0, Refcount: 0. [ STATE_CREATION WARNING #0: UNKNOWN]
+D3D12 WARNING: 	Live Object at 0x000001986846C960, Refcount: 0. [ STATE_CREATION WARNING #0: UNKNOWN]
+D3D12 WARNING: 	Live Object at 0x000001985DC93C50, Refcount: 0. [ STATE_CREATION WARNING #0: UNKNOWN]
+D3D12 WARNING: 	Live Object at 0x000001985DE01FE0, Refcount: 0. [ STATE_CREATION WARNING #0: UNKNOWN]
+D3D12 WARNING: 	Live Object at 0x000001985DC94070, Refcount: 0. [ STATE_CREATION WARNING #0: UNKNOWN]
+D3D12 WARNING: 	Live Object at 0x00000198684C8D70, Refcount: 0. [ STATE_CREATION WARNING #0: UNKNOWN]
+D3D12 WARNING: 	Live Object at 0x000001986874ED50, Refcount: 1. [ STATE_CREATION WARNING #0: UNKNOWN]
+D3D12 WARNING: 	Live Object at 0x0000019868749E20, Refcount: 1. [ STATE_CREATION WARNING #0: UNKNOWN]
+D3D12 WARNING: 	Live Object at 0x00000198686DD1D0, Refcount: 0. [ STATE_CREATION WARNING #0: UNKNOWN]
+D3D12 WARNING: 	Live Object at 0x000001985DDE0870, Refcount: 1. [ STATE_CREATION WARNING #0: UNKNOWN]
+D3D12 WARNING: 	Live Object at 0x00000198686DBAB0, Refcount: 0. [ STATE_CREATION WARNING #0: UNKNOWN]
+D3D12 WARNING: 	Live Object at 0x000001985DDE0C70, Refcount: 1. [ STATE_CREATION WARNING #0: UNKNOWN]
+D3D12 WARNING: 	Live Object at 0x00000198686DBF50, Refcount: 0. [ STATE_CREATION WARNING #0: UNKNOWN]
+D3D12 WARNING: 	Live Object at 0x000001985DDE1070, Refcount: 1. [ STATE_CREATION WARNING #0: UNKNOWN]
+D3D12 WARNING: 	Live Object at 0x00000198686DBD00, Refcount: 0. [ STATE_CREATION WARNING #0: UNKNOWN]
+D3D12 WARNING: Live                         Object :     18 [ STATE_CREATION WARNING #0: UNKNOWN]
+The program '[2668] TechDemo.exe' has exited with code 0 (0x0).

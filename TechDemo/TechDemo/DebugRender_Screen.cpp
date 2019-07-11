@@ -53,11 +53,11 @@ void DebugRender_Screen::draw(UINT textureID)
 	m_cmdList->SetDescriptorHeaps(1, ldescriptorHeaps);
 
 	m_cmdList->SetPipelineState(m_psoLayer.getPSO(OPAQUELAYER));
-	m_cmdList->SetGraphicsRoot32BitConstant(0, textureID, 0); // Tech Flags	
-	m_cmdList->SetGraphicsRootDescriptorTable(1, m_techSRVHandle);
-
 	// Set RootArguments		
 	m_cmdList->SetGraphicsRootSignature(m_psoLayer.getRootSignature());
+
+	m_cmdList->SetGraphicsRoot32BitConstant(0, textureID, 0); // Tech Flags	
+	m_cmdList->SetGraphicsRootDescriptorTable(1, m_techSRVHandle);
 
 	m_cmdList->IASetVertexBuffers(0, 1, &m_mesh->vertexBufferView());
 	m_cmdList->IASetIndexBuffer(&m_mesh->indexBufferView());
@@ -77,7 +77,7 @@ void DebugRender_Screen::draw(UINT textureID)
 
 void DebugRender_Screen::resize(UINT iwidth, UINT iheight)
 {
-	DebugRender_Screen::resize(iwidth, iheight);
+	RenderBase::resize(iwidth, iheight);
 }
 
 void DebugRender_Screen::setSwapChainResources(ComPtr<ID3D12Resource>* swapChainResources)

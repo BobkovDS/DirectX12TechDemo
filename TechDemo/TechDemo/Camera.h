@@ -5,6 +5,7 @@
 #include "Executer.h"
 
 class Camera{
+	
 	DirectX::XMFLOAT3 m_position;	
 	DirectX::XMFLOAT3 m_right;
 	DirectX::XMFLOAT3 m_up;

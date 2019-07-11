@@ -13,6 +13,7 @@
 #define TECHSLOT_SSAO_DPT 3// Depth Map
 #define TECHSLOT_SSAO_AO 4// AO Map
 #define TECHSLOT_SSAO_BLUR 5// Blur Map 
+#define TECHSLOT_SHADOW 6// Blur Map 
 
 
 struct RenderResource {

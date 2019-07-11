@@ -66,10 +66,7 @@ void SSAORender::build()
 	
 	build_randomVectorTexture();
 	build_screen();
-	build_TechDescriptors();
-	m_dsResource->changeState(m_cmdList,D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_GENERIC_READ);
-	m_rtResources[RESOURCEID_VN]->changeState(m_cmdList, D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_GENERIC_READ);
-	m_rtResources[RESOURCEID_AO]->changeState(m_cmdList, D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_GENERIC_READ);	
+	build_TechDescriptors();	
 }
 
 void SSAORender::build_TechDescriptors()
@@ -105,13 +102,20 @@ void SSAORender::build_TechDescriptors()
 	lhDescriptorOffseting.Offset(TECHSLOT_RNDVECTORMAP, lSrvSize);
 	srvDesc.Format = m_randomVectorsTexture.RessourceInDefaultHeap.Get()->GetDesc().Format;
 	m_device->CreateShaderResourceView(m_randomVectorsTexture.RessourceInDefaultHeap.Get(), &srvDesc, lhDescriptorOffseting);
+
+	m_dsResource->changeState(m_cmdList, D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_GENERIC_READ);
+	m_rtResources[RESOURCEID_VN]->changeState(m_cmdList, D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_GENERIC_READ);
+	m_rtResources[RESOURCEID_AO]->changeState(m_cmdList, D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_GENERIC_READ);
 }
 
 void SSAORender::resize(UINT iwidth, UINT iheight)
 {
 	RenderBase::resize(iwidth, iheight);
 	m_dsResource->resize(iwidth, iheight);
-	create_DSV();
+	m_rtResources[RESOURCEID_VN]->resize(iwidth, iheight);
+	m_rtResources[RESOURCEID_AO]->resize(iwidth/2, iheight/2);
+	create_DSV(); // Here we create only DepthStencil Descriptor for DS Resource. SRV for it will be created in build_TechDescriptors()
+	create_RTV();
 
 	m_viewPortHalf= {};
 	m_viewPortHalf.Width = static_cast<float> (iwidth/2);
@@ -120,11 +124,13 @@ void SSAORender::resize(UINT iwidth, UINT iheight)
 	m_viewPortHalf.MaxDepth = 1.0f;
 
 	m_scissorRectHalf = { 0,0, static_cast<LONG> (iwidth/2),static_cast<LONG> (iheight/2) };
+
+	build_TechDescriptors();
 }
 
 void SSAORender::draw(int flags)
 {	   
-	const UINT lcLayerToDraw = 0b010; // SSAO only for simple Opaque objects
+	const UINT lcLayerToDraw = 0b1010; // SSAO only for simple Opaque objects
 
 	m_cmdList->SetGraphicsRootSignature(m_psoLayer1.getRootSignature());
 
@@ -172,12 +178,8 @@ void SSAORender::draw(int flags)
 		//--- draw calls	
 		int lInstanceOffset = 0;
 		for (int i = 0; i < m_scene->getLayersCount(); i++) // Draw all Layers
-		{
-			if (lcLayerToDraw & (1 << i))
-			{
-				m_cmdList->SetPipelineState(m_psoLayer1.getPSO(i));
-				draw_layer(i, lInstanceOffset, true);
-			}
+		{			
+			draw_layer(i, lInstanceOffset, lcLayerToDraw & (1 << i));
 		}
 	}
 
@@ -243,6 +245,7 @@ void SSAORender::draw_layer(int layerID, int& instanceOffset, bool doDraw)
 			if (lInstancesCount == 0) continue;
 			if (doDraw) // some layers we do not need to draw, but we need to count instances for it
 			{
+				m_cmdList->SetPipelineState(m_psoLayer1.getPSO(layerID));
 				m_cmdList->SetGraphicsRoot32BitConstant(0, instanceOffset, 0); // Instances offset for current layer objects
 				auto drawArg = lMesh->Geometry->DrawArgs[lMesh->Geometry->Name];
 				m_cmdList->IASetVertexBuffers(0, 1, &lMesh->Geometry->vertexBufferView());

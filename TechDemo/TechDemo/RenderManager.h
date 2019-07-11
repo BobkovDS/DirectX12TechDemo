@@ -7,6 +7,7 @@
 #include "DebugRender_Screen.h"
 #include "SSAORender.h"
 #include "BlurRender.h"
+#include "ShadowRender.h"
 
 
 struct RenderManagerMessanger {
@@ -34,6 +35,7 @@ class RenderManager
 	FinalRender m_finalRender;
 	SSAORender m_ssaoRender;
 	BlurRender m_blurRender;
+	ShadowRender m_shadowRender;
 	DebugRender_Axis m_debugRenderAxes;
 	DebugRender_Light m_debugRenderLights;
 	DebugRender_Normals m_debugRenderNormals;
@@ -65,6 +67,7 @@ public:
 	void setRenderMode_SSAO_Map1(); // ViewNormal Map
 	void setRenderMode_SSAO_Map2(); // AO Map
 	void setRenderMode_SSAO_Map3(); // AO Blured Map
+	void setRenderMode_Shadow(UINT mapID=0); // Shadow Map
 
 
 	bool isDebugMode() { return m_debugMode; }

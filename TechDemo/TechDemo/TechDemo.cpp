@@ -77,7 +77,9 @@ void TechDemo::onKeyDown(WPARAM btnState)
 	{
 		m_isTechFlag = !m_isTechFlag;
 		m_animationTimer.tt_Pause();
+		m_scene.toggleLightAnimation();
 	}
+	break;
 	case 'C': m_isCameraManualControl = !m_isCameraManualControl; break;
 	case VK_NUMPAD0: m_renderManager.toggleDebugMode(); break;
 	case VK_NUMPAD1: m_renderManager.toggleDebug_Axes(); break;
@@ -87,6 +89,7 @@ void TechDemo::onKeyDown(WPARAM btnState)
 	case '2': m_renderManager.setRenderMode_SSAO_Map1(); break;
 	case '3': m_renderManager.setRenderMode_SSAO_Map2(); break;
 	case '4': m_renderManager.setRenderMode_SSAO_Map3(); break;
+	case '5': m_renderManager.setRenderMode_Shadow(); break;
 	default:
 		break;
 	}
@@ -140,12 +143,20 @@ void TechDemo::init3D()
 		m_fbx_loader.loadSceneFile("Models\\The Scene.fbx");		
 	}	
 
-	//// Load a Tree
-	//{
-	//	FBXFileLoader m_fbx_loader;
-	//	m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
-	//	m_fbx_loader.loadSceneFile("Models\\Tree1.fbx");
-	//}
+	// Load lights
+	{
+		FBXFileLoader m_fbx_loader;
+		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
+		m_fbx_loader.loadSceneFile("Models\\Lights.fbx");
+	}
+
+	// Load a Camera
+	{
+		FBXFileLoader m_fbx_loader;
+		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
+		m_fbx_loader.loadSceneFile("Models\\Camera.fbx");
+	}
+
  
 	m_tempVal = 0;
 	m_skeletonManager.evaluateAnimationsTime();
@@ -278,9 +289,6 @@ void TechDemo::update_objectCB()
 
 	auto currCBObject = m_frameResourceManager.currentFR()->getObjectCB();
 
-	InstanceDataGPU lInst; /*TO_DO: delete*/
-	lInst = *lInstances[0];
-
 	for (int i=0; i< lInstances.size(); i++)
 		currCBObject->CopyData(i, *lInstances[i]);	
 	m_tempVal++;
@@ -348,7 +356,14 @@ void TechDemo::update_passCB()
 		mMainPassCB.Lights[i].falloffStart = lights.at(i).falloffStart;
 		mMainPassCB.Lights[i].falloffEnd = lights.at(i).falloffEnd;
 		mMainPassCB.Lights[i].lightType = lights.at(i).lightType + 1; // 0 - is undefined type of light
-		mMainPassCB.Lights[i].turnOn = lights.at(i).turnOn;		
+		mMainPassCB.Lights[i].turnOn = lights.at(i).turnOn;	
+
+		// build ViewProjT matrix for shadow technic
+
+		if (lights.at(i).lightType == LightType::Directional)
+			MathHelper::buildSunOrthoLightProjection(mMainPassCB.Lights[i].Direction, mMainPassCB.Lights[i].ViewProj,
+				mMainPassCB.Lights[i].ViewProjT, m_scene.getSceneBS());
+
 	}
 	
 	auto currPassCB = m_frameResourceManager.currentFR()->getPassCB();
@@ -379,7 +394,7 @@ void TechDemo::update_passSSAOCB()
 	XMStoreFloat4x4(&mSSAOPassCB.ProjTex, XMMatrixTranspose(textProj));
 	std::copy(&m_offsets[0], &m_offsets[14], &mSSAOPassCB.OffsetVectors[0]);
 
-	mSSAOPassCB.OcclusionRadius = 1.0f;
+	mSSAOPassCB.OcclusionRadius = 0.5f;
 	mSSAOPassCB.OcclusionFadeStart = 0.2;
 	mSSAOPassCB.OcclusionFadeEnd = 1.0f;
 	mSSAOPassCB.SurfaceEpsilon = 0.05f;

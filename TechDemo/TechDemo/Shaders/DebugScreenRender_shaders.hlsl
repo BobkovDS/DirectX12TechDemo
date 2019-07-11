@@ -22,7 +22,8 @@ struct Light
 #include "commonPart.hlsl"
 
 uint gTextureID : register(b0);
-Texture2D gTechTextures[10] : register(t0);
+TextureCube gSkyCubeTexture: register(t0);
+Texture2D gTechTextures[9] : register(t1);
 SamplerState gSampler : register(s0);
 
 [RootSignature(rootSignatureBlur)]
@@ -39,5 +40,5 @@ VertexOut VS(VertexIn vin)
 
 float4 PS(VertexOut pin) : SV_Target
 {
-    return float4(gTechTextures[gTextureID].Sample(gSampler, pin.UVText).xyz, 1.0f);
+    return float4(gTechTextures[gTextureID - 1].Sample(gSampler, pin.UVText).xyz, 1.0f); // -1 because we have also gSkyCubeTexture
 }

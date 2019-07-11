@@ -143,12 +143,14 @@
     <ClCompile Include="PSOFinalRenderLayer.cpp" />
     <ClCompile Include="PSOBaseLayer.cpp" />
     <ClCompile Include="PSOManager.cpp" />
+    <ClCompile Include="PSOShadowLayer.cpp" />
     <ClCompile Include="PSOSSAOLayer1.cpp" />
     <ClCompile Include="PSOSSAOLayer2.cpp" />
     <ClCompile Include="RenderBase.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="ShadowRender.cpp" />
     <ClCompile Include="SkeletonManager.cpp" />
     <ClCompile Include="SkinnedData.cpp" />
     <ClCompile Include="SSAORender.cpp" />
@@ -188,12 +190,14 @@
     <ClInclude Include="PSOFinalRenderLayer.h" />
     <ClInclude Include="PSOBaseLayer.h" />
     <ClInclude Include="PSOManager.h" />
+    <ClInclude Include="PSOShadowLayer.h" />
     <ClInclude Include="PSOSSAOLayer1.h" />
     <ClInclude Include="PSOSSAOLayer2.h" />
     <ClInclude Include="RenderBase.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="ShadowRender.h" />
     <ClInclude Include="SkeletonManager.h" />
     <ClInclude Include="SkinnedData.h" />
     <ClInclude Include="SSAORender.h" />
@@ -250,6 +254,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Shaders\RootSignature_SSAO.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Shaders\ShadowRender_shaders.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Shaders\ShadowRender_shaders_skinned.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Shaders\SkinnedCommonPart.hlsl">

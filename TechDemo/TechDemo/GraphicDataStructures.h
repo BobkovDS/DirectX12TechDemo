@@ -80,19 +80,21 @@ private:
 	UINT InstancePad2;
 };
 
-
 struct LightGPU
 {
 	DirectX::XMFLOAT3 Strength;
-	float falloffStart;
+	float falloffStart;	
 	DirectX::XMFLOAT3 Direction;
-	float falloffEnd;
+	float falloffEnd;	
 	DirectX::XMFLOAT3 Position;
 	float spotPower;
+	
 	float lightType;
 	float turnOn; // to find check it for int16 or something like that
 	float dummy2;
 	float dummy3;
+	DirectX::XMFLOAT4X4 ViewProj; //View-Projection matrix
+	DirectX::XMFLOAT4X4 ViewProjT; //View-Projection-toUV matrix
 	DirectX::XMFLOAT3 ReflectDirection;
 	float dummy4;
 };
@@ -164,14 +166,9 @@ struct PassConstantsGPU
 	float NearZ = 0.0f;
 	float FarZ = 0.0f;
 	float TotalTime = 0.0f;
-	float DeltaTime = 0.0f;
+	float DeltaTime = 0.0f;	
 
-	//DirectX::XMFLOAT4 AmbientLight = { 0.89f, 0.84f, 0.72f, 1.0f };
-	//DirectX::XMFLOAT4 AmbientLight = { 1.0f, 1.0f, 1.0f, 1.0f };
-	DirectX::XMFLOAT4 AmbientLight = { 0.3f, 0.2f, 0.2f, 1.0f };
-	//DirectX::XMFLOAT4 AmbientLight = { 0,0,0,0 };
-
-	//DirectX::XMFLOAT4 FogColor = { 0.47f, 0.47f, 0.5f, 1.0f };
+	DirectX::XMFLOAT4 AmbientLight = { 0.3f, 0.2f, 0.2f, 1.0f };		
 	DirectX::XMFLOAT4 FogColor = { 0.0f, 0.5f, 0.4f, 1.0f };
 
 	float FogStart = 5.0f;

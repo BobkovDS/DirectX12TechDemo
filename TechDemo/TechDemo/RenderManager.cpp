@@ -29,13 +29,18 @@ void RenderManager::initialize(const RenderManagerMessanger& renderParams)
 	m_frameResourceManager= renderParams.commonRenderData.FrameResourceMngr;
 	m_texturesDescriptorHeap = renderParams.SRVHeap;
 	m_finalRender.initialize(renderParams.commonRenderData);
+	m_ssaoRender.initialize(renderParams.commonRenderData);	
 	m_debugRenderAxes.initialize(renderParams.commonRenderData);
 	m_debugRenderLights.initialize(renderParams.commonRenderData);
 	m_debugRenderNormals.initialize(renderParams.commonRenderData);
-	m_ssaoRender.initialize(renderParams.commonRenderData);
-	m_debugRenderScreen.initialize(renderParams.commonRenderData);
+	m_debugRenderScreen.initialize(renderParams.commonRenderData);	
 
-	RenderMessager lRenderParams = renderParams.commonRenderData;
+	RenderMessager lRenderParams = renderParams.commonRenderData;	
+	lRenderParams.Width = 2048; // We think that SSAO gives us Map twice size less
+	lRenderParams.Height = 2048;
+	m_shadowRender.initialize(lRenderParams);
+
+	lRenderParams = renderParams.commonRenderData;
 	lRenderParams.Width /= 2; // We think that SSAO gives us Map twice size less
 	lRenderParams.Height/= 2;
 	m_blurRender.initialize(lRenderParams);
@@ -79,10 +84,14 @@ void RenderManager::buildRenders()
 	m_ssaoRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
 	m_ssaoRender.build();
 
-	// build BLur Render
+	// build Blur Render
 	m_blurRender.set_DescriptorHeap(m_texturesDescriptorHeap); 
 	m_blurRender.setInputResource(m_ssaoRender.getAOResource());
 	m_blurRender.build("BlurRender_shaders.hlsl", 6);
+
+	// build Shadow Render
+	m_shadowRender.set_DescriptorHeap(m_texturesDescriptorHeap);
+	m_shadowRender.build();	
 }
 
 void RenderManager::draw(int flags)
@@ -92,8 +101,13 @@ void RenderManager::draw(int flags)
 	int lResourceIndex = m_swapChain->GetCurrentBackBufferIndex();
 
 	int updatedFlags = flags;
+
 	bool lSSAO = true;
+	bool lShadow= true;
 	bool lFinalRender = true;
+
+	int lTechnicBits = (1 << RTB_SSAO) | (1 << RTB_SHADOWMAPPING) | (1 << RTB_NORMALMAPPING);
+	updatedFlags |= lTechnicBits;
 
 	// SSAO 
 	if (lSSAO)
@@ -119,10 +133,15 @@ void RenderManager::draw(int flags)
 			m_debugRenderScreen.draw(5); // Blured AO Map from Blur render
 	}
 	
-	if (lFinalRender && !(m_renderMode & RM_SSAO_MAPS)) m_finalRender.draw(updatedFlags);
-
-
-
+	if (lShadow)
+	{
+		m_shadowRender.draw(0);
+		if (m_renderMode & (1 << RM_SHADOW))
+			m_debugRenderScreen.draw(6);
+	}	
+	
+	if (lFinalRender && !(m_renderMode & RM_OTHERMODE)) m_finalRender.draw(updatedFlags);
+	   
 	if (m_debugMode)
 	{
 		if (m_debug_Axes)
@@ -145,7 +164,7 @@ void RenderManager::buildTechSRVs()
 		3 - SSAO: Depth Map
 		4 - SSAO: AO Map
 		5 - SSAO: Blur Map
-		6 - 'NULL'
+		6 - Shadow Map
 		7 - 'NULL'
 		8 - 'NULL'
 		9 - 'NULL'
@@ -173,10 +192,15 @@ void RenderManager::resize(int iwidth, int iheight)
 	if (m_initialized)
 	{
 		m_ssaoRender.resize(iwidth, iheight);
+
+		m_blurRender.setInputResource(m_ssaoRender.getAOResource());
+		m_blurRender.resize(iwidth, iheight);
+		//m_shadowRender.resize(iwidth, iheight); // we do not need resize Shadow Map everytimes
 		m_finalRender.resize(iwidth, iheight);
 		m_debugRenderAxes.resize(iwidth, iheight);
 		m_debugRenderLights.resize(iwidth, iheight);		
-		m_debugRenderNormals.resize(iwidth, iheight);
+		m_debugRenderNormals.resize(iwidth, iheight);	
+		m_debugRenderScreen.resize(iwidth, iheight);
 	}	
 }
 
@@ -221,4 +245,9 @@ void RenderManager::setRenderMode_SSAO_Map2()
 void RenderManager::setRenderMode_SSAO_Map3()
 {
 	m_renderMode = (1 << RM_SSAO_MAP3);
+}
+
+void RenderManager::setRenderMode_Shadow(UINT mapID)
+{
+	m_renderMode = (1 << RM_SHADOW);
 }

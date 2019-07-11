@@ -7,6 +7,7 @@ Scene::Scene()
 {
 	m_Layers.resize(6);
 	m_doesItNeedUpdate = true;
+	m_firstBB = true;
 }
 
 Scene::~Scene()
@@ -76,7 +77,19 @@ void Scene::build(ObjectManager* objectManager, Camera* camera, SkeletonManager*
 	for (int i = 0; i < m_objectManager->getLights().size(); i++)
 		m_lights.push_back(m_objectManager->getLights()[i]);
 
+	createBoungingInfo();
 	update();
+}
+
+void Scene::createBoungingInfo()
+{	
+	getLayerBoundingInfo(m_sceneBB, m_objectManager->getOpaqueLayer());
+	getLayerBoundingInfo(m_sceneBB, m_objectManager->getNotOpaqueLayer());
+	getLayerBoundingInfo(m_sceneBB, m_objectManager->getSkinnedOpaqueLayer());
+	getLayerBoundingInfo(m_sceneBB, m_objectManager->getSkinnedNotOpaqueLayer());
+	getLayerBoundingInfo(m_sceneBB, m_objectManager->getNotOpaqueLayerGH());
+
+	BoundingSphere::CreateFromBoundingBox(m_sceneBS, m_sceneBB);
 }
 
 void Scene::update()
@@ -97,6 +110,8 @@ void Scene::update()
 
 void Scene::updateLight(float time)
 {
+	if (!m_lightAnimation) return;
+
 	for (int i = 0; i < m_lights.size(); i++)
 	{
 		if (m_skeletonManager->isExistSkeletonNodeAnimated(m_lights[i].Name))
@@ -158,6 +173,30 @@ void Scene::updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<Ren
 		}
 
 		layer.addSceneObject(lSceneObject);
+	}
+}
+
+void Scene::getLayerBoundingInfo(DirectX::BoundingBox& layerBB, const std::vector<std::unique_ptr<RenderItem>>& arrayRI)
+{
+	for (int i = 0; i < arrayRI.size(); i++)
+	{
+		RenderItem* lRI = arrayRI[i].get();
+	
+		for (int j = 0; j < lRI->Instances.size(); j++)
+		{
+			XMMATRIX lInstanceWord = XMLoadFloat4x4(&lRI->Instances[j].World);
+			XMMATRIX lInstanceWordInv = XMMatrixInverse(&XMMatrixDeterminant(lInstanceWord), lInstanceWord);
+			BoundingBox lInstanceBB;
+			lRI->AABB.Transform(lInstanceBB, lInstanceWord);
+
+			if (!m_firstBB)
+				BoundingBox::CreateMerged(layerBB, layerBB, lInstanceBB);
+			else
+			{
+				BoundingBox::CreateMerged(layerBB, lInstanceBB, lInstanceBB);
+				m_firstBB = false;
+			}
+		}		
 	}
 }
 
@@ -281,4 +320,7 @@ void Scene::SceneLayer::SceneLayerObject::getInstances(std::vector<const Instanc
 }
 
 
-
+void Scene::toggleLightAnimation()
+{
+	m_lightAnimation = !m_lightAnimation;
+}

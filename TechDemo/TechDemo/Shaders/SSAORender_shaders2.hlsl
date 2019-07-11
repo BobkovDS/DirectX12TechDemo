@@ -41,7 +41,7 @@ float NdcDepthToViewDepth(float z_ndc)
 
 float4 PS(VertexOut pin) : SV_Target
 {
-    float3 n = gViewNormalMap.SampleLevel(gsamPointClamp, pin.UVText, 0.0f).xyz;
+    float3 n = normalize(gViewNormalMap.SampleLevel(gsamPointClamp, pin.UVText, 0.0f).xyz);
     float pz = gDepthMap.SampleLevel(gsamDepthMap, pin.UVText, 0.0f).r;
     pz = NdcDepthToViewDepth(pz);
     
@@ -68,8 +68,7 @@ float4 PS(VertexOut pin) : SV_Target
 
         float distZ = p.z - r.z;
         float dp = max(dot(n, normalize(r - p)), 0.0f);
-        if (dp < 0.1f)
-            dp = 0;
+        //if (dp < 0.1f)        dp = 0;
         float occlusion = dp * OcclusionFunction(distZ); //dp * 
         occlusionSum += occlusion;
     }

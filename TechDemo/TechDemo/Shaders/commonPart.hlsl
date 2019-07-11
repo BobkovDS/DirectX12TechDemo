@@ -1,4 +1,9 @@
 
+#define RTB_OFFSET 4
+#define RTB_SSAO (RTB_OFFSET + 0)
+#define RTB_SHADOWMAPPING (RTB_OFFSET + 1)
+#define RTB_NORMALMAPPING (RTB_OFFSET + 2)
+
 struct BoneData
 {
     float4x4 Transform;

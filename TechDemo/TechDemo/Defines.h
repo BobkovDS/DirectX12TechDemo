@@ -25,5 +25,15 @@
 #define RM_SSAO_MAP1 1
 #define RM_SSAO_MAP2 2
 #define RM_SSAO_MAP3 3
+#define RM_SHADOW 4
 #define RM_SSAO_MAPS ((1 << RM_SSAO_MAP1)| (1 << RM_SSAO_MAP2) | (1 << RM_SSAO_MAP3))
+#define RM_OTHERMODE (RM_SSAO_MAPS | (1<<RM_SHADOW))
 #define RM_CLEAR_ALL ~((1<<RM_FINAL) | (1<<RM_SSAO_MAP1)| (1<<RM_SSAO_MAP2) | (1<<RM_SSAO_MAP3))
+
+// Render selected Technic bit
+#define RTB_OFFSET 4
+#define RTB_SSAO (RTB_OFFSET + 0)
+#define RTB_SHADOWMAPPING (RTB_OFFSET + 1)
+#define RTB_NORMALMAPPING (RTB_OFFSET + 2)
+
+

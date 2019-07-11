@@ -21,7 +21,7 @@ void RenderResource::resize(UINT width, UINT height)
 {
 	if (m_device == nullptr)
 		return;
-
+	
 	m_resource.Reset();
 
 	//Create Resource for any purposes

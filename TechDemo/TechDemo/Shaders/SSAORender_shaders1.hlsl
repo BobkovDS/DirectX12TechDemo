@@ -37,7 +37,9 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
 float4 PS(VertexOut pin) : SV_Target
 {
     pin.NormalW = normalize(pin.NormalW);
-    float3 lNormalV = mul(pin.NormalW, (float3x3) cbPass.View );
+    float4x4 lView = cbPass.View;
+   // lView = transpose(lView);
+    float3 lNormalV = mul(pin.NormalW, (float3x3) lView);
 
     return float4(lNormalV, 0.0f);  
 }

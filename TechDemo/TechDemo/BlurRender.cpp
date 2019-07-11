@@ -47,9 +47,7 @@ void BlurRender::build(std::string shaderName, int blurCount)
 	m_techSRVHandle = lhDescriptor;
 
 	build_screen();
-	build_TechDescriptors();
-
-	m_rtResources[0]->changeState(m_cmdList, D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_GENERIC_READ);
+	build_TechDescriptors();	
 }
 
 void BlurRender::create_DescriptorHeap_RTV()
@@ -104,11 +102,16 @@ void BlurRender::build_TechDescriptors()
 		lhGpuDescriptorOffseting.Offset(TECHSLOT_SSAO_BLUR, lSrvSize);
 		m_gpu_SRV_Handle2 = lhGpuDescriptorOffseting;
 	}
+
+	m_rtResources[0]->changeState(m_cmdList, D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_GENERIC_READ);
 }
 
 void BlurRender::resize(UINT iwidth, UINT iheight)
 {
-	RenderBase::resize(iwidth, iheight);
+	RenderBase::resize(iwidth/2, iheight/2);
+	m_rtResources[0]->resize(m_width, m_height);
+
+	build_TechDescriptors();
 }
 
 void BlurRender::draw(int flags)

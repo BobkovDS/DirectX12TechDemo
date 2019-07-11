@@ -16,9 +16,17 @@ class Scene
 	Camera* m_camera;
 
 	std::vector<CPULight> m_lights; //lights in the scene
+	DirectX::BoundingSphere m_sceneBS; // scene bounding sphere for creation Sun-light Ortho Frustom 
+	DirectX::BoundingBox m_sceneBB;
 
 	bool m_doesItNeedUpdate;
+	bool m_firstBB;
+	bool m_lightAnimation;
 	int m_instancesDataReadTimes; // How many times we need provide Instances Data for FrameResource Manager;
+	
+	void updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<RenderItem>>& RI, bool isFrustumCullingRequired = true);
+	void createBoungingInfo();
+	void getLayerBoundingInfo(DirectX::BoundingBox& layerBB, const std::vector<std::unique_ptr<RenderItem>>& RI);
 public:
 	class SceneLayer
 	{
@@ -58,12 +66,13 @@ public:
 	std::vector<const InstanceDataGPU*>& getInstancesUpdate();
 	std::vector<const InstanceDataGPU*>& getInstances();
 	const std::vector<CPULight>& getLights();
+	const DirectX::BoundingBox& getSceneBB() { return m_sceneBB; }
+	const DirectX::BoundingSphere& getSceneBS() { return m_sceneBS; }
 	void build(ObjectManager* objectManager, Camera* camera, SkeletonManager* skeletonManagers);
 	void update();
 	void updateLight(float time);
-	void updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<RenderItem>>& RI, bool isFrustumCullingRequired=true);
 	bool isInstancesDataUpdateRequred();
 	void cameraListener();
-
+	void toggleLightAnimation();
 };
 

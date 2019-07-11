@@ -11,13 +11,16 @@ struct Light
 {
 	float3 Strength;
 	float FalloffStart;
-	float3 Direction;
+    float3 Direction;
 	float FalloffEnd;
 	float3 Position;
 	float SpotPower;
+
 	float lightType;
 	float lightTurnOn;
 	float2 dummy;
+    float4x4 ViewProj;
+    float4x4 ViewProjT;
 	float3 ReflectDirection;
 	float dummy2;
 };

@@ -12,10 +12,10 @@ class SSAORender :
 	PSOSSAOLayer1 m_psoLayer1;
 	PSOSSAOLayer2 m_psoLayer2;
 	std::unique_ptr<Mesh> m_mesh;
-	ResourceWithUploader m_randomVectorsTexture;
 	D3D12_GPU_DESCRIPTOR_HANDLE m_RNDVectorMapHandle;
 	D3D12_VIEWPORT m_viewPortHalf;
 	D3D12_RECT m_scissorRectHalf;
+	ResourceWithUploader m_randomVectorsTexture;
 
 	void build_TechDescriptors();
 	void build_screen();

@@ -153,6 +153,12 @@
     <ClCompile Include="DebugRender_Screen.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
+    <ClCompile Include="ShadowRender.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="PSOShadowLayer.cpp">
+      <Filter>Source Files\PSO</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PSOManager.h">
@@ -290,6 +296,12 @@
     <ClInclude Include="DebugRender_Screen.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
+    <ClInclude Include="ShadowRender.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="PSOShadowLayer.h">
+      <Filter>Header Files\PSO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\commonPart.hlsl">
@@ -347,6 +359,12 @@
       <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\DebugScreenRender_shaders.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\ShadowRender_shaders_skinned.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\ShadowRender_shaders.hlsl">
       <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
   </ItemGroup>

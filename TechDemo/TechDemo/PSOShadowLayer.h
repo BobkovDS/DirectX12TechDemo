@@ -1,0 +1,13 @@
+#pragma once
+#include "PSOBaseLayer.h"
+class PSOShadowLayer :
+	public PSOBaseLayer
+{
+	void buildShadersBlob();
+public:
+	PSOShadowLayer();
+	~PSOShadowLayer();
+
+	void buildPSO(ID3D12Device* m_device, DXGI_FORMAT rtFormat, DXGI_FORMAT dsFormat);
+};
+

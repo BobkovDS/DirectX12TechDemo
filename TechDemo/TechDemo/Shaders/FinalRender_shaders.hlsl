@@ -46,8 +46,7 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
    // vout.UVTextProj = mul(orthogProj, T);
    // vout.SSAOPosH = mul(SSAOProj, T);
 
-    vout.ShapeID = shapeID;
-   //vout.instID = instID;
+    vout.ShapeID = shapeID;   
     
     return vout;
 }
@@ -94,20 +93,26 @@ float4 PS(VertexOut pin) : SV_Target
             Normal = NormalSampleToWorldSpace(readNormal.xyz, Normal, pin.TangentW);
         }
     }
-    //return float4(Normal, 1.0f);
-
 
     // Get Alpha value
     if ((material.textureFlags & 0x10))        
         diffuseTranspFactor = gDiffuseMap[material.DiffuseMapIndex[4]].Sample(gsamPointWrap, pin.UVText);        
     
-    float ssao_factor = 1.0f;
+    float ssao_factor = 0.5f;
     float4 ambient = ssao_factor * cbPass.AmbientLight * diffuseAlbedo;
 
     const float shiness = 0.0f;//  1.0f - material.Roughness;
     MaterialLight matLight = { diffuseAlbedo, material.FresnelR0, shiness };
         
     float shadow_depth = 1.0f;
+    // if we use Shadow mapping
+    if ((gTechFlags & (1 << RTB_SHADOWMAPPING)) > 0)
+    {
+        float4 lShadowPosH = mul(float4(pin.PosW, 1.0f), cbPass.Lights[0].ViewProjT);        
+        shadow_depth = CalcShadowFactor(lShadowPosH, gShadowMap0, gsamShadow);
+    }
+    
+    //shadow_depth = 1.0f;
     float4 directLight = ComputeLighting(cbPass.Lights, matLight, pin.PosW, Normal, toEyeW, shadow_depth);
 
     float4 litColor = directLight +ambient;
