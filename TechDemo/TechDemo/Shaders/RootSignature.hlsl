@@ -18,6 +18,7 @@ StructuredBuffer<MaterialData> gMaterialData: register(t1, space1);
 StructuredBuffer<BoneData> cbBoneData : register(t0, space2);
 ConstantBuffer<PassStruct> cbPass : register(b3);
 TextureCube gCubeMap : register(t0);
+Texture2D gSSAOBlurMap: register(t5);
 Texture2D gShadowMap0: register(t6);
 Texture2D gDiffuseMap[20] : register(t10);
 

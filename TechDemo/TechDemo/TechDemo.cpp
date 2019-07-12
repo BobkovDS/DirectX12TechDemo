@@ -17,6 +17,7 @@ TechDemo::TechDemo(HINSTANCE hInstance, const std::wstring& applName, int width,
 }
 TechDemo::~TechDemo()
 {
+	FlushCommandQueue();
 	if (m_defaultCamera)
 		delete m_camera;
 }
@@ -75,7 +76,7 @@ void TechDemo::onKeyDown(WPARAM btnState)
 	{
 	case VK_SPACE:
 	{
-		m_isTechFlag = !m_isTechFlag;
+		//m_isTechFlag = !m_isTechFlag;
 		m_animationTimer.tt_Pause();
 		m_scene.toggleLightAnimation();
 	}
@@ -85,6 +86,10 @@ void TechDemo::onKeyDown(WPARAM btnState)
 	case VK_NUMPAD1: m_renderManager.toggleDebug_Axes(); break;
 	case VK_NUMPAD2: m_renderManager.toggleDebug_Lights(); break;
 	case VK_NUMPAD3: m_renderManager.toggleDebug_Normals_Vertex(); break;
+	case VK_NUMPAD7: m_renderManager.toggleTechnik_SSAO(); break;
+	case VK_NUMPAD8: m_renderManager.toggleTechnik_Shadow(); break;
+	case VK_NUMPAD9: m_renderManager.toggleTechnik_Normal(); break;
+
 	case '1': m_renderManager.setRenderMode_Final(); break;
 	case '2': m_renderManager.setRenderMode_SSAO_Map1(); break;
 	case '3': m_renderManager.setRenderMode_SSAO_Map2(); break;
@@ -298,7 +303,7 @@ void TechDemo::update_BoneData()
 {	
 	float lTickTime = m_animationTimer.deltaTime();
 
-	//m_animTime = 0;
+	//lTickTime = 0;
 	auto currBoneCB = m_frameResourceManager.currentFR()->getBoneCB();
 	float lBoneCBID= 0;
 
@@ -321,10 +326,18 @@ void TechDemo::update_passCB()
 {
 	auto mMainPassCB = m_frameResourceManager.tmpPassConsts;
 
+	// Transform NDC space [-1,+1]^2 to texture space [0,1]^2
+	XMMATRIX T(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f);
+
 	XMMATRIX view = m_camera->getView();
 	XMMATRIX proj = m_camera->lens->getProj();
 
 	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
+	XMMATRIX viewProjT = XMMatrixMultiply(viewProj, T);
 	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
 	XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
 	XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
@@ -335,7 +348,8 @@ void TechDemo::update_passCB()
 	XMStoreFloat4x4(&mMainPassCB.InvProj, XMMatrixTranspose(invProj));
 	XMStoreFloat4x4(&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));
 	XMStoreFloat4x4(&mMainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
-	//XMStoreFloat4x4(&mMainPassCB.ReflectWord, XMMatrixTranspose(perpectViewProj)); // Reflection here is used for Projector Proj matrix
+	XMStoreFloat4x4(&mMainPassCB.ViewProjT, XMMatrixTranspose(viewProjT));
+	
 
 	mMainPassCB.RenderTargetSize = XMFLOAT2((float)width(), (float)height());
 	mMainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / width(), 1.0f / height());
@@ -441,15 +455,7 @@ void TechDemo::work()
 	update();
 
 	// draw data
-	int lTechFlag;
-	
-	if (m_isTechFlag)
-		lTechFlag |= 0x01;
-	else
-		lTechFlag &= ~0x01;
-
-	m_renderManager.draw(lTechFlag);
-
+	m_renderManager.draw();
 
 	m_cmdList->Close();
 	ID3D12CommandList* CmdLists[] = { m_cmdList.Get() };

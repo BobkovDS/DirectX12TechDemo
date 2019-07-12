@@ -66,12 +66,12 @@ void Scene::build(ObjectManager* objectManager, Camera* camera, SkeletonManager*
 	m_camera = camera;
 	m_skeletonManager = skeletonManager;
 
-	m_Layers[0].setVisibility(true);
-	m_Layers[1].setVisibility(true);
-	m_Layers[2].setVisibility(true);
-	m_Layers[3].setVisibility(true);
-	m_Layers[4].setVisibility(true);
-	m_Layers[5].setVisibility(true);
+	m_Layers[0].setVisibility(true); // Sky
+	m_Layers[1].setVisibility(true); // Simple Opaque
+	m_Layers[2].setVisibility(true); // Simple Not Opaque 
+	m_Layers[3].setVisibility(true); // Skinned Opaque
+	m_Layers[4].setVisibility(false); // Skinned Not Opaque
+	m_Layers[5].setVisibility(true); // Tesselated object (water)
 
 	// Copy lights once to Scene		
 	for (int i = 0; i < m_objectManager->getLights().size(); i++)

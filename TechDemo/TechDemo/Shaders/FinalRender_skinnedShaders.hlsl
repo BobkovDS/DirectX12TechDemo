@@ -3,8 +3,6 @@
 #include "SkinnedCommonPart.hlsl"
 #include "RootSignature.hlsl"
 
-//int instID : SV_INSTANCEID
-
 [RootSignature(rootSignatureC1)]
 VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
 {
@@ -40,13 +38,11 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
         Final += boneTr * boneWeight;
     }    
 
-   // wordMatrix = mul(Final, wordMatrix);
-    
+       
     //get World transform
-    //float4 posW = mul(float4(vin.PosL, 1.0f), wordMatrix);
-    float4 posW = mul(wordMatrix, float4(vin.PosL, 1.0f) );
-   // float4 posW = float4(vin.PosL, 1.0f);
-    posW = mul(Final, posW);    
+    float4x4 lFinalM = mul(Final, wordMatrix);
+
+    float4 posW = mul(lFinalM, float4(vin.PosL, 1.0f));   
 	vout.PosW = posW.xyz;
 
     float4x4 ViewProj = cbPass.ViewProj;
@@ -60,41 +56,28 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
     
     vout.UVText = vin.UVText;
 
-    // for projection
-    matrix<float, 4, 4> T;
-    T._11_12_13_14 = float4(0.5f, 0.0f, 0.0f, 0.0f);
-    T._21_22_23_24 = float4(0.0f, -0.5f, 0.0f, 0.0f);
-    T._31_32_33_34 = float4(0.0f, 0.0f, 1.0f, 0.0f);
-    T._41_42_43_44 = float4(0.5f, 0.5f, 0.0f, 1.0f);
+    //// for projection
+    //matrix<float, 4, 4> T;
+    //T._11_12_13_14 = float4(0.5f, 0.0f, 0.0f, 0.0f);
+    //T._21_22_23_24 = float4(0.0f, -0.5f, 0.0f, 0.0f);
+    //T._31_32_33_34 = float4(0.0f, 0.0f, 1.0f, 0.0f);
+    //T._41_42_43_44 = float4(0.5f, 0.5f, 0.0f, 1.0f);
 
-   // vout.UVTextProj = mul(vout.PosH, T);
+    //vout.UVTextProj = mul(vout.PosH, T);
 
-    float4 orthogProj = mul(posW, cbPass.MirWord);
-    float4 SSAOProj = mul(posW, cbPass.ViewProj);
-   //if (gShadowUsed)
-   //     orthogProj = mul(posW, cbPass.MirWord); //ShadowWord MirWord
-   // else
-   //     orthogProj = mul(posW, cbPass.ViewProj);
-    vout.UVTextProj = mul(orthogProj, T);
-    vout.SSAOPosH = mul(SSAOProj, T);
-    vout.ShapeID = shapeID;
-   //vout.instID = instID;
+    //float4 orthogProj = mul(posW, cbPass.MirWord);
+    //float4 SSAOProj = mul(posW, cbPass.ViewProj); 
+    //vout.UVTextProj = mul(orthogProj, T);
+    //vout.SSAOPosH = mul(SSAOProj, T);
+    vout.SSAOPosH = mul(posW, cbPass.ViewProjT);
+
+    vout.ShapeID = shapeID; 
     
     return vout;
 }
 
-struct PixelOut
-{
-    float4 color : SV_Target;
-    float depth : SV_Depth;
-};
-
 float4 PS(VertexOut pin) : SV_Target
-//PixelOut PS(VertexOut pin)
-{
-    //if (gShadowUsed) return float4(0.05f ,0.0f ,0.0f ,1.0f); //For Stencil exercises 
-   // return float4(0.5f ,0.0f ,0.0f ,1.0f); //For Stencil exercises 
-	
+{	
     pin.NormalW = normalize(pin.NormalW);
     float3 toEyeW = cbPass.EyePosW - pin.PosW;
     float distToEye = length(toEyeW);
@@ -117,21 +100,25 @@ float4 PS(VertexOut pin) : SV_Target
     {
         //diffuseAlbedo = gDiffuseMap[material.DiffuseMapIndex[4]].Sample(gsamPointWrap, pin.UVText);
         //diffuseTranspFactor = diffuseAlbedo.x;
-        diffuseTranspFactor = gDiffuseMap[material.DiffuseMapIndex[4]].Sample(gsamPointWrap, pin.UVText);
-        
-    }
-     
-      
+        diffuseTranspFactor = gDiffuseMap[material.DiffuseMapIndex[4]].Sample(gsamPointWrap, pin.UVText);        
+    }      
     
     //if ((material.textureFlags & 0x02) && gShadowUsed && 0) //&& gShadowUsed
     //{
     //   float4 readNormal = gDiffuseMap[material.DiffuseMapIndex[1]].Sample(gsamPointWrap, pin.UVText);
     //   Normal = NormalSampleToWorldSpace(readNormal.xyz, Normal, pin.TangentW);
     //}
-
-    //float2 ssaouv = pin.SSAOPosH.xy / pin.SSAOPosH.w;
-    //float ssao_factor = gDiffuseMap[3].Sample(gsamPointWrap, ssaouv).r;  
+      
+    
+    // Get SSAO factor
     float ssao_factor = 1.0f;
+    if ((gTechFlags & (1 << RTB_SSAO)) > 0) // if we use SSAO information
+    {
+        float4 lUV = pin.SSAOPosH ;// mul(float4(pin.PosW, 1.0f), cbPass.ViewProjT);
+        lUV.xyz /= lUV.w;
+        ssao_factor = gSSAOBlurMap.Sample(gsamPointWrap, lUV.xy).r;
+    }    
+    //return float4(ssao_factor, ssao_factor, ssao_factor, 1.0f);    
     float4 ambient = ssao_factor * cbPass.AmbientLight * diffuseAlbedo;
             
     const float shiness = 0.0f;//  1.0f - material.Roughness;
@@ -141,9 +128,8 @@ float4 PS(VertexOut pin) : SV_Target
     
     shadow_depth = 1.0f;
     float4 directLight = ComputeLighting(cbPass.Lights, matLight, pin.PosW, Normal, toEyeW, shadow_depth);
-
-    float4 litColor = directLight;//  +ambient;
-    litColor = diffuseAlbedo; //  +ambient;
+        
+    float4 litColor = directLight + ambient;
     
     //if (cbPass.FogRange > 0)
     if (0> 1)

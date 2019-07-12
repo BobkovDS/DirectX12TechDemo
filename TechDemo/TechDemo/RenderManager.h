@@ -45,7 +45,12 @@ class RenderManager
 	bool m_debug_Axes;
 	bool m_debug_Lights;
 	bool m_debug_Normals_Vertex;
+	bool m_isSSAOUsing;
+	bool m_isShadowUsing;
+	bool m_isNormalMappingUsing;
+
 	UINT m_renderMode;
+	
 
 	void buildTechSRVs();
 
@@ -56,13 +61,16 @@ public:
 	void initialize(const RenderManagerMessanger& renderParams);
 	
 	void buildRenders();
-	void draw(int flags);
+	void draw();
 	void resize(int newWidth, int newHeight);	
 
 	void toggleDebugMode();
 	void toggleDebug_Normals_Vertex();
 	void toggleDebug_Axes();
 	void toggleDebug_Lights();
+	void toggleTechnik_SSAO();
+	void toggleTechnik_Shadow();
+	void toggleTechnik_Normal();
 	void setRenderMode_Final();
 	void setRenderMode_SSAO_Map1(); // ViewNormal Map
 	void setRenderMode_SSAO_Map2(); // AO Map

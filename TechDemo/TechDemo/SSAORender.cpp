@@ -39,16 +39,16 @@ void SSAORender::build()
 
 	// Render Target Resource. This class own it
 	{
-		create_Resource_RT(m_rtResourceFormat); // for ViewNormal Map
-		create_Resource_RT(m_rtResourceFormat, m_width/2, m_height/2); // for AO Map
+		create_Resource_RT(m_viewNormalMapFormat); // for ViewNormal Map
+		create_Resource_RT(AOMapFormat, m_width/2, m_height/2); // for AO Map
 		create_DescriptorHeap_RTV();
 		
 		create_RTV(m_rtResourceFormat);
 	}
 
 	// Initialize PSO layer
-	m_psoLayer1.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat);
-	m_psoLayer2.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat);
+	m_psoLayer1.buildPSO(m_device, m_viewNormalMapFormat, m_dsResourceFormat);
+	m_psoLayer2.buildPSO(m_device, AOMapFormat, m_dsResourceFormat);
 
 	// Initialize both DescriptorHandles: Tech_DescriptorHandle and Texture_DescriptorHandle	
 	m_techSRVHandle = m_descriptorHeap->GetGPUDescriptorHandleForHeapStart();

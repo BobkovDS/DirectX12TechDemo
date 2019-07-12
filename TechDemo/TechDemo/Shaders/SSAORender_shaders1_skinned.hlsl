@@ -40,12 +40,14 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
 
     float4x4 lFinalM = mul(Final, wordMatrix);
 
-    vout.NormalW = mul((float3x3) Final, vin.Normal);    
-    vout.TangentW = float4(mul((float3x3) Final, vin.TangentU), 0.0f);    
+    vout.NormalW = mul((float3x3) lFinalM, vin.Normal);
+    //vout.NormalW = mul(vout.NormalW, (float3x3) cbPass.View);
+    //vout.NormalW = normalize(vout.NormalW);
+    vout.TangentW = float4(mul((float3x3) lFinalM, vin.TangentU), 0.0f);
     vout.UVText = vin.UVText;
 
     //get World transform
-    //float4 posW = mul(float4(vin.PosL, 1.0f), wordMatrix);
+    
     float4 posW = mul(lFinalM, float4(vin.PosL, 1.0f));   
 	vout.PosW = posW.xyz;
 
@@ -55,12 +57,6 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
     return vout;
 }
 
-
-float4 PS(VertexOut pin) : SV_Target
-{
-    pin.NormalW = normalize(pin.NormalW);
-    float3 lNormalV = mul(pin.NormalW, (float3x3) cbPass.View);
-
-    return float4(lNormalV, 1.0f);
-}
-
+/*
+    Use the same Pixel Shader with "SSAORender_shaders1.hlsl"
+*/

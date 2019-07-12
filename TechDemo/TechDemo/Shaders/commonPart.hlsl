@@ -83,6 +83,7 @@ struct PassStruct
     float4x4 InvProj;
     float4x4 ViewProj;
     float4x4 InvViewProj;
+    float4x4 ViewProjT;
     float4x4 MirWord;
 	float4x4 ShadowWord;
     float3 EyePosW;

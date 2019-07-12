@@ -154,6 +154,7 @@ struct PassConstantsGPU
 	DirectX::XMFLOAT4X4 InvProj = MathHelper::Identity4x4();
 	DirectX::XMFLOAT4X4 ViewProj = MathHelper::Identity4x4();
 	DirectX::XMFLOAT4X4 InvViewProj = MathHelper::Identity4x4();
+	DirectX::XMFLOAT4X4 ViewProjT = MathHelper::Identity4x4();
 	DirectX::XMFLOAT4X4 ReflectWord = MathHelper::Identity4x4();
 	DirectX::XMFLOAT4X4 ShadowMatrix = MathHelper::Identity4x4();
 
@@ -168,7 +169,7 @@ struct PassConstantsGPU
 	float TotalTime = 0.0f;
 	float DeltaTime = 0.0f;	
 
-	DirectX::XMFLOAT4 AmbientLight = { 0.3f, 0.2f, 0.2f, 1.0f };		
+	DirectX::XMFLOAT4 AmbientLight = { 0.5f, 0.5f, 0.5f, 1.0f };		
 	DirectX::XMFLOAT4 FogColor = { 0.0f, 0.5f, 0.4f, 1.0f };
 
 	float FogStart = 5.0f;

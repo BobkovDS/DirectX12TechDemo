@@ -1,10 +1,35 @@
 Application begin to work
 Loading of Models\The Scene.fbx
 	Creating scene [The Scene]
-		processing a node: Plane
-		loading new material: Material.001
-		processing a node: Cube
-		loading new material: Material
+		processing a node: ground
+		loading new material: ground
+		processing a node: House
+		loading new material: cottage_texture
+		Texture(diffuse): Hause_colorTexture1[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Textures\cottage_textures\cottage_diffuse.png]
+		Texture(normal): Hause_normalTexture1[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Textures\cottage_textures\cottage_normal.png]
+		processing a node: Wolf_Skeleton
+			processing a node: root
+		processing a node: Wolf_obj_body.001
+		loading new material: Wolf_Teeth
+		processing a node: Wolf_obj_body.002
+		loading new material: Wolf_Claws
+		processing a node: Wolf_obj_body.003
+		loading new material: Wolf_Eyes
+		Texture(diffuse): Wolf_Eyes_1.jpg[g:\SSDLaba\Modeling\Blender\TechDemo\Models\Wolf\textures\Wolf_Eyes_1.jpg]
+		Texture(diffuse): Wolf_Eyes_2.jpg[g:\SSDLaba\Modeling\Blender\TechDemo\Models\Wolf\textures\Wolf_Eyes_2.jpg]
+		processing a node: Wolf_obj_body.004
+		loading new material: Wolf_Body
+		Texture(diffuse): Wolf_Body[g:\SSDLaba\Modeling\Blender\TechDemo\Models\Wolf\textures\Wolf_Body.jpg]
+		processing a node: Wolf_obj_body
+		loading new material: Wolf_Fur
+		Texture(diffuse): Wolf_Body.jpg[g:\SSDLaba\Modeling\Blender\TechDemo\Models\Wolf\textures\Wolf_Body.jpg]
+		Texture(transparencyF): Wolf_Fur.jpg[g:\SSDLaba\Modeling\Blender\TechDemo\Models\Wolf\textures\Wolf_Fur.jpg]
+		processing a node: tree_object1
+		loading new material: Tree_material1
+		Texture(diffuse): Texture.001[g:\SSDLaba\Modeling\Blender\TechDemo\Models\trees\Tree1\BarkDecidious0194_7_S.jpg]
+			processing a node: tree_leavesObject1
+			loading new material: Tree_Leaves1
+			Texture(diffuse): Texture.003[g:\SSDLaba\Modeling\Blender\TechDemo\Models\trees\Tree1\Leaves0120_35_S.png]
 Loading of Models\The Scene.fbx is done
 Loading of Models\Lights.fbx
 	Creating scene [Lights]
@@ -14,3 +39,5 @@ Loading of Models\Camera.fbx
 	Creating scene [Camera]
 		processing a node: Camera
 Loading of Models\Camera.fbx is done
+Application finish the work
+

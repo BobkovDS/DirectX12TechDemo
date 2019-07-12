@@ -17,11 +17,15 @@ class SSAORender :
 	D3D12_RECT m_scissorRectHalf;
 	ResourceWithUploader m_randomVectorsTexture;
 
+	static const DXGI_FORMAT m_viewNormalMapFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
 	void build_TechDescriptors();
 	void build_screen();
 	void build_randomVectorTexture();
 	void draw_layer(int layerID, int& instanseOffset, bool doDraw);
 public:
+	
+	static const DXGI_FORMAT AOMapFormat = DXGI_FORMAT_R16_UNORM;
+
 	SSAORender();
 	~SSAORender();
 

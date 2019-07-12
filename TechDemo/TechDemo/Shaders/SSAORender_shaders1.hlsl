@@ -22,7 +22,9 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
 
     // Transform to homogeneous clip space.    
     vout.PosH = mul(posW, ViewProj);
-    vout.NormalW = mul((float3x3) wordMatrix, vin.Normal);
+    vout.NormalW = mul((float3x3) wordMatrix, vin.Normal);   
+   // vout.NormalW = mul(vout.NormalW, (float3x3) cbPass.View);
+   // vout.NormalW = normalize(vout.NormalW);
     vout.UVText = vin.UVText;
 
     float3 tangentNU = vin.TangentU; //   normalize(vin.TangentU - dot(vin.TangentU, vin.Normal));
@@ -36,11 +38,11 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
 
 float4 PS(VertexOut pin) : SV_Target
 {
+    //pin.NormalW = normalize(pin.NormalW);        
+    //return float4(pin.NormalW, 0.0f);
+    
     pin.NormalW = normalize(pin.NormalW);
-    float4x4 lView = cbPass.View;
-   // lView = transpose(lView);
-    float3 lNormalV = mul(pin.NormalW, (float3x3) lView);
-
-    return float4(lNormalV, 0.0f);  
+    float3 lNormalV = mul(pin.NormalW, (float3x3) cbPass.View);
+    return float4(lNormalV, 1.0f);    
 }
 

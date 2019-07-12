@@ -14,6 +14,7 @@ BasicDXGI::BasicDXGI(HINSTANCE hInstance, const std::wstring& applName, int widt
 
 BasicDXGI::~BasicDXGI()
 {
+	FlushCommandQueue();
 	LOG("BasicDXGI canvas was destroyed");
 }
 

@@ -8,7 +8,10 @@ RenderManager::RenderManager(): m_initialized(false)
 	m_debug_Axes = true;
 	m_debug_Lights = false;
 	m_debug_Normals_Vertex = false;
-	m_renderMode = (1 << RM_FINAL);
+	m_isSSAOUsing = true;
+	m_isShadowUsing = true;
+	m_isNormalMappingUsing = true;
+	m_renderMode = (1 << RM_FINAL);	
 }
 
 RenderManager::~RenderManager()
@@ -43,6 +46,7 @@ void RenderManager::initialize(const RenderManagerMessanger& renderParams)
 	lRenderParams = renderParams.commonRenderData;
 	lRenderParams.Width /= 2; // We think that SSAO gives us Map twice size less
 	lRenderParams.Height/= 2;
+	lRenderParams.RTResourceFormat = SSAORender::AOMapFormat;
 	m_blurRender.initialize(lRenderParams);
 
 	m_initialized = true;
@@ -87,30 +91,30 @@ void RenderManager::buildRenders()
 	// build Blur Render
 	m_blurRender.set_DescriptorHeap(m_texturesDescriptorHeap); 
 	m_blurRender.setInputResource(m_ssaoRender.getAOResource());
-	m_blurRender.build("BlurRender_shaders.hlsl", 6);
+	m_blurRender.build("BlurRender_shaders.hlsl", 15);
 
 	// build Shadow Render
 	m_shadowRender.set_DescriptorHeap(m_texturesDescriptorHeap);
 	m_shadowRender.build();	
 }
 
-void RenderManager::draw(int flags)
+void RenderManager::draw()
 {
 	assert(m_initialized);
 
 	int lResourceIndex = m_swapChain->GetCurrentBackBufferIndex();
 
-	int updatedFlags = flags;
+	int updatedFlags = 0;
 
-	bool lSSAO = true;
-	bool lShadow= true;
 	bool lFinalRender = true;
 
-	int lTechnicBits = (1 << RTB_SSAO) | (1 << RTB_SHADOWMAPPING) | (1 << RTB_NORMALMAPPING);
+	int lTechnicBits = (m_isSSAOUsing << RTB_SSAO) | (m_isShadowUsing << RTB_SHADOWMAPPING) | 
+		(m_isNormalMappingUsing << RTB_NORMALMAPPING);
+
 	updatedFlags |= lTechnicBits;
 
 	// SSAO 
-	if (lSSAO)
+	if (m_isSSAOUsing)
 	{
 		{
 			m_ssaoRender.draw(updatedFlags);
@@ -118,14 +122,17 @@ void RenderManager::draw(int flags)
 		}
 		if (m_renderMode & (1 << RM_SSAO_MAP1))
 		{
-			m_cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
+		/* we do not copy in this wat because dest_resource_format and source_resource_format are not equal
+
+		m_cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
 				D3D12_RESOURCE_STATE_PRESENT,
 				D3D12_RESOURCE_STATE_COPY_DEST));
 			m_cmdList->CopyResource(m_swapChainResources[lResourceIndex].Get(), m_ssaoRender.getVNResource());
 
 			m_cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
 				D3D12_RESOURCE_STATE_COPY_DEST,
-				D3D12_RESOURCE_STATE_PRESENT));
+				D3D12_RESOURCE_STATE_PRESENT));*/
+			m_debugRenderScreen.draw(2); // AO Map from SSAO render
 		}
 		else if (m_renderMode & (1 << RM_SSAO_MAP2))
 				m_debugRenderScreen.draw(4); // AO Map from SSAO render
@@ -133,7 +140,7 @@ void RenderManager::draw(int flags)
 			m_debugRenderScreen.draw(5); // Blured AO Map from Blur render
 	}
 	
-	if (lShadow)
+	if (m_isShadowUsing)
 	{
 		m_shadowRender.draw(0);
 		if (m_renderMode & (1 << RM_SHADOW))
@@ -250,4 +257,19 @@ void RenderManager::setRenderMode_SSAO_Map3()
 void RenderManager::setRenderMode_Shadow(UINT mapID)
 {
 	m_renderMode = (1 << RM_SHADOW);
+}
+
+void RenderManager::toggleTechnik_SSAO()
+{
+	m_isSSAOUsing = !m_isSSAOUsing;
+}
+
+void RenderManager::toggleTechnik_Shadow()
+{
+	m_isShadowUsing= !m_isShadowUsing;
+}
+
+void RenderManager::toggleTechnik_Normal()
+{
+	m_isNormalMappingUsing= !m_isNormalMappingUsing;
 }

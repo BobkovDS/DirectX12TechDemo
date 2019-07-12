@@ -1,3 +1,7 @@
+#define RTB_OFFSET 4
+#define RTB_SSAO (RTB_OFFSET + 0)
+#define RTB_SHADOWMAPPING (RTB_OFFSET + 1)
+#define RTB_NORMALMAPPING (RTB_OFFSET + 2)
 
 struct BoneData
 {
@@ -67,6 +71,7 @@ struct PassStruct
     float4x4 InvProj;
     float4x4 ViewProj;
     float4x4 InvViewProj;
+    float4x4 ViewProjT;
     float4x4 MirWord;
 	float4x4 ShadowWord;
     float3 EyePosW;
