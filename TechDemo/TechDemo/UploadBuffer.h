@@ -97,6 +97,9 @@ public:
 		memcpy(&mMappedData[elementIndex*mElementByteSize], &data, sizeof(T));
 	}
 
-
+	void CopyData(int elementIndex, int elementCount, T* data)
+	{
+		memcpy(&mMappedData[elementIndex*mElementByteSize], data, sizeof(T)*elementCount);
+	}
 };
 #endif UPLOADBUF_H

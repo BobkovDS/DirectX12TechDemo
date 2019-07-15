@@ -14,12 +14,16 @@ TechDemo::TechDemo(HINSTANCE hInstance, const std::wstring& applName, int width,
 	m_isTechFlag = false;
 	m_isCameraManualControl = true;
 	//Utilit3D::nullitizator();
+
+	m_drawInstancesIDs = new UINT[MaxInstancesCount];
 }
 TechDemo::~TechDemo()
 {
 	FlushCommandQueue();
 	if (m_defaultCamera)
 		delete m_camera;
+
+	delete[] m_drawInstancesIDs;
 }
 
 void TechDemo::onMouseDown(WPARAM btnState, int x, int y)
@@ -103,7 +107,11 @@ void TechDemo::onKeyDown(WPARAM btnState)
 std::string TechDemo::addTextToWindow()
 {
 	int lInstanceCount = m_scene.getInstances().size();
-	std::string text = " InstCount: " + std::to_string(lInstanceCount);
+	int lDrawInstancesID = m_scene.getDrawInstancesID().size();
+
+	std::string text = " InstCount(Shadow): " + std::to_string(lInstanceCount) 
+		+ " InstCount(Drawing): " + std::to_string(lDrawInstancesID);
+
 	
 	if (m_isTechFlag)
 		text += " TechFlag=1";
@@ -185,7 +193,7 @@ void TechDemo::init3D()
 
 	int lBonesCount = 100;
 	m_frameResourceManager.Initialize(m_device.Get(), m_fence.Get(), m_objectManager.getCommonInstancesCount(),
-		PASSCONSTBUFCOUNT, SSAOCONSTBUFCOUNT, lBonesCount);
+		PASSCONSTBUFCOUNT, SSAOCONSTBUFCOUNT, lBonesCount, MaxInstancesCount);
 	
 	//build_defaultCamera();
 
@@ -289,13 +297,18 @@ void TechDemo::update_objectCB()
 	if (!m_scene.isInstancesDataUpdateRequred()) return;
 	
 	auto lInstances = m_scene.getInstancesUpdate();
+	std::vector<UINT>& lDrawInstancesID = m_scene.getDrawInstancesID();
 
 	if (lInstances.size() == 0) return;
 
 	auto currCBObject = m_frameResourceManager.currentFR()->getObjectCB();
+	auto currDrawCBObject = m_frameResourceManager.currentFR()->getDrawInstancesCB();
 
 	for (int i=0; i< lInstances.size(); i++)
 		currCBObject->CopyData(i, *lInstances[i]);	
+
+	currDrawCBObject->CopyData(0, lDrawInstancesID.size(), lDrawInstancesID.data());
+
 	m_tempVal++;
 }
 
@@ -377,7 +390,6 @@ void TechDemo::update_passCB()
 		if (lights.at(i).lightType == LightType::Directional)
 			MathHelper::buildSunOrthoLightProjection(mMainPassCB.Lights[i].Direction, mMainPassCB.Lights[i].ViewProj,
 				mMainPassCB.Lights[i].ViewProjT, m_scene.getSceneBS());
-
 	}
 	
 	auto currPassCB = m_frameResourceManager.currentFR()->getPassCB();

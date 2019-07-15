@@ -13,7 +13,8 @@ class TechDemo :
 	public BasicDXGI
 {
 	static const int MaxBlurRadius = 5;
-
+	static const int MaxInstancesCount = 1000000;
+	
 	ObjectManager m_objectManager;
 	Scene m_scene;
 	ResourceManager m_resourceManager;
@@ -24,6 +25,7 @@ class TechDemo :
 	Camera* m_camera;
 	Timer m_animationTimer;
 	DirectX::XMFLOAT4 m_offsets[14];
+	UINT* m_drawInstancesIDs;
 
 	bool m_init3D_done;
 	bool m_defaultCamera;

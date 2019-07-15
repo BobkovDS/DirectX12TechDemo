@@ -41,11 +41,13 @@ int Scene::getLayerInstanceOffset(UINT layerCount)
 std::vector<const InstanceDataGPU*>& Scene::getInstancesUpdate()
 {
 	m_tmp_Intances.clear();
+	m_tmp_drawInstancesID.clear();
 
 	for (int i = 0; i < m_Layers.size(); i++)	
 		if (m_Layers[i].isLayerVisible())
 		{
-			m_Layers[i].getInstances(m_tmp_Intances);
+			UINT lInstancesPerLayerCount = m_tmp_Intances.size();
+			m_Layers[i].getInstances(m_tmp_Intances, m_tmp_drawInstancesID, lInstancesPerLayerCount);
 		}	
 	m_instancesDataReadTimes--;
 
@@ -55,6 +57,11 @@ std::vector<const InstanceDataGPU*>& Scene::getInstancesUpdate()
 std::vector<const InstanceDataGPU*>& Scene::getInstances()
 {
 	return m_tmp_Intances;
+}
+
+std::vector<UINT>& Scene::getDrawInstancesID()
+{
+	return m_tmp_drawInstancesID;
 }
 
 void Scene::build(ObjectManager* objectManager, Camera* camera, SkeletonManager* skeletonManager)
@@ -148,30 +155,51 @@ void Scene::cameraListener()
 void Scene::updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<RenderItem>>& arrayRI, bool isFrustumCullingRequired)
 {
 	layer.clearLayer();
-	BoundingFrustum& lBoundingFrustom = m_camera->getFrustomBoundingWorld();
+	BoundingFrustum& lBoundingFrustomCamera = m_camera->getFrustomBoundingCameraWorld();
+	BoundingFrustum& lBoundingFrustomShadowProjector = m_camera->getFrustomBoundingShadowWorld();
 
+	UINT lDrawInstanceID = 0; /*each Layer has his own through-ID for all LayerObjects */
 	for (int i = 0; i < arrayRI.size(); i++)
 	{
-		SceneLayer::SceneLayerObject lSceneObject = {};
-
+		SceneLayer::SceneLayerObject lSceneObject = {};	
 		RenderItem* lRI = arrayRI[i].get();
 		lSceneObject.setObjectMesh(lRI);
+		lSceneObject.setMaxSizeForDrawingIntancesArray(lRI->Instances.size());
 		for (int j = 0; j < lRI->Instances.size(); j++)
 		{	
 			if (isFrustumCullingRequired)
 			{
 				XMMATRIX lInstanceWord = XMLoadFloat4x4(&lRI->Instances[j].World);
-				XMMATRIX lInstanceWordInv = XMMatrixInverse(&XMMatrixDeterminant(lInstanceWord), lInstanceWord);
+				
+				BoundingBox lRIBBWord;
+				lRI->AABB.Transform(lRIBBWord, lInstanceWord);
+					
+				/*XMMATRIX lInstanceWordInv = XMMatrixInverse(&XMMatrixDeterminant(lInstanceWord), lInstanceWord);				
 				BoundingFrustum lLocalSpaceFrustom;
 				lBoundingFrustom.Transform(lLocalSpaceFrustom, lInstanceWordInv);
+				if (lLocalSpaceFrustom.Contains(lRI->AABB) != DirectX::DISJOINT)*/			
 
-				//if (lLocalSpaceFrustom.Contains(lRI->AABB) != DirectX::DISJOINT)
-					lSceneObject.addInstance(&lRI->Instances[j]);
+				// If Instance can be seen in Camera, no need to check for Shadow Projector - it is also will be there
+				if (lBoundingFrustomCamera.Contains(lRIBBWord) != DirectX::DISJOINT)
+				{
+					lSceneObject.addInstance(&lRI->Instances[j]); // add Instance 
+					lSceneObject.setDrawInstanceID(lDrawInstanceID++); //.. and also add information about DrawInstance ID
+				}
+				// But if Instance out of Camera Frustom, it can be still inside of Shadow Prjector Frustum 
+				else if (lBoundingFrustomShadowProjector.Contains(lRIBBWord) != DirectX::DISJOINT)
+				{
+					lSceneObject.addInstance(&lRI->Instances[j]); // only add Instance
+					lDrawInstanceID++; // no add, but counting next DrawInstance ID
+				}
 			}
 			else
+			{
 				lSceneObject.addInstance(&lRI->Instances[j]);
+				lSceneObject.setDrawInstanceID(lDrawInstanceID++);
+			}
 		}
 
+		lSceneObject.setMinSizeForDrawingIntancesArray();
 		layer.addSceneObject(lSceneObject);
 	}
 }
@@ -196,7 +224,7 @@ void Scene::getLayerBoundingInfo(DirectX::BoundingBox& layerBB, const std::vecto
 				BoundingBox::CreateMerged(layerBB, lInstanceBB, lInstanceBB);
 				m_firstBB = false;
 			}
-		}		
+		}
 	}
 }
 
@@ -246,6 +274,10 @@ const std::vector<CPULight>& Scene::getLights()
 }
 // ================================================================ [Scene::SceneLayer] =============================== 
 
+//Scene::SceneLayer::SceneLayerObject::SceneLayerObject():m_drawInstanceIDCount(0)
+//{	
+//}
+
 void Scene::SceneLayer::clearLayer()
 {
 	m_objects.clear();
@@ -266,10 +298,11 @@ int Scene::SceneLayer::getLayerInstancesCount()
 	return 0;// test
 }
 
-void Scene::SceneLayer::getInstances(std::vector<const InstanceDataGPU*>& out_Instances)
+void Scene::SceneLayer::getInstances(std::vector<const InstanceDataGPU*>& out_Instances, 
+	std::vector<UINT>& out_DrawInstancesID, UINT InstancesPerPrevLayer)
 {
 	for (int i = 0; i < m_objects.size(); i++)
-		m_objects[i].getInstances(out_Instances);
+		m_objects[i].getInstances(out_Instances, out_DrawInstancesID, InstancesPerPrevLayer);
 }
 
 int Scene::SceneLayer::getSceneObjectCount()
@@ -310,15 +343,21 @@ void Scene::SceneLayer::SceneLayerObject::addInstance(const InstanceDataGPU* ins
 	m_instances.push_back(instance);
 }
 
-void Scene::SceneLayer::SceneLayerObject::getInstances(std::vector<const InstanceDataGPU*>& out_Instances)
+void Scene::SceneLayer::SceneLayerObject::getInstances(std::vector<const InstanceDataGPU*>& out_Instances, 
+	std::vector<UINT>& out_DrawInstancesID, UINT InstancesPerPrevLayer)
 {
 	int lPrevSize = out_Instances.size();
+	int lPrevSizeDrawID = out_DrawInstancesID.size();
+
 	out_Instances.resize(lPrevSize + m_instances.size());
-	
+	out_DrawInstancesID.resize(lPrevSizeDrawID + m_drawInstancesID.size());
+
 	for (int i = 0; i < m_instances.size(); i++)
 		out_Instances[lPrevSize + i] = m_instances[i];	
-}
 
+	for (int i = 0; i < m_drawInstancesID.size(); i++)
+		out_DrawInstancesID[lPrevSizeDrawID + i] = m_drawInstancesID[i] + InstancesPerPrevLayer;
+}
 
 void Scene::toggleLightAnimation()
 {

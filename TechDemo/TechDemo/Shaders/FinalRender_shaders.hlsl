@@ -11,7 +11,7 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
 {   
 	VertexOut vout;
 
-    uint shapeID = instID + gInstancesOffset; // we do not use vin.ShapeID anymore in this variant
+    uint shapeID = gDrawInstancesIDData[instID + gInstancesOffset]; 
     InstanceData instData = gInstanceData[shapeID];
     float4x4 wordMatrix = instData.World;  
     

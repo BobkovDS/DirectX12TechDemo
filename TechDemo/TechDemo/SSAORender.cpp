@@ -145,13 +145,15 @@ void SSAORender::draw(int flags)
 	auto objectCB = m_frameResourceManager->getCurrentObjectCBResource();
 	auto passCB = m_frameResourceManager->getCurrentPassCBResource();
 	auto boneCB = m_frameResourceManager->getCurrentBoneCBResource();
+	auto drawCB = m_frameResourceManager->getCurrentDrawIDCBResource();
 
 	UINT lTechFlags = flags;
 	m_cmdList->SetGraphicsRoot32BitConstant(0, lTechFlags, 1); // Tech Flags	
 	m_cmdList->SetGraphicsRootShaderResourceView(1, objectCB->GetGPUVirtualAddress()); // Instances constant buffer arrray data
 	m_cmdList->SetGraphicsRootShaderResourceView(2, m_resourceManager->getMaterialsResource()->GetGPUVirtualAddress());
 	m_cmdList->SetGraphicsRootShaderResourceView(3, boneCB->GetGPUVirtualAddress()); // bones constant buffer array data
-	m_cmdList->SetGraphicsRootConstantBufferView(4, passCB->GetGPUVirtualAddress()); // Pass constant buffer data
+	m_cmdList->SetGraphicsRootShaderResourceView(4, drawCB->GetGPUVirtualAddress()); // DrawInstancesID constant buffer array data
+	m_cmdList->SetGraphicsRootConstantBufferView(5, passCB->GetGPUVirtualAddress()); // Pass constant buffer data
 	//m_cmdList->SetGraphicsRootDescriptorTable(5, m_techSRVHandle); // Technical SRV (CubeMap ViewNormal, SSAO maps and etc)
 	//m_cmdList->SetGraphicsRootDescriptorTable(6, m_textureSRVHandle); // Textures SRV
 

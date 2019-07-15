@@ -21,8 +21,8 @@ Camera& Camera::operator=(Camera& a)
 	m_viewToUpdate = a.m_viewToUpdate;
 	m_frustumBoundingWorldToUpdate = a.m_frustumBoundingWorldToUpdate;
 	m_viewMatrix = a.m_viewMatrix;
-	m_frustumBounding = a.m_frustumBounding;
-	m_frustumBoundingWorld = a.m_frustumBoundingWorld;
+	m_frustumBoundingCamera = a.m_frustumBoundingCamera;
+	m_frustumBoundingCameraWorld = a.m_frustumBoundingCameraWorld;
 	m_observers = a.m_observers;
 	*lens = *a.lens;
 
@@ -286,11 +286,19 @@ DirectX::XMMATRIX Camera::getLocalTransformationMatrix()
 
 void Camera::buildFrustumBounding()
 {
-	BoundingFrustum::CreateFromMatrix(m_frustumBounding, lens->getProj());
+	BoundingFrustum::CreateFromMatrix(m_frustumBoundingCamera, lens->getProj());
+	
+	float s = 1.5f;
+	m_frustumBoundingShadow = m_frustumBoundingCamera;
+	m_frustumBoundingShadow.LeftSlope *= s;
+	m_frustumBoundingShadow.RightSlope*= s;
+	m_frustumBoundingShadow.BottomSlope*= s;
+	m_frustumBoundingShadow.TopSlope*= s;
+
 	m_frustumBoundingWorldToUpdate = true;
 }
 
-DirectX::BoundingFrustum& Camera::getFrustomBoundingWorld()
+DirectX::BoundingFrustum& Camera::getFrustomBoundingCameraWorld()
 {
 	updateViewMatrix();
 	if (m_frustumBoundingWorldToUpdate) // here View matrix should be updated
@@ -298,11 +306,22 @@ DirectX::BoundingFrustum& Camera::getFrustomBoundingWorld()
 		DirectX::XMMATRIX view = XMLoadFloat4x4(&m_viewMatrix);
 		DirectX::XMMATRIX veiwInv = XMMatrixInverse(&XMMatrixDeterminant(view), view);
 
-		m_frustumBounding.Transform(m_frustumBoundingWorld, veiwInv);
+		m_frustumBoundingCamera.Transform(m_frustumBoundingCameraWorld, veiwInv);
+		m_frustumBoundingShadow.Transform(m_frustumBoundingShadowWorld, veiwInv);
+
 		m_frustumBoundingWorldToUpdate = false;
 	}
-	return m_frustumBoundingWorld;
+	return m_frustumBoundingCameraWorld;
 }
+
+DirectX::BoundingFrustum& Camera::getFrustomBoundingShadowWorld()
+{		
+	if (m_frustumBoundingWorldToUpdate) // here View matrix should be updated
+		getFrustomBoundingCameraWorld();
+	
+	return m_frustumBoundingShadowWorld;
+}
+
 
 inline void Camera::updateObservers()
 {

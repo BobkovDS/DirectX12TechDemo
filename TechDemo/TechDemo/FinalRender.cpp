@@ -45,7 +45,8 @@ void FinalRender::build_SkyDescriptor()
 	if (lSkyLayer)
 	{
 		std::vector<const InstanceDataGPU*> lInstances;
-		lSkyLayer->getInstances(lInstances);
+		std::vector<UINT> lDrawInstancesID; // we do not use it for SkyLayer
+		lSkyLayer->getInstances(lInstances, lDrawInstancesID, 0);
 		if (lInstances.size() != 0)
 		{
 			int lMaterialIndex = lInstances[0]->MaterialIndex; // use only the first Sky (we think we have it only one)
@@ -115,15 +116,17 @@ void FinalRender::draw(int flags)
 	auto objectCB = m_frameResourceManager->getCurrentObjectCBResource();
 	auto passCB = m_frameResourceManager->getCurrentPassCBResource();
 	auto boneCB = m_frameResourceManager->getCurrentBoneCBResource();
+	auto drawCB = m_frameResourceManager->getCurrentDrawIDCBResource();
 
 	UINT lTechFlags = flags;
 	m_cmdList->SetGraphicsRoot32BitConstant(0, lTechFlags, 1); // Tech Flags	
 	m_cmdList->SetGraphicsRootShaderResourceView(1, objectCB->GetGPUVirtualAddress()); // Instances constant buffer arrray data
 	m_cmdList->SetGraphicsRootShaderResourceView(2, m_resourceManager->getMaterialsResource()->GetGPUVirtualAddress());
 	m_cmdList->SetGraphicsRootShaderResourceView(3, boneCB->GetGPUVirtualAddress()); // bones constant buffer array data
-	m_cmdList->SetGraphicsRootConstantBufferView(4, passCB->GetGPUVirtualAddress()); // Pass constant buffer data
-	m_cmdList->SetGraphicsRootDescriptorTable(5, m_techSRVHandle); // Technical SRV (CubeMap ViewNormal, SSAO maps and etc)
-	m_cmdList->SetGraphicsRootDescriptorTable(6, m_textureSRVHandle); // Textures SRV
+	m_cmdList->SetGraphicsRootShaderResourceView(4, drawCB->GetGPUVirtualAddress()); // DrawInstancesID constant buffer array data
+	m_cmdList->SetGraphicsRootConstantBufferView(5, passCB->GetGPUVirtualAddress()); // Pass constant buffer data
+	m_cmdList->SetGraphicsRootDescriptorTable(6, m_techSRVHandle); // Technical SRV (CubeMap ViewNormal, SSAO maps and etc)
+	m_cmdList->SetGraphicsRootDescriptorTable(7, m_textureSRVHandle); // Textures SRV
 	
 	//--- draw calls	
 	int lInstanceOffset = 0;
@@ -139,8 +142,8 @@ void FinalRender::draw(int flags)
 			for (int ri = 0; ri < lObjectLayer->getSceneObjectCount(); ri++) // One layer has several RenderItems
 			{
 				m_cmdList->SetGraphicsRoot32BitConstant(0, lInstanceOffset, 0); // Instances offset for current layer objects
-				const RenderItem* lMesh = lObjectLayer->getSceneObject(ri)->getObjectMesh();
-				int lInstancesCount = lObjectLayer->getSceneObject(ri)->getInstancesCount(); // How much instances for this RenderItem we should draw
+				const RenderItem* lMesh = lObjectLayer->getSceneObject(ri)->getObjectMesh();				
+				int lInstancesCount = lObjectLayer->getSceneObject(ri)->getDrawInstancesIDCount(); // How much instances for this RenderItem we should draw
 				if (lInstancesCount == 0) continue;
 				auto drawArg = lMesh->Geometry->DrawArgs[lMesh->Geometry->Name];
 								

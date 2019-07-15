@@ -14,8 +14,8 @@ VertexIn VS(VertexIn vin)
 
 PatchTess ConstantHS(InputPatch<VertexIn, 4> patch, uint patchID : SV_PrimitiveID)
 {
-    float3 m = patch[3].PosL - patch[0].PosL;
-    int lShapeID = gInstancesOffset + 0; // Now we only one xxx_GH object, in other case we need to use SV_INSTANCEID in vertex shader
+    float3 m = patch[3].PosL - patch[0].PosL;    
+    int lShapeID = gDrawInstancesIDData[gInstancesOffset + 0]; // Now we use only one xxx_GH object, in other case we need to use SV_INSTANCEID in vertex shader
     InstanceData instData = gInstanceData[lShapeID];
 
     float4 posW = mul(float4(m, 1.0f), instData.World);
@@ -98,7 +98,8 @@ GeometryOut DS(PatchTess patchTess, float2 uv : SV_DomainLocation, const OutputP
     float2 uv2 = lerp(inPatch[2].UVText, inPatch[3].UVText, uv.x);
     float2 uv3 = lerp(uv1, uv2, uv.y);
 
-    int lShapeID = gInstancesOffset + 0; // Now we only one xxx_GH object, in other case we need to use SV_INSTANCEID in vertex shader
+    int lShapeID = gDrawInstancesIDData[gInstancesOffset + 0]; // Now we only one xxx_GH object, in other case we need to use SV_INSTANCEID in vertex shader
+    
     InstanceData instData = gInstanceData[lShapeID];
     float4x4 wordMatrix = instData.World;
     MaterialData material = gMaterialData[instData.MaterialIndex];

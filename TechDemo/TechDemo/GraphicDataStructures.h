@@ -1,6 +1,7 @@
 #ifndef GRAPHICSTRUCT_H
 #define GRAPHICSTRUCT_H
 
+#define MAXINSTANCES 1000000
 #define MaxLights 10
 #include "stdafx.h"
 #include "MathHelper.h"
@@ -178,6 +179,7 @@ struct PassConstantsGPU
 	float CameraDistance = 0;
 	float dummy2 = 0;
 
+	//UINT hfhfhhfghf[1000000];
 	LightGPU Lights[MaxLights];
 };
 

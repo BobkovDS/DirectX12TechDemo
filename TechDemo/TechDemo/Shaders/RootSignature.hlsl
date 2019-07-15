@@ -3,6 +3,7 @@
  SRV(t0, space=1),\
  SRV(t1, space=1),\
  SRV(t0, space=2),\
+ SRV(t1, space=2),\
  CBV(b3),\
  DescriptorTable( SRV(t0, numDescriptors = 10), visibility=SHADER_VISIBILITY_ALL),\
  DescriptorTable( SRV(t10, numDescriptors = unbounded), visibility=SHADER_VISIBILITY_ALL),\
@@ -16,6 +17,7 @@ uint gTechFlags:register(b1);
 StructuredBuffer<InstanceData> gInstanceData: register(t0, space1);
 StructuredBuffer<MaterialData> gMaterialData: register(t1, space1);
 StructuredBuffer<BoneData> cbBoneData : register(t0, space2);
+StructuredBuffer<uint> gDrawInstancesIDData : register(t1, space2);
 ConstantBuffer<PassStruct> cbPass : register(b3);
 TextureCube gCubeMap : register(t0);
 Texture2D gSSAOBlurMap: register(t5);
