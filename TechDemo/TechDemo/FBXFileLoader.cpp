@@ -536,7 +536,7 @@ void FBXFileLoader::add_InstanceToRenderItem(const fbx_NodeInstance& nodeRIInsta
 			lBaseInstance.MaterialIndex = nodeRIInstance.Materials[0]->MatCBIndex;
 
 		ri_it->second->Visable = nodeRIInstance.Visible;
-
+		ri_it->second->isNotIncludeInWorldBB = !nodeRIInstance.Materials[0]->DoesIncludeToWorldBB;
 		//define a type for RenderItem, let's use the first Instance for this and his material
 		if (ri_it->second->Type == 0)
 		{
@@ -669,6 +669,15 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 							lMaterial.IsWater = true;
 						else if (lValue == 2)
 							lMaterial.IsSky= true;
+					}
+
+					lMaterial.DoesIncludeToWorldBB = true;
+					lcustomProperty = lphongMaterial->FindProperty("myCustomProperty_IncludeToWorldBB");
+					if (lcustomProperty != NULL)
+					{
+						int lValue = lcustomProperty.Get<int>();
+						if (lValue == 0)
+							lMaterial.DoesIncludeToWorldBB = false;
 					}
 
 					// Get Diffuse data

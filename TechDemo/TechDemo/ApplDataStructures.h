@@ -23,6 +23,7 @@ struct RenderItem {
 	*/
 	std::string Name;
 	bool Visable;
+	bool isNotIncludeInWorldBB; //Does Not include this RI to World BoundingBox? (false = to include)
 	RenderItemType Type;
 	DirectX::BoundingBox AABB;
 	Mesh* Geometry = nullptr;
@@ -36,7 +37,6 @@ struct MaterialCPU
 	int NumFrameDirty;
 
 	int TexturesMask = 0; // 0bit - Difuse Texture1; 1-Difuse Texture2; 2-Normal; 3-Specular; 4-TransperencyFactor; 5-none
-
 
 	//Material Constant Buffer data
 	DirectX::XMFLOAT4 DiffuseAlbedo = { 0.5f, 0.5f, 0.5f, 1.0f }; // this is just initialisation, diffuse color will come from obj file 

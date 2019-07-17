@@ -27,8 +27,7 @@ class RenderManager
 	ID3D12DescriptorHeap* m_texturesDescriptorHeap;
 	DXGI_FORMAT m_rtResourceFormat;
 	UINT m_width;
-	UINT m_height;	
-	PSOManager* m_psoManager;
+	UINT m_height;		
 	IFrameResourcesManager* m_frameResourceManager;	
 
 	bool m_initialized;
@@ -49,8 +48,7 @@ class RenderManager
 	bool m_isShadowUsing;
 	bool m_isNormalMappingUsing;
 
-	UINT m_renderMode;
-	
+	UINT m_renderMode;	
 
 	void buildTechSRVs();
 

@@ -65,8 +65,7 @@ void RenderBase::initialize(const RenderMessager& renderParams)
 	m_cmdList = renderParams.CmdList;
 	m_width = renderParams.Width;
 	m_height = renderParams.Height;
-	m_scene= renderParams.Scene;
-	m_psoManager = renderParams.PSOMngr;
+	m_scene= renderParams.Scene;	
 	m_frameResourceManager= renderParams.FrameResourceMngr;
 	m_resourceManager = renderParams.ResourceMngr;
 	m_dsResourceFormat = renderParams.DSResourceFormat;
@@ -93,7 +92,7 @@ void RenderBase::resize(UINT newWidth, UINT newHeight)
 
 // -------------------------------- RESOURCE -------------------------------------------------------------------------------
 RenderResource* RenderBase::create_Resource(DXGI_FORMAT resourceFormat, D3D12_RESOURCE_FLAGS resourceFlags,
-	UINT width=0, UINT height=0, D3D12_CLEAR_VALUE* optClear)
+	UINT width, UINT height, D3D12_CLEAR_VALUE* optClear)
 {
 	assert(m_initialized == true); // Render should be initialized before
 	
@@ -119,6 +118,11 @@ void RenderBase::create_Resource_DS(DXGI_FORMAT resourceFormat)
 	optClear.DepthStencil.Stencil = 0;	
 
 	m_dsResource = create_Resource(resourceFormat, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL, 0,0,&optClear);
+}
+
+ID3D12Resource* RenderBase::get_Resource_DS()
+{
+	return m_dsResource->getResource();
 }
 
 void RenderBase::create_Resource_RT(DXGI_FORMAT resourceFormat, UINT width, UINT height)
@@ -241,5 +245,4 @@ void RenderBase::set_DescriptorHeap(ID3D12DescriptorHeap* srvDescriptorHeap)
 // --------------- General Methods -------------------------------
 void RenderBase::draw(int pFlags)
 {
-
 }

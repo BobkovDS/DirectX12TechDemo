@@ -27,8 +27,7 @@ void RenderManager::initialize(const RenderManagerMessanger& renderParams)
 	m_applicationRTVHeap = renderParams.RTVHeap;
 	m_width= renderParams.commonRenderData.Width;
 	m_height= renderParams.commonRenderData.Height;
-	m_rtResourceFormat= renderParams.commonRenderData.RTResourceFormat;	
-	m_psoManager= renderParams.commonRenderData.PSOMngr;
+	m_rtResourceFormat= renderParams.commonRenderData.RTResourceFormat;		
 	m_frameResourceManager= renderParams.commonRenderData.FrameResourceMngr;
 	m_texturesDescriptorHeap = renderParams.SRVHeap;
 	m_finalRender.initialize(renderParams.commonRenderData);
@@ -88,10 +87,10 @@ void RenderManager::buildRenders()
 	m_ssaoRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
 	m_ssaoRender.build();
 
-	// build Blur Render
-	m_blurRender.set_DescriptorHeap(m_texturesDescriptorHeap); 
+	// build Blur Render	
+	m_blurRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
 	m_blurRender.setInputResource(m_ssaoRender.getAOResource());
-	m_blurRender.build("BlurRender_shaders.hlsl", 15);
+	m_blurRender.build(10);
 
 	// build Shadow Render
 	m_shadowRender.set_DescriptorHeap(m_texturesDescriptorHeap);
@@ -115,11 +114,9 @@ void RenderManager::draw()
 
 	// SSAO 
 	if (m_isSSAOUsing)
-	{
-		{
-			m_ssaoRender.draw(updatedFlags);
-			m_blurRender.draw(0);
-		}
+	{		
+		m_ssaoRender.draw(updatedFlags);			
+		
 		if (m_renderMode & (1 << RM_SSAO_MAP1))
 		{
 		/* we do not copy in this wat because dest_resource_format and source_resource_format are not equal
@@ -136,7 +133,7 @@ void RenderManager::draw()
 		}
 		else if (m_renderMode & (1 << RM_SSAO_MAP2))
 				m_debugRenderScreen.draw(4); // AO Map from SSAO render
-		else if (m_renderMode & (1 << RM_SSAO_MAP3))
+		else if (m_renderMode & (1 << RM_SSAO_MAP3) && m_blurRender.isBlurMapReady())
 			m_debugRenderScreen.draw(5); // Blured AO Map from Blur render
 	}
 	
@@ -147,6 +144,7 @@ void RenderManager::draw()
 			m_debugRenderScreen.draw(6);
 	}	
 	
+	updatedFlags &= ~((!m_blurRender.isBlurMapReady()) << RTB_SSAO);
 	if (lFinalRender && !(m_renderMode & RM_OTHERMODE)) m_finalRender.draw(updatedFlags);
 	   
 	if (m_debugMode)
@@ -157,6 +155,11 @@ void RenderManager::draw()
 			m_debugRenderLights.draw(updatedFlags);
 		if (m_debug_Normals_Vertex)
 			m_debugRenderNormals.draw(updatedFlags);
+	}
+
+	if (m_isSSAOUsing)
+	{
+		m_blurRender.draw(0);
 	}
 }
 
@@ -170,11 +173,11 @@ void RenderManager::buildTechSRVs()
 		2 - SSAO: View Normal Map
 		3 - SSAO: Depth Map
 		4 - SSAO: AO Map
-		5 - SSAO: Blur Map
-		6 - Shadow Map
-		7 - 'NULL'
-		8 - 'NULL'
-		9 - 'NULL'
+		5 - BLUR: Resource_A_SRV (Blur Output result)
+		6 - BLUR: Resource_B_UAV
+		7 - BLUR: Resource_B_SRV
+		8 - BLUR: Resource_A_UAV
+		9 - Shadow Map
 	*/
 	assert(m_texturesDescriptorHeap);
 

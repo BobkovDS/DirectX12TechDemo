@@ -94,7 +94,7 @@ void Scene::createBoungingInfo()
 	getLayerBoundingInfo(m_sceneBB, m_objectManager->getNotOpaqueLayer());
 	getLayerBoundingInfo(m_sceneBB, m_objectManager->getSkinnedOpaqueLayer());
 	getLayerBoundingInfo(m_sceneBB, m_objectManager->getSkinnedNotOpaqueLayer());
-	getLayerBoundingInfo(m_sceneBB, m_objectManager->getNotOpaqueLayerGH());
+	//getLayerBoundingInfo(m_sceneBB, m_objectManager->getNotOpaqueLayerGH());
 
 	BoundingSphere::CreateFromBoundingBox(m_sceneBS, m_sceneBB);
 }
@@ -210,19 +210,22 @@ void Scene::getLayerBoundingInfo(DirectX::BoundingBox& layerBB, const std::vecto
 	{
 		RenderItem* lRI = arrayRI[i].get();
 	
-		for (int j = 0; j < lRI->Instances.size(); j++)
+		if (!lRI->isNotIncludeInWorldBB) // isNotIncludeInWorldBB ==true : Do not include this RI to world BB
 		{
-			XMMATRIX lInstanceWord = XMLoadFloat4x4(&lRI->Instances[j].World);
-			XMMATRIX lInstanceWordInv = XMMatrixInverse(&XMMatrixDeterminant(lInstanceWord), lInstanceWord);
-			BoundingBox lInstanceBB;
-			lRI->AABB.Transform(lInstanceBB, lInstanceWord);
-
-			if (!m_firstBB)
-				BoundingBox::CreateMerged(layerBB, layerBB, lInstanceBB);
-			else
+			for (int j = 0; j < lRI->Instances.size(); j++)
 			{
-				BoundingBox::CreateMerged(layerBB, lInstanceBB, lInstanceBB);
-				m_firstBB = false;
+				XMMATRIX lInstanceWord = XMLoadFloat4x4(&lRI->Instances[j].World);
+				XMMATRIX lInstanceWordInv = XMMatrixInverse(&XMMatrixDeterminant(lInstanceWord), lInstanceWord);
+				BoundingBox lInstanceBB;
+				lRI->AABB.Transform(lInstanceBB, lInstanceWord);
+
+				if (!m_firstBB)
+					BoundingBox::CreateMerged(layerBB, layerBB, lInstanceBB);
+				else
+				{
+					BoundingBox::CreateMerged(layerBB, lInstanceBB, lInstanceBB);
+					m_firstBB = false;
+				}
 			}
 		}
 	}

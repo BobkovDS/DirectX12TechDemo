@@ -1,7 +1,6 @@
 #pragma once
 #include "GraphicDataStructures.h"
 #include "Scene.h"
-#include "PSOManager.h"
 #include "FrameResourcesManager.h"
 #include "ResourceManager.h"
 
@@ -12,9 +11,11 @@
 #define TECHSLOT_SSAO_VSN 2 // ViewSpace Normal Map
 #define TECHSLOT_SSAO_DPT 3// Depth Map
 #define TECHSLOT_SSAO_AO 4// AO Map
-#define TECHSLOT_SSAO_BLUR 5// Blur Map 
-#define TECHSLOT_SHADOW 6// Shadow Map 
-
+#define TECHSLOT_BLUR_A_SRV 5// Blur Resource A: SRV
+#define TECHSLOT_BLUR_B_UAV 6// Blur Resource B: UAV
+#define TECHSLOT_BLUR_B_SRV 7// Blur Resource B: SRV
+#define TECHSLOT_BLUR_A_UAV 8// Blur Resource A: UAV
+#define TECHSLOT_SHADOW 9// Shadow Map 
 
 struct RenderResource {
 	void createResource(ID3D12Device* device, DXGI_FORMAT resourceFormat, D3D12_RESOURCE_FLAGS resourceFlags, UINT width, UINT height, D3D12_CLEAR_VALUE* optClear = NULL);
@@ -42,8 +43,7 @@ struct RenderMessager {
 	DXGI_FORMAT RTResourceFormat;
 	UINT Width;
 	UINT Height;
-	Scene* Scene;
-	PSOManager* PSOMngr; 
+	Scene* Scene;	
 	IFrameResourcesManager* FrameResourceMngr;
 	ResourceManager* ResourceMngr;
 };
@@ -54,8 +54,7 @@ class RenderBase
 protected:
 	ID3D12Device* m_device;
 	ID3D12GraphicsCommandList* m_cmdList;
-	Scene* m_scene;
-	PSOManager* m_psoManager;
+	Scene* m_scene;	
 	IFrameResourcesManager* m_frameResourceManager;
 	ResourceManager* m_resourceManager;
 
@@ -78,19 +77,21 @@ protected:
 	std::vector<RenderResource> m_own_resources;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_own_dsvHeap;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_own_rtvHeap;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_own_srv_uav_Heap; 
 
 	// "Resource interface"
 	RenderResource* m_dsResource;
 	std::vector<RenderResource*> m_rtResources;
-	ID3D12DescriptorHeap* m_descriptorHeap; // we do not own this SRV Descriptor Heap	
+	std::vector<RenderResource*> m_uavResources;
+	ID3D12DescriptorHeap* m_descriptorHeap;
 	ID3D12DescriptorHeap* m_dsvHeap;
-	ID3D12DescriptorHeap* m_rtvHeap;
+	ID3D12DescriptorHeap* m_rtvHeap;	
 	D3D12_GPU_DESCRIPTOR_HANDLE m_techSRVHandle;
 	D3D12_GPU_DESCRIPTOR_HANDLE m_textureSRVHandle;	
 
 public:
 	RenderResource* create_Resource(DXGI_FORMAT resourceFormat, D3D12_RESOURCE_FLAGS resourceFlags,
-		UINT width, UINT height, D3D12_CLEAR_VALUE* optClear=NULL);
+		UINT width=0, UINT height=0, D3D12_CLEAR_VALUE* optClear=NULL);
 	void create_Resource_DS(DXGI_FORMAT resourceFormat);
 	void create_Resource_RT(DXGI_FORMAT resourceFormat, UINT width = 0, UINT height = 0);
 	void create_DescriptorHeap_DSV();

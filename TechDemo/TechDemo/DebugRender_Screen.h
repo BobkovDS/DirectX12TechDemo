@@ -1,6 +1,6 @@
 #pragma once
 #include "RenderBase.h"
-#include "PSOBlurLayer.h"
+#include "PSODebugLayer_Screen.h"
 
 class DebugRender_Screen :
 	public RenderBase
@@ -8,7 +8,7 @@ class DebugRender_Screen :
 	IDXGISwapChain3* m_swapChain;
 	ComPtr<ID3D12Resource>* m_swapChainResources;
 
-	PSOBlurLayer m_psoLayer;
+	PSODebugLayer_Screen m_psoLayer;
 	std::unique_ptr<Mesh> m_mesh;
 	void build_screen();
 public:

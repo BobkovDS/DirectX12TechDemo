@@ -5,7 +5,7 @@
  SRV(t0, space=2),\
  SRV(t1, space=2),\
  CBV(b3),\
- DescriptorTable( SRV(t0, numDescriptors = 10), visibility=SHADER_VISIBILITY_ALL),\
+ DescriptorTable( SRV(t0, numDescriptors = 6), UAV(u0, numDescriptors = 1), SRV(t6, numDescriptors = 1), UAV(u1, numDescriptors = 1), SRV(t7, numDescriptors = 1), visibility=SHADER_VISIBILITY_ALL),\
  DescriptorTable( SRV(t10, numDescriptors = unbounded), visibility=SHADER_VISIBILITY_ALL),\
  StaticSampler(s0, visibility = SHADER_VISIBILITY_ALL),\
  StaticSampler(s1, addressU=TEXTURE_ADDRESS_BORDER, addressV=TEXTURE_ADDRESS_BORDER, borderColor=STATIC_BORDER_COLOR_OPAQUE_BLACK, filter = FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT, comparisonFunc =COMPARISON_LESS_EQUAL, visibility=SHADER_VISIBILITY_PIXEL)"
@@ -21,7 +21,7 @@ StructuredBuffer<uint> gDrawInstancesIDData : register(t1, space2);
 ConstantBuffer<PassStruct> cbPass : register(b3);
 TextureCube gCubeMap : register(t0);
 Texture2D gSSAOBlurMap: register(t5);
-Texture2D gShadowMap0: register(t6);
+Texture2D gShadowMap0: register(t7);
 Texture2D gDiffuseMap[20] : register(t10);
 
 SamplerState gsamPointWrap : register(s0);

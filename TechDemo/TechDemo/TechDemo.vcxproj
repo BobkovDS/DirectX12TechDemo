@@ -140,9 +140,9 @@
     <ClCompile Include="PSODebugLayer_Axis.cpp" />
     <ClCompile Include="PSODebugLayer_Light.cpp" />
     <ClCompile Include="PSODebugLayer_Normals.cpp" />
+    <ClCompile Include="PSODebugLayer_Screen.cpp" />
     <ClCompile Include="PSOFinalRenderLayer.cpp" />
     <ClCompile Include="PSOBaseLayer.cpp" />
-    <ClCompile Include="PSOManager.cpp" />
     <ClCompile Include="PSOShadowLayer.cpp" />
     <ClCompile Include="PSOSSAOLayer1.cpp" />
     <ClCompile Include="PSOSSAOLayer2.cpp" />
@@ -187,9 +187,9 @@
     <ClInclude Include="PSODebugLayer_Axis.h" />
     <ClInclude Include="PSODebugLayer_Light.h" />
     <ClInclude Include="PSODebugLayer_Normals.h" />
+    <ClInclude Include="PSODebugLayer_Screen.h" />
     <ClInclude Include="PSOFinalRenderLayer.h" />
     <ClInclude Include="PSOBaseLayer.h" />
-    <ClInclude Include="PSOManager.h" />
     <ClInclude Include="PSOShadowLayer.h" />
     <ClInclude Include="PSOSSAOLayer1.h" />
     <ClInclude Include="PSOSSAOLayer2.h" />
@@ -212,7 +212,10 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\BlurRender_shaders.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CS_HOR</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
     </FxCompile>
     <FxCompile Include="Shaders\commonPart.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

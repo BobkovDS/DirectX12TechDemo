@@ -21,7 +21,7 @@ void DebugRender_Screen::build()
 	assert(m_initialized == true);
 		
 	// Initialize PSO layer
-	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat, "DebugScreenRender_shaders.hlsl");
+	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat);
 
 	// Initialize DescriptorHandle: Tech_DescriptorHandle
 	m_techSRVHandle = m_descriptorHeap->GetGPUDescriptorHandleForHeapStart();

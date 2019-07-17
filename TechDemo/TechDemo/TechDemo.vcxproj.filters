@@ -42,9 +42,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PSOManager.cpp">
-      <Filter>Source Files\PSO</Filter>
-    </ClCompile>
     <ClCompile Include="PSOBaseLayer.cpp">
       <Filter>Source Files\PSO</Filter>
     </ClCompile>
@@ -159,11 +156,11 @@
     <ClCompile Include="PSOShadowLayer.cpp">
       <Filter>Source Files\PSO</Filter>
     </ClCompile>
+    <ClCompile Include="PSODebugLayer_Screen.cpp">
+      <Filter>Source Files\PSO</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PSOManager.h">
-      <Filter>Header Files\PSO</Filter>
-    </ClInclude>
     <ClInclude Include="PSOBaseLayer.h">
       <Filter>Header Files\PSO</Filter>
     </ClInclude>
@@ -300,6 +297,9 @@
       <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="PSOShadowLayer.h">
+      <Filter>Header Files\PSO</Filter>
+    </ClInclude>
+    <ClInclude Include="PSODebugLayer_Screen.h">
       <Filter>Header Files\PSO</Filter>
     </ClInclude>
   </ItemGroup>

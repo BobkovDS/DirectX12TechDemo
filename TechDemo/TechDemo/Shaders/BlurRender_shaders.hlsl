@@ -1,67 +1,41 @@
 #define rootSignatureBlur "RootFlags(ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT),\
 RootConstants(num32BitConstants=1, b0),\
-DescriptorTable( SRV(t0, numDescriptors = 1), visibility=SHADER_VISIBILITY_PIXEL),\
+DescriptorTable( SRV(t0, numDescriptors = 1), UAV(u0, numDescriptors = 1)),\
+DescriptorTable( SRV(t2, numDescriptors = 2)),\
 CBV(b1),\
-DescriptorTable( SRV(t1, numDescriptors = 2), visibility=SHADER_VISIBILITY_PIXEL),\
-StaticSampler(s0, addressU=TEXTURE_ADDRESS_CLAMP, addressV=TEXTURE_ADDRESS_CLAMP, addressW=TEXTURE_ADDRESS_CLAMP, filter = FILTER_MIN_MAG_MIP_POINT, visibility = SHADER_VISIBILITY_PIXEL),\
-StaticSampler(s1, addressU=TEXTURE_ADDRESS_BORDER, addressV=TEXTURE_ADDRESS_BORDER, addressW=TEXTURE_ADDRESS_BORDER, filter = FILTER_MIN_MAG_MIP_LINEAR, borderColor=STATIC_BORDER_COLOR_OPAQUE_WHITE,  visibility = SHADER_VISIBILITY_PIXEL)"
+StaticSampler(s0, addressU=TEXTURE_ADDRESS_CLAMP, addressV=TEXTURE_ADDRESS_CLAMP, addressW=TEXTURE_ADDRESS_CLAMP, filter = FILTER_MIN_MAG_MIP_POINT),\
+StaticSampler(s1, addressU=TEXTURE_ADDRESS_BORDER, addressV=TEXTURE_ADDRESS_BORDER, addressW=TEXTURE_ADDRESS_BORDER, filter = FILTER_MIN_MAG_MIP_LINEAR, borderColor=STATIC_BORDER_COLOR_OPAQUE_WHITE)"
 
-#define MaxLights 10
-struct Light
+struct PassStructSSAO
 {
-    float3 Strength;
-    float FalloffStart;
-    float3 Direction;
-    float FalloffEnd;
-    float3 Position;
-    float SpotPower;
-    float lightType;
-    float lightTurnOn;
-    float2 dummy;
-    float3 ReflectDirection;
-    float dummy2;
+    float4x4 Proj;
+    float4x4 InvProj;
+    float4x4 ProjTex;
+    float4 OffsetVectors[14];
+    float4 BlurWeight[3];
+    float2 InvRenderTargetSize;
+    float OcclusionRadius;
+    float OcclusionFadeStart;
+    float OcclusionFadeEnd;
+    float SurfaceEpsilon;
 };
 
-static const int gBlurRadius = 5;
-
-#include "commonPart.hlsl"
-
 uint gBlurFlags : register(b0);
-ConstantBuffer<PassStructSSAO> cbPass : register(b1);
 Texture2D gInputMap : register(t0);
-Texture2D gViewNormalMap : register(t1);
-Texture2D gDepthMap : register(t2);
+RWTexture2D<float4> gOutputMap : register(u0);
+Texture2D gViewNormalMap : register(t2);
+Texture2D gDepthMap : register(t3);
+ConstantBuffer<PassStructSSAO> cbPass : register(b1);
 
 SamplerState gsamPointClamp : register(s0);
 SamplerState gsamDepthMap : register(s1);
 
-[RootSignature(rootSignatureBlur)]
-VertexOut VS(VertexIn vin)
-{
-    VertexOut vout = (VertexOut) 0.0f;
-   
-    vout.UVText = vin.UVText;
-    
-    // Already in homogeneous clip space.
-    vout.PosH = float4(vin.PosL, 1.0f);    
-	
-    float4 ph = mul(vout.PosH, cbPass.InvProj);
-    vout.PosW = ph.xyz / ph.w; // here PosW should be calls "PosV", because this coordinates in View space
-		
-    return vout;
-}
-
-float OcclusionFunction(float distZ)
-{
-    float occlusion = 0.0f;
-    if (distZ > cbPass.SurfaceEpsilon)
-    {
-        float fadeLength = cbPass.OcclusionFadeEnd - cbPass.OcclusionFadeStart;
-        occlusion = saturate((cbPass.OcclusionFadeEnd - distZ) / fadeLength);
-    }
-
-    return occlusion;
-}
+static const int gBlurRadius = 5;
+#define N 256
+#define CacheSize (N + 2*5)
+groupshared float4 gCache[CacheSize];
+groupshared float3 gCacheNormal[CacheSize];
+groupshared float gCacheDepth[CacheSize];
 
 float NdcDepthToViewDepth(float z_ndc)
 {
@@ -69,60 +43,125 @@ float NdcDepthToViewDepth(float z_ndc)
     return viewZ;
 }
 
-float4 PS(VertexOut pin) : SV_Target
+[RootSignature(rootSignatureBlur)]
+[numthreads(N, 1, 1)]
+void CS_HOR(int3 groupThreadID : SV_GroupThreadID, int3 dispatchThreadID : SV_DispatchThreadID)
 {
-    bool lHorizontalBlur = gBlurFlags & (1 << 0);   
-
+    bool lHorizontalBlur = gBlurFlags & (1 << 0);
+    /*
+        When we do Vertical Blur, dispatchThreadID means:
+            dispatchThreadID.x = Y for Textures
+            dispatchThreadID.y = X for Textures
+    */
+    
     float blurWeights[12] =
     {
         cbPass.BlurWeight[0].x, cbPass.BlurWeight[0].y, cbPass.BlurWeight[0].z, cbPass.BlurWeight[0].w,
         cbPass.BlurWeight[1].x, cbPass.BlurWeight[1].y, cbPass.BlurWeight[1].z, cbPass.BlurWeight[1].w,
         cbPass.BlurWeight[2].x, cbPass.BlurWeight[2].y, cbPass.BlurWeight[2].z, cbPass.BlurWeight[2].w
     };
-    
-    float2 texOffset;
+    uint lTextureSizeW;
+    uint lTextureSizeH;
+    gInputMap.GetDimensions(lTextureSizeW, lTextureSizeH);
+    lTextureSizeW = lTextureSizeW - 1;
+    lTextureSizeH = lTextureSizeH - 1;
+
+   
+    float2 uv;
+    // Read Texel from Texture into cache
+    if (groupThreadID.x < gBlurRadius)
+    {
+        int2 p;       
+        if (lHorizontalBlur) // do Horizontal Blur
+        {
+            p.x = max(dispatchThreadID.x - gBlurRadius, 0);
+            p.y = dispatchThreadID.y;            
+        }
+        else // do Vertical Blur 
+        {
+            p.x = dispatchThreadID.y;
+            p.y = max(dispatchThreadID.x - gBlurRadius, 0);
+        }
+        
+        gCache[groupThreadID.x] = gInputMap[p];
+
+        uv.x = (p.x / (float) lTextureSizeW);
+        uv.y = (p.y / (float) lTextureSizeH);
+        
+        gCacheNormal[groupThreadID.x] = gViewNormalMap.SampleLevel(gsamPointClamp, uv, 0.0f).xyz;
+        gCacheDepth[groupThreadID.x] = gDepthMap.SampleLevel(gsamDepthMap, uv, 0.0f).r;
+    }
+
+    if (groupThreadID.x >= N - gBlurRadius)
+    {
+        int2 p;
+        if (lHorizontalBlur) // do Horizontal Blur
+        {
+            p.x = min(dispatchThreadID.x + gBlurRadius, lTextureSizeW);
+            p.y = dispatchThreadID.y;
+        }
+        else // do Vertical Blur
+        {
+            p.x = dispatchThreadID.y;
+            p.y = min(dispatchThreadID.x + gBlurRadius, lTextureSizeH);
+        }
+        gCache[groupThreadID.x + 2 * gBlurRadius] = gInputMap[p];
+
+        uv.x = (p.x / (float) lTextureSizeW);
+        uv.y = (p.y / (float) lTextureSizeH);
+        
+        gCacheNormal[groupThreadID.x + 2 * gBlurRadius] = gViewNormalMap.SampleLevel(gsamPointClamp, uv, 0.0f).xyz;
+        gCacheDepth[groupThreadID.x + 2 * gBlurRadius] = gDepthMap.SampleLevel(gsamDepthMap, uv, 0.0f).r;
+    }
+
+    int2 p;
     if (lHorizontalBlur)
     {
-        texOffset = float2(cbPass.InvRenderTargetSize.x, 0.0f);
-    }
+        p = min(dispatchThreadID.xy, uint2(lTextureSizeW, lTextureSizeH));
+    }     
     else
     {
-        texOffset = float2(0.0, cbPass.InvRenderTargetSize.y);
+        p = min(dispatchThreadID.yx, uint2(lTextureSizeW, lTextureSizeH));
     }
+        
+    gCache[groupThreadID.x + gBlurRadius] = gInputMap[p];
+ 
+    uv.x = (p.x / (float) lTextureSizeW);
+    uv.y = (p.y / (float) lTextureSizeH);
+    
+    gCacheNormal[groupThreadID.x + gBlurRadius] = gViewNormalMap.SampleLevel(gsamPointClamp, uv, 0.0f).xyz;
+    gCacheDepth[groupThreadID.x + gBlurRadius] = gDepthMap.SampleLevel(gsamDepthMap, uv, 0.0f).r;
 
+    // Wait when all thread are done with reading theirs Texels
+    GroupMemoryBarrierWithGroupSync();
+
+    // Do Blur work
+    
     float totalWeight = blurWeights[gBlurRadius];
-    float4 color = float4(0.0f, 0.0f, 0.0f, 1.0f);    
-   
-    color = totalWeight * gInputMap.SampleLevel(gsamPointClamp, pin.UVText, 0.0);   
-       
-    float3 centerNormal = gViewNormalMap.SampleLevel(gsamPointClamp, pin.UVText, 0.0f).xyz;
-    float centerDepth = gDepthMap.SampleLevel(gsamDepthMap, pin.UVText, 0.0f).r;
+    float4 blurColor = totalWeight * gCache[groupThreadID.x + gBlurRadius];   
+    float3 centerNormal = gCacheNormal[groupThreadID.x + gBlurRadius];
+    float centerDepth = gCacheDepth[groupThreadID.x + gBlurRadius];
     centerDepth = NdcDepthToViewDepth(centerDepth);
-           
-    for (float i = -gBlurRadius; i <= gBlurRadius; i++)
+
+    for (int i = -gBlurRadius; i <= gBlurRadius; ++i)
     {
-        if (i == 0)
-            continue;
+        if (i == 0)   continue;
 
-        float2 tex = pin.UVText + i * texOffset;
-
-        float3 neighborNormal = gViewNormalMap.SampleLevel(gsamPointClamp, tex, 0.0f).xyz;
-        float neighborDepth = gDepthMap.SampleLevel(gsamDepthMap, tex, 0.0f).r;
+        int k = groupThreadID.x + gBlurRadius + i;
+        float3 neighborNormal = gCacheNormal[k];
+        float neighborDepth = gCacheDepth[k];
         neighborDepth = NdcDepthToViewDepth(neighborDepth);
 
         float dt = dot(neighborNormal, centerNormal);
-        float ddpth = abs(neighborDepth - centerDepth);
-        if (dt >= 0.8f && ddpth <= 0.2f)
+        float dt_dpth = abs(neighborDepth - centerDepth);
+        if (dt >= 0.5 && dt_dpth <= 0.2f) 
         {
-            float weight = blurWeights[i + gBlurRadius];            
-            color += weight * gInputMap.SampleLevel(gsamPointClamp, tex, 0.0);
-            totalWeight += weight;
+            totalWeight += blurWeights[i + gBlurRadius];
+            blurColor += blurWeights[i + gBlurRadius] * gCache[k];
         }
     }
 
-    totalWeight += 0.00002f;
-    
-    color /=totalWeight;   
-    
-    return color;
+    totalWeight += 0.000001f;
+    blurColor /= totalWeight;
+    gOutputMap[p] = blurColor;
 }

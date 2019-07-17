@@ -34,7 +34,7 @@ public:
 	void draw(int flag);	
 	void resize(UINT newWidth, UINT newHeight);	
 	ID3D12Resource* getVNResource();
-	ID3D12Resource* getAOResource();
+	ID3D12Resource* getAOResource();	
 	
 };
 

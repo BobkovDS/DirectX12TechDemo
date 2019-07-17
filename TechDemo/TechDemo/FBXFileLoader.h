@@ -42,6 +42,7 @@ struct fbx_Material {
 	bool IsTransparent; // here Transparency Factor as float is used
 	bool IsWater;
 	bool IsSky;
+	bool DoesIncludeToWorldBB;
 };
 
 struct fbx_NodeInstance {

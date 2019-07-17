@@ -1,6 +1,6 @@
-#define rootSignatureBlur "RootFlags(ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT),\
+#define rootSignatureScreen "RootFlags(ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT),\
 RootConstants(num32BitConstants=1, b0),\
-DescriptorTable( SRV(t0, numDescriptors = 10), visibility=SHADER_VISIBILITY_PIXEL),\
+DescriptorTable( SRV(t0, numDescriptors = 6), UAV(u0, numDescriptors = 1), SRV(t6, numDescriptors = 1), UAV(u1, numDescriptors = 1), SRV(t7, numDescriptors = 1), visibility=SHADER_VISIBILITY_ALL),\
 StaticSampler(s0, visibility = SHADER_VISIBILITY_PIXEL)"
 
 #define MaxLights 10
@@ -23,10 +23,12 @@ struct Light
 
 uint gTextureID : register(b0);
 TextureCube gSkyCubeTexture: register(t0);
-Texture2D gTechTextures[9] : register(t1);
+Texture2D gTechTextures[5] : register(t1);
+Texture2D gTechTextures9 : register(t7);
+
 SamplerState gSampler : register(s0);
 
-[RootSignature(rootSignatureBlur)]
+[RootSignature(rootSignatureScreen)]
 VertexOut VS(VertexIn vin)
 {
     VertexOut vout = (VertexOut) 0.0f;
@@ -40,5 +42,8 @@ VertexOut VS(VertexIn vin)
 
 float4 PS(VertexOut pin) : SV_Target
 {
-    return float4(gTechTextures[gTextureID - 1].Sample(gSampler, pin.UVText).xyz, 1.0f); // -1 because we have also gSkyCubeTexture
+    if (gTextureID <=5)
+        return float4(gTechTextures[gTextureID - 1].Sample(gSampler, pin.UVText).xyz, 1.0f); // -1 because we have also 
+    else
+        return float4(gTechTextures9.Sample(gSampler, pin.UVText).xyz, 1.0f); // -1 because we have also 
 }
