@@ -114,20 +114,31 @@ void BlurRender::draw(int flags)
 {
 	// Copy SSAO AO Map Input Resource to "our" A resource
 	{
-		m_uavResources[0]->changeState(m_cmdList, D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_COPY_DEST);
+		{
+			const D3D12_RESOURCE_BARRIER lBarries[] = {
 
-		m_cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_inputResource,
-			D3D12_RESOURCE_STATE_GENERIC_READ,
-			D3D12_RESOURCE_STATE_COPY_SOURCE));		
+				CD3DX12_RESOURCE_BARRIER::Transition(m_inputResource,
+				D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_COPY_SOURCE),
+				m_uavResources[0]->getBarrier(D3D12_RESOURCE_STATE_GENERIC_READ,D3D12_RESOURCE_STATE_COPY_DEST)
+			};
+
+			m_cmdList->ResourceBarrier(2, lBarries);
+		}	
 		
 		m_cmdList->CopyResource(m_uavResources[0]->getResource(), m_inputResource);
-		
-		m_cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_inputResource,
-			D3D12_RESOURCE_STATE_COPY_SOURCE, 
-			D3D12_RESOURCE_STATE_GENERIC_READ));
-		
-		m_uavResources[0]->changeState(m_cmdList, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_GENERIC_READ);
-		m_uavResources[1]->changeState(m_cmdList, D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+
+		{
+			const D3D12_RESOURCE_BARRIER lBarries[] = {
+
+				CD3DX12_RESOURCE_BARRIER::Transition(m_inputResource,
+				D3D12_RESOURCE_STATE_COPY_SOURCE, D3D12_RESOURCE_STATE_GENERIC_READ),
+				m_uavResources[0]->getBarrier(D3D12_RESOURCE_STATE_COPY_DEST,D3D12_RESOURCE_STATE_GENERIC_READ),
+				m_uavResources[1]->getBarrier(D3D12_RESOURCE_STATE_GENERIC_READ,D3D12_RESOURCE_STATE_UNORDERED_ACCESS),
+			};
+
+			m_cmdList->ResourceBarrier(3, lBarries);
+		}
+
 	}
 
 	m_cmdList->SetComputeRootSignature(m_psoLayer.getRootSignature());		
@@ -152,8 +163,14 @@ void BlurRender::draw(int flags)
 			UINT numGroups = (UINT)ceilf(m_width / 256.0f);
 			m_cmdList->Dispatch(numGroups, m_height, 1);
 
-			m_uavResources[0]->changeState(m_cmdList, D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-			m_uavResources[1]->changeState(m_cmdList, D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_GENERIC_READ);
+			{
+				const D3D12_RESOURCE_BARRIER lBarries[] = {
+					m_uavResources[0]->getBarrier(D3D12_RESOURCE_STATE_GENERIC_READ,D3D12_RESOURCE_STATE_UNORDERED_ACCESS),
+					m_uavResources[1]->getBarrier(D3D12_RESOURCE_STATE_UNORDERED_ACCESS,D3D12_RESOURCE_STATE_GENERIC_READ),
+				};
+
+				m_cmdList->ResourceBarrier(2, lBarries);
+			}	
 		}
 
 		// Vertical blur pass. A-output(UAV), B-input(SRV). 
@@ -163,9 +180,15 @@ void BlurRender::draw(int flags)
 
 			UINT numGroups = (UINT)ceilf(m_height/ 256.0f);
 			m_cmdList->Dispatch(numGroups, m_width, 1);
-			
-			m_uavResources[0]->changeState(m_cmdList, D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_GENERIC_READ);
-			m_uavResources[1]->changeState(m_cmdList, D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+
+			{
+				const D3D12_RESOURCE_BARRIER lBarries[] = {
+						m_uavResources[0]->getBarrier(D3D12_RESOURCE_STATE_UNORDERED_ACCESS,D3D12_RESOURCE_STATE_GENERIC_READ),
+						m_uavResources[1]->getBarrier(D3D12_RESOURCE_STATE_GENERIC_READ,D3D12_RESOURCE_STATE_UNORDERED_ACCESS),
+				};
+
+				m_cmdList->ResourceBarrier(2, lBarries);
+			}
 		}
 	}
 	

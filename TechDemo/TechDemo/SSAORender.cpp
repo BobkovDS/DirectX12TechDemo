@@ -158,14 +158,15 @@ void SSAORender::draw(int flags)
 	//m_cmdList->SetGraphicsRootDescriptorTable(6, m_textureSRVHandle); // Textures SRV
 
 	// ---------------- The first Step of SSAO: Drawing ViewNormal and Depth Map
-	{
-		m_rtResources[RESOURCEID_VN]->changeState(m_cmdList,
-			D3D12_RESOURCE_STATE_GENERIC_READ,
-			D3D12_RESOURCE_STATE_RENDER_TARGET);
+	{	
+		{
+			const D3D12_RESOURCE_BARRIER lBarries[] = {
+					m_rtResources[RESOURCEID_VN]->getBarrier(D3D12_RESOURCE_STATE_GENERIC_READ,D3D12_RESOURCE_STATE_RENDER_TARGET),
+					m_dsResource->getBarrier(D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_DEPTH_WRITE)
+			};
 
-		m_dsResource->changeState(m_cmdList,
-			D3D12_RESOURCE_STATE_GENERIC_READ,
-			D3D12_RESOURCE_STATE_DEPTH_WRITE);
+			m_cmdList->ResourceBarrier(2, lBarries);
+		}
 
 		CD3DX12_CPU_DESCRIPTOR_HANDLE currentRTV(m_rtvHeap->GetCPUDescriptorHandleForHeapStart(),
 			RESOURCEID_VN, m_rtvDescriptorSize);
@@ -191,19 +192,17 @@ void SSAORender::draw(int flags)
 
 		m_cmdList->SetGraphicsRootSignature(m_psoLayer2.getRootSignature());
 		m_cmdList->SetPipelineState(m_psoLayer2.getPSO(OPAQUELAYER));
-
-		m_rtResources[RESOURCEID_VN]->changeState(m_cmdList,
-			D3D12_RESOURCE_STATE_RENDER_TARGET,
-			D3D12_RESOURCE_STATE_GENERIC_READ);
-
-		m_rtResources[RESOURCEID_AO]->changeState(m_cmdList,
-			D3D12_RESOURCE_STATE_GENERIC_READ,
-			D3D12_RESOURCE_STATE_RENDER_TARGET);
-
-		m_dsResource->changeState(m_cmdList,
-			D3D12_RESOURCE_STATE_DEPTH_WRITE,
-			D3D12_RESOURCE_STATE_GENERIC_READ);
 		
+		{
+			const D3D12_RESOURCE_BARRIER lBarries[] = {
+					m_rtResources[RESOURCEID_VN]->getBarrier(D3D12_RESOURCE_STATE_RENDER_TARGET,D3D12_RESOURCE_STATE_GENERIC_READ),
+					m_rtResources[RESOURCEID_AO]->getBarrier(D3D12_RESOURCE_STATE_GENERIC_READ,D3D12_RESOURCE_STATE_RENDER_TARGET),
+					m_dsResource->getBarrier(D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_GENERIC_READ)
+			};
+
+			m_cmdList->ResourceBarrier(3, lBarries);
+		}
+
 		m_cmdList->RSSetViewports(1, &m_viewPortHalf);
 		m_cmdList->RSSetScissorRects(1, &m_scissorRectHalf);
 
@@ -216,7 +215,7 @@ void SSAORender::draw(int flags)
 		m_cmdList->OMSetRenderTargets(1, &currentRTV, true, nullptr);
 
 		FLOAT clearColor[4] = { 0.0f, 0.5f, 0.4f, 1.0f };
-		m_cmdList->ClearRenderTargetView(currentRTV, clearColor, 0, nullptr);		
+		m_cmdList->ClearRenderTargetView(currentRTV, clearColor, 0, nullptr);
 
 		//--- draw calls			
 
@@ -227,7 +226,7 @@ void SSAORender::draw(int flags)
 
 		auto drawArg = m_mesh->DrawArgs[m_mesh->Name];
 		m_cmdList->DrawIndexedInstanced(drawArg.IndexCount, 1, drawArg.StartIndexLocation, 0, 0);
-		
+
 		// --------------------
 		m_rtResources[RESOURCEID_AO]->changeState(m_cmdList,
 			D3D12_RESOURCE_STATE_RENDER_TARGET,
@@ -331,9 +330,9 @@ void SSAORender::build_randomVectorTexture()
 {
 	DirectX::PackedVector::XMCOLOR initData[256 * 256];
 
-	for (int i = 0; i < 256; i++)
+	for (int i = 0; i < 256; ++i)
 	{
-		for (int j = 0; j < 256; j++)
+		for (int j = 0; j < 256; ++j)
 		{
 			XMFLOAT3 v(MathHelper::RandF(), MathHelper::RandF(), MathHelper::RandF());
 			initData[i * 256 + j] = DirectX::PackedVector::XMCOLOR(v.x, v.y, v.z, 0.0f);

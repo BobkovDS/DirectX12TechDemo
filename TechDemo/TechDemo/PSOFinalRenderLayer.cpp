@@ -80,7 +80,6 @@ void PSOFinalRenderLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, D
 	m_rtvFormat = rtFormat;
 	m_dsvFormat= dsFormat;
 
-
 	// compile shaders blob
 	buildShadersBlob();
 
@@ -88,11 +87,11 @@ void PSOFinalRenderLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, D
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer0 = buildCommonPSODescription();
 	psoDescLayer0.InputLayout = { m_inputLayout[ILV1].data(), (UINT) m_inputLayout[ILV1].size() };
 	psoDescLayer0.VS = { reinterpret_cast<BYTE*>(m_shaders["vs"]->GetBufferPointer()), m_shaders["vs"]->GetBufferSize() };
-	psoDescLayer0.PS = { reinterpret_cast<BYTE*>(m_shaders["ps"]->GetBufferPointer()), m_shaders["ps"]->GetBufferSize() };
-	
+	psoDescLayer0.PS = { reinterpret_cast<BYTE*>(m_shaders["ps"]->GetBufferPointer()), m_shaders["ps"]->GetBufferSize() };	
+
 	if (m_shaders.find("gs") != m_shaders.end())
 		psoDescLayer0.GS = { reinterpret_cast<BYTE*>(m_shaders["gs"]->GetBufferPointer()), m_shaders["gs"]->GetBufferSize() };
-
+	
 	// PSO for Layer_1:  Non-skinned Not Opaque objects: [NOTOPAQUELAYER]
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer1 = psoDescLayer0;
 	D3D12_BLEND_DESC  blend_desc = {};
@@ -106,6 +105,7 @@ void PSOFinalRenderLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, D
 	blend_desc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
 	blend_desc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 	psoDescLayer1.BlendState = CD3DX12_BLEND_DESC(blend_desc);
+	psoDescLayer1.RasterizerState.CullMode = D3D12_CULL_MODE_NONE; 
 
 	// PSO for Layer_2: Skinned Opaque objects: [SKINNEDOPAQUELAYER]
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer2 = buildCommonPSODescription();
@@ -137,6 +137,7 @@ void PSOFinalRenderLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, D
 	psoDescLayer5.VS = { reinterpret_cast<BYTE*>(m_shaders["vs_sky"]->GetBufferPointer()), m_shaders["vs_sky"]->GetBufferSize() };
 	psoDescLayer5.PS = { reinterpret_cast<BYTE*>(m_shaders["ps_sky"]->GetBufferPointer()), m_shaders["ps_sky"]->GetBufferSize() };
 	psoDescLayer5.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_EQUAL; // =1 - Far side
+	psoDescLayer5.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
 	// Create PSO objects
 	//OPAQUELAYER

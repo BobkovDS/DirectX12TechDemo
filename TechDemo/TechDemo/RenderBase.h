@@ -24,6 +24,10 @@ struct RenderResource {
 	{
 		cmdList->ResourceBarrier(1,&CD3DX12_RESOURCE_BARRIER::Transition(m_resource.Get(),stateBefore, stateAfter));
 	}
+	const D3D12_RESOURCE_BARRIER getBarrier(D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter)
+	{
+		return CD3DX12_RESOURCE_BARRIER::Transition(m_resource.Get(), stateBefore, stateAfter);
+	}
 
 	ID3D12Resource* getResource();	
 	~RenderResource();

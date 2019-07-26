@@ -85,7 +85,8 @@ void TechDemo::onKeyDown(WPARAM btnState)
 		m_scene.toggleLightAnimation();
 	}
 	break;
-	case 'C': m_isCameraManualControl = !m_isCameraManualControl; break;
+	case 'L': m_isCameraManualControl = !m_isCameraManualControl; break;
+	case 'C': m_scene.toggleCullingMode(); break;
 	case VK_NUMPAD0: m_renderManager.toggleDebugMode(); break;
 	case VK_NUMPAD1: m_renderManager.toggleDebug_Axes(); break;
 	case VK_NUMPAD2: m_renderManager.toggleDebug_Lights(); break;
@@ -108,9 +109,11 @@ std::string TechDemo::addTextToWindow()
 {
 	int lInstanceCount = m_scene.getInstances().size();
 	int lDrawInstancesID = m_scene.getDrawInstancesID().size();
+	bool lOctreCullingMode = m_scene.getCullingModeOctree();
 
 	std::string text = " InstCount(Shadow): " + std::to_string(lInstanceCount) 
-		+ " InstCount(Drawing): " + std::to_string(lDrawInstancesID);
+		+ " InstCount(Drawing): " + std::to_string(lDrawInstancesID)
+		+ " Contains count: " + std::to_string(m_scene.ContainsCount);
 
 	
 	if (m_isTechFlag)
@@ -122,6 +125,11 @@ std::string TechDemo::addTextToWindow()
 		text += " CameraMC=1";
 	else
 		text += " CameraMC=0";
+
+	if (lOctreCullingMode)
+		text += " OctreeMode=1";
+	else
+		text += " OctreeMode=0";
 
 	if (m_renderManager.isDebugMode())
 		text += " DEBUG ";
@@ -153,7 +161,7 @@ void TechDemo::init3D()
 	{
 		FBXFileLoader m_fbx_loader;
 		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
-		m_fbx_loader.loadSceneFile("Models\\The Scene.fbx");		
+		m_fbx_loader.loadSceneFile("Models\\The Scene2.fbx");		
 	}	
 
 	// Load lights
@@ -218,22 +226,27 @@ void TechDemo::init3D()
 	m_camera->addObserver(sceneCameraListener);
 
 	//m_objectManager.mirrorZ();
-
+	ApplLogger::getLogger().log("TechDemo::init3D()::Scene building...", 0);
 	m_scene.build(&m_objectManager, m_camera, &m_skeletonManager);
+	ApplLogger::getLogger().log("TechDemo::init3D()::Scene building is done", 0);
+
 	m_renderManager.initialize(lRenderManagerParams);
 	m_renderManager.buildRenders();	
 	
-
+	ApplLogger::getLogger().log("TechDemo::init3D()::before Cmd list execution.", 0);
 	m_cmdList->Close();
 	ID3D12CommandList* cmdsList[] = { m_cmdList.Get() };
 	m_cmdQueue->ExecuteCommandLists(1, cmdsList);
 
+	ApplLogger::getLogger().log("TechDemo::init3D()::before Cmd list execution done.", 0);
 	FlushCommandQueue();
+	ApplLogger::getLogger().log("TechDemo::init3D()::Flush commands is done.", 0);
 	m_init3D_done = true;
 
 	build_OffsetVectors();
 
 	m_animationTimer.tt_RunStop();
+	ApplLogger::getLogger().log("TechDemo::init3D() is done", 0);
 }
 
 void TechDemo::update()
@@ -389,7 +402,7 @@ void TechDemo::update_passCB()
 
 		if (lights.at(i).lightType == LightType::Directional)
 			MathHelper::buildSunOrthoLightProjection(mMainPassCB.Lights[i].Direction, mMainPassCB.Lights[i].ViewProj,
-				mMainPassCB.Lights[i].ViewProjT, m_scene.getSceneBS());
+				mMainPassCB.Lights[i].ViewProjT, m_scene.getSceneBSShadow());
 	}
 	
 	auto currPassCB = m_frameResourceManager.currentFR()->getPassCB();
@@ -417,7 +430,7 @@ void TechDemo::update_passSSAOCB()
 	XMMATRIX view = m_camera->lens->getProj();
 	XMMATRIX textProj = XMMatrixMultiply(view, T);
 
-	XMStoreFloat4x4(&mSSAOPassCB.ProjTex, XMMatrixTranspose(textProj));
+	XMStoreFloat4x4(&mSSAOPassCB.ProjTex, XMMatrixTranspose(view* T));
 	std::copy(&m_offsets[0], &m_offsets[14], &mSSAOPassCB.OffsetVectors[0]);
 
 	mSSAOPassCB.OcclusionRadius = 0.5f;
@@ -457,11 +470,13 @@ void TechDemo::build_defaultCamera()
 
 void TechDemo::work()
 {
+	FlushCommandQueue();
 	// here we begin new Graphic Frame
 	m_frameResourceManager.getFreeFR(); // so we need new Frame resource
 
 	// for graphic frame we use CommandAllocator from FR
 	m_frameResourceManager.changeCmdAllocator(m_cmdList.Get(), nullptr);
+	
 
 	// update data
 	update();
@@ -475,7 +490,8 @@ void TechDemo::work()
 
 	m_swapChain->Present(0, 0);
 	m_frameResourceManager.currentFR()->setFenceValue(getFenceValue());
-	setFence();
+	//setFence(); ???
+	FlushCommandQueue();
 }
 
 void TechDemo::onReSize(int newWidth, int newHeight)

@@ -115,7 +115,7 @@ struct VertexExtGPU // Vertex structure with Shape ID
 	DirectX::XMFLOAT3 TangentU;
 	DirectX::XMFLOAT2 UVText;
 
-	UINT ShapeID; // this ID is used to find ConstatBuffer for this shape with info about matrices and material id
+	UINT pad; // this ID is used to find ConstatBuffer for this shape with info about matrices and material id
 	//float dummy2;
 	//DirectX::XMFLOAT2 dummy;
 	UINT BoneIndices[16];

@@ -1,13 +1,16 @@
 #include "Scene.h"
 
-
+using namespace std;
 using namespace DirectX;
+
+UINT Scene::ContainsCount = 0;
 
 Scene::Scene()
 {
 	m_Layers.resize(6);
 	m_doesItNeedUpdate = true;
 	m_firstBB = true;
+	m_octreeCullingMode = true;
 }
 
 Scene::~Scene()
@@ -85,32 +88,95 @@ void Scene::build(ObjectManager* objectManager, Camera* camera, SkeletonManager*
 		m_lights.push_back(m_objectManager->getLights()[i]);
 
 	createBoungingInfo();
+	buildOctree();
 	update();
 }
 
 void Scene::createBoungingInfo()
 {	
-	getLayerBoundingInfo(m_sceneBB, m_objectManager->getOpaqueLayer());
-	getLayerBoundingInfo(m_sceneBB, m_objectManager->getNotOpaqueLayer());
-	getLayerBoundingInfo(m_sceneBB, m_objectManager->getSkinnedOpaqueLayer());
-	getLayerBoundingInfo(m_sceneBB, m_objectManager->getSkinnedNotOpaqueLayer());
+	getLayerBoundingInfo(m_sceneBB, m_sceneBBShadow, m_objectManager->getOpaqueLayer());
+	getLayerBoundingInfo(m_sceneBB, m_sceneBBShadow, m_objectManager->getNotOpaqueLayer());
+	getLayerBoundingInfo(m_sceneBB, m_sceneBBShadow, m_objectManager->getSkinnedOpaqueLayer());
+	getLayerBoundingInfo(m_sceneBB, m_sceneBBShadow, m_objectManager->getSkinnedNotOpaqueLayer());
 	//getLayerBoundingInfo(m_sceneBB, m_objectManager->getNotOpaqueLayerGH());
 
-	BoundingSphere::CreateFromBoundingBox(m_sceneBS, m_sceneBB);
+	m_sceneBB.Extents.x *= 1.1f;
+	m_sceneBB.Extents.y *= 1.1f;
+	m_sceneBB.Extents.z *= 1.1f;
+
+	m_sceneBBShadow.Extents.x *= 1.1f;
+	m_sceneBBShadow.Extents.y *= 1.1f;
+	m_sceneBBShadow.Extents.z *= 1.1f;
+	
+	BoundingSphere::CreateFromBoundingBox(m_sceneBS, m_sceneBB); // Create Bounding Sphere for all Scene
+	BoundingSphere::CreateFromBoundingBox(m_sceneBSShadow, m_sceneBBShadow);// Create Bounding Sphere for Scene where will used Shadowing (without Land and Water)
+}
+
+void Scene::addOctreeInformation(const std::vector<std::unique_ptr<RenderItem>>& arrayRI, vector<BoundingBoxEXT*>& lLayerBBList)
+{	
+	// get All RenderItems/Instances for current SceneLayer
+	for (int ri = 0; ri < arrayRI.size(); ri++)
+	{
+		for (int i = 0; i < arrayRI[ri]->Instances.size(); i++)
+		{
+			BoundingBox ltBB;
+			XMMATRIX lWorld = XMLoadFloat4x4(&arrayRI[ri]->Instances[i].World);
+			arrayRI[ri]->AABB.Transform(ltBB, lWorld);
+			BoundingBoxEXT* lBBExt = new BoundingBoxEXT(ltBB);
+			lBBExt->pRenderItem = arrayRI[ri].get();
+			lBBExt->Inst_ID = i;
+			lLayerBBList.push_back(lBBExt);
+		}
+	}
+}
+
+void Scene::buildOctree()
+{
+	assert(m_octree == nullptr); // it should not be created yet
+	
+	m_octree = new Octree(m_sceneBB); 
+
+	vector<BoundingBoxEXT*> lLayerBBList;
+
+	addOctreeInformation(m_objectManager->getOpaqueLayer(), lLayerBBList);
+	addOctreeInformation(m_objectManager->getNotOpaqueLayer(), lLayerBBList);
+	addOctreeInformation(m_objectManager->getSkinnedOpaqueLayer(), lLayerBBList);
+	addOctreeInformation(m_objectManager->getSkinnedNotOpaqueLayer(), lLayerBBList);
+	addOctreeInformation(m_objectManager->getNotOpaqueLayerGH(), lLayerBBList);
+
+	if (lLayerBBList.size() == 0) return;
+
+	m_octree->addBBList(lLayerBBList);
+	m_octree->build();
 }
 
 void Scene::update()
 {
 	if (!m_doesItNeedUpdate) return;
-	
-	bool lFrustomCulling = false;
-	updateLayer(m_Layers[0], m_objectManager->getSky(), lFrustomCulling);
-	updateLayer(m_Layers[1], m_objectManager->getOpaqueLayer());
-	updateLayer(m_Layers[2], m_objectManager->getNotOpaqueLayer());
-	updateLayer(m_Layers[3], m_objectManager->getSkinnedOpaqueLayer());
-	updateLayer(m_Layers[4], m_objectManager->getSkinnedNotOpaqueLayer());	
-	updateLayer(m_Layers[5], m_objectManager->getNotOpaqueLayerGH());
-	
+		
+	ContainsCount = 0;
+	if (m_octreeCullingMode)
+	{
+		//m_octree->update(m_camera->getFrustomBoundingShadowWorld());
+		m_octree->update(m_camera->getFrustomBoundingCameraWorld());
+		updateLayer(m_Layers[0], m_objectManager->getSky(), false);
+		m_Layers[1].update(m_objectManager->getOpaqueLayer());
+		m_Layers[2].update(m_objectManager->getNotOpaqueLayer());
+		m_Layers[3].update(m_objectManager->getSkinnedOpaqueLayer());
+		m_Layers[4].update(m_objectManager->getSkinnedNotOpaqueLayer());
+		m_Layers[5].update(m_objectManager->getNotOpaqueLayerGH());		
+	}	
+	else
+	{
+		bool lFrustomCulling = false;
+		updateLayer(m_Layers[0], m_objectManager->getSky(), lFrustomCulling);
+		updateLayer(m_Layers[1], m_objectManager->getOpaqueLayer(), lFrustomCulling);
+		updateLayer(m_Layers[2], m_objectManager->getNotOpaqueLayer(), lFrustomCulling);
+		updateLayer(m_Layers[3], m_objectManager->getSkinnedOpaqueLayer(), lFrustomCulling);
+		updateLayer(m_Layers[4], m_objectManager->getSkinnedNotOpaqueLayer(), lFrustomCulling);
+		updateLayer(m_Layers[5], m_objectManager->getNotOpaqueLayerGH(), lFrustomCulling);
+	}
+
 	m_instancesDataReadTimes = FRAMERESOURCECOUNT;
 	m_doesItNeedUpdate = false;	
 }
@@ -153,7 +219,9 @@ void Scene::cameraListener()
 }
 
 void Scene::updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<RenderItem>>& arrayRI, bool isFrustumCullingRequired)
-{
+{	
+	if (!layer.isLayerVisible()) return; // no need to fill this layer if it is not visible
+
 	layer.clearLayer();
 	BoundingFrustum& lBoundingFrustomCamera = m_camera->getFrustomBoundingCameraWorld();
 	BoundingFrustum& lBoundingFrustomShadowProjector = m_camera->getFrustomBoundingShadowWorld();
@@ -180,17 +248,24 @@ void Scene::updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<Ren
 				if (lLocalSpaceFrustom.Contains(lRI->AABB) != DirectX::DISJOINT)*/			
 
 				// If Instance can be seen in Camera, no need to check for Shadow Projector - it is also will be there
+				ContainsCount++;
+				bool doubleContainsCheck = true;
 				if (lBoundingFrustomCamera.Contains(lRIBBWord) != DirectX::DISJOINT)
 				{
 					lSceneObject.addInstance(&lRI->Instances[j]); // add Instance 
 					lSceneObject.setDrawInstanceID(lDrawInstanceID++); //.. and also add information about DrawInstance ID
+					doubleContainsCheck = false;
 				}
 				// But if Instance out of Camera Frustom, it can be still inside of Shadow Prjector Frustum 
-				else if (lBoundingFrustomShadowProjector.Contains(lRIBBWord) != DirectX::DISJOINT)
+				else 					
+				if (lBoundingFrustomShadowProjector.Contains(lRIBBWord) != DirectX::DISJOINT)
 				{
 					lSceneObject.addInstance(&lRI->Instances[j]); // only add Instance
-					lDrawInstanceID++; // no add, but counting next DrawInstance ID
+					//lDrawInstanceID++; // no add, but counting next DrawInstance ID
+					lSceneObject.setDrawInstanceID(lDrawInstanceID++);
 				}
+
+				//if (doubleContainsCheck) ContainsCount++;
 			}
 			else
 			{
@@ -204,13 +279,14 @@ void Scene::updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<Ren
 	}
 }
 
-void Scene::getLayerBoundingInfo(DirectX::BoundingBox& layerBB, const std::vector<std::unique_ptr<RenderItem>>& arrayRI)
+void Scene::getLayerBoundingInfo(DirectX::BoundingBox& layerBB, DirectX::BoundingBox& layerBBShadow,
+	const std::vector<std::unique_ptr<RenderItem>>& arrayRI)
 {
 	for (int i = 0; i < arrayRI.size(); i++)
 	{
 		RenderItem* lRI = arrayRI[i].get();
-	
-		if (!lRI->isNotIncludeInWorldBB) // isNotIncludeInWorldBB ==true : Do not include this RI to world BB
+
+		if (!lRI->isNotIncludeInWorldBB) // isNotIncludeInWorldBB ==true : Do not include this RI's Instances to Shadow SceneBB
 		{
 			for (int j = 0; j < lRI->Instances.size(); j++)
 			{
@@ -220,14 +296,18 @@ void Scene::getLayerBoundingInfo(DirectX::BoundingBox& layerBB, const std::vecto
 				lRI->AABB.Transform(lInstanceBB, lInstanceWord);
 
 				if (!m_firstBB)
+				{
 					BoundingBox::CreateMerged(layerBB, layerBB, lInstanceBB);
+					BoundingBox::CreateMerged(layerBBShadow, layerBBShadow, lInstanceBB);
+				}
 				else
 				{
 					BoundingBox::CreateMerged(layerBB, lInstanceBB, lInstanceBB);
+					BoundingBox::CreateMerged(layerBBShadow, lInstanceBB, lInstanceBB);
 					m_firstBB = false;
 				}
 			}
-		}
+		}		
 	}
 }
 
@@ -275,6 +355,17 @@ const std::vector<CPULight>& Scene::getLights()
 
 	return m_lights;
 }
+
+void Scene::toggleLightAnimation()
+{
+	m_lightAnimation = !m_lightAnimation;
+}
+
+void Scene::toggleCullingMode()
+{
+	m_octreeCullingMode = !m_octreeCullingMode;
+}
+
 // ================================================================ [Scene::SceneLayer] =============================== 
 
 //Scene::SceneLayer::SceneLayerObject::SceneLayerObject():m_drawInstanceIDCount(0)
@@ -325,6 +416,39 @@ Scene::SceneLayer::SceneLayerObject* Scene::SceneLayer::getSceneObject(UINT scen
 	else
 		return nullptr;
 }
+
+void Scene::SceneLayer::update(const std::vector<std::unique_ptr<RenderItem>>& arrayRI)
+{
+	if (!isLayerVisible()) return; // no need to fill this layer if it is not visible
+
+	clearLayer();	
+
+	UINT lDrawInstanceID = 0; /*each Layer has his own through-ID for all LayerObjects */
+	for (int ri = 0; ri < arrayRI.size(); ri++)
+	{
+		SceneLayer::SceneLayerObject lSceneObject = {};
+		RenderItem* lRI = arrayRI[ri].get();
+		lSceneObject.setObjectMesh(lRI);
+		lSceneObject.setMaxSizeForDrawingIntancesArray(lRI->Instances.size());
+
+		/* 
+		Note:
+			Here we think that we use only one list of Instances information: InstancesID. It is because we use only one Frustom
+			for building this list - ShadowFrustom. If we want to use two Frustoms: Camera and Shadow, we should add one more 
+			list to RenderItems - DrawInstancesID and add filling of this information in Octree. But SceneLayers and Shaders support it now.
+		*/
+		for (int i = 0; i < lRI->InstancesID.size(); i++)
+		{
+			lSceneObject.addInstance(&lRI->Instances[lRI->InstancesID[i]]);
+			lSceneObject.setDrawInstanceID(lDrawInstanceID++);
+		}
+
+		lRI->InstancesID.clear();
+		lSceneObject.setMinSizeForDrawingIntancesArray();
+		addSceneObject(lSceneObject);
+	}
+}
+
 // ================================================================ [Scene::SceneLayer::SceneLayerObject] =============
 const RenderItem* Scene::SceneLayer::SceneLayerObject::getObjectMesh()
 {
@@ -360,9 +484,4 @@ void Scene::SceneLayer::SceneLayerObject::getInstances(std::vector<const Instanc
 
 	for (int i = 0; i < m_drawInstancesID.size(); i++)
 		out_DrawInstancesID[lPrevSizeDrawID + i] = m_drawInstancesID[i] + InstancesPerPrevLayer;
-}
-
-void Scene::toggleLightAnimation()
-{
-	m_lightAnimation = !m_lightAnimation;
 }

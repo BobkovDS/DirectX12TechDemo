@@ -136,6 +136,7 @@
     <ClCompile Include="FinalRender.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
+    <ClCompile Include="Octree.cpp" />
     <ClCompile Include="PSOBlurLayer.cpp" />
     <ClCompile Include="PSODebugLayer_Axis.cpp" />
     <ClCompile Include="PSODebugLayer_Light.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="GraphicDataStructures.h" />
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="ObjectManager.h" />
+    <ClInclude Include="Octree.h" />
     <ClInclude Include="PSOBlurLayer.h" />
     <ClInclude Include="PSODebugLayer_Axis.h" />
     <ClInclude Include="PSODebugLayer_Light.h" />

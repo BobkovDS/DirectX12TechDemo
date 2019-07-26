@@ -8,9 +8,9 @@ RenderManager::RenderManager(): m_initialized(false)
 	m_debug_Axes = true;
 	m_debug_Lights = false;
 	m_debug_Normals_Vertex = false;
-	m_isSSAOUsing = true;
-	m_isShadowUsing = true;
-	m_isNormalMappingUsing = true;
+	m_isSSAOUsing = false;
+	m_isShadowUsing = false;
+	m_isNormalMappingUsing = false;
 	m_renderMode = (1 << RM_FINAL);	
 }
 
@@ -38,8 +38,8 @@ void RenderManager::initialize(const RenderManagerMessanger& renderParams)
 	m_debugRenderScreen.initialize(renderParams.commonRenderData);	
 
 	RenderMessager lRenderParams = renderParams.commonRenderData;	
-	lRenderParams.Width = 2048; // We think that SSAO gives us Map twice size less
-	lRenderParams.Height = 2048;
+	lRenderParams.Width = 1024; 
+	lRenderParams.Height = 1024;
 	m_shadowRender.initialize(lRenderParams);
 
 	lRenderParams = renderParams.commonRenderData;
@@ -119,7 +119,7 @@ void RenderManager::draw()
 		
 		if (m_renderMode & (1 << RM_SSAO_MAP1))
 		{
-		/* we do not copy in this wat because dest_resource_format and source_resource_format are not equal
+		/* we do not copy in this because dest_resource_format and source_resource_format are not equal
 
 		m_cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
 				D3D12_RESOURCE_STATE_PRESENT,

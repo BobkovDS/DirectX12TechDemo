@@ -141,7 +141,8 @@ void FinalRender::draw(int flags)
 
 			for (int ri = 0; ri < lObjectLayer->getSceneObjectCount(); ri++) // One layer has several RenderItems
 			{
-				m_cmdList->SetGraphicsRoot32BitConstant(0, lInstanceOffset, 0); // Instances offset for current layer objects
+				
+				
 				const RenderItem* lMesh = lObjectLayer->getSceneObject(ri)->getObjectMesh();				
 				int lInstancesCount = lObjectLayer->getSceneObject(ri)->getDrawInstancesIDCount(); // How much instances for this RenderItem we should draw
 				if (lInstancesCount == 0) continue;
@@ -149,6 +150,13 @@ void FinalRender::draw(int flags)
 								
 				m_cmdList->IASetVertexBuffers(0, 1, &lMesh->Geometry->vertexBufferView());
 				m_cmdList->IASetIndexBuffer(&lMesh->Geometry->indexBufferView());
+				
+				
+				if (drawArg.IndexCount == 70296)
+					m_cmdList->SetGraphicsRoot32BitConstant(0, 1, 0); // Instances offset for current layer objects
+				else
+					m_cmdList->SetGraphicsRoot32BitConstant(0, lInstanceOffset, 0); // Instances offset for current layer objects
+
 				if (i!=5)
 				m_cmdList->IASetPrimitiveTopology(lMesh->Geometry->PrimitiveType);
 				else

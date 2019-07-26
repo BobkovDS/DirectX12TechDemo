@@ -159,79 +159,107 @@ void FBXFileLoader::build_GeoMeshes()
 	auto mesh_it_begin = m_meshesByName.begin();
 	for (; mesh_it_begin != m_meshesByName.end(); mesh_it_begin++)
 	{
-		bool lIsSkinnedMesh = false;
-
-		std::vector<VertexExtGPU> meshVertices;
-		std::vector<uint32_t> meshIndices;
-
-		VertexExtGPU vertex = {};
-		auto lgeoMesh = std::make_unique<Mesh>();
+		bool lIsSkinnedMesh = false;		
 
 		fbx_Mesh* lMesh = mesh_it_begin->second.get();
-		SubMesh submesh = {};
+		lIsSkinnedMesh = lMesh->VertexWeightByBoneName.size() > 0;
 
-		std::string lInnerRIName = lMesh->Name;
-		std::string lOuterRIName = m_sceneName + "_" + lInnerRIName;
-
-		lgeoMesh->Name = lInnerRIName;
-
-		meshVertices.resize(lMesh->Indices.size());
-		meshIndices.resize(lMesh->Indices.size());
-
-		for (int vi = 0; vi < lMesh->Indices.size(); vi++)
-		{
-			vertex = {};
-			vertex.Pos = lMesh->Vertices[lMesh->Indices[vi]];
-			
-			if (lMesh->Normals.size())
-			{
-				XMVECTOR n = XMLoadFloat3(&lMesh->Normals[vi]);
-				//n = XMVector3Normalize(n);
-				XMStoreFloat3(&vertex.Normal, n);
-			}
-			if (lMesh->UVs.size())	vertex.UVText = lMesh->UVs[vi];
-			if (lMesh->Tangents.size()) vertex.TangentU = lMesh->Tangents[vi];
-			vertex.ShapeID = 0;
-
-			// write vertex/bone weight information		
-			for (int wi = 0; wi < lMesh->VertexWeightByBoneName[lMesh->Indices[vi]].size(); wi++)
-			{
-				string lBoneName = lMesh->VertexWeightByBoneName[lMesh->Indices[vi]][wi].first;
-				float lBoneWeight = lMesh->VertexWeightByBoneName[lMesh->Indices[vi]][wi].second;
-				int lBoneID = m_BonesIDByName[lBoneName].first;
-				vertex.BoneIndices[wi] = lBoneID;
-				vertex.BoneWeight[wi] = lBoneWeight;
-				lIsSkinnedMesh = true;
-			}
-
-			meshVertices[vi] = vertex;
-			meshIndices[vi] = vi;
-		}
-		
-		lgeoMesh->IsSkinnedMesh = lIsSkinnedMesh; // Does this mesh use at leas one skinned vertex
-		
-		submesh.IndexCount = meshVertices.size();
-		lgeoMesh->DrawArgs[lInnerRIName] = submesh;
-
-		//Create RenderItem for this mesh		
-		m_RenderItems[lInnerRIName] = std::make_unique<RenderItem>();
-		RenderItem& lNewRI = *m_RenderItems[lInnerRIName].get();
-		BoundingBox::CreateFromPoints(lNewRI.AABB, lMesh->Vertices.size(), &lMesh->Vertices[0], sizeof(lMesh->Vertices[0]));
-		lNewRI.Name = lOuterRIName;
-		lNewRI.Geometry = lgeoMesh.get();
-
-		if (lMesh->VertexPerPolygon == 3 || lMesh->VertexPerPolygon == 4)
-			lNewRI.Geometry->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+		if (lIsSkinnedMesh)
+			build_GeoMeshesWithTypedVertex<VertexExtGPU>(lMesh, true);
 		else
-			assert(0);
-
-		//upload geoMesh to GPU
+			build_GeoMeshesWithTypedVertex<VertexGPU>(lMesh, false);
 		
-		Utilit3D::UploadMeshToDefaultBuffer<Mesh, VertexExtGPU, uint32_t>(lgeoMesh.get(), meshVertices, meshIndices);
-
-		//move geoMeshUp		
-	 	m_objectManager->addMesh(lOuterRIName, lgeoMesh);
 	}
+}
+
+template<class T>
+inline void FBXFileLoader::build_GeoMeshesWithTypedVertex(fbx_Mesh* iMesh, bool skinnedMesh)
+{
+	bool lIsSkinnedMesh = skinnedMesh;
+
+	std::vector<T> meshVertices;
+	std::vector<uint32_t> meshIndices;
+	T vertex = {};
+
+	auto lgeoMesh = std::make_unique<Mesh>();
+
+	fbx_Mesh* lMesh = iMesh;
+	SubMesh submesh = {};
+
+	std::string lInnerRIName = lMesh->Name;
+	std::string lOuterRIName = m_sceneName + "_" + lInnerRIName;
+
+	lgeoMesh->Name = lInnerRIName;	
+
+	meshVertices.resize(lMesh->Indices.size()); /* Vertices count = Indices count,
+												because if a Vertex can be the same for several faces, but this Vertex should
+												have different information for this faces like Normal, TangentUV*/
+	meshIndices.resize(lMesh->Indices.size());
+
+	for (int vi = 0; vi < lMesh->Indices.size(); vi++)
+	{
+		vertex = {};
+		vertex.Pos = lMesh->Vertices[lMesh->Indices[vi]];
+
+		if (lMesh->Normals.size())
+		{
+			XMVECTOR n = XMLoadFloat3(&lMesh->Normals[vi]);
+			//n = XMVector3Normalize(n);
+			XMStoreFloat3(&vertex.Normal, n);
+		}
+		if (lMesh->UVs.size())	vertex.UVText = lMesh->UVs[vi];
+		if (lMesh->Tangents.size()) vertex.TangentU = lMesh->Tangents[vi];		
+
+		// write vertex/bone weight information		
+		if (lIsSkinnedMesh)
+		{
+			addSkinnedInfoToVertex(vertex, lMesh, vi);			
+		}
+
+		meshVertices[vi] = vertex;
+		meshIndices[vi] = vi;
+	}
+
+	lgeoMesh->IsSkinnedMesh = lIsSkinnedMesh; // Does this mesh use at leas one skinned vertex
+
+	submesh.IndexCount = meshVertices.size();
+	lgeoMesh->DrawArgs[lInnerRIName] = submesh;
+
+	//Create RenderItem for this mesh		
+	m_RenderItems[lInnerRIName] = std::make_unique<RenderItem>();
+	RenderItem& lNewRI = *m_RenderItems[lInnerRIName].get();
+	BoundingBox::CreateFromPoints(lNewRI.AABB, lMesh->Vertices.size(), &lMesh->Vertices[0], sizeof(lMesh->Vertices[0]));
+	lNewRI.Name = lOuterRIName;
+	lNewRI.Geometry = lgeoMesh.get();
+
+	if (lMesh->VertexPerPolygon == 3 || lMesh->VertexPerPolygon == 4)
+		lNewRI.Geometry->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	else
+		assert(0);
+
+	//upload geoMesh to GPU
+
+	Utilit3D::UploadMeshToDefaultBuffer<Mesh, T, uint32_t>(lgeoMesh.get(), meshVertices, meshIndices);
+
+	//move geoMeshUp		
+	m_objectManager->addMesh(lOuterRIName, lgeoMesh);
+}
+
+inline void FBXFileLoader::addSkinnedInfoToVertex(VertexExtGPU& vertex, fbx_Mesh* iMesh, int vi)
+{
+	for (int wi = 0; wi < iMesh->VertexWeightByBoneName[iMesh->Indices[vi]].size(); wi++)
+	{
+		string lBoneName = iMesh->VertexWeightByBoneName[iMesh->Indices[vi]][wi].first;
+		float lBoneWeight = iMesh->VertexWeightByBoneName[iMesh->Indices[vi]][wi].second;
+		int lBoneID = m_BonesIDByName[lBoneName].first;
+		vertex.BoneIndices[wi] = lBoneID;
+		vertex.BoneWeight[wi] = lBoneWeight;
+	}
+}
+
+inline void FBXFileLoader::addSkinnedInfoToVertex(VertexGPU& vertex, fbx_Mesh* iMesh, int vi)
+{
+	// Do nothing. We never should be here
 }
 
 void FBXFileLoader::build_Animation()
@@ -532,6 +560,7 @@ void FBXFileLoader::add_InstanceToRenderItem(const fbx_NodeInstance& nodeRIInsta
 	{
 		InstanceDataGPU lBaseInstance = {};
 		lBaseInstance.World = nodeRIInstance.LocalTransformation;
+
 		if (nodeRIInstance.Materials.size())
 			lBaseInstance.MaterialIndex = nodeRIInstance.Materials[0]->MatCBIndex;
 
@@ -789,8 +818,7 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 			FbxLODGroup* lLODFr = lNode2->GetLodGroup();
 
 			FbxAMatrix lGlobalTransform = lNode2->EvaluateGlobalTransform();
-			FbxAMatrix lLocalTransform = lNode2->EvaluateGlobalTransform();
-			FbxVector4 lLocRot = lNode2->EvaluateLocalRotation(); /*TO_DO: remove*/
+			FbxAMatrix lLocalTransform = lNode2->EvaluateGlobalTransform();			
 			
 			convertFbxMatrixToFloat4x4(lGlobalTransform, newNodeInstance.GlobalTransformation);
 			convertFbxMatrixToFloat4x4(lLocalTransform, newNodeInstance.LocalTransformation);
@@ -834,7 +862,8 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 		}
 			break;				
 		case fbxsdk::FbxNodeAttribute::eLODGroup:
-			break;		
+			break;
+
 		default:
 			break;
 		}
@@ -1073,8 +1102,7 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool mes
 		{
 			bool PolygonSizeNot_3_or_4 = false;
 			assert(PolygonSizeNot_3_or_4);
-		}
-			
+		}			
 	}
 
 	// get Material ID for mesh/polygons
@@ -1095,44 +1123,47 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool mes
 	}	
 
 	// get Skin Data
-	// If Bone X uses vertex Y with weight W, we will map it with VertexWeightByBoneID[Y]=pair{X, W}
-	lmesh->VertexWeightByBoneName.resize(lmesh->Vertices.size());
-	{
-		int lCommonIndicesCount = 0;
+	// If Bone X uses vertex Y with weight W, we will map it with VertexWeightByBoneID[Y]=pair{X, W}	
+	{		
 		int lskinCount = lpcMesh->GetDeformerCount(FbxDeformer::eSkin);
 
-		for (int s = 0; s < lskinCount; s++)
+		if (lskinCount)
 		{
-			FbxSkin* lSkin = (FbxSkin*)lpcMesh->GetDeformer(s, FbxDeformer::eSkin);
-			int lClusterCount = lSkin->GetClusterCount();
+			lmesh->VertexWeightByBoneName.resize(lmesh->Vertices.size());
+			int lCommonIndicesCount = 0;
 
-			for (int clusterID = 0; clusterID < lClusterCount; clusterID++)
+			for (int s = 0; s < lskinCount; s++)
 			{
-				FbxCluster* lCluster = lSkin->GetCluster(clusterID);
-				const char* lClusterMode[] = { "Normalize", "Additive", "Total1" };
+				FbxSkin* lSkin = (FbxSkin*)lpcMesh->GetDeformer(s, FbxDeformer::eSkin);
+				int lClusterCount = lSkin->GetClusterCount();
 
-				string mode = lClusterMode[lCluster->GetLinkMode()];
-
-				string linkName = "myNone";
-				if (lCluster->GetLink() != NULL)
+				for (int clusterID = 0; clusterID < lClusterCount; clusterID++)
 				{
-					linkName = lCluster->GetLink()->GetName();
-				}
+					FbxCluster* lCluster = lSkin->GetCluster(clusterID);
+					const char* lClusterMode[] = { "Normalize", "Additive", "Total1" };
 
-				int lIndicesCount = lCluster->GetControlPointIndicesCount();
-				int* lpIndicesData = lCluster->GetControlPointIndices();
-				double* lpWeightsData = lCluster->GetControlPointWeights();
-				int lBoneID;
-				for (int vi = 0; vi < lIndicesCount; vi++)
-				{
-					int vertexID = lpIndicesData[vi];
-					float boneWeight = lpWeightsData[vi];
-					auto lPair = std::make_pair(linkName, boneWeight);
-					lmesh->VertexWeightByBoneName[vertexID].push_back(lPair);
+					string mode = lClusterMode[lCluster->GetLinkMode()];
+
+					string linkName = "myNone";
+					if (lCluster->GetLink() != NULL)
+					{
+						linkName = lCluster->GetLink()->GetName();
+					}
+
+					int lIndicesCount = lCluster->GetControlPointIndicesCount();
+					int* lpIndicesData = lCluster->GetControlPointIndices();
+					double* lpWeightsData = lCluster->GetControlPointWeights();
+					int lBoneID;
+					for (int vi = 0; vi < lIndicesCount; vi++)
+					{
+						int vertexID = lpIndicesData[vi];
+						float boneWeight = lpWeightsData[vi];
+						auto lPair = std::make_pair(linkName, boneWeight);
+						lmesh->VertexWeightByBoneName[vertexID].push_back(lPair);
+					}
 				}
 			}
 		}
-		int a = 1;
 	}
 
 	// add mesh

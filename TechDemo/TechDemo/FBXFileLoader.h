@@ -125,6 +125,12 @@ private:
 
 	template<class T>
 	inline void add_quadInfo_to_mesh(std::vector<T>&, T t0, T t1, T t2, T t3, bool isTesselated=false);
+
+	template<class T>
+	inline void build_GeoMeshesWithTypedVertex(fbx_Mesh* iMesh, bool skinnedMesh);
+	
+	inline void addSkinnedInfoToVertex(VertexExtGPU& vertex, fbx_Mesh* iMesh, int vi);
+	inline void addSkinnedInfoToVertex(VertexGPU& vertex, fbx_Mesh* iMesh, int vi);
 public:
 	
 	FBXFileLoader();

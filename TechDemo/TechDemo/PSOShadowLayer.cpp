@@ -64,6 +64,10 @@ void PSOShadowLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, DXGI_F
 	psoDescLayer0.PS = { reinterpret_cast<BYTE*>(m_shaders["ps"]->GetBufferPointer()), m_shaders["ps"]->GetBufferSize() };
 	psoDescLayer0.RTVFormats[0] = DXGI_FORMAT_UNKNOWN;
 	psoDescLayer0.NumRenderTargets = 0;
+	psoDescLayer0.RasterizerState.DepthBias = 100000;
+	psoDescLayer0.RasterizerState.DepthBiasClamp = 0.0f;
+	psoDescLayer0.RasterizerState.SlopeScaledDepthBias = 1.0f;
+
 	// PSO for Layer_1:  Non-skinned Not Opaque objects: [NOTOPAQUELAYER]
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer1 = psoDescLayer0;
 	D3D12_BLEND_DESC  blend_desc = {};

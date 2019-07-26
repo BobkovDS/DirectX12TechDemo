@@ -22,7 +22,7 @@ void PutVertexOut2(GeometryIn vert, inout LineStream<GeometryOut> theOutput)
     float4 lPosW = mul(instData.World, float4(vert.PosL, 1.0f));
     outVertex.PosW = lPosW.xyz;
     outVertex.PosH = mul(lPosW, cbPass.ViewProj);
-    outVertex.NormalW = float3(1.0f, 1.0f, 1.0f);
+    outVertex.NormalW = float3(0.0f, 0.0f, 0.0f);
     outVertex.ShapeID = vert.instID;
     outVertex.TangentW = float4(0.0f, 0.0f, 0.0f, 0.0f);
     outVertex.UVText = float2(0.0f, 0.0f);

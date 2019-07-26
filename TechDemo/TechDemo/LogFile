@@ -1,178 +1,20 @@
 Application begin to work
-Loading of Models\The Scene.fbx
-	Creating scene [The Scene]
-		processing a node: Cylinder.001_L_Lib.001
-		loading new material: zaun
-		Texture(diffuse): tinyworld_woodTexture1[G:\SSDLaba\Modeling\Blender\TechDemo\Models\tinyworld\textures\wood3.jpg]
-		processing a node: Cylinder.002_L_Lib.001
-		loading new material: zaun
-		processing a node: Cylinder.004_L_Lib.001
-		loading new material: zaun
-		processing a node: Cylinder.005_L_Lib.001
-		loading new material: zaun
-		processing a node: Cylinder.006_L_Lib.001
-		loading new material: zaun
-		processing a node: Cylinder.007_L_Lib.001
-		loading new material: zaun
-		processing a node: Cylinder.008_L_Lib.001
-		loading new material: zaun
-		processing a node: Cylinder.009_L_Lib.001
-		loading new material: zaun
-		processing a node: Cylinder_L_Lib.001
-		loading new material: zaun
-		processing a node: Fence1_L_Lib.001
-		loading new material: zaun
-		processing a node: Fence2_L_Lib.001
-		loading new material: zaun
-		processing a node: Fence3_L_Lib.001
-		loading new material: zaun
-		processing a node: Fence4_L_Lib.001
-		loading new material: zaun
-		processing a node: Fence5_L_Lib.001
-		loading new material: zaun
-		processing a node: Fence6_L_Lib.001
-		loading new material: zaun
-		processing a node: Fence7_L_Lib.001
-		loading new material: zaun
-		processing a node: Fence8_L_Lib.001
-		loading new material: zaun
-		processing a node: Fence9_L_Lib.001
-		loading new material: zaun
-		processing a node: Fence10_L_Lib.001
-		loading new material: zaun
-		processing a node: ground_L_Lib.001
-		loading new material: ground_grass
-		Texture(diffuse): tinyworld_landTexture[G:\SSDLaba\Programming\Modeling\LightWave\WorkDirTextures\GroundForest003_COL_VAR1_3K.DDS]
-		processing a node: halterung_L_Lib.001
-		loading new material: wood
-		processing a node: Landscape.001_L_Lib.001
-		loading new material: stone
-		processing a node: Landscape.002_L_Lib.001
-		loading new material: stone
-		processing a node: Landscape.003_L_Lib.001
-		loading new material: stone
-		processing a node: Landscape.008_L_Lib.001
-		loading new material: stone
-		processing a node: Landscape.009_L_Lib.001
-		loading new material: stone
-		processing a node: Landscape_L_Lib.001
-		loading new material: stone
-		processing a node: Plane_004.001_L_Lib.001
-		loading new material: grass_2
-		Texture(diffuse): tinyworld_grassTexture1[G:\SSDLaba\Modeling\Blender\TechDemo\Models\tinyworld\textures\Gras2 - Kopie.jpg]
-		processing a node: Plane_004.002_L_Lib.001
-		loading new material: grass_2
-		processing a node: Plane_004.003_L_Lib.001
-		loading new material: grass_2
-		processing a node: Plane_004.004_L_Lib.001
-		loading new material: grass_2
-		processing a node: Plane_004.005_L_Lib.001
-		loading new material: grass_2
-		processing a node: Plane_004.006_L_Lib.001
-		loading new material: grass_2
-		processing a node: Plane_004.007_L_Lib.001
-		loading new material: grass_2
-		processing a node: Plane_004.008_L_Lib.001
-		loading new material: grass_2
-		processing a node: Plane_004.009_L_Lib.001
-		loading new material: grass_2
-		processing a node: Plane_004.010_L_Lib.001
-		loading new material: grass_2
-		processing a node: Plane_004.011_L_Lib.001
-		loading new material: grass_2
-		processing a node: Plane_004.012_L_Lib.001
-		loading new material: grass_2
-		processing a node: Plane_004.013_L_Lib.001
-		loading new material: grass_2
-		processing a node: Plane_004.015_L_Lib.001
-		loading new material: grass_2
-		processing a node: Plane_004.016_L_Lib.001
-		loading new material: grass_2
-		processing a node: Plane_004.017_L_Lib.001
-		loading new material: grass_2
-		processing a node: Plane_004_L_Lib.001
-		loading new material: grass_2
-		processing a node: tafel_L_Lib.001
-		loading new material: tafel
-		processing a node: tafelhalterung_L_Lib.001
-		loading new material: metal
-		processing a node: wegstein1.001_L_Lib.001
-		loading new material: white_stone
-		processing a node: wegstein1.002_L_Lib.001
-		loading new material: white_stone
-		processing a node: wegstein1.003_L_Lib.001
-		loading new material: white_stone
-		processing a node: wegstein1.004_L_Lib.001
-		loading new material: white_stone
-		processing a node: wegstein1.005_L_Lib.001
-		loading new material: white_stone
-		processing a node: wegstein1.006_L_Lib.001
-		loading new material: white_stone
-		processing a node: wegstein1.007_L_Lib.001
-		loading new material: white_stone
-		processing a node: wegstein1.009_L_Lib.001
-		loading new material: white_stone
-		processing a node: wegstein1.010_L_Lib.001
-		loading new material: white_stone
-		processing a node: wegstein1.011_L_Lib.001
-		loading new material: white_stone
-		processing a node: wegstein1_L_Lib.001
-		loading new material: white_stone
-		processing a node: white_tree.002_L_Lib.001
+Loading of Models\The Scene2.fbx
+	Creating scene [The Scene2]
+		processing a node: white_tree.001
 		loading new material: white_wood
 		Texture(diffuse): tinyworld_woodTexture1[G:\SSDLaba\Modeling\Blender\TechDemo\Models\tinyworld\textures\wood3.jpg]
-			processing a node: leaves.002_L_Lib.001
+			processing a node: leaves.001
 			loading new material: leaves
 			Texture(diffuse): tinyworld_treeTexture1[G:\SSDLaba\Modeling\Blender\TechDemo\Models\tinyworld\textures\Leaves0135_1_S.png]
-		processing a node: white_tree_L_Lib.001
-		loading new material: white_wood
-			processing a node: leaves_L_Lib.001
+			processing a node: ground|leaves.001|Dupli|2.1.0.0.0.0.0.0.0.0
 			loading new material: leaves
-		processing a node: House_L_Lib
-		loading new material: cottage_texture
-		Texture(diffuse): Hause_colorTexture1[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Textures\cottage_textures\cottage_diffuse.png]
-		Texture(normal): Hause_normalTexture1[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Textures\cottage_textures\cottage_normal.png]
-		processing a node: Wolf_Skeleton
-			processing a node: root
-		processing a node: Wolf_obj_body.001
-		loading new material: Wolf_Teeth
-		processing a node: Wolf_obj_body.002
-		loading new material: Wolf_Claws
-		processing a node: Wolf_obj_body.003
-		loading new material: Wolf_Eyes
-		Texture(diffuse): Wolf_Eyes_1.jpg[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Wolf\textures\Wolf_Eyes_1.jpg]
-		Texture(diffuse): Wolf_Eyes_2.jpg[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Wolf\textures\Wolf_Eyes_2.jpg]
-		processing a node: Wolf_obj_body.004
-		loading new material: Wolf_Body
-		Texture(diffuse): Wolf_Body[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Wolf\textures\Wolf_Body.jpg]
-		processing a node: Wolf_obj_body
-		loading new material: Wolf_Fur
-		Texture(diffuse): Wolf_Body.jpg[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Wolf\textures\Wolf_Body.jpg]
-		Texture(transparencyF): Wolf_Fur.jpg[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Wolf\textures\Wolf_Fur.jpg]
-		processing a node: SkyObject_L_Lib.003
-		loading new material: MaterialSky
-		Texture(diffuse): sky_texture[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Textures\Sky\Sky.tif]
-		processing a node: tree_object1
-		loading new material: Tree_material1
-		Texture(diffuse): Texture.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\trees\Tree1\BarkDecidious0194_7_S.jpg]
-			processing a node: tree_leavesObject1
-			loading new material: Tree_Leaves1
-			Texture(diffuse): Texture.003[G:\SSDLaba\Modeling\Blender\TechDemo\Models\trees\Tree1\Leaves0120_35_S.png]
-		processing a node: tree_Object2
-		loading new material: Tree_material1
-			processing a node: tree_leavesObject2
-			loading new material: Tree_Leaves2
-			Texture(diffuse): Texture[G:\SSDLaba\Modeling\Blender\TechDemo\Models\trees\Tree1\Leaves0156_1_S.png]
-		processing a node: tree_Object3
-		loading new material: Tree_material1
-			processing a node: tree_leavesObject3
-			loading new material: Tree_Leaves3
-			Texture(diffuse): Texture.004[G:\SSDLaba\Modeling\Blender\TechDemo\Models\trees\Tree1\Leaves0142_4_S.png]
-		processing a node: Water_object_L_Lib.004
-		loading new material: Water_material
-		Texture(diffuse): TextureLow[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Textures\Water\water_height_normal_map_low.jpg]
-		Texture(diffuse): TextureHigh[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Textures\Water\water_height_normal_map_high.jpg]
-Loading of Models\The Scene.fbx is done
+		processing a node: ground
+		loading new material: ground_grass
+		Texture(diffuse): tinyworld_landTexture[G:\SSDLaba\Programming\Modeling\LightWave\WorkDirTextures\GroundForest003_COL_VAR1_3K.DDS]
+			processing a node: ground|white_tree.001|Dupli|2.1.0.0.0.0.0.0.0.0
+			loading new material: white_wood
+Loading of Models\The Scene2.fbx is done
 Loading of Models\Lights.fbx
 	Creating scene [Lights]
 		processing a node: Sun
@@ -181,5 +23,11 @@ Loading of Models\Camera.fbx
 	Creating scene [Camera]
 		processing a node: Camera
 Loading of Models\Camera.fbx is done
+TechDemo::init3D()::Scene building...
+TechDemo::init3D()::Scene building is done
+TechDemo::init3D()::before Cmd list execution.
+TechDemo::init3D()::before Cmd list execution done.
+TechDemo::init3D()::Flush commands is done.
+TechDemo::init3D() is done
 Application finish the work
 

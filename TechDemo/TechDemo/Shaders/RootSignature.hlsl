@@ -8,7 +8,7 @@
  DescriptorTable( SRV(t0, numDescriptors = 6), UAV(u0, numDescriptors = 1), SRV(t6, numDescriptors = 1), UAV(u1, numDescriptors = 1), SRV(t7, numDescriptors = 1), visibility=SHADER_VISIBILITY_ALL),\
  DescriptorTable( SRV(t10, numDescriptors = unbounded), visibility=SHADER_VISIBILITY_ALL),\
  StaticSampler(s0, visibility = SHADER_VISIBILITY_ALL),\
- StaticSampler(s1, addressU=TEXTURE_ADDRESS_BORDER, addressV=TEXTURE_ADDRESS_BORDER, borderColor=STATIC_BORDER_COLOR_OPAQUE_BLACK, filter = FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT, comparisonFunc =COMPARISON_LESS_EQUAL, visibility=SHADER_VISIBILITY_PIXEL)"
+ StaticSampler(s1, addressU=TEXTURE_ADDRESS_BORDER, addressV=TEXTURE_ADDRESS_BORDER, borderColor=STATIC_BORDER_COLOR_OPAQUE_WHITE, filter = FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT, comparisonFunc =COMPARISON_LESS_EQUAL, visibility=SHADER_VISIBILITY_PIXEL)"
  
 //StaticSampler(s1, filter = FILTER_ANISOTROPIC, comparisonFunc = COMPARISON_LESS_EQUAL, visibility = SHADER_VISIBILITY_ALL)"
 

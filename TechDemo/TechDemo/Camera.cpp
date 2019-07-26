@@ -322,6 +322,29 @@ DirectX::BoundingFrustum& Camera::getFrustomBoundingShadowWorld()
 	return m_frustumBoundingShadowWorld;
 }
 
+DirectX::BoundingBox& Camera::getBoundingBoxCameraWorld()
+{
+	updateViewMatrix();
+	if (m_boundingBoxWorldToUpdate) // here View matrix should be updated
+	{
+		DirectX::XMMATRIX view = XMLoadFloat4x4(&m_viewMatrix);
+		DirectX::XMMATRIX veiwInv = XMMatrixInverse(&XMMatrixDeterminant(view), view);
+
+		m_BoundingBoxCamera.Transform(m_BoundingBoxCameraWorld, veiwInv);
+		m_BoundingBoxShadow.Transform(m_BoundingBoxShadowWorld, veiwInv);
+
+		m_boundingBoxWorldToUpdate= false;
+	}
+	return m_BoundingBoxCameraWorld;
+}
+
+DirectX::BoundingBox& Camera::getBoundingBoxShadowWorld()
+{
+	if (m_boundingBoxWorldToUpdate) // here View matrix should be updated
+		getBoundingBoxCameraWorld();
+
+	return m_BoundingBoxShadowWorld;
+}
 
 inline void Camera::updateObservers()
 {

@@ -43,6 +43,6 @@ float4 PS(VertexOut pin) : SV_Target
     
     pin.NormalW = normalize(pin.NormalW);
     float3 lNormalV = mul(pin.NormalW, (float3x3) cbPass.View);
-    return float4(lNormalV, 1.0f);    
+    return float4(lNormalV, 0.0f);    
 }
 

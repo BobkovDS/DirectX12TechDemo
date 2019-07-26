@@ -159,6 +159,9 @@
     <ClCompile Include="PSODebugLayer_Screen.cpp">
       <Filter>Source Files\PSO</Filter>
     </ClCompile>
+    <ClCompile Include="Octree.cpp">
+      <Filter>Source Files\Other</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PSOBaseLayer.h">
@@ -301,6 +304,9 @@
     </ClInclude>
     <ClInclude Include="PSODebugLayer_Screen.h">
       <Filter>Header Files\PSO</Filter>
+    </ClInclude>
+    <ClInclude Include="Octree.h">
+      <Filter>Header Files\Other</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

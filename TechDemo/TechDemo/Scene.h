@@ -4,6 +4,7 @@
 #include "ObjectManager.h"
 #include "SkeletonManager.h"
 #include "Camera.h"
+#include "Octree.h"
 
 #define FRAMERESOURCECOUNT 3
 class Scene
@@ -15,20 +16,30 @@ class Scene
 	ObjectManager* m_objectManager;
 	SkeletonManager* m_skeletonManager;
 	Camera* m_camera;
+	Octree* m_octree;
 
 	std::vector<CPULight> m_lights; //lights in the scene
-	DirectX::BoundingSphere m_sceneBS; // scene bounding sphere for creation Sun-light Ortho Frustom 
+	DirectX::BoundingSphere m_sceneBS; // scene bounding sphere 
+	DirectX::BoundingSphere m_sceneBSShadow; // scene bounding sphere for creation Sun-light Ortho Frustom 
 	DirectX::BoundingBox m_sceneBB;
+	DirectX::BoundingBox m_sceneBBShadow;
 
 	bool m_doesItNeedUpdate;
 	bool m_firstBB;
 	bool m_lightAnimation;
+	bool m_octreeCullingMode;
 	int m_instancesDataReadTimes; // How many times we need provide Instances Data for FrameResource Manager;
 	
 	void updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<RenderItem>>& RI, bool isFrustumCullingRequired = true);
 	void createBoungingInfo();
-	void getLayerBoundingInfo(DirectX::BoundingBox& layerBB, const std::vector<std::unique_ptr<RenderItem>>& RI);
+	void getLayerBoundingInfo(DirectX::BoundingBox& layerBB, DirectX::BoundingBox& layerBBShadow,
+		const std::vector<std::unique_ptr<RenderItem>>& RI);
+	
+	void buildOctree();
+	void addOctreeInformation(const std::vector<std::unique_ptr<RenderItem>>& arrayRI, std::vector<BoundingBoxEXT*>& lLayerBBList);
+
 public:
+	static UINT ContainsCount;
 	class SceneLayer
 	{
 		class SceneLayerObject;
@@ -53,12 +64,12 @@ public:
 			void setObjectMesh(const RenderItem* mesh);
 			void setMaxSizeForDrawingIntancesArray(UINT maxSize) { m_drawInstancesID.resize(maxSize); }
 			void setMinSizeForDrawingIntancesArray() { m_drawInstancesID.resize(m_drawInstanceIDCount); }
-			void setDrawInstanceID(UINT id) { m_drawInstancesID[m_drawInstanceIDCount++] = id; };
-			
+			void setDrawInstanceID(UINT id) { m_drawInstancesID[m_drawInstanceIDCount++] = id; };			
 			const std::vector<UINT>& getDrawIntancesID() { return m_drawInstancesID; }
 		};
 		//-------------------------------------------------------
-		void clearLayer();
+		void clearLayer();		
+		void update(const std::vector<std::unique_ptr<RenderItem>>& RI);
 		bool isLayerVisible();
 		void setVisibility(bool b);
 		int getLayerInstancesCount();
@@ -82,12 +93,16 @@ public:
 
 	const std::vector<CPULight>& getLights();
 	const DirectX::BoundingBox& getSceneBB() { return m_sceneBB; }
+	const DirectX::BoundingBox& getSceneBBShadow() { return m_sceneBBShadow; }
 	const DirectX::BoundingSphere& getSceneBS() { return m_sceneBS; }
+	const DirectX::BoundingSphere& getSceneBSShadow() { return m_sceneBSShadow; }
+	bool getCullingModeOctree() { return m_octreeCullingMode; }
 	void build(ObjectManager* objectManager, Camera* camera, SkeletonManager* skeletonManagers);
 	void update();
 	void updateLight(float time);
 	bool isInstancesDataUpdateRequred();
 	void cameraListener();
 	void toggleLightAnimation();
+	void toggleCullingMode();
 };
 

@@ -14,12 +14,18 @@ class Camera{
 	//bool m_viewDirty; // We updated a View matrix, need to say to all about it
 	
 	bool m_viewToUpdate; //Need to rebuild a view matrix
-	bool m_frustumBoundingWorldToUpdate;
+	bool m_frustumBoundingWorldToUpdate;	
+	bool m_boundingBoxWorldToUpdate;	
 	DirectX::XMFLOAT4X4 m_viewMatrix;
 	DirectX::BoundingFrustum m_frustumBoundingCamera; // Frustum for Camera
 	DirectX::BoundingFrustum m_frustumBoundingShadow; // Frustum for Shadow Projector
 	DirectX::BoundingFrustum m_frustumBoundingCameraWorld; //Frustum for Camera in World space
 	DirectX::BoundingFrustum m_frustumBoundingShadowWorld; //Frustum for Shadow Projector in World space
+	DirectX::BoundingBox m_BoundingBoxCamera; // BB for Camera
+	DirectX::BoundingBox m_BoundingBoxShadow; // BB for Shadow Projector
+	DirectX::BoundingBox m_BoundingBoxCameraWorld; //BB for Camera in World space
+	DirectX::BoundingBox m_BoundingBoxShadowWorld; //BB for Shadow Projector in World space
+
 	std::vector<ExecuterBase*> m_observers;
 	void updateObservers();
 	Camera(Camera& a) {};
@@ -75,7 +81,10 @@ public:
 	//Frustum Bounding
 	DirectX::BoundingFrustum& getFrustomBoundingCameraWorld();
 	DirectX::BoundingFrustum& getFrustomBoundingShadowWorld();
+	DirectX::BoundingBox& getBoundingBoxCameraWorld();
+	DirectX::BoundingBox& getBoundingBoxShadowWorld();
 	void buildFrustumBounding();
+	
 
 	//Internal base Lens class 
 	class CameraLens {		

@@ -60,6 +60,7 @@ float OcclusionFunction(float distZ)
 float NdcDepthToViewDepth(float z_ndc)
 {
     // z_ndc = A + B/viewZ, where gProj[2,2]=A and gProj[3,2]=B.
+    
     float viewZ = cbPass.Proj[3][2] / (z_ndc - cbPass.Proj[2][2]);
     return viewZ;
 }
@@ -73,6 +74,7 @@ float4 PS(VertexOut pin) : SV_Target
 
 	// Get viewspace normal and z-coord of this pixel.  
     float3 n = normalize(gViewNormalMap.SampleLevel(gsamPointClamp, pin.UVText, 0.0f).xyz);
+
     //float3 n = gViewNormalMap.SampleLevel(gsamPointClamp, pin.UVText, 0.0f).xyz;
     float pz = gDepthMap.SampleLevel(gsamDepthMap, pin.UVText, 0.0f).r;
     pz = NdcDepthToViewDepth(pz);
@@ -86,7 +88,7 @@ float4 PS(VertexOut pin) : SV_Target
     float3 p = (pz / pin.PosW.z) * pin.PosW;
 	
 	// Extract random vector and map from [0,1] --> [-1, +1].
-    float3 randVec = 2.0f * gRandomVectorMap.SampleLevel(gsamPointClamp, pin.UVText, 0.0f).rgb - 1.0f;
+    float3 randVec = 2.0f * gRandomVectorMap.SampleLevel(gsamLinerWrap, 4.0f* pin.UVText, 0.0f).rgb - 1.0f;
 
     float occlusionSum = 0.0f;
 	
@@ -134,6 +136,7 @@ float4 PS(VertexOut pin) : SV_Target
 		// 
 		
         float distZ = p.z - r.z;
+        //n = normalize(n);
         float dp = max(dot(n, normalize(r - p)), 0.0f);
 
         float occlusion = dp * OcclusionFunction(distZ);
@@ -146,6 +149,6 @@ float4 PS(VertexOut pin) : SV_Target
     float access = 1.0f - occlusionSum;
 
 	// Sharpen the contrast of the SSAO map to make the SSAO affect more dramatic.
-    return saturate(pow(access, 6.0f));
+    return saturate(pow(access, 2.0f));
 }
 

@@ -166,20 +166,20 @@ float4 ComputeLighting(Light glights[MaxLights], MaterialLight mat, float3 pos, 
 
 float CalcShadowFactor(float4 shadowPosH, Texture2D shadowMap, SamplerComparisonState gsamShadow)
 {
-    shadowPosH.xyz /= shadowPosH.w;
-    float depth = shadowPosH.z;
+    //shadowPosH.xyz /= shadowPosH.w; //does not make sense for ortographic projection, 
+    float depth = shadowPosH.z; 
     
     uint width, height, numMips;
     shadowMap.GetDimensions(0,width, height, numMips);
     float dx = 1.0f / (float) width;
-    float dy = 1.0f / (float) height;
+    float dy = dx; //   1.0f / (float) height;
     float percentLit = 0.0f;
 
-    float x_factor = 0.5f - abs(shadowPosH.x - 0.5f);
-    float y_factor = 0.5f - abs(shadowPosH.y - 0.5f);
-    float spot_factor = sqrt(x_factor * x_factor + y_factor * y_factor);
-
-    if (spot_factor > 1) spot_factor = 1.0f;
+    // it is for a spot cone light
+    //float x_factor = 0.5f - abs(shadowPosH.x - 0.5f);
+    //float y_factor = 0.5f - abs(shadowPosH.y - 0.5f);        
+    //float spot_factor = sqrt(x_factor * x_factor + y_factor * y_factor);
+    //if (spot_factor > 1.0f) spot_factor = 1.0f;
 
     const float2 offset[9] =
     {
@@ -193,5 +193,5 @@ float CalcShadowFactor(float4 shadowPosH, Texture2D shadowMap, SamplerComparison
         percentLit += shadowMap.SampleCmpLevelZero(gsamShadow, shadowPosH.xy + offset[i], depth).r;
     }
 
-    return spot_factor * (percentLit / 9);
+    return (percentLit / 9); // * spot_factor
 }
