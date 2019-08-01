@@ -131,6 +131,7 @@ void FBXFileLoader::createScene()
 	for (int i = 0; i < child_count; i++)
 		process_node(m_scene->GetRootNode()->GetChild(i));
 	
+	build_LODGroups();
 	build_GeoMeshes();
 
 	m_resourceManager->buildTexturePathList();	
@@ -147,8 +148,8 @@ void FBXFileLoader::build_GeoMeshes()
 	/*
 		The variant "One_RenderItem_For_One_Unique_Mesh"
 
-		We build one MeshGeometry (geoMesh), one RenderItem with this geoMesh for each unique Mesh.
-		geoMesh.Instances are used for instancing this mesh.
+		We build one MeshGeometry (Mesh), one RenderItem with this geoMesh for each unique Mesh.
+		Mesh.Instances are used for instancing this mesh.
 
 		It contains:
 			1) Build all unique geoMeshes and upload it on GPU (build_GeoMeshes())
@@ -156,6 +157,7 @@ void FBXFileLoader::build_GeoMeshes()
 			3) Update all renderItems with required instances data and move it up (process_NodeInstances()/build_RenderItems)
 	*/
 
+	//TO_DO: Check all .end()
 	auto mesh_it_begin = m_meshesByName.begin();
 	for (; mesh_it_begin != m_meshesByName.end(); mesh_it_begin++)
 	{
@@ -164,12 +166,108 @@ void FBXFileLoader::build_GeoMeshes()
 		fbx_Mesh* lMesh = mesh_it_begin->second.get();
 		lIsSkinnedMesh = lMesh->VertexWeightByBoneName.size() > 0;
 
-		if (lIsSkinnedMesh)
-			build_GeoMeshesWithTypedVertex<VertexExtGPU>(lMesh, true);
-		else
-			build_GeoMeshesWithTypedVertex<VertexGPU>(lMesh, false);
-		
+		if (lMesh->WasUploaded == false) // it can be uploaded by LODGroups uploader
+		{
+			if (lIsSkinnedMesh)
+				build_GeoMeshesWithTypedVertex<VertexExtGPU>(lMesh, true);
+			else
+				build_GeoMeshesWithTypedVertex<VertexGPU>(lMesh, false);
+		}
 	}
+}
+
+void FBXFileLoader::build_LODGroups()
+{
+	/*
+		The variant: "One_RenderItem_For_One_Unique_Mesh" in LOD way:
+			One RenderItem has three LOD meshes in LODGeometry[3] array
+
+		-We build three LOD MeshGeometries (Mesh), one RenderItem with these Meshes.		
+		-Mesh.Instances are used for instancing the first LOD mesh.
+
+		It contains:
+			1) Build all unique geoMeshes and upload it on GPU (build_GeoMeshes())
+			2) Build all materials with through numbering for all unique meshes and upload it on GPU. Here (process_NodeInstances/build_Materials()) : TO_DO: check it
+			3) Update all renderItems with required instances data and move it up (process_NodeInstances()/build_RenderItems)
+	*/
+		
+	auto grp_it_begin = m_LODGroupByName.begin();
+	auto grp_it_end= m_LODGroupByName.end();
+
+	for (; grp_it_begin != grp_it_end; grp_it_begin++)
+	{
+		string lRIName = grp_it_begin->second[0]->Name; // we use the first LOD0 mesh for naming of RenderItem for it
+
+		//Create RenderItem for these meshes	
+		m_RenderItems[lRIName] = std::make_unique<RenderItem>();
+		m_RenderItems[lRIName]->Name = m_sceneName + "_" + lRIName;
+		build_GeoMeshesLOD(grp_it_begin->second[0], 0, lRIName);
+		build_GeoMeshesLOD(grp_it_begin->second[1], 1, lRIName);
+		build_GeoMeshesLOD(grp_it_begin->second[2], 2, lRIName);
+	}
+}
+
+void FBXFileLoader::build_GeoMeshesLOD(fbx_Mesh* iMesh, int LODLevel, std::string& RIName)
+{
+	std::vector<VertexGPU> meshVertices;
+	std::vector<uint32_t> meshIndices;
+	VertexGPU vertex = {};
+
+	auto lgeoMesh = std::make_unique<Mesh>();
+
+	fbx_Mesh* lMesh = iMesh;
+	SubMesh submesh = {};
+
+	std::string lInnerRIName = lMesh->Name;
+	std::string lOuterRIName = m_sceneName + "_" + lInnerRIName;
+
+	lgeoMesh->Name = lInnerRIName;
+
+	meshVertices.resize(lMesh->Indices.size()); /* Vertices count = Indices count,
+												because if a Vertex can be the same for several faces, but this Vertex should
+												have different information for this faces like Normal, TangentUV*/
+	meshIndices.resize(lMesh->Indices.size());
+
+	for (int vi = 0; vi < lMesh->Indices.size(); vi++)
+	{
+		vertex = {};
+		vertex.Pos = lMesh->Vertices[lMesh->Indices[vi]];
+
+		if (lMesh->Normals.size())
+		{
+			XMVECTOR n = XMLoadFloat3(&lMesh->Normals[vi]);
+			//n = XMVector3Normalize(n);
+			XMStoreFloat3(&vertex.Normal, n);
+		}
+		if (lMesh->UVs.size())	vertex.UVText = lMesh->UVs[vi];
+		if (lMesh->Tangents.size()) vertex.TangentU = lMesh->Tangents[vi];
+
+		meshVertices[vi] = vertex;
+		meshIndices[vi] = vi;
+	}
+
+	lgeoMesh->IsSkinnedMesh = false; // LOD meshes are not skinned
+
+	submesh.IndexCount = meshVertices.size();
+	lgeoMesh->DrawArgs[lInnerRIName] = submesh;
+
+	RenderItem& lNewRI = *m_RenderItems[RIName].get();
+	BoundingBox::CreateFromPoints(lNewRI.AABB, lMesh->Vertices.size(), &lMesh->Vertices[0], sizeof(lMesh->Vertices[0]));	
+	lNewRI.Geometry = NULL;
+	lNewRI.LODGeometry[LODLevel] = lgeoMesh.get();
+
+	if (lMesh->VertexPerPolygon == 3 || lMesh->VertexPerPolygon == 4)
+		lNewRI.LODGeometry[LODLevel]->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	else
+		assert(0);
+
+	//upload geoMesh to GPU
+
+	Utilit3D::UploadMeshToDefaultBuffer<Mesh, VertexGPU, uint32_t>(lgeoMesh.get(), meshVertices, meshIndices);
+
+	//move geoMeshUp		
+	m_objectManager->addMesh(lOuterRIName, lgeoMesh);
+	iMesh->WasUploaded = true;
 }
 
 template<class T>
@@ -243,6 +341,7 @@ inline void FBXFileLoader::build_GeoMeshesWithTypedVertex(fbx_Mesh* iMesh, bool 
 
 	//move geoMeshUp		
 	m_objectManager->addMesh(lOuterRIName, lgeoMesh);
+	iMesh->WasUploaded = true;
 }
 
 inline void FBXFileLoader::addSkinnedInfoToVertex(VertexExtGPU& vertex, fbx_Mesh* iMesh, int vi)
@@ -559,7 +658,8 @@ void FBXFileLoader::add_InstanceToRenderItem(const fbx_NodeInstance& nodeRIInsta
 	if (ri_it != m_RenderItems.end()) // we should already have a RenderItem, we just should add new Instance to it
 	{
 		InstanceDataGPU lBaseInstance = {};
-		lBaseInstance.World = nodeRIInstance.LocalTransformation;
+		//lBaseInstance.World = nodeRIInstance.LocalTransformation;
+		lBaseInstance.World = nodeRIInstance.GlobalTransformation;
 
 		if (nodeRIInstance.Materials.size())
 			lBaseInstance.MaterialIndex = nodeRIInstance.Materials[0]->MatCBIndex;
@@ -591,17 +691,29 @@ void FBXFileLoader::move_RenderItems()
 	{
 		if (begin_it->second->Type == RenderItemType::RIT_Opaque)
 		{
-			if (begin_it->second->Geometry->IsSkinnedMesh)
-				m_objectManager->addSkinnedOpaqueObject(begin_it->second);
-			else
-				m_objectManager->addOpaqueObject(begin_it->second);
+			if (begin_it->second->Geometry != NULL) // this is not RI with LOD meshes
+			{
+				if (begin_it->second->Geometry->IsSkinnedMesh)
+				{
+					m_objectManager->addSkinnedOpaqueObject(begin_it->second);
+					continue;
+				}				
+			}
+
+			m_objectManager->addOpaqueObject(begin_it->second);
 		}
 		else if (begin_it->second->Type == RenderItemType::RIT_Transparent)
 		{
-			if (begin_it->second->Geometry->IsSkinnedMesh)
-				m_objectManager->addSkinnedNotOpaqueObject(begin_it->second);
-			else
-				m_objectManager->addTransparentObject(begin_it->second);
+			if (begin_it->second->Geometry != NULL) // this is not RI with LOD meshes
+			{
+				if (begin_it->second->Geometry->IsSkinnedMesh)
+				{
+					m_objectManager->addSkinnedNotOpaqueObject(begin_it->second);
+					continue;
+				}
+			}
+			
+			m_objectManager->addTransparentObject(begin_it->second);
 		}
 		else if (begin_it->second->Type == RenderItemType::RIT_GH)
 		{
@@ -645,134 +757,25 @@ void FBXFileLoader::convertFbxVector4ToFloat4(FbxVector4& fbxv, DirectX::XMFLOAT
 }
 
 // ---------------- FBX functions -----------------------------
-void FBXFileLoader::process_node(const FbxNode* pNode)
+void FBXFileLoader::process_node(const FbxNode* pNode)// , bool isLODMesh = false
 {
 	m_currentShiftLogCount++;
 	string nodeName = pNode->GetName();
 	m_logger->log("processing a node: " + nodeName, m_currentShiftLogCount);
-	const FbxNodeAttribute* pNodeAtrib = pNode->GetNodeAttribute();
-	int atribCount = pNode->GetNodeAttributeCount();
+	const FbxNodeAttribute* pNodeAtrib = pNode->GetNodeAttribute();	
 
-	fbx_NodeInstance newNodeInstance = {};
-	newNodeInstance.MeshName = pNodeAtrib->GetName();
-	newNodeInstance.Visible = pNode->GetVisibility();
-
-	FbxNode::EShadingMode lshadingMode = pNode->GetShadingMode();
+	fbx_NodeInstance newNodeInstance = {};	
+	newNodeInstance.Visible = pNode->GetVisibility();	
 
 	//Collect materials for this Node
-	{
-		fbx_Material lMaterial = {};
-		int mCount = pNode->GetMaterialCount();
-		for (int i = 0; i < mCount; i++)
-		{			
-			FbxSurfaceMaterial* materialSuface = pNode->GetMaterial(i);
-			lMaterial.Name = materialSuface->GetName();
-
-			m_logger->log("loading new material: " + lMaterial.Name, m_currentShiftLogCount);
-
-			if (m_materials.find(lMaterial.Name) == m_materials.end()) //if we do not have this material, lets add it
-			{
-				FbxSurfacePhong* lphongMaterial = NULL;
-				FbxSurfaceLambert* llambertMaterial = NULL;
-				if (materialSuface->ShadingModel.Get() == "Phong")
-				{
-					lphongMaterial = static_cast<FbxSurfacePhong*>(materialSuface);
-					
-					int difuseTextureCount = lphongMaterial->Diffuse.GetSrcObjectCount<FbxTexture>();
-					int specularTextureCount = lphongMaterial->Specular.GetSrcObjectCount<FbxTexture>();
-					int transparentTextureCount = lphongMaterial->TransparentColor.GetSrcObjectCount<FbxTexture>();
-					int ambientTextureCount = lphongMaterial->Ambient.GetSrcObjectCount<FbxTexture>();
-					int bumpTextureCount = lphongMaterial->Bump.GetSrcObjectCount<FbxTexture>();
-					int displTextureCount = lphongMaterial->DisplacementColor.GetSrcObjectCount<FbxTexture>();
-					int emmisiveTextureCount = lphongMaterial->Emissive.GetSrcObjectCount<FbxTexture>();
-					int reflectionTextureCount = lphongMaterial->Reflection.GetSrcObjectCount<FbxTexture>();
-					int vecotorDisplTextureCount = lphongMaterial->VectorDisplacementColor.GetSrcObjectCount<FbxTexture>();
-					int transparencyFactorTextureCount = lphongMaterial->TransparencyFactor.GetSrcObjectCount<FbxTexture>();
-					
-					//Check Custom Property
-					FbxProperty lcustomProperty = lphongMaterial->FindProperty("myCustomProperty");
-					if (lcustomProperty != NULL)
-					{						
-						int lValue = lcustomProperty.Get<int>();
-						if (lValue == 1)
-							lMaterial.IsWater = true;
-						else if (lValue == 2)
-							lMaterial.IsSky= true;
-					}
-
-					lMaterial.DoesIncludeToWorldBB = true;
-					lcustomProperty = lphongMaterial->FindProperty("myCustomProperty_IncludeToWorldBB");
-					if (lcustomProperty != NULL)
-					{
-						int lValue = lcustomProperty.Get<int>();
-						if (lValue == 0)
-							lMaterial.DoesIncludeToWorldBB = false;
-					}
-
-					// Get Diffuse data
-					{
-						FbxDouble* lData = lphongMaterial->Diffuse.Get().Buffer();
-						float f1 = lData[0];
-						float f2 = lData[1];
-						float f3 = lData[2];
-						float f4 = lphongMaterial->AmbientFactor;
-
-						lMaterial.DiffuseAlbedo = XMFLOAT4(f1, f2, f3, f4);
-						read_texture_data(&lMaterial, &lphongMaterial->Diffuse, "diffuse");
-					}
-					
-					// Get Specular data
-					{
-						FbxDouble* lData = lphongMaterial->Specular.Get().Buffer();
-						float f1 = lData[0];
-						float f2 = lData[1];
-						float f3 = lData[2];
-						float f4 = lphongMaterial->SpecularFactor;
-
-						lMaterial.Specular = XMFLOAT4(f1, f2, f3, f4);
-						read_texture_data(&lMaterial, &lphongMaterial->Specular, "specular");
-					}
-
-					// Get Normal data
-					{							
-						read_texture_data(&lMaterial, &lphongMaterial->NormalMap, "normal");
-					}
-
-					// Get Transparency data
-					{
-						/*WARNING we do not use Transparent factor now, only Transparency texture;*/
-						FbxDouble* lData = lphongMaterial->TransparentColor.Get().Buffer();
-						float f1 = lData[0];
-						float f2 = lData[1];
-						float f3 = lData[2];
-						float f4 = lphongMaterial->TransparencyFactor;
-						
-						lMaterial.IsTransparent = (f4 != 1.0f);
-						lMaterial.IsTransparent = ((f1 == f2 == f3) != 1.0f);
-						//lMaterial.IsTransparent = false;// we do not process Transparent factor now;
-
-						lMaterial.TransparencyColor = XMFLOAT4(f1, f2, f3, f4);
-						//read_texture_data(&lMaterial, &lphongMaterial->TransparentColor, "transparentC");						
-						if (read_texture_data(&lMaterial, &lphongMaterial->TransparencyFactor, "transparencyF"))
-							lMaterial.IsTransparencyUsed = true;
-					}					
-				}
-				else if (materialSuface->ShadingModel.Get() == "Lambert")
-					llambertMaterial = static_cast<FbxSurfaceLambert*>(materialSuface);
-
-				m_materials[lMaterial.Name] = lMaterial;
-			}
-
-			newNodeInstance.Materials.push_back(&m_materials[lMaterial.Name]);
-		}
-	}
+	process_node_getMaterial(pNode, newNodeInstance);
 
 	if (pNodeAtrib != NULL)
 	{
 		FbxNodeAttribute::EType type = pNodeAtrib->GetAttributeType();
 		switch (type)
 		{
-		case fbxsdk::FbxNodeAttribute::eUnknown:
+		case fbxsdk::FbxNodeAttribute::eUnknown:			
 			break;
 		case fbxsdk::FbxNodeAttribute::eNull:
 			//if it is NULL, it can be a "root" node for Skeleton, let's check it		
@@ -811,14 +814,13 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 				}				
 			}
 
-			process_mesh(pNodeAtrib, !lSimpleMesh);
+			newNodeInstance.MeshName = process_mesh(pNodeAtrib, !lSimpleMesh);
 					   
 			FbxNode* lNode2 = const_cast<FbxNode*>(pNode);
-			string name = lNode2->GetName();
-			FbxLODGroup* lLODFr = lNode2->GetLodGroup();
-
+			//string name = lNode2->GetName(); // TO_DO: delete it
+			
 			FbxAMatrix lGlobalTransform = lNode2->EvaluateGlobalTransform();
-			FbxAMatrix lLocalTransform = lNode2->EvaluateGlobalTransform();			
+			FbxAMatrix lLocalTransform = lNode2->EvaluateLocalTransform();			
 			
 			convertFbxMatrixToFloat4x4(lGlobalTransform, newNodeInstance.GlobalTransformation);
 			convertFbxMatrixToFloat4x4(lLocalTransform, newNodeInstance.LocalTransformation);
@@ -862,6 +864,9 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 		}
 			break;				
 		case fbxsdk::FbxNodeAttribute::eLODGroup:
+		{
+			process_node_LOD(pNode);
+		}
 			break;
 
 		default:
@@ -873,14 +878,222 @@ void FBXFileLoader::process_node(const FbxNode* pNode)
 	m_currentShiftLogCount--;
 }
 
-void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool meshForTesselation)
+void FBXFileLoader::process_node_LOD(const FbxNode* pNode)
+{
+	/*
+		Input:
+			(FbxNode* pNode) - LOD group with three LOD childs: LOD0, LOD1, LOD2
+
+		Output:
+		- only one Node_Instance for the first child LOD0. LOD1 and LOD2 no need Node instances
+		- Materials (only one actually) for the first child LOD0. LOD1 and LOD2 will 'use' materials for LOD0
+	*/
+
+	m_currentShiftLogCount++;
+	//FbxLODGroup* lLODFr = (const_cast<FbxNode*>(pNode))->GetLodGroup();
+	//int nodeCount = lLODFr->GetNodeCount();
+
+	assert(pNode->GetChildCount() == 3);
+
+	string nodeName = pNode->GetName();
+	m_logger->log("processing a node for LOD group: " + nodeName, m_currentShiftLogCount);
+	
+	bool lDoesGroupExist = (m_LODGroupByName.find(nodeName) != m_LODGroupByName.end());
+	assert(!lDoesGroupExist);
+
+	//vector<fbx_Mesh*> lLODGroup= m_LODGroupByName[nodeName]; // create new LOD Group
+	m_LODGroupByName[nodeName].resize(3);; // create new LOD Group with three child	
+	
+	const FbxNode* pChild = nullptr;
+
+	// The first child - LOD0
+	{
+		pChild = pNode->GetChild(0);
+		const FbxNodeAttribute* pNodeAtrib = pChild->GetNodeAttribute();
+
+		string childName = pChild->GetName();
+
+		fbx_NodeInstance newNodeInstance = {};
+		newNodeInstance.MeshName = pNodeAtrib->GetName(); 
+		newNodeInstance.Visible = pChild->GetVisibility();
+
+		//Collect materials for the first child
+		process_node_getMaterial(pChild, newNodeInstance);
+
+		if (pNodeAtrib != NULL)
+		{
+			FbxNodeAttribute::EType type = pNodeAtrib->GetAttributeType();
+			
+			assert(type == fbxsdk::FbxNodeAttribute::eMesh);
+			
+				newNodeInstance.MeshName  = process_mesh(pNodeAtrib, false, 0, &nodeName); // Name of the first Mesh = LOD group name
+				
+				FbxNode* lNode2 = const_cast<FbxNode*>(pNode);
+
+				FbxAMatrix lGlobalTransform = lNode2->EvaluateGlobalTransform();
+				FbxAMatrix lLocalTransform = lNode2->EvaluateLocalTransform();
+
+				convertFbxMatrixToFloat4x4(lGlobalTransform, newNodeInstance.GlobalTransformation);
+				convertFbxMatrixToFloat4x4(lLocalTransform, newNodeInstance.LocalTransformation);
+
+				newNodeInstance.Nodetype = NT_Mesh;						
+		}
+
+		m_NodeInstances.push_back(newNodeInstance);
+	}
+
+	// The second child - LOD1
+	{
+		pChild = pNode->GetChild(1);
+		const FbxNodeAttribute* pNodeAtrib = pChild->GetNodeAttribute();		
+
+		if (pNodeAtrib != NULL)
+		{
+			FbxNodeAttribute::EType type = pNodeAtrib->GetAttributeType();
+
+			assert(type == fbxsdk::FbxNodeAttribute::eMesh);
+
+			process_mesh(pNodeAtrib, false, 1, &nodeName); // LOD1			
+		}		
+	}
+
+	// The third child - LOD2
+	{
+		pChild = pNode->GetChild(2);
+		const FbxNodeAttribute* pNodeAtrib = pChild->GetNodeAttribute();
+
+		if (pNodeAtrib != NULL)
+		{
+			FbxNodeAttribute::EType type = pNodeAtrib->GetAttributeType();
+
+			assert(type == fbxsdk::FbxNodeAttribute::eMesh);
+
+			process_mesh(pNodeAtrib, false, 2, &nodeName); // LOD2			
+		}
+	}
+	
+	m_currentShiftLogCount--;
+}
+
+void FBXFileLoader::process_node_getMaterial(const FbxNode* pNode, fbx_NodeInstance& newNodeInstance)
+{
+
+	fbx_Material lMaterial = {};
+	int mCount = pNode->GetMaterialCount();
+	for (int i = 0; i < mCount; i++)
+	{
+		FbxSurfaceMaterial* materialSuface = pNode->GetMaterial(i);
+		lMaterial.Name = materialSuface->GetName();
+
+		m_logger->log("loading new material: " + lMaterial.Name, m_currentShiftLogCount);
+
+		if (m_materials.find(lMaterial.Name) == m_materials.end()) //if we do not have this material, lets add it
+		{
+			FbxSurfacePhong* lphongMaterial = NULL;
+			FbxSurfaceLambert* llambertMaterial = NULL;
+			if (materialSuface->ShadingModel.Get() == "Phong")
+			{
+				lphongMaterial = static_cast<FbxSurfacePhong*>(materialSuface);
+
+				//Check Custom Property
+				FbxProperty lcustomProperty = lphongMaterial->FindProperty("myCustomProperty");
+				if (lcustomProperty != NULL)
+				{
+					int lValue = lcustomProperty.Get<int>();
+					if (lValue == 1)
+						lMaterial.IsWater = true;
+					else if (lValue == 2)
+						lMaterial.IsSky = true;
+				}
+
+				lMaterial.DoesIncludeToWorldBB = true;
+				lcustomProperty = lphongMaterial->FindProperty("myCustomProperty_IncludeToWorldBB");
+				if (lcustomProperty != NULL)
+				{
+					int lValue = lcustomProperty.Get<int>();
+					if (lValue == 0)
+						lMaterial.DoesIncludeToWorldBB = false;
+				}
+
+				// Get Diffuse data
+				{
+					FbxDouble* lData = lphongMaterial->Diffuse.Get().Buffer();
+					float f1 = lData[0];
+					float f2 = lData[1];
+					float f3 = lData[2];
+					float f4 = lphongMaterial->AmbientFactor;
+
+					lMaterial.DiffuseAlbedo = XMFLOAT4(f1, f2, f3, f4);
+					read_texture_data(&lMaterial, &lphongMaterial->Diffuse, "diffuse");
+				}
+
+				// Get Specular data
+				{
+					FbxDouble* lData = lphongMaterial->Specular.Get().Buffer();
+					float f1 = lData[0];
+					float f2 = lData[1];
+					float f3 = lData[2];
+					float f4 = lphongMaterial->SpecularFactor;
+
+					lMaterial.Specular = XMFLOAT4(f1, f2, f3, f4);
+					read_texture_data(&lMaterial, &lphongMaterial->Specular, "specular");
+				}
+
+				// Get Normal data
+				{
+					read_texture_data(&lMaterial, &lphongMaterial->NormalMap, "normal");
+				}
+
+				// Get Transparency data
+				{
+					/*WARNING we do not use Transparent factor now, only Transparency texture;*/
+					FbxDouble* lData = lphongMaterial->TransparentColor.Get().Buffer();
+					float f1 = lData[0];
+					float f2 = lData[1];
+					float f3 = lData[2];
+					float f4 = lphongMaterial->TransparencyFactor;
+
+					lMaterial.IsTransparent = (f4 != 1.0f);
+					lMaterial.IsTransparent = ((f1 == f2 == f3) != 1.0f);
+					//lMaterial.IsTransparent = false;// we do not process Transparent factor now;
+
+					lMaterial.TransparencyColor = XMFLOAT4(f1, f2, f3, f4);
+					//read_texture_data(&lMaterial, &lphongMaterial->TransparentColor, "transparentC");						
+					if (read_texture_data(&lMaterial, &lphongMaterial->TransparencyFactor, "transparencyF"))
+						lMaterial.IsTransparencyUsed = true;
+				}
+			}
+			else if (materialSuface->ShadingModel.Get() == "Lambert")
+				llambertMaterial = static_cast<FbxSurfaceLambert*>(materialSuface);
+
+			m_materials[lMaterial.Name] = lMaterial;
+		}
+
+		newNodeInstance.Materials.push_back(&m_materials[lMaterial.Name]);
+	}
+}
+
+string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool meshForTesselation, 
+	int LOD_level, std::string* groupName)
 {
 	const FbxMesh* lpcMesh = static_cast<const FbxMesh*>(pNodeAtribute);
 	FbxMesh* lpMesh = const_cast<FbxMesh*>(lpcMesh);
 
-	string name = lpcMesh->GetName();
-		
-	if (m_meshesByName.find(name) != m_meshesByName.end()) return;
+	string name = lpcMesh->GetName();		
+
+	FbxNode* lParentNode = pNodeAtribute->GetNode();	
+	
+	FbxProperty lcustomProperty = lParentNode->FindProperty("LODParentMesh");
+	if (lcustomProperty != NULL)
+	{
+		FbxString lValue = lcustomProperty.Get<FbxString>();
+		string value(lValue.Buffer());
+		return value; // we do not need process mesh for "Instances" anyway, only for meshes from LOD group
+	}
+	if (LOD_level == 0)
+		name = *groupName; // for the first mesh from LOD group we use name of this group, because Blender can change name for mesh, we cannot trust it
+
+	if (m_meshesByName.find(name) != m_meshesByName.end()) return name;
 
 	FbxVector4* vertexData = lpcMesh->GetControlPoints();
 	int vertex_count = lpcMesh->GetControlPointsCount();//get count unique vertices	
@@ -888,7 +1101,7 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool mes
 	
 	auto lmesh = std::make_unique<fbx_Mesh>();
 	lmesh->Name = name;
-
+	lmesh->WasUploaded = false;
 	// Copy All Vertices
 	for (int i = 0; i < vertex_count; i++, vertexData++)
 		lmesh->Vertices.push_back(XMFLOAT3(vertexData->mData[0], vertexData->mData[1], vertexData->mData[2]));
@@ -1106,21 +1319,21 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool mes
 	}
 
 	// get Material ID for mesh/polygons
-	{
-		int count = lpcMesh->GetElementMaterialCount(); //just to know. now we will use the 0 material;
-		const FbxLayerElementMaterial* materialLayer = lpcMesh->GetElementMaterial();
-		FbxGeometryElement::EMappingMode mappingMode = materialLayer->GetMappingMode();
+	//{
+	//	int count = lpcMesh->GetElementMaterialCount(); //just to know. now we will use the 0 material;
+	//	const FbxLayerElementMaterial* materialLayer = lpcMesh->GetElementMaterial();
+	//	FbxGeometryElement::EMappingMode mappingMode = materialLayer->GetMappingMode();
 
-		if (mappingMode == FbxGeometryElement::EMappingMode::eAllSame) // the same Material is used for all mesh
-		{
-			lmesh->Materials.push_back(materialLayer->GetIndexArray()[0]);
-		}
-		else if (mappingMode == FbxGeometryElement::EMappingMode::eByPolygon) // each polygon can have own material
-		{
-			bool MaterialByPolygonIsUsed = false;
-			assert(MaterialByPolygonIsUsed); // to catch when we have this variant
-		}
-	}	
+	//	if (mappingMode == FbxGeometryElement::EMappingMode::eAllSame) // the same Material is used for all mesh
+	//	{
+	//		lmesh->Materials.push_back(materialLayer->GetIndexArray()[0]);
+	//	}
+	//	else if (mappingMode == FbxGeometryElement::EMappingMode::eByPolygon) // each polygon can have own material
+	//	{
+	//		bool MaterialByPolygonIsUsed = false;
+	//		assert(MaterialByPolygonIsUsed); // to catch when we have this variant
+	//	}
+	//}	
 
 	// get Skin Data
 	// If Bone X uses vertex Y with weight W, we will map it with VertexWeightByBoneID[Y]=pair{X, W}	
@@ -1168,6 +1381,12 @@ void FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool mes
 
 	// add mesh
 	m_meshesByName[name] = std::move(lmesh);
+
+	// This mesh can be LOD-mesh, if it is, let's add it to LOD group
+	if (LOD_level != -1)	
+		m_LODGroupByName[*groupName][LOD_level] = m_meshesByName[name].get();
+
+	return name;
 }
 
 void FBXFileLoader::process_camera(const FbxNodeAttribute* pNodeAtribute, FbxNode* pNode)

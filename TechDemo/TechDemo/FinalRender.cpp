@@ -140,30 +140,44 @@ void FinalRender::draw(int flags)
 			//int lInstanceOffset = m_scene->getLayerInstanceOffset(i); // How many Instances were on prev layers
 
 			for (int ri = 0; ri < lObjectLayer->getSceneObjectCount(); ri++) // One layer has several RenderItems
-			{
-				
-				
-				const RenderItem* lMesh = lObjectLayer->getSceneObject(ri)->getObjectMesh();				
-				int lInstancesCount = lObjectLayer->getSceneObject(ri)->getDrawInstancesIDCount(); // How much instances for this RenderItem we should draw
+			{		
+				Scene::SceneLayer::SceneLayerObject* lSceneObject = lObjectLayer->getSceneObject(ri);
+							   				
+				int lInstancesCount = lSceneObject->getInstancesCountLOD(); // How much instances for this RenderItem we should draw
 				if (lInstancesCount == 0) continue;
-				auto drawArg = lMesh->Geometry->DrawArgs[lMesh->Geometry->Name];
-								
-				m_cmdList->IASetVertexBuffers(0, 1, &lMesh->Geometry->vertexBufferView());
-				m_cmdList->IASetIndexBuffer(&lMesh->Geometry->indexBufferView());
 				
+				const RenderItem* lRI= lSceneObject->getObjectMesh();
 				
-				if (drawArg.IndexCount == 70296)
-					m_cmdList->SetGraphicsRoot32BitConstant(0, 1, 0); // Instances offset for current layer objects
-				else
+				for (int lod_id = 0; lod_id < LODCOUNT; lod_id++)
+				{					
+
+					UINT lInstanceCountByLODLevel = lSceneObject->getInstancesCountLOD_byLevel(lod_id);
+					if (lInstanceCountByLODLevel == 0) continue;
+
+					Mesh* lMesh = lRI->LODGeometry[lod_id];
+
+					if (lMesh == NULL)
+					{
+						lMesh = lRI->Geometry; // we do not have LOD meshes for this RI
+						lod_id = LODCOUNT; // so lets draw it only once
+					}
+
+					auto drawArg = lMesh->DrawArgs[lMesh->Name];
+					 
+					m_cmdList->IASetVertexBuffers(0, 1, &lMesh->vertexBufferView());
+					m_cmdList->IASetIndexBuffer(&lMesh->indexBufferView());
+
 					m_cmdList->SetGraphicsRoot32BitConstant(0, lInstanceOffset, 0); // Instances offset for current layer objects
 
-				if (i!=5)
-				m_cmdList->IASetPrimitiveTopology(lMesh->Geometry->PrimitiveType);
-				else
-					m_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
-					
-				m_cmdList->DrawIndexedInstanced(drawArg.IndexCount, lInstancesCount, drawArg.StartIndexLocation, 0, 0);
-				lInstanceOffset += lInstancesCount;
+					if (i != 5)
+						m_cmdList->IASetPrimitiveTopology(lMesh->PrimitiveType);
+					else
+						m_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
+
+					m_cmdList->DrawIndexedInstanced(drawArg.IndexCount, lInstanceCountByLODLevel, drawArg.StartIndexLocation, 0, 0);
+
+					lInstanceOffset += lInstanceCountByLODLevel;
+				}
 			}
 		}
 	}

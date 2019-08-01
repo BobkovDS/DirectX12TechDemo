@@ -26,6 +26,7 @@ void ResourceManager::addMaterial(std::unique_ptr<MaterialCPU>& material)
 
 void ResourceManager::loadMaterials()
 {
+	assert(m_materials.size() != 0);
 	vector<MaterialConstantsGPU> materialsGPU;
 	MaterialCPU df;
 	for (size_t i = 0; i < m_materials.size(); i++)

@@ -161,7 +161,7 @@ void TechDemo::init3D()
 	{
 		FBXFileLoader m_fbx_loader;
 		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
-		m_fbx_loader.loadSceneFile("Models\\The Scene2.fbx");		
+		m_fbx_loader.loadSceneFile("Models\\The SceneD.fbx");		
 	}	
 
 	// Load lights
@@ -318,7 +318,7 @@ void TechDemo::update_objectCB()
 	auto currDrawCBObject = m_frameResourceManager.currentFR()->getDrawInstancesCB();
 
 	for (int i=0; i< lInstances.size(); i++)
-		currCBObject->CopyData(i, *lInstances[i]);	
+		currCBObject->CopyData(i, *lInstances[i]);		
 
 	currDrawCBObject->CopyData(0, lDrawInstancesID.size(), lDrawInstancesID.data());
 

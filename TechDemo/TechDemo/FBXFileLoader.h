@@ -21,7 +21,8 @@ struct fbx_Mesh {
 	std::vector<DirectX::XMFLOAT3> Tangents;
 	std::vector<DirectX::XMFLOAT2> UVs;
 	std::vector<INT32> Indices;
-	std::vector<INT32> Materials;
+	bool WasUploaded;
+	//std::vector<INT32> Materials; //TO_DO: Delete it
 	int VertexPerPolygon;
 };
 
@@ -82,6 +83,7 @@ private:
 
 	std::string m_sceneName;
 	std::map<std::string, std::unique_ptr<fbx_Mesh>> m_meshesByName;
+	std::map<std::string, std::vector<fbx_Mesh*>> m_LODGroupByName;
 	std::map<std::string, std::unique_ptr<RenderItem>> m_RenderItems;
 	std::vector<fbx_NodeInstance> m_NodeInstances;
 	std::map<std::string, fbx_Material> m_materials; //all materials for all nodes in one place
@@ -99,6 +101,8 @@ private:
 
 	void createScene();
 	void build_GeoMeshes();
+	void build_LODGroups();
+	void build_GeoMeshesLOD(fbx_Mesh* iMesh, int LODLevel, std::string& RIName);
 	void build_Materials(std::string& pMaterialName);	
 	void build_Animation();	
 	void build_Skeleton();
@@ -118,7 +122,12 @@ private:
 
 	// FBX process functions
 	void process_node(const FbxNode* pNode);
-	void process_mesh(const FbxNodeAttribute* pNodeAtribute, bool meshForTesselation=false);
+	void process_node_LOD(const FbxNode* pNode);
+
+	void process_node_getMaterial(const FbxNode* pNode, fbx_NodeInstance& newNodeInstance);
+	std::string process_mesh(const FbxNodeAttribute* pNodeAtribute, bool meshForTesselation=false,
+		int LOD_level=-1, std::string* groupName=NULL);
+
 	void process_camera(const FbxNodeAttribute* pNodeAtribute, FbxNode* pNode);
 	void process_light(const FbxNodeAttribute* pNodeAtribute, FbxNode* pNode);
 	bool read_texture_data(fbx_Material* destMaterial, FbxProperty* matProperty, std::string textureType); //FbxSurfacePhong* srcMaterial,

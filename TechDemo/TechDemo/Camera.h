@@ -133,3 +133,15 @@ public:
 	void setLens(float p1, float p2, float p3, float p4);
 	void setLens(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents);
 };
+
+// ----- Inline Functions -------
+
+inline DirectX::XMVECTOR Camera::getPosition() const
+{
+	return XMLoadFloat3(&m_position);
+}
+
+inline DirectX::XMVECTOR Camera::getLook() const
+{
+	return DirectX::XMLoadFloat3(&m_look);
+}

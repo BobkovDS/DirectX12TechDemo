@@ -206,11 +206,6 @@ void Camera::transform(XMFLOAT4X4& transformM)
 	lookTo(lPos, lLook, XMVectorSet(0.0f, 1.0f, 0.0, 0.0f));
 }
 
-inline XMVECTOR Camera::getPosition() const
-{
-	return XMLoadFloat3(&m_position);
-}
-
 const DirectX::XMFLOAT3& Camera::getPosition3f()
 {
 	return m_position;
@@ -243,11 +238,6 @@ inline XMVECTOR Camera::getUp() const
 const XMFLOAT3& Camera::getUp3f()
 {
 	return m_up;
-}
-
-inline XMVECTOR Camera::getLook() const
-{
-	return XMLoadFloat3(&m_look);
 }
 
 const XMFLOAT3& Camera::getLook3f()

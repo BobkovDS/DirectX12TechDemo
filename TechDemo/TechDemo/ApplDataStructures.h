@@ -27,8 +27,11 @@ struct RenderItem {
 	RenderItemType Type;
 	DirectX::BoundingBox AABB;
 	Mesh* Geometry = nullptr;
+	Mesh* LODGeometry[3]; // we have only three LOD for object
 	std::vector<InstanceDataGPU> Instances;
 	std::vector<UINT> InstancesID; // it is updated everytimes by Scene Octree to identify which Instances need to copy on GPU
+	std::vector<std::pair<UINT, UINT>> InstancesID_LOD; // it is updated everytimes by Scene Selector to identify which Instances need to copy on GPU and with which LOD
+	UINT InstancesID_LOD_size;
 };
 
 struct MaterialCPU
