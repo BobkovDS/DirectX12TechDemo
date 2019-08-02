@@ -11,7 +11,7 @@ Scene::Scene()
 	m_doesItNeedUpdate = true;
 	m_firstBB = true;
 	m_octreeCullingMode = false;
-	m_selector.initialize(4, 9);
+	m_selector.initialize(20, 80);
 }
 
 Scene::~Scene()
@@ -42,17 +42,14 @@ int Scene::getLayerInstanceOffset(UINT layerCount)
 	return offset;
 }
 
-std::vector<const InstanceDataGPU*>& Scene::getInstancesUpdate()
+std::vector<const InstanceDataGPU*>& Scene::getInstancesUpdate(UINT& instancesCount)
 {
-	m_tmp_Intances.clear();
-	m_tmp_drawInstancesID.clear(); // TO_DO: delete
-
 	for (int i = 0; i < m_Layers.size(); i++)	
 		if (m_Layers[i].isLayerVisible()) // Copy Intances data only for visible layers
 		{
 			//UINT lInstancesPerLayerCount = m_tmp_Intances.size();
 			//m_Layers[i].getInstances(m_tmp_Intances, m_tmp_drawInstancesID, lInstancesPerLayerCount);
-			m_Layers[i].getInstances(m_tmp_Intances);
+			m_Layers[i].getInstances(m_tmp_Intances, instancesCount);
 		}	
 	m_instancesDataReadTimes--;
 
@@ -115,20 +112,33 @@ void Scene::createBoungingInfo()
 	BoundingSphere::CreateFromBoundingBox(m_sceneBSShadow, m_sceneBBShadow);// Create Bounding Sphere for Scene where will used Shadowing (without Land and Water)
 }
 
-void Scene::addOctreeInformation(const std::vector<std::unique_ptr<RenderItem>>& arrayRI, vector<BoundingBoxEXT*>& lLayerBBList)
+void Scene::addOctreeInformation(const std::vector<std::unique_ptr<RenderItem>>& arrayRI, vector<BoundingBoxEXT*>& lLayerBBList,
+	std::vector<BoundingBoxEXT*>& lLayerBBListExcludedFromCulling)
 {	
-	// get All RenderItems/Instances for current SceneLayer
+	/* 
+		Get All RenderItems/Instances for current SceneLayer. We divide RenderItems to list:
+		- Which should in Frustom Culling (and added to Octree or Selector)
+		- Which should not be Frustom Culling (for the Sky and the Land)
+	*/
+
 	for (int ri = 0; ri < arrayRI.size(); ri++)
 	{
-		for (int i = 0; i < arrayRI[ri]->Instances.size(); i++)
-		{
+		RenderItem* lRI = arrayRI[ri].get();
+		int lInstanceCount = lRI->Instances.size();
+
+		for (int i = 0; i < lInstanceCount; i++)
+		{			
 			BoundingBox ltBB;
-			XMMATRIX lWorld = XMLoadFloat4x4(&arrayRI[ri]->Instances[i].World);
-			arrayRI[ri]->AABB.Transform(ltBB, lWorld);
+			XMMATRIX lWorld = XMLoadFloat4x4(&lRI->Instances[i].World);
+			lRI->AABB.Transform(ltBB, lWorld);
 			BoundingBoxEXT* lBBExt = new BoundingBoxEXT(ltBB);
-			lBBExt->pRenderItem = arrayRI[ri].get();
+			lBBExt->pRenderItem = lRI;
 			lBBExt->Inst_ID = i;
-			lLayerBBList.push_back(lBBExt);
+			
+			if (lRI->ExcludeFromCulling)
+				lLayerBBListExcludedFromCulling.push_back(lBBExt); // for list we do not need BB actually, but we need RI_id and Instance_ID, so just use BB for generallization
+			else
+				lLayerBBList.push_back(lBBExt);
 		}
 	}
 }
@@ -141,18 +151,18 @@ void Scene::buildOctree()
 
 	vector<BoundingBoxEXT*>& lLayerBBList = m_layerBBList; // TO_DO: change, temporary solution
 
-	addOctreeInformation(m_objectManager->getOpaqueLayer(), lLayerBBList);
-	addOctreeInformation(m_objectManager->getNotOpaqueLayer(), lLayerBBList);
-	addOctreeInformation(m_objectManager->getSkinnedOpaqueLayer(), lLayerBBList);
-	addOctreeInformation(m_objectManager->getSkinnedNotOpaqueLayer(), lLayerBBList);
-	addOctreeInformation(m_objectManager->getNotOpaqueLayerGH(), lLayerBBList);
+	addOctreeInformation(m_objectManager->getSky(), lLayerBBList, m_layerBBListExcludedFromCulling);
+	addOctreeInformation(m_objectManager->getOpaqueLayer(), lLayerBBList, m_layerBBListExcludedFromCulling);
+	addOctreeInformation(m_objectManager->getNotOpaqueLayer(), lLayerBBList, m_layerBBListExcludedFromCulling);
+	addOctreeInformation(m_objectManager->getSkinnedOpaqueLayer(), lLayerBBList, m_layerBBListExcludedFromCulling);
+	addOctreeInformation(m_objectManager->getSkinnedNotOpaqueLayer(), lLayerBBList, m_layerBBListExcludedFromCulling);
+	addOctreeInformation(m_objectManager->getNotOpaqueLayerGH(), lLayerBBList, m_layerBBListExcludedFromCulling);
 
 	if (lLayerBBList.size() == 0) return;
 
 	m_octree->addBBList(lLayerBBList);
 	m_octree->build();
-	int lBBcount = m_octree->getBBCount();
-	int a = 10;
+	int lBBcount = m_octree->getBBCount();	
 }
 
 void Scene::InitLayers()
@@ -163,6 +173,11 @@ void Scene::InitLayers()
 	m_Layers[3].init(m_objectManager->getSkinnedOpaqueLayer());
 	m_Layers[4].init(m_objectManager->getSkinnedNotOpaqueLayer());
 	m_Layers[5].init(m_objectManager->getNotOpaqueLayerGH());
+
+	UINT lAllInstancesCount = 0;
+	for (int i = 0; i < m_Layers.size(); i++)
+		lAllInstancesCount += m_Layers[i].getLayerInstancesCount();
+	m_tmp_Intances.resize(lAllInstancesCount);
 }
 
 void Scene::update()
@@ -185,26 +200,35 @@ void Scene::update()
 	else
 	{
 		// Selector
-		/*m_selector.setBBList(m_layerBBList);
+
+		m_Layers[0].update();
+		m_Layers[1].update();
+		m_Layers[2].update();
+		m_Layers[3].update();
+		m_Layers[4].update();
+		m_Layers[5].update();
+
+		m_selector.setBBList(m_layerBBList);
 		m_selector.set_selector_position(m_camera->getPosition3f());
 		m_selector.set_selector_direction(m_camera->getLook());
 		m_selector.set_coinAngle(35);
-		m_selector.update();*/
+		m_selector.update();
 		
-		float lAngle = 45;
+	/*	float lAngle = 45;
 		m_octree->selector.LOD0_distance = 20;
 		m_octree->selector.LOD1_distance = 80;
 		m_octree->selector.ConeCosA = cos(lAngle * XM_PI / 180);
 		m_octree->selector.SelectorPostition = m_camera->getPosition();
 		m_octree->selector.SelectorDirection = m_camera->getLook();
 		int lBBcount = m_octree->getBBCount();
-		m_octree->update();
-		updateLayer(m_Layers[0], m_objectManager->getSky(), false);
+		m_octree->update();*/
+		
+		/*updateLayer(m_Layers[0], m_objectManager->getSky(), false);
 		m_Layers[1].update(m_objectManager->getOpaqueLayer(), true);
 		m_Layers[2].update(m_objectManager->getNotOpaqueLayer(), true);
 		m_Layers[3].update(m_objectManager->getSkinnedOpaqueLayer(), true);
 		m_Layers[4].update(m_objectManager->getSkinnedNotOpaqueLayer(), true);
-		m_Layers[5].update(m_objectManager->getNotOpaqueLayerGH(), true);
+		m_Layers[5].update(m_objectManager->getNotOpaqueLayerGH(), true);*/
 	}
 
 	m_instancesDataReadTimes = FRAMERESOURCECOUNT;
@@ -433,9 +457,13 @@ void Scene::SceneLayer::setVisibility(bool b)
 	m_visible = b;
 }
 
-int Scene::SceneLayer::getLayerInstancesCount()
+UINT Scene::SceneLayer::getLayerInstancesCount()
 {
-	return 0;// test
+	UINT lInstancesCount = 0;
+	for (int i = 0; i < m_objects.size(); i++)
+		lInstancesCount += m_objects[i].getInstancesCount();
+
+	return lInstancesCount;
 }
 
 void Scene::SceneLayer::getInstances(std::vector<const InstanceDataGPU*>& out_Instances, 
@@ -445,10 +473,10 @@ void Scene::SceneLayer::getInstances(std::vector<const InstanceDataGPU*>& out_In
 		m_objects[i].getInstances(out_Instances, out_DrawInstancesID, InstancesPerPrevLayer);
 }
 
-void Scene::SceneLayer::getInstances(std::vector<const InstanceDataGPU*>& out_Instances)
+void Scene::SceneLayer::getInstances(std::vector<const InstanceDataGPU*>& out_Instances, UINT& intancesCount)
 {
 	for (int i = 0; i < m_objects.size(); i++)
-		m_objects[i].getInstances(out_Instances);
+		m_objects[i].getInstances(out_Instances, intancesCount);
 }
 
 int Scene::SceneLayer::getSceneObjectCount()
@@ -467,6 +495,15 @@ Scene::SceneLayer::SceneLayerObject* Scene::SceneLayer::getSceneObject(UINT scen
 		return &m_objects[sceneObjectIndex];
 	else
 		return nullptr;
+}
+
+void Scene::SceneLayer::update()
+{
+	clearLayer();
+
+	//Copy Instances which should not be in Frustum Culling
+	for (int i = 0; i < m_objects.size(); i++)
+		m_objects[i].copyInstancesWithoutFC();
 }
 
 void Scene::SceneLayer::update(const std::vector<std::unique_ptr<RenderItem>>& arrayRI)
@@ -512,20 +549,20 @@ void Scene::SceneLayer::update(const std::vector<std::unique_ptr<RenderItem>>& a
 		
 	clearLayer();
 
-	for (int ri = 0; ri < arrayRI.size(); ri++)
-	{
-		SceneLayer::SceneLayerObject& lSceneObject = m_objects[ri];
-		RenderItem* lRI = arrayRI[ri].get();
-						
-		for (int i = 0; i < lRI->InstancesID_LOD_size; i++)
-		{
-			auto lID_LOD = lRI->InstancesID_LOD[i];
-			
-			lSceneObject.addInstance(&lRI->Instances[lID_LOD.first], lID_LOD.second);
-		}
+	//for (int ri = 0; ri < arrayRI.size(); ri++)
+	//{
+	//	SceneLayer::SceneLayerObject& lSceneObject = m_objects[ri];
+	//	RenderItem* lRI = arrayRI[ri].get();
+	//					
+	//	for (int i = 0; i < lRI->InstancesID_LOD_size; i++)
+	//	{
+	//		auto lID_LOD = lRI->InstancesID_LOD[i];
+	//		
+	//		lSceneObject.addInstance(&lRI->Instances[lID_LOD.first], lID_LOD.second);
+	//	}
 
-		lRI->InstancesID_LOD_size = 0;
-	}
+	//	lRI->InstancesID_LOD_size = 0;
+	//}
 }
 
 // ================================================================ [Scene::SceneLayer::SceneLayerObject] =============
@@ -533,7 +570,7 @@ void Scene::SceneLayer::update(const std::vector<std::unique_ptr<RenderItem>>& a
 //{	
 //}
 
-void Scene::SceneLayer::SceneLayerObject::setObjectMesh(const RenderItem* objectMesh)
+void Scene::SceneLayer::SceneLayerObject::setObjectMesh(RenderItem* objectMesh)
 {
 	m_mesh = objectMesh;
 }
@@ -545,8 +582,8 @@ void Scene::SceneLayer::SceneLayerObject::clearInstances()
 
 void Scene::SceneLayer::SceneLayerObject::clearInstancesLODSize()
 {
-	for (int i = 0; i < LODCOUNT; i++)
-		m_instancesLODArraySize[i] = 0;
+	for (int i = 0; i < RI_LOD_COUNT; i++)
+		m_mesh->InstancesID_LOD_size[i] = 0;
 }
 
 void Scene::SceneLayer::SceneLayerObject::init(RenderItem* RI)
@@ -556,7 +593,8 @@ void Scene::SceneLayer::SceneLayerObject::init(RenderItem* RI)
 
 	
 	UINT lInstancesCount = RI->Instances.size();
-	RI->InstancesID_LOD.resize(lInstancesCount);
+	for (int i = 0; i < RI_LOD_COUNT; i++)
+		RI->InstancesID_LOD[i].resize(lInstancesCount);	
 
 	// Init data for storing Instances information
 	{
@@ -580,11 +618,19 @@ void Scene::SceneLayer::SceneLayerObject::addInstance(const InstanceDataGPU* ins
 	m_instancesLOD[LodID][m_instancesLODArraySize[LodID]++] = instance;
 }
 
+void Scene::SceneLayer::SceneLayerObject::copyInstancesWithoutFC()
+{
+	if (m_mesh->ExcludeFromCulling)
+		for (int i = 0; i < m_mesh->Instances.size(); i++)
+			m_mesh->InstancesID_LOD[0][m_mesh->InstancesID_LOD_size[0]++] = i;
+}
+
+
 inline UINT Scene::SceneLayer::SceneLayerObject::getInstancesCountLOD()
 {
 	UINT result =0;
-	for (int i = 0; i < LODCOUNT; i++)
-		result += m_instancesLODArraySize[i];
+	for (int i = 0; i < RI_LOD_COUNT; i++)
+		result += m_mesh->InstancesID_LOD_size[i];
 	return result;
 }
 
@@ -604,18 +650,20 @@ void Scene::SceneLayer::SceneLayerObject::getInstances(std::vector<const Instanc
 		out_DrawInstancesID[lPrevSizeDrawID + i] = m_drawInstancesID[i] + InstancesPerPrevLayer;
 }
 
-void Scene::SceneLayer::SceneLayerObject::getInstances(std::vector<const InstanceDataGPU*>& out_Instances)
+void Scene::SceneLayer::SceneLayerObject::getInstances(std::vector<const InstanceDataGPU*>& out_Instances, UINT& instancesCount)
 {
-	int lPrevSize = out_Instances.size();
-	int lAddInstancesCount = getInstancesCountLOD();
+/*
+	if (m_mesh->ExcludeFromCulling)
+	{
+		for (int i=0; i<m_mesh->Instances.size(); i++)
+			out_Instances[instancesCount++] = &m_mesh->Instances[m_mesh->InstancesID_LOD[lod_id][i]];
+	}
+	else
+	{*/
+		if (getInstancesCountLOD() == 0) return;	
 
-	if (lAddInstancesCount == 0) return;
-
-	out_Instances.resize(lPrevSize + lAddInstancesCount);
-	
-	int lOffset = lPrevSize;
-
-	for (int lod_id = 0; lod_id < LODCOUNT; lod_id++) // How many LOD level we have	
-		for (int i = 0; i < m_instancesLODArraySize[lod_id]; i++) // How many this LOD level has Objects for this SceneLayerObject
-			out_Instances[lOffset++] = m_instancesLOD[lod_id][i];	
+		for (int lod_id = 0; lod_id < LODCOUNT; lod_id++) // How many LOD level we have
+			for (int i = 0; i < m_mesh->InstancesID_LOD_size[lod_id]; i++) // How many this LOD level has Objects for this SceneLayerObject
+				out_Instances[instancesCount++] = &m_mesh->Instances[m_mesh->InstancesID_LOD[lod_id][i]];
+	//}
 }

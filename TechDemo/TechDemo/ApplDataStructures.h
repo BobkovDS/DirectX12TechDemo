@@ -5,6 +5,7 @@
 
 #define MAX_FRAMERESOURCE_COUNT 3
 #define TEXTURESCOUNT 6
+#define RI_LOD_COUNT 3
 enum RenderItemType {
 	RIT_Opaque = 'opaq', 
 	RIT_Transparent = 'tran',
@@ -24,14 +25,16 @@ struct RenderItem {
 	std::string Name;
 	bool Visable;
 	bool isNotIncludeInWorldBB; //Does Not include this RI to World BoundingBox? (false = to include)
+	bool ExcludeFromCulling;
 	RenderItemType Type;
 	DirectX::BoundingBox AABB;
 	Mesh* Geometry = nullptr;
-	Mesh* LODGeometry[3]; // we have only three LOD for object
+	Mesh* LODGeometry[RI_LOD_COUNT]; // we have only three LOD for object
 	std::vector<InstanceDataGPU> Instances;
 	std::vector<UINT> InstancesID; // it is updated everytimes by Scene Octree to identify which Instances need to copy on GPU
-	std::vector<std::pair<UINT, UINT>> InstancesID_LOD; // it is updated everytimes by Scene Selector to identify which Instances need to copy on GPU and with which LOD
-	UINT InstancesID_LOD_size;
+	std::vector<UINT> InstancesID_LOD[RI_LOD_COUNT]; // it is updated everytimes by Scene Selector to identify which Instances need to copy on GPU and with which LOD
+	UINT InstancesID_LOD_size[RI_LOD_COUNT]; // sizes for InstancesID_LOD 
+	
 };
 
 struct MaterialCPU

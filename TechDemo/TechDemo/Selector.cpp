@@ -20,7 +20,7 @@ void Selector::update()
 	XMVECTOR lSelectorPosition = XMLoadFloat3(&m_selectorPostition);
 	XMVECTOR lSelectorDirection = XMLoadFloat3(&m_selectorDirection);
 
-	std::vector<BoundingBoxEXT*>& ListOfBB = *m_listOfBB;
+	std::vector<BoundingBoxEXT*>& ListOfBB = *m_listOfBB;	
 
 	assert(m_listOfBB != NULL);
 	for (int i=0; i<m_listOfBB->size(); i++)
@@ -54,8 +54,10 @@ void Selector::update()
 					lID_LOD.second = 1;
 			}
 
-			lID_LOD.first = ListOfBB[i]->Inst_ID;						
-			lInstBB->pRenderItem->InstancesID_LOD[lInstBB->pRenderItem->InstancesID_LOD_size++] =lID_LOD; // add InstanceID and LOD
+			lID_LOD.first = ListOfBB[i]->Inst_ID;
+			
+			lInstBB->pRenderItem->InstancesID_LOD[lID_LOD.second][lInstBB->pRenderItem->InstancesID_LOD_size[lID_LOD.second]++]
+				=lID_LOD.first; // RenderItem.InstancesID_LOD[LOD_ID].add(Instance_ID)
 		}			
 	}
 }

@@ -127,25 +127,47 @@ void ShadowRender::draw_layer(int layerID, int& instanceOffset, bool doDraw)
 	{
 		for (int ri = 0; ri < lObjectLayer->getSceneObjectCount(); ri++) // One layer has several RenderItems
 		{
-			const RenderItem* lMesh = lObjectLayer->getSceneObject(ri)->getObjectMesh();
-			int lInstancesCount = lObjectLayer->getSceneObject(ri)->getInstancesCount(); // How much instances for this RenderItem we should draw
+			Scene::SceneLayer::SceneLayerObject* lSceneObject = lObjectLayer->getSceneObject(ri);
+			int lInstancesCount = lSceneObject->getInstancesCountLOD(); // How much instances for this RenderItem we should draw
 			if (lInstancesCount == 0) continue;
-			if (doDraw) // some layers we do not need to draw, but we need to count instances for it
-			{
+
+			if (doDraw)
 				m_cmdList->SetPipelineState(m_psoLayer.getPSO(layerID));
-				m_cmdList->SetGraphicsRoot32BitConstant(0, instanceOffset, 0); // Instances offset for current layer objects
 
-				auto drawArg = lMesh->Geometry->DrawArgs[lMesh->Geometry->Name];
-				m_cmdList->IASetVertexBuffers(0, 1, &lMesh->Geometry->vertexBufferView());
-				m_cmdList->IASetIndexBuffer(&lMesh->Geometry->indexBufferView());
-				if (layerID != NOTOPAQUELAYERGH)
-					m_cmdList->IASetPrimitiveTopology(lMesh->Geometry->PrimitiveType);
-				else
-					m_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
+			const RenderItem* lRI = lSceneObject->getObjectMesh();
 
-				m_cmdList->DrawIndexedInstanced(drawArg.IndexCount, lInstancesCount, drawArg.StartIndexLocation, 0, 0);
-			}
-			instanceOffset += lInstancesCount;
+			for (int lod_id = 0; lod_id < LODCOUNT - 1; lod_id++) // Shadow works only for LOD0 and LOD1 meshes
+			{
+				UINT lInstanceCountByLODLevel = lSceneObject->getInstancesCountLOD_byLevel(lod_id);
+				if (lInstanceCountByLODLevel == 0) continue;
+
+				if (doDraw) // some layers we do not need to draw, but we need to count instances for it
+				{
+					Mesh* lMesh = lRI->LODGeometry[lod_id];
+
+					if (lMesh == NULL)
+					{
+						lMesh = lRI->Geometry; // we do not have LOD meshes for this RI
+						lod_id = LODCOUNT; // so lets draw it only once
+					}
+
+					auto drawArg = lMesh->DrawArgs[lMesh->Name];
+
+					m_cmdList->IASetVertexBuffers(0, 1, &lMesh->vertexBufferView());
+					m_cmdList->IASetIndexBuffer(&lMesh->indexBufferView());
+
+					m_cmdList->SetGraphicsRoot32BitConstant(0, instanceOffset, 0); // Instances offset for current layer objects
+
+					if (layerID != NOTOPAQUELAYERGH)
+						m_cmdList->IASetPrimitiveTopology(lMesh->PrimitiveType);
+					else
+						m_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
+
+
+					m_cmdList->DrawIndexedInstanced(drawArg.IndexCount, lInstanceCountByLODLevel, drawArg.StartIndexLocation, 0, 0);
+				}
+				instanceOffset += lInstanceCountByLODLevel;
+			}	
 		}
 	}
 }

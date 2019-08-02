@@ -329,7 +329,7 @@ inline void FBXFileLoader::build_GeoMeshesWithTypedVertex(fbx_Mesh* iMesh, bool 
 	BoundingBox::CreateFromPoints(lNewRI.AABB, lMesh->Vertices.size(), &lMesh->Vertices[0], sizeof(lMesh->Vertices[0]));
 	lNewRI.Name = lOuterRIName;
 	lNewRI.Geometry = lgeoMesh.get();
-
+	lNewRI.ExcludeFromCulling = iMesh->ExcludeFromCulling;
 	if (lMesh->VertexPerPolygon == 3 || lMesh->VertexPerPolygon == 4)
 		lNewRI.Geometry->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	else
@@ -766,7 +766,7 @@ void FBXFileLoader::process_node(const FbxNode* pNode)// , bool isLODMesh = fals
 
 	fbx_NodeInstance newNodeInstance = {};	
 	newNodeInstance.Visible = pNode->GetVisibility();	
-
+	   	 
 	//Collect materials for this Node
 	process_node_getMaterial(pNode, newNodeInstance);
 
@@ -1092,7 +1092,7 @@ string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool m
 	}
 	if (LOD_level == 0)
 		name = *groupName; // for the first mesh from LOD group we use name of this group, because Blender can change name for mesh, we cannot trust it
-
+	
 	if (m_meshesByName.find(name) != m_meshesByName.end()) return name;
 
 	FbxVector4* vertexData = lpcMesh->GetControlPoints();
@@ -1102,6 +1102,16 @@ string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool m
 	auto lmesh = std::make_unique<fbx_Mesh>();
 	lmesh->Name = name;
 	lmesh->WasUploaded = false;
+	lmesh->ExcludeFromCulling = false;
+	
+	// Should be this Mesh (with all Instances) excluded from Frustum culling in future? (for the Sky and the Land meshes)	
+	lcustomProperty = pNodeAtribute->FindProperty("ExcludeFromCulling");
+	if (lcustomProperty != NULL)
+	{
+		bool lValue = lcustomProperty.Get<bool>();
+		lmesh->ExcludeFromCulling = lValue;
+	}
+
 	// Copy All Vertices
 	for (int i = 0; i < vertex_count; i++, vertexData++)
 		lmesh->Vertices.push_back(XMFLOAT3(vertexData->mData[0], vertexData->mData[1], vertexData->mData[2]));

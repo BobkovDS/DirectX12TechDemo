@@ -90,7 +90,7 @@ void RenderManager::buildRenders()
 	// build Blur Render	
 	m_blurRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
 	m_blurRender.setInputResource(m_ssaoRender.getAOResource());
-	m_blurRender.build(10);
+	m_blurRender.build(4);
 
 	// build Shadow Render
 	m_shadowRender.set_DescriptorHeap(m_texturesDescriptorHeap);

@@ -161,8 +161,14 @@ void TechDemo::init3D()
 	{
 		FBXFileLoader m_fbx_loader;
 		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
-		m_fbx_loader.loadSceneFile("Models\\The SceneD.fbx");		
+		m_fbx_loader.loadSceneFile("Models\\The Scene.fbx");		
 	}	
+
+	{
+		FBXFileLoader m_fbx_loader;
+		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
+		m_fbx_loader.loadSceneFile("Models\\Landscape.fbx");
+	}
 
 	// Load lights
 	{
@@ -309,15 +315,16 @@ void TechDemo::update_objectCB()
 {	
 	if (!m_scene.isInstancesDataUpdateRequred()) return;
 	
-	auto lInstances = m_scene.getInstancesUpdate();
+	UINT lInstancesCount = 0;
+	auto lInstances = m_scene.getInstancesUpdate(lInstancesCount);
 	std::vector<UINT>& lDrawInstancesID = m_scene.getDrawInstancesID();
 
-	if (lInstances.size() == 0) return;
+	if (lInstancesCount == 0) return;
 
 	auto currCBObject = m_frameResourceManager.currentFR()->getObjectCB();
 	auto currDrawCBObject = m_frameResourceManager.currentFR()->getDrawInstancesCB();
 
-	for (int i=0; i< lInstances.size(); i++)
+	for (int i=0; i< lInstancesCount; i++)
 		currCBObject->CopyData(i, *lInstances[i]);		
 
 	currDrawCBObject->CopyData(0, lDrawInstancesID.size(), lDrawInstancesID.data());

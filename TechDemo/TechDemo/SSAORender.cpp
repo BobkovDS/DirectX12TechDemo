@@ -250,7 +250,7 @@ void SSAORender::draw_layer(int layerID, int& instanceOffset, bool doDraw)
 
 			const RenderItem* lRI = lSceneObject->getObjectMesh();
 
-			for (int lod_id = 0; lod_id < LODCOUNT; lod_id++)
+			for (int lod_id = 0; lod_id < LODCOUNT-2; lod_id++) // SSAO works only for LOD0 meshes
 			{
 
 				UINT lInstanceCountByLODLevel = lSceneObject->getInstancesCountLOD_byLevel(lod_id);
@@ -273,7 +273,7 @@ void SSAORender::draw_layer(int layerID, int& instanceOffset, bool doDraw)
 
 					m_cmdList->SetGraphicsRoot32BitConstant(0, instanceOffset, 0); // Instances offset for current layer objects
 
-					if (layerID != 5)
+					if (layerID != NOTOPAQUELAYERGH)
 						m_cmdList->IASetPrimitiveTopology(lMesh->PrimitiveType);
 					else
 						m_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);

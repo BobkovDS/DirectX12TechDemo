@@ -45,9 +45,11 @@ void FinalRender::build_SkyDescriptor()
 	if (lSkyLayer)
 	{
 		std::vector<const InstanceDataGPU*> lInstances;
+		lInstances.resize(1);
 		std::vector<UINT> lDrawInstancesID; // we do not use it for SkyLayer
-		lSkyLayer->getInstances(lInstances, lDrawInstancesID, 0);
-		if (lInstances.size() != 0)
+		UINT lInstanceCount = 0;
+		lSkyLayer->getInstances(lInstances, lInstanceCount);
+		if (lInstanceCount != 0)
 		{
 			int lMaterialIndex = lInstances[0]->MaterialIndex; // use only the first Sky (we think we have it only one)
 			int lTextureID = m_resourceManager->getMaterial(lMaterialIndex)->DiffuseColorTextureIDs[0];

@@ -27,6 +27,7 @@ class Scene
 	DirectX::BoundingBox m_sceneBB;
 	DirectX::BoundingBox m_sceneBBShadow;
 	std::vector<BoundingBoxEXT*> m_layerBBList;
+	std::vector<BoundingBoxEXT*> m_layerBBListExcludedFromCulling;
 
 	bool m_doesItNeedUpdate;
 	bool m_firstBB;
@@ -40,7 +41,8 @@ class Scene
 		const std::vector<std::unique_ptr<RenderItem>>& RI);
 	
 	void buildOctree();
-	void addOctreeInformation(const std::vector<std::unique_ptr<RenderItem>>& arrayRI, std::vector<BoundingBoxEXT*>& lLayerBBList);
+	void addOctreeInformation(const std::vector<std::unique_ptr<RenderItem>>& arrayRI,
+		std::vector<BoundingBoxEXT*>& lLayerBBList, std::vector<BoundingBoxEXT*>& lLayerBBListExcludedFromCulling);
 
 public:
 	static UINT ContainsCount;
@@ -52,7 +54,7 @@ public:
 	public:
 		class SceneLayerObject
 		{			
-			const RenderItem* m_mesh;
+			RenderItem* m_mesh;
 			std::vector<const InstanceDataGPU*> m_instances; // all Instances: for Shadowing and for Drawing
 			std::vector<const InstanceDataGPU*> m_instancesLOD[LODCOUNT];
 			UINT m_instancesLODArraySize[LODCOUNT];
@@ -64,8 +66,8 @@ public:
 			inline const RenderItem* getObjectMesh();
 			void getInstances(std::vector<const InstanceDataGPU*>& out_Instances, 
 				std::vector<UINT>& out_DrawInstancesID, UINT InstancesPerPrevLayer);			
-			void getInstances(std::vector<const InstanceDataGPU*>& out_Instances);
-			UINT getInstancesCount() { return m_instances.size(); }
+			void getInstances(std::vector<const InstanceDataGPU*>& out_Instances, UINT& instancesCount);
+			UINT getInstancesCount() { return m_mesh->Instances.size(); }
 			inline UINT getInstancesCountLOD();
 			inline UINT getInstancesCountLOD_byLevel(UINT levelID);
 			UINT getDrawInstancesIDCount() { return m_drawInstancesID.size(); }
@@ -74,7 +76,8 @@ public:
 			void init(RenderItem* RI);
 			void addInstance(const InstanceDataGPU*);
 			void addInstance(const InstanceDataGPU*, UINT LodID);
-			void setObjectMesh(const RenderItem* mesh);
+			void copyInstancesWithoutFC(); 
+			void setObjectMesh(RenderItem* mesh);
 			void setMaxSizeForDrawingIntancesArray(UINT maxSize) { m_drawInstancesID.resize(maxSize); }
 			void setMinSizeForDrawingIntancesArray() { m_drawInstancesID.resize(m_drawInstanceIDCount); }
 			void setDrawInstanceID(UINT id) { m_drawInstancesID[m_drawInstanceIDCount++] = id; };			
@@ -85,12 +88,13 @@ public:
 		void init(const std::vector<std::unique_ptr<RenderItem>>& RI);
 		void update(const std::vector<std::unique_ptr<RenderItem>>& RI);
 		void update(const std::vector<std::unique_ptr<RenderItem>>& RI, bool LODUsing);
+		void update();
 		bool isLayerVisible();
 		void setVisibility(bool b);
-		int getLayerInstancesCount();
+		UINT getLayerInstancesCount();
 		void getInstances(std::vector<const InstanceDataGPU*>& out_Instances, std::vector<UINT>& out_DrawInstancesID, 
 			UINT InstancesPerPrevLayer);
-		void getInstances(std::vector<const InstanceDataGPU*>& out_Instances);
+		void getInstances(std::vector<const InstanceDataGPU*>& out_Instances, UINT& intancesCount);
 		int getSceneObjectCount();
 		void addSceneObject(SceneLayerObject sceneObject);
 		SceneLayerObject* getSceneObject(UINT sceneObjectIndex);
@@ -102,7 +106,7 @@ public:
 	int getLayersCount();
 	SceneLayer* getLayer(UINT layerIndex);
 	int getLayerInstanceOffset(UINT layerIndex);
-	std::vector<const InstanceDataGPU*>& getInstancesUpdate();	
+	std::vector<const InstanceDataGPU*>& getInstancesUpdate(UINT& instancesCount);	
 	std::vector<const InstanceDataGPU*>& getInstances();	
 	std::vector<UINT>& getDrawInstancesID();
 	
@@ -132,5 +136,5 @@ inline UINT Scene::SceneLayer::SceneLayerObject::getInstancesCountLOD_byLevel(UI
 {
 	if (levelID >= LODCOUNT) return 0;
 	else
-		return m_instancesLODArraySize[levelID];
+		return m_mesh->InstancesID_LOD_size[levelID];
 }

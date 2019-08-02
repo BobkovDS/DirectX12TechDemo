@@ -22,6 +22,7 @@ struct fbx_Mesh {
 	std::vector<DirectX::XMFLOAT2> UVs;
 	std::vector<INT32> Indices;
 	bool WasUploaded;
+	bool ExcludeFromCulling;
 	//std::vector<INT32> Materials; //TO_DO: Delete it
 	int VertexPerPolygon;
 };
@@ -49,7 +50,7 @@ struct fbx_Material {
 struct fbx_NodeInstance {
 	std::string MeshName;
 	fbx_NodeType Nodetype;
-	bool Visible;
+	bool Visible;	
 	std::vector<fbx_Material*> Materials;
 	DirectX::XMFLOAT3 Transformation;
 	DirectX::XMFLOAT3 Translation;

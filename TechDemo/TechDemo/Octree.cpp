@@ -196,7 +196,8 @@ void Octree::update()
 			}
 
 			lID_LOD.first = m_vectorContainedBB[i]->Inst_ID;
-			lInstBB->pRenderItem->InstancesID_LOD[lInstBB->pRenderItem->InstancesID_LOD_size++] = lID_LOD; // add InstanceID and LOD
+			lInstBB->pRenderItem->InstancesID_LOD[lID_LOD.second][lInstBB->pRenderItem->InstancesID_LOD_size[lID_LOD.second]++]
+				= lID_LOD.first; // add InstanceID and LOD
 		}
 
 	}
