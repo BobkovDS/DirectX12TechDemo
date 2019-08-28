@@ -41,7 +41,8 @@ void FinalRender::build()
 
 void FinalRender::build_SkyDescriptor()
 {
-	Scene::SceneLayer* lSkyLayer = m_scene->getLayer(SKY);
+	Scene::SceneLayer* lSkyLayer = nullptr; 
+	lSkyLayer = m_scene->getLayer(SKY);
 	if (lSkyLayer)
 	{
 		std::vector<const InstanceDataGPU*> lInstances;
@@ -131,16 +132,21 @@ void FinalRender::draw(int flags)
 	m_cmdList->SetGraphicsRootDescriptorTable(7, m_textureSRVHandle); // Textures SRV
 	
 	//--- draw calls	
+	m_trianglesDrawnCount = 0;
+	m_trianglesCountIfWithoutLOD = 0;
+	m_trianglesCountInScene = 0;
 	int lInstanceOffset = 0;
 	for (int i = 0; i < m_scene->getLayersCount(); i++) // Draw all Layers
 	{
-		Scene::SceneLayer* lObjectLayer = m_scene->getLayer(i);
+		Scene::SceneLayer* lObjectLayer = nullptr;
+		lObjectLayer = m_scene->getLayer(i);
+
 		if (lObjectLayer->isLayerVisible()) // Draw Layer if it visible
 		{
 			m_cmdList->SetPipelineState(m_psoLayer.getPSO(i)); // Here we change shaders. As we have the one RootSignauture for Render, so Root areguments are not reset when we set new PSO
 
 			//int lInstanceOffset = m_scene->getLayerInstanceOffset(i); // How many Instances were on prev layers
-
+						
 			for (int ri = 0; ri < lObjectLayer->getSceneObjectCount(); ri++) // One layer has several RenderItems
 			{		
 				Scene::SceneLayer::SceneLayerObject* lSceneObject = lObjectLayer->getSceneObject(ri);
@@ -148,6 +154,7 @@ void FinalRender::draw(int flags)
 				int lInstancesCount = lSceneObject->getInstancesCountLOD(); // How much instances for this RenderItem we should draw
 				if (lInstancesCount == 0) continue;
 				
+				UINT lInstancesForThisMesh = 0; // How much instances for this Mesh have been drawn (without LOD difference)
 				const RenderItem* lRI= lSceneObject->getObjectMesh();
 				
 				for (int lod_id = 0; lod_id < LODCOUNT; lod_id++)
@@ -156,8 +163,10 @@ void FinalRender::draw(int flags)
 					UINT lInstanceCountByLODLevel = lSceneObject->getInstancesCountLOD_byLevel(lod_id);
 					if (lInstanceCountByLODLevel == 0) continue;
 
+					lInstancesForThisMesh += lInstanceCountByLODLevel;
 					Mesh* lMesh = lRI->LODGeometry[lod_id];
-
+					
+					m_trianglesDrawnCount += lRI->LODTrianglesCount[lod_id] * lInstanceCountByLODLevel;
 					if (lMesh == NULL)
 					{
 						lMesh = lRI->Geometry; // we do not have LOD meshes for this RI
@@ -180,6 +189,9 @@ void FinalRender::draw(int flags)
 
 					lInstanceOffset += lInstanceCountByLODLevel;
 				}
+
+				m_trianglesCountIfWithoutLOD += lRI->LODTrianglesCount[0] * lInstancesForThisMesh;
+				m_trianglesCountInScene += lRI->LODTrianglesCount[0] * lRI->Instances.size();				
 			}
 		}
 	}

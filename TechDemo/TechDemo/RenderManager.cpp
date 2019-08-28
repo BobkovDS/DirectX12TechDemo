@@ -8,6 +8,7 @@ RenderManager::RenderManager(): m_initialized(false)
 	m_debug_Axes = true;
 	m_debug_Lights = false;
 	m_debug_Normals_Vertex = false;
+	m_debug_View = false;
 	m_isSSAOUsing = false;
 	m_isShadowUsing = false;
 	m_isNormalMappingUsing = false;
@@ -36,10 +37,11 @@ void RenderManager::initialize(const RenderManagerMessanger& renderParams)
 	m_debugRenderLights.initialize(renderParams.commonRenderData);
 	m_debugRenderNormals.initialize(renderParams.commonRenderData);
 	m_debugRenderScreen.initialize(renderParams.commonRenderData);	
+	m_debugRenderView.initialize(renderParams.commonRenderData);
 
 	RenderMessager lRenderParams = renderParams.commonRenderData;	
-	lRenderParams.Width = 1024; 
-	lRenderParams.Height = 1024;
+	lRenderParams.Width = 4096; 
+	lRenderParams.Height = 4096;
 	m_shadowRender.initialize(lRenderParams);
 
 	lRenderParams = renderParams.commonRenderData;
@@ -71,6 +73,12 @@ void RenderManager::buildRenders()
 	m_debugRenderLights.build();
 	m_debugRenderLights.setSwapChainResources(m_swapChainResources);
 
+	// build Debug View Render
+	m_debugRenderView.set_DescriptorHeap_RTV(m_applicationRTVHeap);
+	m_debugRenderView.set_DescriptorHeap_DSV(m_finalRender.get_dsvHeapPointer());
+	m_debugRenderView.build();
+	m_debugRenderView.setSwapChainResources(m_swapChainResources);
+
 	// build Debug Normals Render
 	m_debugRenderNormals.set_DescriptorHeap_RTV(m_applicationRTVHeap);
 	m_debugRenderNormals.set_DescriptorHeap_DSV(m_finalRender.get_dsvHeapPointer());
@@ -90,7 +98,7 @@ void RenderManager::buildRenders()
 	// build Blur Render	
 	m_blurRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
 	m_blurRender.setInputResource(m_ssaoRender.getAOResource());
-	m_blurRender.build(4);
+	m_blurRender.build(1);
 
 	// build Shadow Render
 	m_shadowRender.set_DescriptorHeap(m_texturesDescriptorHeap);
@@ -142,8 +150,8 @@ void RenderManager::draw()
 		m_shadowRender.draw(0);
 		if (m_renderMode & (1 << RM_SHADOW))
 			m_debugRenderScreen.draw(6);
-	}	
-	
+	}		
+
 	updatedFlags &= ~((!m_blurRender.isBlurMapReady()) << RTB_SSAO);
 	if (lFinalRender && !(m_renderMode & RM_OTHERMODE)) m_finalRender.draw(updatedFlags);
 	   
@@ -155,7 +163,14 @@ void RenderManager::draw()
 			m_debugRenderLights.draw(updatedFlags);
 		if (m_debug_Normals_Vertex)
 			m_debugRenderNormals.draw(updatedFlags);
+		if (m_debug_View) m_debugRenderView.draw(updatedFlags);
 	}
+
+	// for using with GUI Render
+	m_cmdList->ResourceBarrier(1,
+		&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
+			D3D12_RESOURCE_STATE_PRESENT,
+			D3D12_RESOURCE_STATE_RENDER_TARGET));
 
 	if (m_isSSAOUsing)
 	{
@@ -235,6 +250,12 @@ void RenderManager::toggleDebug_Normals_Vertex()
 {
 	if (m_debugMode)
 		m_debug_Normals_Vertex = !m_debug_Normals_Vertex;
+}
+
+void RenderManager::toggleDebug_View()
+{
+	if (m_debugMode)
+		m_debug_View = !m_debug_View;
 }
 
 void RenderManager::setRenderMode_Final()

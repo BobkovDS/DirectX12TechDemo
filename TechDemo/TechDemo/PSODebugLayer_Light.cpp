@@ -68,6 +68,6 @@ void PSODebugLayer_Light::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, D
 	{
 		_com_error err(res);
 		wstring errMsg = err.ErrorMessage() + std::wstring(L" ");
-		throw MyCommonRuntimeException(errMsg, L"PSO creation" );
+		throw MyCommonRuntimeException(errMsg, L"PSO creation");
 	}
 }

@@ -79,8 +79,10 @@ void DebugRender_Normals::draw(int flags)
 }
 
 void DebugRender_Normals::draw_layer(int layerID, int& instanseOffset, bool doDraw, D3D12_PRIMITIVE_TOPOLOGY PrimitiveTopology)
-{
-	Scene::SceneLayer* lObjectLayer = m_scene->getLayer(layerID);
+{	
+	Scene::SceneLayer* lObjectLayer = nullptr;
+	lObjectLayer = m_scene->getLayer(layerID);
+
 	if (lObjectLayer->isLayerVisible()) // Draw Layer if it visible
 	{
 		for (int ri = 0; ri < lObjectLayer->getSceneObjectCount(); ri++) // One layer has several RenderItems

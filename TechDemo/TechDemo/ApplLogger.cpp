@@ -3,6 +3,8 @@
 
 using namespace std;
 
+int AutoIncrementer::Shift = 0;
+
 ApplLogger::ApplLogger(string fileName)
 {
 	m_oLogFile.open(fileName);

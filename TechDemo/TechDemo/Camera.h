@@ -3,6 +3,7 @@
 #include <vector>
 #include "MathHelper.h"
 #include "Executer.h"
+#include "BoundingMath.h"
 
 class Camera{
 	
@@ -19,14 +20,15 @@ class Camera{
 	DirectX::XMFLOAT4X4 m_viewMatrix;
 	DirectX::BoundingFrustum m_frustumBoundingCamera; // Frustum for Camera
 	DirectX::BoundingFrustum m_frustumBoundingShadow; // Frustum for Shadow Projector
-	DirectX::BoundingFrustum m_frustumBoundingCameraWorld; //Frustum for Camera in World space
-	DirectX::BoundingFrustum m_frustumBoundingShadowWorld; //Frustum for Shadow Projector in World space
+	DirectX::BoundingFrustum m_frustumBoundingCameraWorld; //Frustum for Camera in World space	
+	BoundingMath::BoundingFrustum m_bm_frustumBoundingCameraWorld; //Frustum for Camera in World space	
+	DirectX::BoundingFrustum m_frustumBoundingShadowWorld; //Frustum for Shadow Projector in World space	
 	DirectX::BoundingBox m_BoundingBoxCamera; // BB for Camera
 	DirectX::BoundingBox m_BoundingBoxShadow; // BB for Shadow Projector
 	DirectX::BoundingBox m_BoundingBoxCameraWorld; //BB for Camera in World space
 	DirectX::BoundingBox m_BoundingBoxShadowWorld; //BB for Shadow Projector in World space
 
-	std::vector<ExecuterBase*> m_observers;
+	std::vector<ExecuterBase*> m_observers;	
 	void updateObservers();
 	Camera(Camera& a) {};
 public:
@@ -79,7 +81,9 @@ public:
 	void transform(DirectX::XMFLOAT4X4& transformM);
 
 	//Frustum Bounding
+	DirectX::BoundingFrustum& getFrustomBoundingCamera();
 	DirectX::BoundingFrustum& getFrustomBoundingCameraWorld();
+	BoundingMath::BoundingFrustum& getFrustomBoundingCameraWorld(bool);
 	DirectX::BoundingFrustum& getFrustomBoundingShadowWorld();
 	DirectX::BoundingBox& getBoundingBoxCameraWorld();
 	DirectX::BoundingBox& getBoundingBoxShadowWorld();
@@ -91,7 +95,7 @@ public:
 		CameraLens(const CameraLens&) = delete;		
 		
 	protected:
-		DirectX::XMFLOAT4X4 m_projectionMatrix;
+		DirectX::XMFLOAT4X4 m_projectionMatrix;		
 		bool m_lensWasSet;
 	public:
 		CameraLens():m_lensWasSet(false) { m_projectionMatrix = {};};
@@ -116,6 +120,7 @@ class PerspectiveCameraLens : public Camera::CameraLens {
 	float m_fovY;
 	float m_nearWindowHeight;
 	float m_farWindowHeight;
+	BoundingMath::BoundingFrustum m_cameraFrustum;
 	PerspectiveCameraLens& operator=(const PerspectiveCameraLens& c) = delete;
 public:
 	PerspectiveCameraLens();
@@ -124,6 +129,7 @@ public:
 	void setLens(float fovY, float aspect, float zn, float zf);	
 	void setLens(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents) {};
 	void setAspectRatio(float aspectRatio);
+	BoundingMath::BoundingFrustum* get_cameraFrustum() { return &m_cameraFrustum; }
 };
 
 class OrthographicCameraLesn : public Camera::CameraLens {
@@ -144,4 +150,8 @@ inline DirectX::XMVECTOR Camera::getPosition() const
 inline DirectX::XMVECTOR Camera::getLook() const
 {
 	return DirectX::XMLoadFloat3(&m_look);
+}
+inline const DirectX::XMFLOAT4X4& Camera::getView4x4f()
+{
+	return m_viewMatrix;
 }

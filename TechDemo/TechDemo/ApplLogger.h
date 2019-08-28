@@ -1,6 +1,13 @@
 #pragma once
 #include <fstream>
 
+struct AutoIncrementer
+{
+	static int Shift;
+	AutoIncrementer() { Shift++; }
+	~AutoIncrementer() { Shift--; }
+};
+
 class ApplLogger
 {
 	static ApplLogger m_logger;	

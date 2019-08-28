@@ -86,8 +86,8 @@ D3D12_GRAPHICS_PIPELINE_STATE_DESC PSOBaseLayer::buildCommonPSODescription()
 	psoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
 	// Define which winding is for Front-face: CounterClockwise or Clockwise
 	psoDesc.RasterizerState.FrontCounterClockwise = false; 
-	//psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
-	psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // Do not draw Back-faces. For performances
+	psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+	//psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // Do not draw Back-faces. For performances
 
 	//psoDesc.RasterizerState.DepthBias = 100000;
 	//psoDesc.RasterizerState.DepthBiasClamp = 0.0f;

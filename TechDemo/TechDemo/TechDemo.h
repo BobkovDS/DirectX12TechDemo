@@ -56,6 +56,7 @@ protected:
 	void work();
 	void onReSize(int newWidth, int newHeight);
 	std::vector<float> calcGaussWeights(float sigma);
+	void renderUI();
 public:
 	TechDemo(HINSTANCE hInstance, const std::wstring& applName, int width, int height);
 	~TechDemo();

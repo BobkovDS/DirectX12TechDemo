@@ -30,12 +30,12 @@ public:
 
 	static void buildSunOrthoLightProjection(DirectX::XMFLOAT3& lightDirection, DirectX::XMFLOAT4X4& lightViewProj, 
 		DirectX::XMFLOAT4X4& lightViewProjT,		
-		DirectX::BoundingSphere sceneBS)
+		DirectX::XMFLOAT3 OrthoBoxCenter, float OrthoBoxRadius)
 	{
 		using namespace DirectX;
 		XMVECTOR lLightDirection = XMLoadFloat3(&lightDirection);
-		XMVECTOR lLightTarget = XMLoadFloat3(&sceneBS.Center);
-		XMVECTOR lLightPosition = lLightTarget - 1.0f * sceneBS.Radius *lLightDirection;
+		XMVECTOR lLightTarget = XMLoadFloat3(&OrthoBoxCenter);
+		XMVECTOR lLightPosition = lLightTarget - 1.0f * OrthoBoxRadius *lLightDirection;
 		XMVECTOR lLightUpVector = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 		XMMATRIX lLightView = XMMatrixLookAtLH(lLightPosition, lLightTarget, lLightUpVector);
@@ -43,14 +43,14 @@ public:
 		XMFLOAT3 lSphereCenterLightSpace;
 		XMStoreFloat3(&lSphereCenterLightSpace, XMVector3TransformCoord(lLightTarget, lLightView));
 
-		float l = lSphereCenterLightSpace.x - sceneBS.Radius;
-		float r = lSphereCenterLightSpace.x + sceneBS.Radius;
+		float l = lSphereCenterLightSpace.x - OrthoBoxRadius;
+		float r = lSphereCenterLightSpace.x + OrthoBoxRadius;
 
-		float b = lSphereCenterLightSpace.y - sceneBS.Radius;
-		float t = lSphereCenterLightSpace.y + sceneBS.Radius;
+		float b = lSphereCenterLightSpace.y - OrthoBoxRadius;
+		float t = lSphereCenterLightSpace.y + OrthoBoxRadius;
 
-		float n = lSphereCenterLightSpace.z - sceneBS.Radius;
-		float f = lSphereCenterLightSpace.z + sceneBS.Radius;
+		float n = lSphereCenterLightSpace.z - OrthoBoxRadius;
+		float f = lSphereCenterLightSpace.z + OrthoBoxRadius;
 
 		XMMATRIX lLightProj = XMMatrixOrthographicOffCenterLH(l, r, b, t, n, f);
 

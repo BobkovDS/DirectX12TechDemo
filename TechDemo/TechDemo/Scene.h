@@ -5,7 +5,6 @@
 #include "SkeletonManager.h"
 #include "Camera.h"
 #include "Octree.h"
-#include "Selector.h"
 
 #define FRAMERESOURCECOUNT 3
 #define LODCOUNT 3
@@ -18,31 +17,26 @@ class Scene
 	ObjectManager* m_objectManager;
 	SkeletonManager* m_skeletonManager;
 	Camera* m_camera;
-	Octree* m_octree;
-	Selector m_selector;
+	Octree* m_octree;	
 
 	std::vector<CPULight> m_lights; //lights in the scene
-	DirectX::BoundingSphere m_sceneBS; // scene bounding sphere 
+	DirectX::BoundingSphere m_sceneBS; // scene bounding sphere  TO_DO: Delete
 	DirectX::BoundingSphere m_sceneBSShadow; // scene bounding sphere for creation Sun-light Ortho Frustom 
-	DirectX::BoundingBox m_sceneBB;
-	DirectX::BoundingBox m_sceneBBShadow;
-	std::vector<BoundingBoxEXT*> m_layerBBList;
-	std::vector<BoundingBoxEXT*> m_layerBBListExcludedFromCulling;
+	BoundingMath::BoundingBox m_sceneBB;
+	std::vector<BoundingMath::BoundingBoxEXT*> m_layerBBList;
+	std::vector<BoundingMath::BoundingBoxEXT*> m_layerBBListExcludedFromCulling;
 
 	bool m_doesItNeedUpdate;
 	bool m_firstBB;
 	bool m_lightAnimation;
 	bool m_octreeCullingMode;
 	int m_instancesDataReadTimes; // How many times we need provide Instances Data for FrameResource Manager;
-	
-	void updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<RenderItem>>& RI, bool isFrustumCullingRequired = true);
-	void createBoungingInfo();
+	int m_instancesToDraw; // How many Instances are "visible" in this Scene
+	void updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<RenderItem>>& RI, bool isFrustumCullingRequired = true);	
 	void getLayerBoundingInfo(DirectX::BoundingBox& layerBB, DirectX::BoundingBox& layerBBShadow,
 		const std::vector<std::unique_ptr<RenderItem>>& RI);
 	
 	void buildOctree();
-	void addOctreeInformation(const std::vector<std::unique_ptr<RenderItem>>& arrayRI,
-		std::vector<BoundingBoxEXT*>& lLayerBBList, std::vector<BoundingBoxEXT*>& lLayerBBListExcludedFromCulling);
 
 public:
 	static UINT ContainsCount;
@@ -82,6 +76,8 @@ public:
 			void setMinSizeForDrawingIntancesArray() { m_drawInstancesID.resize(m_drawInstanceIDCount); }
 			void setDrawInstanceID(UINT id) { m_drawInstancesID[m_drawInstanceIDCount++] = id; };			
 			const std::vector<UINT>& getDrawIntancesID() { return m_drawInstancesID; }
+			void getBoundingInformation(std::vector<BoundingMath::BoundingBoxEXT*>& lLayerBBList, std::vector<BoundingMath::BoundingBoxEXT*>& lLayerBBListExcludedFromCulling,
+				BoundingMath::BoundingBox* sceneBB);
 		};
 		//-------------------------------------------------------
 		void clearLayer();	
@@ -95,9 +91,11 @@ public:
 		void getInstances(std::vector<const InstanceDataGPU*>& out_Instances, std::vector<UINT>& out_DrawInstancesID, 
 			UINT InstancesPerPrevLayer);
 		void getInstances(std::vector<const InstanceDataGPU*>& out_Instances, UINT& intancesCount);
-		int getSceneObjectCount();
+		int getSceneObjectCount();		
 		void addSceneObject(SceneLayerObject sceneObject);
 		SceneLayerObject* getSceneObject(UINT sceneObjectIndex);
+		void getBoundingInformation(std::vector<BoundingMath::BoundingBoxEXT*>& lLayerBBList, std::vector<BoundingMath::BoundingBoxEXT*>& lLayerBBListExcludedFromCulling,
+			BoundingMath::BoundingBox* sceneBB);
 	};
 	//----------------------------------------------------
 	Scene();
@@ -112,9 +110,8 @@ public:
 	
 
 	const std::vector<CPULight>& getLights();
-	const DirectX::BoundingBox& getSceneBB() { return m_sceneBB; }
-	const DirectX::BoundingBox& getSceneBBShadow() { return m_sceneBBShadow; }
-	const DirectX::BoundingSphere& getSceneBS() { return m_sceneBS; }
+	const BoundingMath::BoundingBox& getSceneBB() { return m_sceneBB; }	
+	const DirectX::BoundingSphere& getSceneBS() { return m_sceneBS; } // TO_DO: Delete
 	const DirectX::BoundingSphere& getSceneBSShadow() { return m_sceneBSShadow; }
 	bool getCullingModeOctree() { return m_octreeCullingMode; }
 	void build(ObjectManager* objectManager, Camera* camera, SkeletonManager* skeletonManagers);
@@ -125,6 +122,8 @@ public:
 	void cameraListener();
 	void toggleLightAnimation();
 	void toggleCullingMode();
+	int getSelectedInstancesCount() { return m_instancesToDraw; }
+	UINT getTrianglesCount();
 };
 
 inline const RenderItem* Scene::SceneLayer::SceneLayerObject::getObjectMesh()

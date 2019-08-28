@@ -14,8 +14,7 @@ FBXFileLoader::FBXFileLoader()
 	m_materialLastAddedID = 0;
 	m_materialCountForThisCall = 0;
 	m_initialized = false;
-	m_logger = &ApplLogger::getLogger();
-	m_currentShiftLogCount = 0;
+	m_logger = &ApplLogger::getLogger();	
 }
 
 FBXFileLoader::~FBXFileLoader()
@@ -52,9 +51,9 @@ void FBXFileLoader::initLoader()
 
 void FBXFileLoader::loadSceneFile(const string& fileName)
 {	
-	m_currentShiftLogCount = 0;
-	ApplLogger::getLogger().log("Loading of " + fileName, m_currentShiftLogCount);
-	m_currentShiftLogCount++;
+	AutoIncrementer lOutShifter;
+	
+	ApplLogger::getLogger().log("Loading of " + fileName, lOutShifter.Shift-1);
 
 	if (!m_initialized) assert(0);
 
@@ -62,7 +61,7 @@ void FBXFileLoader::loadSceneFile(const string& fileName)
 	FbxIOSettings* ios = FbxIOSettings::Create(m_sdkManager, IOSROOT);
 	m_sdkManager->SetIOSettings(ios);
 
-	//Create an importer using tje SDK manger
+	//Create an importer using the SDK manger
 	FbxImporter* l_importer = FbxImporter::Create(m_sdkManager, "");
 
 	bool res = l_importer->Initialize(fileName.c_str(), -1, m_sdkManager->GetIOSettings());
@@ -98,10 +97,9 @@ void FBXFileLoader::loadSceneFile(const string& fileName)
 
 	m_scene->SetName(lSceneName.c_str());
 	m_resourceManager->setPrefixName(lSceneName);
-	ApplLogger::getLogger().log("Creating scene [" + lSceneName + "]", m_currentShiftLogCount);
-	createScene();
-	m_currentShiftLogCount--;
-	ApplLogger::getLogger().log("Loading of " + fileName + " is done", m_currentShiftLogCount);
+	ApplLogger::getLogger().log("Creating scene [" + lSceneName + "]", lOutShifter.Shift);
+	createScene();	
+	ApplLogger::getLogger().log("Loading of " + fileName + " is done", lOutShifter.Shift-1);
 }
 
 void FBXFileLoader::createScene()
@@ -224,8 +222,8 @@ void FBXFileLoader::build_GeoMeshesLOD(fbx_Mesh* iMesh, int LODLevel, std::strin
 	lgeoMesh->Name = lInnerRIName;
 
 	meshVertices.resize(lMesh->Indices.size()); /* Vertices count = Indices count,
-												because if a Vertex can be the same for several faces, but this Vertex should
-												have different information for this faces like Normal, TangentUV*/
+												because a Vertex can be the same for several faces, but this Vertex should
+												have different(unique) information for this faces like Normal, TangentUV*/
 	meshIndices.resize(lMesh->Indices.size());
 
 	for (int vi = 0; vi < lMesh->Indices.size(); vi++)
@@ -255,6 +253,7 @@ void FBXFileLoader::build_GeoMeshesLOD(fbx_Mesh* iMesh, int LODLevel, std::strin
 	BoundingBox::CreateFromPoints(lNewRI.AABB, lMesh->Vertices.size(), &lMesh->Vertices[0], sizeof(lMesh->Vertices[0]));	
 	lNewRI.Geometry = NULL;
 	lNewRI.LODGeometry[LODLevel] = lgeoMesh.get();
+	lNewRI.LODTrianglesCount[LODLevel] = (UINT) meshIndices.size() / 3;
 
 	if (lMesh->VertexPerPolygon == 3 || lMesh->VertexPerPolygon == 4)
 		lNewRI.LODGeometry[LODLevel]->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -329,6 +328,7 @@ inline void FBXFileLoader::build_GeoMeshesWithTypedVertex(fbx_Mesh* iMesh, bool 
 	BoundingBox::CreateFromPoints(lNewRI.AABB, lMesh->Vertices.size(), &lMesh->Vertices[0], sizeof(lMesh->Vertices[0]));
 	lNewRI.Name = lOuterRIName;
 	lNewRI.Geometry = lgeoMesh.get();
+	lNewRI.LODTrianglesCount[0] = (UINT) lMesh->Indices.size() / 3;
 	lNewRI.ExcludeFromCulling = iMesh->ExcludeFromCulling;
 	if (lMesh->VertexPerPolygon == 3 || lMesh->VertexPerPolygon == 4)
 		lNewRI.Geometry->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -759,9 +759,9 @@ void FBXFileLoader::convertFbxVector4ToFloat4(FbxVector4& fbxv, DirectX::XMFLOAT
 // ---------------- FBX functions -----------------------------
 void FBXFileLoader::process_node(const FbxNode* pNode)// , bool isLODMesh = false
 {
-	m_currentShiftLogCount++;
+	AutoIncrementer lOutShifter;
 	string nodeName = pNode->GetName();
-	m_logger->log("processing a node: " + nodeName, m_currentShiftLogCount);
+	m_logger->log("[NODE]: " + nodeName, lOutShifter.Shift);
 	const FbxNodeAttribute* pNodeAtrib = pNode->GetNodeAttribute();	
 
 	fbx_NodeInstance newNodeInstance = {};	
@@ -874,8 +874,7 @@ void FBXFileLoader::process_node(const FbxNode* pNode)// , bool isLODMesh = fals
 		}
 	}
 
-	m_NodeInstances.push_back(newNodeInstance);
-	m_currentShiftLogCount--;
+	m_NodeInstances.push_back(newNodeInstance);	
 }
 
 void FBXFileLoader::process_node_LOD(const FbxNode* pNode)
@@ -888,15 +887,14 @@ void FBXFileLoader::process_node_LOD(const FbxNode* pNode)
 		- only one Node_Instance for the first child LOD0. LOD1 and LOD2 no need Node instances
 		- Materials (only one actually) for the first child LOD0. LOD1 and LOD2 will 'use' materials for LOD0
 	*/
-
-	m_currentShiftLogCount++;
+	AutoIncrementer lOutShifter;
 	//FbxLODGroup* lLODFr = (const_cast<FbxNode*>(pNode))->GetLodGroup();
 	//int nodeCount = lLODFr->GetNodeCount();
 
 	assert(pNode->GetChildCount() == 3);
 
 	string nodeName = pNode->GetName();
-	m_logger->log("processing a node for LOD group: " + nodeName, m_currentShiftLogCount);
+	m_logger->log("[NODE LOD GROUP]: " + nodeName, lOutShifter.Shift);
 	
 	bool lDoesGroupExist = (m_LODGroupByName.find(nodeName) != m_LODGroupByName.end());
 	assert(!lDoesGroupExist);
@@ -970,14 +968,13 @@ void FBXFileLoader::process_node_LOD(const FbxNode* pNode)
 
 			process_mesh(pNodeAtrib, false, 2, &nodeName); // LOD2			
 		}
-	}
-	
-	m_currentShiftLogCount--;
+	}	
 }
 
 void FBXFileLoader::process_node_getMaterial(const FbxNode* pNode, fbx_NodeInstance& newNodeInstance)
 {
 
+	AutoIncrementer lOutShifter;
 	fbx_Material lMaterial = {};
 	int mCount = pNode->GetMaterialCount();
 	for (int i = 0; i < mCount; i++)
@@ -985,7 +982,7 @@ void FBXFileLoader::process_node_getMaterial(const FbxNode* pNode, fbx_NodeInsta
 		FbxSurfaceMaterial* materialSuface = pNode->GetMaterial(i);
 		lMaterial.Name = materialSuface->GetName();
 
-		m_logger->log("loading new material: " + lMaterial.Name, m_currentShiftLogCount);
+		m_logger->log("[MATERIAL]: " + lMaterial.Name, lOutShifter.Shift);
 
 		if (m_materials.find(lMaterial.Name) == m_materials.end()) //if we do not have this material, lets add it
 		{
@@ -1070,15 +1067,16 @@ void FBXFileLoader::process_node_getMaterial(const FbxNode* pNode, fbx_NodeInsta
 		}
 
 		newNodeInstance.Materials.push_back(&m_materials[lMaterial.Name]);
-	}
+	}	
 }
 
 string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool meshForTesselation, 
 	int LOD_level, std::string* groupName)
 {
+	AutoIncrementer lOutShifter;
 	const FbxMesh* lpcMesh = static_cast<const FbxMesh*>(pNodeAtribute);
 	FbxMesh* lpMesh = const_cast<FbxMesh*>(lpcMesh);
-
+	
 	string name = lpcMesh->GetName();		
 
 	FbxNode* lParentNode = pNodeAtribute->GetNode();	
@@ -1094,6 +1092,8 @@ string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool m
 		name = *groupName; // for the first mesh from LOD group we use name of this group, because Blender can change name for mesh, we cannot trust it
 	
 	if (m_meshesByName.find(name) != m_meshesByName.end()) return name;
+
+	m_logger->log("[MESH]: " + name, lOutShifter.Shift);
 
 	FbxVector4* vertexData = lpcMesh->GetControlPoints();
 	int vertex_count = lpcMesh->GetControlPointsCount();//get count unique vertices	
@@ -1408,6 +1408,7 @@ void FBXFileLoader::process_camera(const FbxNodeAttribute* pNodeAtribute, FbxNod
 	
 	FbxDouble3 lCameraUpVector= lpcCamera->UpVector;
 	float lNearPlane = lpcCamera->NearPlane;
+	lNearPlane = 2.36f;
 	float lFar= lpcCamera->FarPlane;
 	
 	std::unique_ptr<Camera> lCamera = std::make_unique<Camera>();
@@ -1507,6 +1508,7 @@ void FBXFileLoader::process_light(const FbxNodeAttribute* pNodeAtribute, FbxNode
 bool FBXFileLoader::read_texture_data(
 	fbx_Material* destMaterial,	FbxProperty* matProperty, std::string textureType)
 {	
+	AutoIncrementer lOutShifter;
 	bool AtleasOneTextureWasAdded = false;
 	int srcObjectcount = matProperty->GetSrcObjectCount<FbxTexture>();
 
@@ -1526,7 +1528,7 @@ bool FBXFileLoader::read_texture_data(
 		auto ltextureTypeName = std::make_pair(textureType, lTextureName);
 		destMaterial->TexturesNameByType.push_back(ltextureTypeName);
 		AtleasOneTextureWasAdded = true;
-		m_logger->log("Texture("+ textureType +"): "+ lTextureName+"["+ lTexturePath +"]", m_currentShiftLogCount);
+		m_logger->log("Texture("+ textureType +"): "+ lTextureName+"["+ lTexturePath +"]", lOutShifter.Shift -1);
 	}
 
 	return AtleasOneTextureWasAdded;

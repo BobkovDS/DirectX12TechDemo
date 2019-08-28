@@ -94,8 +94,8 @@ struct LightGPU
 	float turnOn; // to find check it for int16 or something like that
 	float dummy2;
 	float dummy3;
-	DirectX::XMFLOAT4X4 ViewProj; //View-Projection matrix
-	DirectX::XMFLOAT4X4 ViewProjT; //View-Projection-toUV matrix
+	DirectX::XMFLOAT4X4 ViewProj; //View-Projection matrix (LOD1 Level Shadow)
+	DirectX::XMFLOAT4X4 ViewProjT; //View-Projection-toUV matrix (LOD1 Level Shadow)
 	DirectX::XMFLOAT3 ReflectDirection;
 	float dummy4;
 };
@@ -172,12 +172,14 @@ struct PassConstantsGPU
 
 	DirectX::XMFLOAT4 AmbientLight = { 0.5f, 0.5f, 0.5f, 1.0f };		
 	DirectX::XMFLOAT4 FogColor = { 0.0f, 0.5f, 0.4f, 1.0f };
-
+	
 	float FogStart = 5.0f;
 	float FogRange = 50.0f;
-
 	float CameraDistance = 0;
 	float dummy2 = 0;
+
+	DirectX::XMFLOAT3 ViewPointPosition;
+	float dummy3;
 
 	//UINT hfhfhhfghf[1000000];
 	LightGPU Lights[MaxLights];

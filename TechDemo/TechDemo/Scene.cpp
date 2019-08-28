@@ -10,8 +10,8 @@ Scene::Scene()
 	m_Layers.resize(6);
 	m_doesItNeedUpdate = true;
 	m_firstBB = true;
-	m_octreeCullingMode = false;
-	m_selector.initialize(20, 80);
+	m_octreeCullingMode = false;	
+	m_instancesToDraw = 0;
 }
 
 Scene::~Scene()
@@ -53,6 +53,7 @@ std::vector<const InstanceDataGPU*>& Scene::getInstancesUpdate(UINT& instancesCo
 		}	
 	m_instancesDataReadTimes--;
 
+	m_instancesToDraw = instancesCount;
 	return m_tmp_Intances;
 }
 
@@ -85,84 +86,22 @@ void Scene::build(ObjectManager* objectManager, Camera* camera, SkeletonManager*
 	// Copy lights once to Scene		
 	for (int i = 0; i < m_objectManager->getLights().size(); i++)
 		m_lights.push_back(m_objectManager->getLights()[i]);
-
-	createBoungingInfo();
-	buildOctree();
+		
 	InitLayers();
+	buildOctree();
 	update();
-}
-
-void Scene::createBoungingInfo()
-{	
-	getLayerBoundingInfo(m_sceneBB, m_sceneBBShadow, m_objectManager->getOpaqueLayer());
-	getLayerBoundingInfo(m_sceneBB, m_sceneBBShadow, m_objectManager->getNotOpaqueLayer());
-	getLayerBoundingInfo(m_sceneBB, m_sceneBBShadow, m_objectManager->getSkinnedOpaqueLayer());
-	getLayerBoundingInfo(m_sceneBB, m_sceneBBShadow, m_objectManager->getSkinnedNotOpaqueLayer());
-	//getLayerBoundingInfo(m_sceneBB, m_objectManager->getNotOpaqueLayerGH());
-
-	m_sceneBB.Extents.x *= 1.1f;
-	m_sceneBB.Extents.y *= 1.1f;
-	m_sceneBB.Extents.z *= 1.1f;
-
-	m_sceneBBShadow.Extents.x *= 1.1f;
-	m_sceneBBShadow.Extents.y *= 1.1f;
-	m_sceneBBShadow.Extents.z *= 1.1f;
-	
-	BoundingSphere::CreateFromBoundingBox(m_sceneBS, m_sceneBB); // Create Bounding Sphere for all Scene
-	BoundingSphere::CreateFromBoundingBox(m_sceneBSShadow, m_sceneBBShadow);// Create Bounding Sphere for Scene where will used Shadowing (without Land and Water)
-}
-
-void Scene::addOctreeInformation(const std::vector<std::unique_ptr<RenderItem>>& arrayRI, vector<BoundingBoxEXT*>& lLayerBBList,
-	std::vector<BoundingBoxEXT*>& lLayerBBListExcludedFromCulling)
-{	
-	/* 
-		Get All RenderItems/Instances for current SceneLayer. We divide RenderItems to list:
-		- Which should in Frustom Culling (and added to Octree or Selector)
-		- Which should not be Frustom Culling (for the Sky and the Land)
-	*/
-
-	for (int ri = 0; ri < arrayRI.size(); ri++)
-	{
-		RenderItem* lRI = arrayRI[ri].get();
-		int lInstanceCount = lRI->Instances.size();
-
-		for (int i = 0; i < lInstanceCount; i++)
-		{			
-			BoundingBox ltBB;
-			XMMATRIX lWorld = XMLoadFloat4x4(&lRI->Instances[i].World);
-			lRI->AABB.Transform(ltBB, lWorld);
-			BoundingBoxEXT* lBBExt = new BoundingBoxEXT(ltBB);
-			lBBExt->pRenderItem = lRI;
-			lBBExt->Inst_ID = i;
-			
-			if (lRI->ExcludeFromCulling)
-				lLayerBBListExcludedFromCulling.push_back(lBBExt); // for list we do not need BB actually, but we need RI_id and Instance_ID, so just use BB for generallization
-			else
-				lLayerBBList.push_back(lBBExt);
-		}
-	}
 }
 
 void Scene::buildOctree()
 {
 	assert(m_octree == nullptr); // it should not be created yet
 	
-	m_octree = new Octree(m_sceneBB); 
+	m_octree = new Octree(m_sceneBB); 	
 
-	vector<BoundingBoxEXT*>& lLayerBBList = m_layerBBList; // TO_DO: change, temporary solution
+	if (m_layerBBList.size() == 0) return;
 
-	addOctreeInformation(m_objectManager->getSky(), lLayerBBList, m_layerBBListExcludedFromCulling);
-	addOctreeInformation(m_objectManager->getOpaqueLayer(), lLayerBBList, m_layerBBListExcludedFromCulling);
-	addOctreeInformation(m_objectManager->getNotOpaqueLayer(), lLayerBBList, m_layerBBListExcludedFromCulling);
-	addOctreeInformation(m_objectManager->getSkinnedOpaqueLayer(), lLayerBBList, m_layerBBListExcludedFromCulling);
-	addOctreeInformation(m_objectManager->getSkinnedNotOpaqueLayer(), lLayerBBList, m_layerBBListExcludedFromCulling);
-	addOctreeInformation(m_objectManager->getNotOpaqueLayerGH(), lLayerBBList, m_layerBBListExcludedFromCulling);
-
-	if (lLayerBBList.size() == 0) return;
-
-	m_octree->addBBList(lLayerBBList);
-	m_octree->build();
-	int lBBcount = m_octree->getBBCount();	
+	m_octree->addBBList(m_layerBBList);
+	m_octree->build();	
 }
 
 void Scene::InitLayers()
@@ -178,6 +117,18 @@ void Scene::InitLayers()
 	for (int i = 0; i < m_Layers.size(); i++)
 		lAllInstancesCount += m_Layers[i].getLayerInstancesCount();
 	m_tmp_Intances.resize(lAllInstancesCount);
+
+	// make a BoundingBoxExt list for Octree.
+	m_Layers[0].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, nullptr);
+	m_Layers[1].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, &m_sceneBB);
+	m_Layers[2].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, &m_sceneBB);
+	m_Layers[3].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, &m_sceneBB);
+	m_Layers[4].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, &m_sceneBB);
+	m_Layers[5].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, nullptr);
+	
+	DirectX::BoundingBox ltempBB(XMFLOAT3(m_sceneBB.Center.x, m_sceneBB.Center.y, m_sceneBB.Center.z), m_sceneBB.Extents);
+	BoundingSphere::CreateFromBoundingBox(m_sceneBSShadow, ltempBB);
+	m_sceneBSShadow.Radius /= 1.0f;
 }
 
 void Scene::update()
@@ -189,7 +140,8 @@ void Scene::update()
 	{
 		// Octree
 		//m_octree->update(m_camera->getFrustomBoundingShadowWorld());
-		m_octree->update(m_camera->getFrustomBoundingCameraWorld());
+		assert(0);
+		m_octree->update(m_camera->getFrustomBoundingCameraWorld(0), m_camera->getFrustomBoundingCameraWorld());
 		updateLayer(m_Layers[0], m_objectManager->getSky(), false);
 		m_Layers[1].update(m_objectManager->getOpaqueLayer());
 		m_Layers[2].update(m_objectManager->getNotOpaqueLayer());
@@ -201,6 +153,7 @@ void Scene::update()
 	{
 		// Selector
 
+		// Copy at first object which should be out of Frustum Culling (e.g. Sky ) (?)
 		m_Layers[0].update();
 		m_Layers[1].update();
 		m_Layers[2].update();
@@ -208,11 +161,40 @@ void Scene::update()
 		m_Layers[4].update();
 		m_Layers[5].update();
 
-		m_selector.setBBList(m_layerBBList);
-		m_selector.set_selector_position(m_camera->getPosition3f());
-		m_selector.set_selector_direction(m_camera->getLook());
-		m_selector.set_coinAngle(35);
-		m_selector.update();
+		// Looking at Octree's bounding boxes through ViewFrustum, mark required Instances are selected. Really copy will be in TechDemo::update_objectCB() function
+		
+		m_octree->selector.LOD0_distance = 30; //30
+		m_octree->selector.LOD1_distance = 80; //80
+
+		m_octree->selector.SelectorPostition = m_camera->getPosition();
+
+		BoundingMath::BoundingFrustum lFrustum = m_camera->getFrustomBoundingCameraWorld(0);
+		DirectX::BoundingFrustum lDirectXFrustum = m_camera->getFrustomBoundingCameraWorld();
+				
+		DirectX::BoundingBox ltBox(DirectX::XMFLOAT3(0,0,0), DirectX::XMFLOAT3(1, 1, 1));
+		DirectX::BoundingBox ltBox2(DirectX::XMFLOAT3(0.5f, 0.4f, 0.4f), DirectX::XMFLOAT3(0.5, 0.5, 0.5));
+
+		BoundingMath::BoundingBox lbmBox;
+		lbmBox.build(DirectX::XMFLOAT4(0, 0, 0, 0), DirectX::XMFLOAT3(1, 1, 1));
+
+		BoundingMath::BoundingBox lbmBox2;
+		lbmBox2.build(DirectX::XMFLOAT4(0.5f, 0.4f, 0.4f, 0), DirectX::XMFLOAT3(0.5, 0.5, 0.5));
+
+		BoundingMath::ContainmentType lbmResult = lbmBox.contains(lbmBox2);
+
+		DirectX::ContainmentType lcontr = ltBox.Contains(ltBox2);
+		lDirectXFrustum.Contains(ltBox);
+
+		m_octree->update(m_camera->getFrustomBoundingCameraWorld(0), m_camera->getFrustomBoundingCameraWorld());
+
+		//m_selector.setBBList(m_layerBBList);
+		//m_selector.set_selector_position(m_camera->getPosition3f());
+		//m_selector.set_selector_direction(m_camera->getLook());
+		//m_selector.set_viewMatrix(m_camera->getView4x4f());
+		//m_selector.set_cameraFrustum(static_cast<PerspectiveCameraLens*>(m_camera->lens)->get_cameraFrustum());
+		//m_selector.set_cameraFrustumFromProj(m_camera->getFrustomBoundingCamera());
+		//m_selector.set_coinAngle(35);
+		//m_selector.update();
 		
 	/*	float lAngle = 45;
 		m_octree->selector.LOD0_distance = 20;
@@ -304,6 +286,8 @@ void Scene::updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<Ren
 				// If Instance can be seen in Camera, no need to check for Shadow Projector - it is also will be there
 				ContainsCount++;
 				bool doubleContainsCheck = true;
+				lBoundingFrustomCamera.Intersects(lRIBBWord);
+
 				if (lBoundingFrustomCamera.Contains(lRIBBWord) != DirectX::DISJOINT)
 				{
 					lSceneObject.addInstance(&lRI->Instances[j]); // add Instance 
@@ -340,7 +324,7 @@ void Scene::getLayerBoundingInfo(DirectX::BoundingBox& layerBB, DirectX::Boundin
 	{
 		RenderItem* lRI = arrayRI[i].get();
 
-		if (!lRI->isNotIncludeInWorldBB) // isNotIncludeInWorldBB ==true : Do not include this RI's Instances to Shadow SceneBB
+		if (!lRI->isNotIncludeInWorldBB) // isNotIncludeInWorldBB ==true : Do not include this RI's Instances to SceneBB
 		{
 			for (int j = 0; j < lRI->Instances.size(); j++)
 			{
@@ -565,6 +549,17 @@ void Scene::SceneLayer::update(const std::vector<std::unique_ptr<RenderItem>>& a
 	//}
 }
 
+void Scene::SceneLayer::getBoundingInformation(
+	vector<BoundingMath::BoundingBoxEXT*>& lLayerBBList, 
+	vector<BoundingMath::BoundingBoxEXT*>& lLayerBBListExcludedFromCulling,
+	BoundingMath::BoundingBox* sceneBB)
+{	
+	//Get a list of BoundingBoxed for current SceneLayer. This BBs are in World space.
+
+	for (int i = 0; i < m_objects.size(); i++)
+		m_objects[i].getBoundingInformation(lLayerBBList, lLayerBBListExcludedFromCulling, sceneBB);
+}
+
 // ================================================================ [Scene::SceneLayer::SceneLayerObject] =============
 //Scene::SceneLayer::SceneLayerObject::SceneLayerObject()
 //{	
@@ -666,4 +661,42 @@ void Scene::SceneLayer::SceneLayerObject::getInstances(std::vector<const Instanc
 			for (int i = 0; i < m_mesh->InstancesID_LOD_size[lod_id]; i++) // How many this LOD level has Objects for this SceneLayerObject
 				out_Instances[instancesCount++] = &m_mesh->Instances[m_mesh->InstancesID_LOD[lod_id][i]];
 	//}
+}
+
+void Scene::SceneLayer::SceneLayerObject::getBoundingInformation(
+	std::vector<BoundingMath::BoundingBoxEXT*>& lLayerBBList,
+	std::vector<BoundingMath::BoundingBoxEXT*>& lLayerBBListExcludedFromCulling,
+	BoundingMath::BoundingBox* sceneBB)
+{
+/*
+	+ Get All RenderItems/Instances for current SceneLayer. We divide RenderItems to list:
+	- Which should in Frustom Culling (and added to Octree or Selector)
+	- Which should not be Frustom Culling (for the Sky and the Land)
+
+	+ Add BB to common scene_BB to create main BoundingBox for scene
+
+	Result of this function are:
+		- a list of BB for all Instances in Scene. This BBs are in World space.
+		- a scene BB
+*/	
+	int lInstanceCount = m_mesh->Instances.size();
+
+	for (int i = 0; i < lInstanceCount; i++) // All Instances for this unique mesh
+	{
+		BoundingBox ltBB;
+		XMMATRIX lWorld = XMLoadFloat4x4(&m_mesh->Instances[i].World);
+		m_mesh->AABB.Transform(ltBB, lWorld);
+		BoundingMath::BoundingBoxEXT* lBBExt = new BoundingMath::BoundingBoxEXT(ltBB);
+		lBBExt->pRenderItem = m_mesh;
+		lBBExt->Inst_ID = i;
+
+		if (m_mesh->ExcludeFromCulling)
+			lLayerBBListExcludedFromCulling.push_back(lBBExt); // for list we do not need BB actually, but we need RI_id and Instance_ID, so just use BB for generallization
+		else
+			lLayerBBList.push_back(lBBExt);
+
+		// Add this BB to sceneBB, if this required
+		if (sceneBB && m_mesh->ExcludeFromCulling==false)
+			BoundingMath::BoundingBox::CreateMerged(*sceneBB, *sceneBB, ltBB);
+	}
 }

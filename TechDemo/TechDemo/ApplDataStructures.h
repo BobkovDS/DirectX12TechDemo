@@ -30,6 +30,7 @@ struct RenderItem {
 	DirectX::BoundingBox AABB;
 	Mesh* Geometry = nullptr;
 	Mesh* LODGeometry[RI_LOD_COUNT]; // we have only three LOD for object
+	UINT LODTrianglesCount[RI_LOD_COUNT]; // how much Triangles has each LOD mesh
 	std::vector<InstanceDataGPU> Instances;
 	std::vector<UINT> InstancesID; // it is updated everytimes by Scene Octree to identify which Instances need to copy on GPU
 	std::vector<UINT> InstancesID_LOD[RI_LOD_COUNT]; // it is updated everytimes by Scene Selector to identify which Instances need to copy on GPU and with which LOD
@@ -93,12 +94,4 @@ struct CPULight
 	bool turnOn = 1;
 	int shapeID = -1; //To specify which shape is used to draw this light 
 	// type specifies the RenderItems, shapeId specifies shape in this RenderItem
-};
-
-struct BoundingBoxEXT : DirectX::BoundingBox
-{
-public:
-	BoundingBoxEXT(const DirectX::BoundingBox& bb) : DirectX::BoundingBox(bb) {}; //explicit
-	RenderItem* pRenderItem; // Identify the RenderItem, for which Instance this BB is using	
-	UINT Inst_ID;	// Indentify the Instance (inside specific RI, for which this BB is using
 };

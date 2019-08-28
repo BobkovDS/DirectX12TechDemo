@@ -91,6 +91,7 @@ void TechDemo::onKeyDown(WPARAM btnState)
 	case VK_NUMPAD1: m_renderManager.toggleDebug_Axes(); break;
 	case VK_NUMPAD2: m_renderManager.toggleDebug_Lights(); break;
 	case VK_NUMPAD3: m_renderManager.toggleDebug_Normals_Vertex(); break;
+	case VK_NUMPAD4: m_renderManager.toggleDebug_View(); break;
 	case VK_NUMPAD7: m_renderManager.toggleTechnik_SSAO(); break;
 	case VK_NUMPAD8: m_renderManager.toggleTechnik_Shadow(); break;
 	case VK_NUMPAD9: m_renderManager.toggleTechnik_Normal(); break;
@@ -108,32 +109,52 @@ void TechDemo::onKeyDown(WPARAM btnState)
 std::string TechDemo::addTextToWindow()
 {
 	int lInstanceCount = m_scene.getInstances().size();
-	int lDrawInstancesID = m_scene.getDrawInstancesID().size();
+	int lDrawInstancesID = m_scene.getSelectedInstancesCount();
 	bool lOctreCullingMode = m_scene.getCullingModeOctree();
 
-	std::string text = " InstCount(Shadow): " + std::to_string(lInstanceCount) 
-		+ " InstCount(Drawing): " + std::to_string(lDrawInstancesID)
-		+ " Contains count: " + std::to_string(m_scene.ContainsCount);
+	UINT lTrianglesDrawnCount = m_renderManager.getTrianglesDrawnCount();
+	UINT lTrianglesCountIfWithoutLOD = m_renderManager.getTrianglesCountIfWithoutLOD();
+	UINT lTrianglesCountInScene = m_renderManager.getTrianglesCountInScene();
 
+	float lPercent1 = (float) lTrianglesCountIfWithoutLOD / (float) lTrianglesCountInScene * 100.0f;
+	float lPercent2 = (float) lTrianglesDrawnCount / (float) lTrianglesCountInScene * 100.0f;
+	
+	char lbP1[10];
+	_snprintf_s(lbP1, sizeof(lbP1), "%3.1f", lPercent1);
+	std::string lsP1 = lbP1;
+	lsP1 = " (" + lsP1 + "%)";
+
+	char lbP2[10];
+	_snprintf_s(lbP2, sizeof(lbP2), "%3.1f", lPercent2);
+	std::string lsP2 = lbP2;
+	lsP2 = " (" + lsP2 + "%)";
+
+	std::string text = "InstCount(Shadow): " + std::to_string(lInstanceCount)
+		+ "\rInstCount(Drawing): " + std::to_string(lDrawInstancesID)
+		+ "\rContains count: " + std::to_string(m_scene.ContainsCount)
+		+ "\rTriangles in Scene count: " + std::to_string(lTrianglesCountInScene) + " (100%)"
+		+ "\rTriangles would be w/t LOD count: " + std::to_string(lTrianglesCountIfWithoutLOD) + lsP1
+		+ "\rTriangles were drawn count: " + std::to_string(lTrianglesDrawnCount) + lsP2;
 	
 	if (m_isTechFlag)
-		text += " TechFlag=1";
+		text += "\rTechFlag=1";
 	else
-		text += " TechFlag=0";
+		text += "\rTechFlag=0";
 
 	if (m_isCameraManualControl)
-		text += " CameraMC=1";
+		text += "\rCameraMC=1";
 	else
-		text += " CameraMC=0";
+		text += "\rCameraMC=0";
 
 	if (lOctreCullingMode)
-		text += " OctreeMode=1";
+		text += "\rOctreeMode=1";
 	else
-		text += " OctreeMode=0";
+		text += "\rOctreeMode=0";
 
 	if (m_renderManager.isDebugMode())
-		text += " DEBUG ";
+		text += "\rDEBUG ";
 
+	
 	return text;
 }
 
@@ -156,6 +177,13 @@ void TechDemo::init3D()
 	//	m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
 	//	m_fbx_loader.loadSceneFile("Models\\Wolf.fbx");
 	//}
+
+	//{
+	//	FBXFileLoader m_fbx_loader;
+	//	m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
+	//	m_fbx_loader.loadSceneFile("Models\\defaultCub.fbx");
+	//}
+
 
 	////Load a house
 	{
@@ -183,7 +211,6 @@ void TechDemo::init3D()
 		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
 		m_fbx_loader.loadSceneFile("Models\\Camera.fbx");
 	}
-
  
 	m_tempVal = 0;
 	m_skeletonManager.evaluateAnimationsTime();
@@ -252,6 +279,16 @@ void TechDemo::init3D()
 	build_OffsetVectors();
 
 	m_animationTimer.tt_RunStop();
+
+	BoundingMath::BoundingFrustum bf;
+	bf.build(0.25f*XM_PI, 1.023f, 2.36, 1000);
+	bf.buildPlanes();
+
+	BoundingFrustum& lBoundingFrustomCamera = m_camera->getFrustomBoundingCameraWorld();
+
+	BoundingBox lBox;
+	lBoundingFrustomCamera.Contains(lBox);
+
 	ApplLogger::getLogger().log("TechDemo::init3D() is done", 0);
 }
 
@@ -317,7 +354,7 @@ void TechDemo::update_objectCB()
 	
 	UINT lInstancesCount = 0;
 	auto lInstances = m_scene.getInstancesUpdate(lInstancesCount);
-	std::vector<UINT>& lDrawInstancesID = m_scene.getDrawInstancesID();
+	std::vector<UINT>& lDrawInstancesID = m_scene.getDrawInstancesID(); //TO_DO: Delete DrawInstancesID technique
 
 	if (lInstancesCount == 0) return;
 
@@ -394,6 +431,28 @@ void TechDemo::update_passCB()
 
 	const std::vector<CPULight>& lights = m_scene.getLights();
 
+	// -- Find shadow box position and sise	
+	float lLenght = 38.0f;
+
+	XMFLOAT3 lcameraPos = m_camera->getPosition3f();
+	XMFLOAT4 lsceneCenter = m_scene.getSceneBB().Center;
+	XMFLOAT3 lsceneExtents = m_scene.getSceneBB().Extents;
+	float groundLevel = lsceneCenter.y - lsceneExtents.y / 2.0f;
+	float lCameraHigh = lcameraPos.y - groundLevel;
+	XMVECTOR lCameraDirection = m_camera->getLook();
+	XMVECTOR lCameraDirectionInXZPlane = lCameraDirection;
+	lCameraDirectionInXZPlane = XMVectorSetY(lCameraDirectionInXZPlane, 0.0f);
+	lCameraDirectionInXZPlane = XMVector3Normalize(lCameraDirectionInXZPlane);
+
+	lcameraPos.y -= lCameraHigh;
+	XMVECTOR lCameraPosv = XMLoadFloat3(&lcameraPos);
+	lCameraPosv = lCameraPosv + lCameraDirectionInXZPlane * lLenght; /* we draw Shadow in front of camera half-plane. 
+	It works good when we look mainly forward, not down from high distance*/
+
+	XMStoreFloat3(&lcameraPos, lCameraPosv);
+
+	mMainPassCB.ViewPointPosition = lcameraPos;
+
 	for (size_t i = 0; i < lights.size(); i++)
 	{
 		mMainPassCB.Lights[i].Direction = lights.at(i).Direction;
@@ -405,11 +464,10 @@ void TechDemo::update_passCB()
 		mMainPassCB.Lights[i].lightType = lights.at(i).lightType + 1; // 0 - is undefined type of light
 		mMainPassCB.Lights[i].turnOn = lights.at(i).turnOn;	
 
-		// build ViewProjT matrix for shadow technic
-
+		// build ViewProjT matrix for shadow technique
 		if (lights.at(i).lightType == LightType::Directional)
 			MathHelper::buildSunOrthoLightProjection(mMainPassCB.Lights[i].Direction, mMainPassCB.Lights[i].ViewProj,
-				mMainPassCB.Lights[i].ViewProjT, m_scene.getSceneBSShadow());
+				mMainPassCB.Lights[i].ViewProjT, lcameraPos, lLenght);
 	}
 	
 	auto currPassCB = m_frameResourceManager.currentFR()->getPassCB();
@@ -484,7 +542,6 @@ void TechDemo::work()
 	// for graphic frame we use CommandAllocator from FR
 	m_frameResourceManager.changeCmdAllocator(m_cmdList.Get(), nullptr);
 	
-
 	// update data
 	update();
 
@@ -495,11 +552,40 @@ void TechDemo::work()
 	ID3D12CommandList* CmdLists[] = { m_cmdList.Get() };
 	m_cmdQueue->ExecuteCommandLists(1, CmdLists);
 
+	renderUI();
 	m_swapChain->Present(0, 0);
 	m_frameResourceManager.currentFR()->setFenceValue(getFenceValue());
 	//setFence(); ???
 	FlushCommandQueue();
 }
+
+void TechDemo::renderUI()
+{
+
+	int lResourceIndex = m_swapChain->GetCurrentBackBufferIndex();
+	D2D_SIZE_F lrtSize = m_HUDRenderTargets[lResourceIndex]->GetSize();
+	D2D_RECT_F ltextRect = D2D1::RectF(0, 0, lrtSize.width, lrtSize.height);
+	std::string outputText = addTextToWindow();
+		
+	std::wstring wtest(outputText.begin(), outputText.end());
+
+	m_d3d11On12Device->AcquireWrappedResources(m_wrappedBackBuffers[lResourceIndex].GetAddressOf(), 1);
+
+	m_HUDContext->SetTarget(m_HUDRenderTargets[lResourceIndex].Get());
+	m_HUDContext->BeginDraw();
+	m_HUDContext->SetTransform(D2D1::Matrix3x2F::Identity());
+	m_HUDContext->DrawTextW(
+		wtest.c_str(),
+		wtest.length(),
+		m_textFormat.Get(),
+		ltextRect,
+		m_HUDBrush.Get());
+
+	HRESULT res = m_HUDContext->EndDraw();
+	m_d3d11On12Device->ReleaseWrappedResources(m_wrappedBackBuffers[lResourceIndex].GetAddressOf(), 1);
+	m_d3d11Context->Flush();
+}
+
 
 void TechDemo::onReSize(int newWidth, int newHeight)
 {	

@@ -108,7 +108,7 @@ void BasicDXGI::init3D()
 #endif
 
 		// Create Device	
-		res = D3D12CreateDevice(hardwareAdapter.Get(), D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&m_device));
+		res = D3D12CreateDevice(hardwareAdapter.Get(), D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&m_device));		
 		assert(SUCCEEDED(res));
 	}
 
@@ -175,7 +175,27 @@ void BasicDXGI::init3D()
 		assert(SUCCEEDED(res));	
 
 		m_rtvDescriptorSize = m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-				
+		
+		// Direct2D
+		{
+			////// Create Direct2D Device
+			//UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+			//ComPtr<ID3D11Device> ld3d11Device;
+			//res = D3D11On12CreateDevice(
+			//	m_device.Get(),
+			//	creationFlags,
+			//	nullptr,
+			//	0,
+			//	reinterpret_cast<IUnknown**> (m_cmdQueue.GetAddressOf()),
+			//	1,
+			//	0,
+			//	&ld3d11Device,
+			//	&m_d3d11Context,
+			//	nullptr);
+
+			//res = ld3d11Device.As(&m_d3d11On12Device);
+		}
+
 		create_RTV();
 		initDXGI_RTV_done = true;
 	}
@@ -200,8 +220,65 @@ void BasicDXGI::create_RTV()
 	for (int i = 0; i < m_swapChainsBufferCount; i++)
 	{
 		//if (m_swapChainBuffers[i])			m_swapChainBuffers[i].Get()->Release();
+		m_HUDRenderTargets[i].Reset();
+		m_wrappedBackBuffers[i].Reset();
 		m_swapChainBuffers[i].Reset();
 	}
+
+	// Direct2D
+	{
+		{
+			// Create Direct2D Device - {Not sure about the place for this. It should be another way to clean it}
+			UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+			ComPtr<ID3D11Device> ld3d11Device;
+			res = D3D11On12CreateDevice(
+				m_device.Get(),
+				creationFlags,
+				nullptr,
+				0,
+				reinterpret_cast<IUnknown**> (m_cmdQueue.GetAddressOf()),
+				1,
+				0,
+				&ld3d11Device,
+				&m_d3d11Context,
+				nullptr);
+			res = ld3d11Device.As(&m_d3d11On12Device);
+		}
+
+		// Create a Direct2D Factory		
+		{
+			D2D1_DEVICE_CONTEXT_OPTIONS deviceOptions = D2D1_DEVICE_CONTEXT_OPTIONS_NONE;
+			res = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, m_HUDFactory.GetAddressOf());
+			ComPtr<IDXGIDevice> ldxgiDevice;
+			res = m_d3d11On12Device.As(&ldxgiDevice);
+			res = m_HUDFactory->CreateDevice(ldxgiDevice.Get(), &m_HUDDevice);
+			res = m_HUDDevice->CreateDeviceContext(deviceOptions, &m_HUDContext);
+			res = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), &m_writeFactory);
+		}
+
+		// Create D2D/DWrite objects for rendering text
+		{
+			res = m_HUDContext->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::GreenYellow), &m_HUDBrush);
+			m_writeFactory->CreateTextFormat(
+				L"Verdana",
+				NULL,
+				DWRITE_FONT_WEIGHT_NORMAL,
+				DWRITE_FONT_STYLE_NORMAL,
+				DWRITE_FONT_STRETCH_NORMAL,
+				20,
+				L"en-us",
+				&m_textFormat);
+			res = m_textFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
+			res = m_textFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+		}
+	}
+	
+	float ldpiX, ldpiY;
+	m_HUDFactory->GetDesktopDpi(&ldpiX, &ldpiY);
+	D2D1_BITMAP_PROPERTIES1 lBitmapProperties = D2D1::BitmapProperties1(
+		D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
+		D2D1::PixelFormat(m_backBufferFormat, D2D1_ALPHA_MODE_PREMULTIPLIED),
+		ldpiX, ldpiY);
 		
 	// Resize SwapChain
 	/* MSDN:
@@ -220,8 +297,23 @@ void BasicDXGI::create_RTV()
 	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHeapHandle(m_rtvHeap->GetCPUDescriptorHandleForHeapStart());
 	for (int i = 0; i < m_swapChainsBufferCount; i++)
 	{
+		// for Direct3D
 		m_swapChain->GetBuffer(i, IID_PPV_ARGS(&m_swapChainBuffers[i]));
 		m_device->CreateRenderTargetView(m_swapChainBuffers[i].Get(), nullptr, rtvHeapHandle);
+		
+		// for Direct2D
+		D3D11_RESOURCE_FLAGS ld3d11Flags = { D3D11_BIND_RENDER_TARGET };
+		res = m_d3d11On12Device->CreateWrappedResource(m_swapChainBuffers[i].Get(),
+			&ld3d11Flags,
+			D3D12_RESOURCE_STATE_RENDER_TARGET,
+			D3D12_RESOURCE_STATE_PRESENT,
+			IID_PPV_ARGS(&m_wrappedBackBuffers[i]));
+
+		//create a render target for D2D to draw directly to this back buffer
+		ComPtr<IDXGISurface> lSurface;
+		res = m_wrappedBackBuffers[i].As(&lSurface);
+		res = m_HUDContext->CreateBitmapFromDxgiSurface(lSurface.Get(), &lBitmapProperties, &m_HUDRenderTargets[i]);
+		
 		rtvHeapHandle.Offset(1, rtvDescriptorSize);
 	}
 	

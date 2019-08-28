@@ -276,9 +276,10 @@ DirectX::XMMATRIX Camera::getLocalTransformationMatrix()
 
 void Camera::buildFrustumBounding()
 {
+	// One way to get Frustum Plane Vector	
 	BoundingFrustum::CreateFromMatrix(m_frustumBoundingCamera, lens->getProj());
 	
-	float s = 1.5f;
+	float s = 1.0f;
 	m_frustumBoundingShadow = m_frustumBoundingCamera;
 	m_frustumBoundingShadow.LeftSlope *= s;
 	m_frustumBoundingShadow.RightSlope*= s;
@@ -286,6 +287,18 @@ void Camera::buildFrustumBounding()
 	m_frustumBoundingShadow.TopSlope*= s;
 
 	m_frustumBoundingWorldToUpdate = true;
+
+	// Another way to find Frustum Plane vectors
+	XMMATRIX lProjMatrix = lens->getProj();
+	//lProjMatrix = XMMatrixTranspose(lProjMatrix);
+	XMVECTOR lNear = lProjMatrix.r[3] + lProjMatrix.r[2];
+	XMVECTOR lFar = lProjMatrix.r[3] - lProjMatrix.r[2];
+	int a = 1;
+}
+
+DirectX::BoundingFrustum& Camera::getFrustomBoundingCamera()
+{
+	return m_frustumBoundingCamera;
 }
 
 DirectX::BoundingFrustum& Camera::getFrustomBoundingCameraWorld()
@@ -297,11 +310,36 @@ DirectX::BoundingFrustum& Camera::getFrustomBoundingCameraWorld()
 		DirectX::XMMATRIX veiwInv = XMMatrixInverse(&XMMatrixDeterminant(view), view);
 
 		m_frustumBoundingCamera.Transform(m_frustumBoundingCameraWorld, veiwInv);
-		m_frustumBoundingShadow.Transform(m_frustumBoundingShadowWorld, veiwInv);
+		m_frustumBoundingShadow.Transform(m_frustumBoundingShadowWorld, veiwInv);		
 
 		m_frustumBoundingWorldToUpdate = false;
 	}
 	return m_frustumBoundingCameraWorld;
+}
+
+BoundingMath::BoundingFrustum& Camera::getFrustomBoundingCameraWorld(bool)
+{
+	updateViewMatrix();
+	BoundingMath::BoundingFrustum* lViewFrustumInViewSpace =
+		static_cast<PerspectiveCameraLens*>(lens)->get_cameraFrustum();
+
+	if (m_frustumBoundingWorldToUpdate) // here View matrix should be updated
+	{
+		DirectX::XMMATRIX view = XMLoadFloat4x4(&m_viewMatrix);
+		DirectX::XMMATRIX proj = lens->getProj();
+		DirectX::XMMATRIX cb = XMMatrixMultiply(view, proj);
+		DirectX::XMMATRIX veiwInv = XMMatrixInverse(&XMMatrixDeterminant(view), view);
+		//cb = XMMatrixTranspose(cb);
+		veiwInv = XMMatrixTranspose(veiwInv);
+
+		//lViewFrustumInViewSpace->transform(m_bm_frustumBoundingCameraWorld, veiwInv);
+		lViewFrustumInViewSpace->getPlanesFromMatrix(m_bm_frustumBoundingCameraWorld, cb);
+
+		getFrustomBoundingCameraWorld(); //to update DirectX BoundingFrustum
+
+		m_frustumBoundingWorldToUpdate = false;
+	}
+	return m_bm_frustumBoundingCameraWorld;
 }
 
 DirectX::BoundingFrustum& Camera::getFrustomBoundingShadowWorld()
@@ -366,8 +404,7 @@ PerspectiveCameraLens::PerspectiveCameraLens():
 	m_aspect(0),
 	m_fovY(0), 	
 m_nearWindowHeight(0), m_farWindowHeight(0)
-{
-	
+{	
 }
 
 void PerspectiveCameraLens::_copy(const CameraLens* _in, CameraLens* _out)
@@ -396,6 +433,8 @@ void PerspectiveCameraLens::setLens(float fovY, float aspect, float zn, float zf
 
 	XMMATRIX P = XMMatrixPerspectiveFovLH(m_fovY, m_aspect, m_nearZ, m_farZ);
 	XMStoreFloat4x4(&m_projectionMatrix, P);
+
+	m_cameraFrustum.build(m_fovY, m_aspect, m_nearZ, m_farZ);
 	m_lensWasSet = true;
 }
 

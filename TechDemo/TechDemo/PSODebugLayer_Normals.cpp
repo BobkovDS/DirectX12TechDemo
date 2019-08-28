@@ -55,7 +55,7 @@ void PSODebugLayer_Normals::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat,
 	// compile shaders blob
 	buildShadersBlob();
 
-	// PSO for Layer_0: Non-skinned Opaque objects: [OPAQUELAYER]
+	// Vertex Normals PSO description
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer0 = buildCommonPSODescription();
 	psoDescLayer0.InputLayout = { m_inputLayout[ILV1].data(), (UINT)m_inputLayout[ILV1].size() };
 	psoDescLayer0.VS = { reinterpret_cast<BYTE*>(m_shaders["vs"]->GetBufferPointer()), m_shaders["vs"]->GetBufferSize() };
@@ -63,7 +63,7 @@ void PSODebugLayer_Normals::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat,
 	psoDescLayer0.GS = { reinterpret_cast<BYTE*>(m_shaders["gs_vn"]->GetBufferPointer()), m_shaders["gs_vn"]->GetBufferSize() };
 	psoDescLayer0.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
 
-	// PSO for Layer_1:  Non-skinned Not Opaque objects: [NOTOPAQUELAYER]
+	// Face Normals PSO description
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer1 = psoDescLayer0;
 	psoDescLayer1.GS = { reinterpret_cast<BYTE*>(m_shaders["gs_fn"]->GetBufferPointer()), m_shaders["gs_fn"]->GetBufferSize() };
 		

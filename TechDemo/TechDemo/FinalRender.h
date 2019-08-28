@@ -18,6 +18,10 @@ class FinalRender :
 	PSOFinalRenderLayer m_psoLayer;
 
 	void build_SkyDescriptor();
+
+	UINT m_trianglesDrawnCount; // How much triangles actually were send for drawing
+	UINT m_trianglesCountIfWithoutLOD; // How much triangles would be drawn without using LOD
+	UINT m_trianglesCountInScene; //How much triangles in Scene at all (Without LOD and Frustum Culling)
 public:
 	FinalRender();
 	~FinalRender();
@@ -27,5 +31,8 @@ public:
 	void draw(int flag);	
 	void resize(UINT newWidth, UINT newHeight);
 	void setSwapChainResources(ComPtr<ID3D12Resource>* swapChainResources);
+	UINT getTrianglesDrawnCount() {	return m_trianglesDrawnCount; }
+	UINT getTrianglesCountIfWithoutLOD() {	return m_trianglesCountIfWithoutLOD; }
+	UINT getTrianglesCountInScene() {	return m_trianglesCountInScene; }
 };
 

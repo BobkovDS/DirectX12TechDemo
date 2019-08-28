@@ -145,7 +145,7 @@ void SSAORender::draw(int flags)
 	auto objectCB = m_frameResourceManager->getCurrentObjectCBResource();
 	auto passCB = m_frameResourceManager->getCurrentPassCBResource();
 	auto boneCB = m_frameResourceManager->getCurrentBoneCBResource();
-	auto drawCB = m_frameResourceManager->getCurrentDrawIDCBResource();
+	auto drawCB = m_frameResourceManager->getCurrentDrawIDCBResource(); // TO_DO: delete this technic
 
 	UINT lTechFlags = flags;
 	m_cmdList->SetGraphicsRoot32BitConstant(0, lTechFlags, 1); // Tech Flags	
@@ -236,7 +236,13 @@ void SSAORender::draw(int flags)
 
 void SSAORender::draw_layer(int layerID, int& instanceOffset, bool doDraw)
 {
-	Scene::SceneLayer* lObjectLayer = m_scene->getLayer(layerID);
+	/*
+		SSAO Render draw only LOD0 instances for RenderITem. But in our Instances CB we have all intances for all LOD. To count 
+		'instanceOffset' correctly, we "draw" all LOD, but do real work only for LOD0, for LOD1..LOD2 we just count InstanceCountByLODLevel
+	*/
+
+	Scene::SceneLayer* lObjectLayer = nullptr;
+	lObjectLayer = m_scene->getLayer(layerID);
 	if (lObjectLayer->isLayerVisible()) // Draw Layer if it visible
 	{
 		for (int ri = 0; ri < lObjectLayer->getSceneObjectCount(); ri++) // One layer has several RenderItems
@@ -250,13 +256,13 @@ void SSAORender::draw_layer(int layerID, int& instanceOffset, bool doDraw)
 
 			const RenderItem* lRI = lSceneObject->getObjectMesh();
 
-			for (int lod_id = 0; lod_id < LODCOUNT-2; lod_id++) // SSAO works only for LOD0 meshes
+			for (int lod_id = 0; lod_id < LODCOUNT; lod_id++)
 			{
-
 				UINT lInstanceCountByLODLevel = lSceneObject->getInstancesCountLOD_byLevel(lod_id);
 				if (lInstanceCountByLODLevel == 0) continue;
 
-				if (doDraw) // some layers we do not need to draw, but we need to count instances for it
+				bool lLODDraw = (lod_id == 0);// SSAO works only for LOD0 meshes				
+				if (doDraw && lLODDraw) // some layers we do not need to draw, but we need to count instances for it
 				{
 					Mesh* lMesh = lRI->LODGeometry[lod_id];
 
@@ -281,8 +287,8 @@ void SSAORender::draw_layer(int layerID, int& instanceOffset, bool doDraw)
 
 					m_cmdList->DrawIndexedInstanced(drawArg.IndexCount, lInstanceCountByLODLevel, drawArg.StartIndexLocation, 0, 0);
 				}
-				instanceOffset += lInstanceCountByLODLevel;
-			}
+				instanceOffset += lInstanceCountByLODLevel;				
+			}			
 		}
 	}
 }

@@ -88,6 +88,8 @@ struct PassStruct
     float FogRange;
     float CameraDistance;
     float pod0;
+    float3 ViewPointPosition;
+    float pod1;
     Light Lights[MaxLights];
 };
 

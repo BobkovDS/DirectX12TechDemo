@@ -2,11 +2,18 @@
 #include "Canvas.h"
 #include <comdef.h>
 #include "stdafx.h"
+#include <d2d1.h>
+#include <d2d1_3.h>
+#include <d3d11on12.h>
+#include <dwrite.h>
 
 // Link necessary d3d12 libraries.
 #pragma comment(lib,"d3dcompiler.lib")
 #pragma comment(lib, "D3D12.lib")
 #pragma comment(lib, "dxgi.lib")
+#pragma comment(lib, "d2d1.lib")
+#pragma comment(lib, "Dwrite.lib")
+#pragma comment(lib, "D3D11.lib")
 
 using Microsoft::WRL::ComPtr;
 
@@ -33,14 +40,24 @@ class BasicDXGI :	public Canvas
 protected:
 	bool m_fullScreen= false;
 	ComPtr<ID3D12Fence> m_fence;
-	ComPtr<IDXGIFactory4> m_factory;	
+	ComPtr<IDXGIFactory4> m_factory;		
 	ComPtr<ID3D12Device> m_device;
 	ComPtr<IDXGISwapChain3> m_swapChain;
 	ComPtr<ID3D12CommandQueue> m_cmdQueue;
 	ComPtr<ID3D12GraphicsCommandList> m_cmdList;
 	ComPtr<ID3D12CommandAllocator> m_cmdAllocator;
-	
+	ComPtr<ID2D1Device> m_HUDDevice;
+	ComPtr<ID2D1Factory3> m_HUDFactory;	
+	ComPtr<ID2D1DeviceContext> m_HUDContext;
+	ComPtr<ID2D1Bitmap1> m_HUDRenderTargets[m_swapChainsBufferCount];
+	ComPtr<ID2D1SolidColorBrush> m_HUDBrush;
+	ComPtr<IDWriteTextFormat> m_textFormat;
+	ComPtr<ID3D11On12Device> m_d3d11On12Device;	
+	ComPtr<ID3D11DeviceContext> m_d3d11Context;
+	ComPtr<IDWriteFactory> m_writeFactory;	
+		
 	ComPtr<ID3D12Resource> m_swapChainBuffers[m_swapChainsBufferCount];
+	ComPtr<ID3D11Resource> m_wrappedBackBuffers[m_swapChainsBufferCount];
 
 	ComPtr<ID3D12DescriptorHeap> m_rtvHeap; // Render Target View DescriptorHeap
 

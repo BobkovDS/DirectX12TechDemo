@@ -79,8 +79,7 @@ private:
 	ObjectManager* m_objectManager;
 	ResourceManager* m_resourceManager;	
 	SkeletonManager* m_skeletonManager;
-	bool m_initialized;
-	int m_currentShiftLogCount;
+	bool m_initialized;	
 
 	std::string m_sceneName;
 	std::map<std::string, std::unique_ptr<fbx_Mesh>> m_meshesByName;

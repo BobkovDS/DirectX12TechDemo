@@ -165,6 +165,12 @@
     <ClCompile Include="Selector.cpp">
       <Filter>Source Files\Other</Filter>
     </ClCompile>
+    <ClCompile Include="DebugRender_View.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="PSODebugLayer_View.cpp">
+      <Filter>Source Files\PSO</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PSOBaseLayer.h">
@@ -314,6 +320,15 @@
     <ClInclude Include="Selector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BoundingMath.h">
+      <Filter>Header Files\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugRender_View.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="PSODebugLayer_View.h">
+      <Filter>Header Files\PSO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\commonPart.hlsl">
@@ -379,5 +394,13 @@
     <FxCompile Include="Shaders\ShadowRender_shaders.hlsl">
       <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Shaders\DebugViewRender_shaders.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BoundingMath.inl">
+      <Filter>Header Files\Other</Filter>
+    </None>
   </ItemGroup>
 </Project>

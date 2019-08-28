@@ -5,9 +5,11 @@
 #include "DebugRender_Light.h"
 #include "DebugRender_Normals.h"
 #include "DebugRender_Screen.h"
+#include "DebugRender_View.h"
 #include "SSAORender.h"
 #include "BlurRender.h"
 #include "ShadowRender.h"
+
 
 
 struct RenderManagerMessanger {
@@ -39,11 +41,13 @@ class RenderManager
 	DebugRender_Light m_debugRenderLights;
 	DebugRender_Normals m_debugRenderNormals;
 	DebugRender_Screen m_debugRenderScreen;
+	DebugRender_View m_debugRenderView;
 	
 	bool m_debugMode;
 	bool m_debug_Axes;
 	bool m_debug_Lights;
 	bool m_debug_Normals_Vertex;
+	bool m_debug_View;
 	bool m_isSSAOUsing;
 	bool m_isShadowUsing;
 	bool m_isNormalMappingUsing;
@@ -66,16 +70,20 @@ public:
 	void toggleDebug_Normals_Vertex();
 	void toggleDebug_Axes();
 	void toggleDebug_Lights();
+	void toggleDebug_View();
 	void toggleTechnik_SSAO();
 	void toggleTechnik_Shadow();
-	void toggleTechnik_Normal();
+	void toggleTechnik_Normal();	
 	void setRenderMode_Final();
 	void setRenderMode_SSAO_Map1(); // ViewNormal Map
 	void setRenderMode_SSAO_Map2(); // AO Map
 	void setRenderMode_SSAO_Map3(); // AO Blured Map
 	void setRenderMode_Shadow(UINT mapID=0); // Shadow Map
-
-
+	
 	bool isDebugMode() { return m_debugMode; }
+
+	UINT getTrianglesDrawnCount() { return m_finalRender.getTrianglesDrawnCount(); } // How much Triangles were sent for drawing in FinalRender
+	UINT getTrianglesCountIfWithoutLOD() { return m_finalRender.getTrianglesCountIfWithoutLOD(); } // How much triangles would be drawn without using LOD
+	UINT getTrianglesCountInScene() { return m_finalRender.getTrianglesCountInScene(); } // How much triangles in Scene at all (Without LOD and Frustum Culling)
 };
 

@@ -121,8 +121,15 @@ void ShadowRender::draw(int lightID)
 }
 
 void ShadowRender::draw_layer(int layerID, int& instanceOffset, bool doDraw)
-{
-	Scene::SceneLayer* lObjectLayer = m_scene->getLayer(layerID);
+{	
+	/*
+	Shadow Render draw only LOD0 and LOD1 instances for RenderITem. But in our Instances CB we have all intances for all LOD. To count
+	'instanceOffset' correctly, we "draw" all LOD, but do real work only for LOD0 and LOD1, for LOD2 we just count InstanceCountByLODLevel
+	*/
+
+	Scene::SceneLayer* lObjectLayer = nullptr;
+	lObjectLayer = m_scene->getLayer(layerID);
+
 	if (lObjectLayer->isLayerVisible()) // Draw Layer if it visible
 	{
 		for (int ri = 0; ri < lObjectLayer->getSceneObjectCount(); ri++) // One layer has several RenderItems
@@ -136,12 +143,13 @@ void ShadowRender::draw_layer(int layerID, int& instanceOffset, bool doDraw)
 
 			const RenderItem* lRI = lSceneObject->getObjectMesh();
 
-			for (int lod_id = 0; lod_id < LODCOUNT - 1; lod_id++) // Shadow works only for LOD0 and LOD1 meshes
+			for (int lod_id = 0; lod_id < LODCOUNT; lod_id++)
 			{
 				UINT lInstanceCountByLODLevel = lSceneObject->getInstancesCountLOD_byLevel(lod_id);
 				if (lInstanceCountByLODLevel == 0) continue;
-
-				if (doDraw) // some layers we do not need to draw, but we need to count instances for it
+								
+				bool lLODDraw = (lod_id == 0 || lod_id == 1 ); //Shadow works only for LOD0 and LOD1 meshes				
+				if (doDraw && lLODDraw) // some layers we do not need to draw, but we need to count instances for it
 				{
 					Mesh* lMesh = lRI->LODGeometry[lod_id];
 
