@@ -175,26 +175,6 @@ void BasicDXGI::init3D()
 		assert(SUCCEEDED(res));	
 
 		m_rtvDescriptorSize = m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-		
-		// Direct2D
-		{
-			////// Create Direct2D Device
-			//UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
-			//ComPtr<ID3D11Device> ld3d11Device;
-			//res = D3D11On12CreateDevice(
-			//	m_device.Get(),
-			//	creationFlags,
-			//	nullptr,
-			//	0,
-			//	reinterpret_cast<IUnknown**> (m_cmdQueue.GetAddressOf()),
-			//	1,
-			//	0,
-			//	&ld3d11Device,
-			//	&m_d3d11Context,
-			//	nullptr);
-
-			//res = ld3d11Device.As(&m_d3d11On12Device);
-		}
 
 		create_RTV();
 		initDXGI_RTV_done = true;
@@ -225,6 +205,7 @@ void BasicDXGI::create_RTV()
 		m_swapChainBuffers[i].Reset();
 	}
 
+#ifdef GUI_HUD
 	// Direct2D
 	{
 		{
@@ -279,7 +260,7 @@ void BasicDXGI::create_RTV()
 		D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
 		D2D1::PixelFormat(m_backBufferFormat, D2D1_ALPHA_MODE_PREMULTIPLIED),
 		ldpiX, ldpiY);
-		
+#endif		
 	// Resize SwapChain
 	/* MSDN:
 	Before you call ResizeBuffers, ensure that the application releases all references(by calling the appropriate
@@ -301,6 +282,7 @@ void BasicDXGI::create_RTV()
 		m_swapChain->GetBuffer(i, IID_PPV_ARGS(&m_swapChainBuffers[i]));
 		m_device->CreateRenderTargetView(m_swapChainBuffers[i].Get(), nullptr, rtvHeapHandle);
 		
+#ifdef GUI_HUD
 		// for Direct2D
 		D3D11_RESOURCE_FLAGS ld3d11Flags = { D3D11_BIND_RENDER_TARGET };
 		res = m_d3d11On12Device->CreateWrappedResource(m_swapChainBuffers[i].Get(),
@@ -313,7 +295,7 @@ void BasicDXGI::create_RTV()
 		ComPtr<IDXGISurface> lSurface;
 		res = m_wrappedBackBuffers[i].As(&lSurface);
 		res = m_HUDContext->CreateBitmapFromDxgiSurface(lSurface.Get(), &lBitmapProperties, &m_HUDRenderTargets[i]);
-		
+#endif
 		rtvHeapHandle.Offset(1, rtvDescriptorSize);
 	}
 	

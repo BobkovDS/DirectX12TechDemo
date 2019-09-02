@@ -26,6 +26,11 @@ void ObjectManager::addTransparentObjectGH(unique_ptr<RenderItem>& p)
 	m_notOpaqueLayerGH.push_back(std::move(p));
 }
 
+void ObjectManager::addTransparentObjectCH(unique_ptr<RenderItem>& p)
+{
+	m_notOpaqueLayerCH.push_back(std::move(p));
+}
+
 void ObjectManager::addSkinnedOpaqueObject(unique_ptr<RenderItem>& p)
 {
 	m_skinnedOpaqueLayer.push_back(std::move(p));
@@ -86,6 +91,11 @@ const vector<unique_ptr<RenderItem>>& ObjectManager::getNotOpaqueLayer()
 const vector<unique_ptr<RenderItem>>& ObjectManager::getNotOpaqueLayerGH()
 {
 	return m_notOpaqueLayerGH;
+}
+
+const vector<unique_ptr<RenderItem>>& ObjectManager::getNotOpaqueLayerCH()
+{
+	return m_notOpaqueLayerCH;
 }
 
 const vector<unique_ptr<RenderItem>>& ObjectManager::getSkinnedOpaqueLayer()

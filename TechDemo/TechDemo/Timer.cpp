@@ -9,12 +9,13 @@ Timer::Timer()
 	QueryPerformanceCounter((LARGE_INTEGER*)&m_CurrTime);
 	m_PrevTime = m_CurrTime;	
 	m_totalTimerIsRunning = false;
+
+	setTickTime(0.01f);
 }
 
 Timer::~Timer()
 {
 }
-
 
 void Timer::begin()
 {

@@ -135,6 +135,7 @@
     <ClCompile Include="BoneData.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Canvas.cpp" />
+    <ClCompile Include="ComputeRender.cpp" />
     <ClCompile Include="DebugRender_Axis.cpp" />
     <ClCompile Include="DebugRender_Light.cpp" />
     <ClCompile Include="DebugRender_Normals.cpp" />
@@ -146,6 +147,7 @@
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="PSOBlurLayer.cpp" />
+    <ClCompile Include="PSOComputeLayer.cpp" />
     <ClCompile Include="PSODebugLayer_Axis.cpp" />
     <ClCompile Include="PSODebugLayer_Light.cpp" />
     <ClCompile Include="PSODebugLayer_Normals.cpp" />
@@ -160,9 +162,6 @@
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="Selector.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="ShadowRender.cpp" />
     <ClCompile Include="SkeletonManager.cpp" />
     <ClCompile Include="SkinnedData.cpp" />
@@ -185,6 +184,7 @@
     <ClInclude Include="BoundingMath.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Canvas.h" />
+    <ClInclude Include="ComputeRender.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DebugRender_Axis.h" />
     <ClInclude Include="DebugRender_Light.h" />
@@ -200,6 +200,7 @@
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="PSOBlurLayer.h" />
+    <ClInclude Include="PSOComputeLayer.h" />
     <ClInclude Include="PSODebugLayer_Axis.h" />
     <ClInclude Include="PSODebugLayer_Light.h" />
     <ClInclude Include="PSODebugLayer_Normals.h" />
@@ -214,7 +215,6 @@
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Scene.h" />
-    <ClInclude Include="Selector.h" />
     <ClInclude Include="ShadowRender.h" />
     <ClInclude Include="SkeletonManager.h" />
     <ClInclude Include="SkinnedData.h" />
@@ -241,6 +241,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
+    <FxCompile Include="Shaders\ComputeRender_shaders.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="Shaders\DebugAxesRender_shaders.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -260,6 +264,10 @@
     <FxCompile Include="Shaders\DebugViewRender_shaders.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Shaders\FinalRender_CH_shaders.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Shaders\RootSignature_Debug.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

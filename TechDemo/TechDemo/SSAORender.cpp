@@ -100,8 +100,8 @@ void SSAORender::build_TechDescriptors()
 	// SRV for RandomVector Map
 	lhDescriptorOffseting = lhDescriptor;
 	lhDescriptorOffseting.Offset(TECHSLOT_RNDVECTORMAP, lSrvSize);
-	srvDesc.Format = m_randomVectorsTexture.RessourceInDefaultHeap.Get()->GetDesc().Format;
-	m_device->CreateShaderResourceView(m_randomVectorsTexture.RessourceInDefaultHeap.Get(), &srvDesc, lhDescriptorOffseting);
+	srvDesc.Format = m_randomVectorsTexture.ResourceInDefaultHeap.Get()->GetDesc().Format;
+	m_device->CreateShaderResourceView(m_randomVectorsTexture.ResourceInDefaultHeap.Get(), &srvDesc, lhDescriptorOffseting);
 
 	m_dsResource->changeState(m_cmdList, D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_GENERIC_READ);
 	m_rtResources[RESOURCEID_VN]->changeState(m_cmdList, D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_GENERIC_READ);
@@ -369,6 +369,7 @@ void SSAORender::build_randomVectorTexture()
 		}
 	}
 
+	/*
 	D3D12_RESOURCE_DESC textDesc = {};
 	textDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 	textDesc.Alignment = 0;
@@ -387,12 +388,12 @@ void SSAORender::build_randomVectorTexture()
 		&textDesc,
 		D3D12_RESOURCE_STATE_COPY_DEST,
 		nullptr,
-		IID_PPV_ARGS(&m_randomVectorsTexture.RessourceInDefaultHeap));
+		IID_PPV_ARGS(&m_randomVectorsTexture.ResourceInDefaultHeap));
 
 	assert(SUCCEEDED(res));
 
-	const UINT num2DSubResources = textDesc.DepthOrArraySize * textDesc.MipLevels;
-	const UINT64 uploadBufferSize = GetRequiredIntermediateSize(m_randomVectorsTexture.RessourceInDefaultHeap.Get(), 0, num2DSubResources);
+	const UINT num2DSubResources = textDesc.DepthOrArraySize * textDesc.MipLevels; // TO_DO: do we realy need it here?
+	const UINT64 uploadBufferSize = GetRequiredIntermediateSize(m_randomVectorsTexture.ResourceInDefaultHeap.Get(), 0, num2DSubResources);
 
 	res = m_device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
@@ -400,7 +401,7 @@ void SSAORender::build_randomVectorTexture()
 		&CD3DX12_RESOURCE_DESC::Buffer(uploadBufferSize),
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&m_randomVectorsTexture.RessourceInUploadHeap));
+		IID_PPV_ARGS(&m_randomVectorsTexture.ResourceInUploadHeap));
 
 	assert(SUCCEEDED(res));
 
@@ -410,13 +411,21 @@ void SSAORender::build_randomVectorTexture()
 	subResourceData.SlicePitch = subResourceData.RowPitch * 256;
 
 	UpdateSubresources(m_cmdList,
-		m_randomVectorsTexture.RessourceInDefaultHeap.Get(),
-		m_randomVectorsTexture.RessourceInUploadHeap.Get(),
+		m_randomVectorsTexture.ResourceInDefaultHeap.Get(),
+		m_randomVectorsTexture.ResourceInUploadHeap.Get(),
 		0, 0,
 		num2DSubResources,
 		&subResourceData);
 
 	m_cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
-		m_randomVectorsTexture.RessourceInDefaultHeap.Get(),
+		m_randomVectorsTexture.ResourceInDefaultHeap.Get(),
 		D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_GENERIC_READ));
+	*/
+
+	// new
+	m_randomVectorsTexture.ResourceInDefaultHeap = Utilit3D::createTextureWithData(m_device, m_cmdList,
+		initData, sizeof(DirectX::PackedVector::XMCOLOR), 256, 256,
+		DXGI_FORMAT_R8G8B8A8_UNORM, m_randomVectorsTexture.ResourceInUploadHeap);
+
+
 }

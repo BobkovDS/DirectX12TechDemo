@@ -2,14 +2,16 @@
 #include "ApplDataStructures.h"
 #include <map>
 
+
 class ResourceManager
 {
+	static std::string m_dummyPath;
 	std::string m_prefixName; //Prefix name for resources name (like Texture name)
 	std::vector<std::unique_ptr<MaterialCPU>> m_materials;
-	std::map<std::string, std::string> m_texturePathsByNames;
+	std::map<std::string, std::string> m_texturePathsByNames; //<texture_name, texture_path>
 	std::map<std::string, int> m_texturePathID;
-	std::vector<std::string> m_orderedTextureList;
-
+	std::vector<std::string> m_orderedTextureList;	
+	UINT m_DummyTexturePathCount;
 	bool m_textureIsUploaded;
 	std::vector<ResourceWithUploader> m_textures;
 	ResourceWithUploader m_materialsResource;
@@ -28,6 +30,7 @@ public:
 	void loadTexture();
 	void loadMaterials();
 	int getTexturePathIDByName(const std::string& textureName);
+	int addDummyTexturePath();
 	ID3D12Resource* getMaterialsResource();
 	ID3D12Resource* getTextureResource(UINT textureID);
 	MaterialCPU* getMaterial(UINT i);

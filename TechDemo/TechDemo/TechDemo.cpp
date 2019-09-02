@@ -92,9 +92,10 @@ void TechDemo::onKeyDown(WPARAM btnState)
 	case VK_NUMPAD2: m_renderManager.toggleDebug_Lights(); break;
 	case VK_NUMPAD3: m_renderManager.toggleDebug_Normals_Vertex(); break;
 	case VK_NUMPAD4: m_renderManager.toggleDebug_View(); break;
+	case VK_NUMPAD5: m_renderManager.test_drop(); break;
 	case VK_NUMPAD7: m_renderManager.toggleTechnik_SSAO(); break;
 	case VK_NUMPAD8: m_renderManager.toggleTechnik_Shadow(); break;
-	case VK_NUMPAD9: m_renderManager.toggleTechnik_Normal(); break;
+	case VK_NUMPAD9: m_renderManager.toggleTechnik_ComputeWork(); break;
 
 	case '1': m_renderManager.setRenderMode_Final(); break;
 	case '2': m_renderManager.setRenderMode_SSAO_Map1(); break;
@@ -181,9 +182,8 @@ void TechDemo::init3D()
 	//{
 	//	FBXFileLoader m_fbx_loader;
 	//	m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
-	//	m_fbx_loader.loadSceneFile("Models\\defaultCub.fbx");
+	//	m_fbx_loader.loadSceneFile("Models\\Water3.fbx");
 	//}
-
 
 	////Load a house
 	{
@@ -270,8 +270,8 @@ void TechDemo::init3D()
 	m_cmdList->Close();
 	ID3D12CommandList* cmdsList[] = { m_cmdList.Get() };
 	m_cmdQueue->ExecuteCommandLists(1, cmdsList);
+	ApplLogger::getLogger().log("TechDemo::init3D()::Cmd list execution is done.", 0);
 
-	ApplLogger::getLogger().log("TechDemo::init3D()::before Cmd list execution done.", 0);
 	FlushCommandQueue();
 	ApplLogger::getLogger().log("TechDemo::init3D()::Flush commands is done.", 0);
 	m_init3D_done = true;
@@ -509,6 +509,28 @@ void TechDemo::update_passSSAOCB()
 	mSSAOPassCB.BlurWeight[2] = XMFLOAT4(&blurWeights[8]);
 
 	mSSAOPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / width(), 1.0f / height());
+	// Calculate koeffs for ComputeRender
+
+	float c = 4.0f;
+	float t = 0.029f;
+	float dx = 0.078f;// 3921568f;
+	float mu = 0.3f;
+
+	float c_max = dx * sqrtf(mu*t + 2) / (2 * t);
+	if (c >= c_max) c = c_max - 0.01f;
+
+	float f1 = c * c * t * t / (dx * dx);
+	float f2 = 1.0f / (mu * t + 2.0f);
+
+	float k1 = (4.0f - 8.0f * f1) * f2;
+	float k2 = (mu * t - 2.0f) * f2;
+	float k3 = 2.0f * f1 * f2;
+
+	mSSAOPassCB.k1 = k1;
+	mSSAOPassCB.k2 = k2;
+	mSSAOPassCB.k3 = k3;
+
+	// Write data to CB
 	auto currSsaoCB = m_frameResourceManager.currentFR()->getSSAOCB();
 	currSsaoCB->CopyData(0, mSSAOPassCB);
 }
@@ -552,7 +574,10 @@ void TechDemo::work()
 	ID3D12CommandList* CmdLists[] = { m_cmdList.Get() };
 	m_cmdQueue->ExecuteCommandLists(1, CmdLists);
 
+#ifdef GUI_HUD
 	renderUI();
+#endif
+
 	m_swapChain->Present(0, 0);
 	m_frameResourceManager.currentFR()->setFenceValue(getFenceValue());
 	//setFence(); ???
@@ -560,8 +585,7 @@ void TechDemo::work()
 }
 
 void TechDemo::renderUI()
-{
-
+{	
 	int lResourceIndex = m_swapChain->GetCurrentBackBufferIndex();
 	D2D_SIZE_F lrtSize = m_HUDRenderTargets[lResourceIndex]->GetSize();
 	D2D_RECT_F ltextRect = D2D1::RectF(0, 0, lrtSize.width, lrtSize.height);

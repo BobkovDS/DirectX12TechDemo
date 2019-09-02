@@ -6,7 +6,7 @@ private:
 	double m_DeltaTime;	
 	double m_CommonTotalTime = 0;
 	double m_pausedTime=0;
-	const double m_delta = 0.01;
+	double m_delta;
 
 	__int64 m_PrevTime = 0;
 	__int64 m_CurrTime = 0;
@@ -28,6 +28,7 @@ public:
 
 
 	bool tick();
+	void setTickTime(double interval) {	m_delta = interval;}
 	bool tick1Sec();
 	void begin();
 	double end();

@@ -10,16 +10,13 @@
 VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID) 
 {   
 	VertexOut vout;
-
-    //uint shapeID = gDrawInstancesIDData[instID + gInstancesOffset]; 
+    
     uint shapeID = instID + gInstancesOffset; 
     InstanceData instData = gInstanceData[shapeID];
     float4x4 wordMatrix = instData.World;  
     
     //get World transform    
     float4 posW = mul(wordMatrix, float4(vin.PosL, 1.0f));    
-    //float4 posW = float4(vin.PosL, 1.0f);    
-    //posW.z = posW.z * (-1.0f);
 	vout.PosW = posW.xyz;    
 
     float4x4 ViewProj = cbPass.ViewProj;
@@ -48,9 +45,11 @@ struct PixelOut
 float4 PS(VertexOut pin) : SV_Target
 //PixelOut PS(VertexOut pin)
 {   	
-    //return float4(1.0f, 0.0f, 0.0f, 0.0f);
+   // return float4(1.0f, 0.0f, 0.0f, 0.0f);
 
     pin.NormalW = normalize(pin.NormalW);
+    //return float4(pin.NormalW, 1.0f);
+
     float3 toEyeW = cbPass.EyePosW - pin.PosW;
     float distToEye = length(toEyeW);
     toEyeW = toEyeW / distToEye;

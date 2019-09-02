@@ -124,8 +124,8 @@ struct VertexExtGPU // Vertex structure with Shape ID
 
 struct ResourceWithUploader
 {
-	Microsoft::WRL::ComPtr<ID3D12Resource> RessourceInDefaultHeap = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12Resource> RessourceInUploadHeap = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource> ResourceInDefaultHeap = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource> ResourceInUploadHeap = nullptr;
 };
 
 struct MaterialConstantsGPU
@@ -180,8 +180,7 @@ struct PassConstantsGPU
 
 	DirectX::XMFLOAT3 ViewPointPosition;
 	float dummy3;
-
-	//UINT hfhfhhfghf[1000000];
+	
 	LightGPU Lights[MaxLights];
 };
 
@@ -197,7 +196,13 @@ struct SSAO_GPU
 	float OcclusionFadeStart;
 	float OcclusionFadeEnd;
 	float SurfaceEpsilon;
-	DirectX::XMFLOAT2 pod;
+	DirectX::XMFLOAT2 pad;
+
+	// This part we use for ComputeRender (WaterV2 objects)
+	float k1;
+	float k2;
+	float k3;
+	float pod1;
 };
 
 #endif GRAPHICSTRUCT_H

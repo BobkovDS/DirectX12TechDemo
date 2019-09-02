@@ -1,6 +1,9 @@
 Application begin to work
 Loading of Models\The Scene.fbx
 	Creating scene [The Scene]
+		[NODE]: WaterV2_object
+			[MATERIAL]: WaterV2_material
+			[MESH][WaterV2]: Plane.001
 		[NODE]: House_L_Lib
 			[MATERIAL]: cottage_texture
 			Texture(diffuse): Hause_colorTexture1[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Textures\cottage_textures\cottage_diffuse.png]
@@ -32,28 +35,6 @@ Loading of Models\The Scene.fbx
 			[MATERIAL]: MaterialSky
 			Texture(diffuse): sky_texture[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Textures\Sky\Sky.tif]
 			[MESH]: SkyMesh
-		[NODE]: tree_object1
-			[MATERIAL]: Tree_material1
-			Texture(diffuse): Texture.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\trees\Tree1\BarkDecidious0194_7_S.jpg]
-			[MESH]: tree_Mesh1
-			[NODE]: tree_leavesObject1
-				[MATERIAL]: Tree_Leaves1
-				Texture(diffuse): Texture.003[G:\SSDLaba\Modeling\Blender\TechDemo\Models\trees\Tree1\Leaves0120_35_S.png]
-				[MESH]: tree_leavesMesh1
-		[NODE]: tree_Object2
-			[MATERIAL]: Tree_material1
-			[MESH]: tree_Mesh2
-			[NODE]: tree_leavesObject2
-				[MATERIAL]: Tree_Leaves2
-				Texture(diffuse): Texture[G:\SSDLaba\Modeling\Blender\TechDemo\Models\trees\Tree1\Leaves0156_1_S.png]
-				[MESH]: tree_leavesMesh2
-		[NODE]: tree_Object3
-			[MATERIAL]: Tree_material1
-			[MESH]: tree_Mesh3
-			[NODE]: tree_leavesObject3
-				[MATERIAL]: Tree_Leaves3
-				Texture(diffuse): Texture.004[G:\SSDLaba\Modeling\Blender\TechDemo\Models\trees\Tree1\Leaves0142_4_S.png]
-				[MESH]: tree_leavesMesh3
 		[NODE]: Water_object_L_Lib.004
 			[MATERIAL]: Water_material
 			Texture(diffuse): TextureLow[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Textures\Water\water_height_normal_map_low.jpg]
@@ -64,14 +45,6 @@ Loading of Models\The Scene.fbx
 			Texture(diffuse): tinyworld_woodTexture1[G:\SSDLaba\Modeling\Blender\TechDemo\Models\tinyworld\textures\wood3.jpg]
 			[MESH]: Cylinder.007
 		[NODE]: Cylinder.001_L_Lib.001
-			[MATERIAL]: zaun
-		[NODE]: Cylinder.002_L_Lib.001
-			[MATERIAL]: zaun
-		[NODE]: Cylinder.003_L_Lib.001
-			[MATERIAL]: zaun
-		[NODE]: Cylinder.004_L_Lib.001
-			[MATERIAL]: zaun
-		[NODE]: Cylinder.005_L_Lib.001
 			[MATERIAL]: zaun
 		[NODE]: Cylinder.006_L_Lib.001
 			[MATERIAL]: zaun
@@ -88,14 +61,6 @@ Loading of Models\The Scene.fbx
 			[MATERIAL]: zaun
 		[NODE]: Fence9.003_L_Lib.001
 			[MATERIAL]: zaun
-		[NODE]: Fence9.004_L_Lib.001
-			[MATERIAL]: zaun
-		[NODE]: Fence9.005_L_Lib.001
-			[MATERIAL]: zaun
-		[NODE]: Fence9.006_L_Lib.001
-			[MATERIAL]: zaun
-		[NODE]: Fence9.007_L_Lib.001
-			[MATERIAL]: zaun
 		[NODE]: Fence9.008_L_Lib.001
 			[MATERIAL]: zaun
 		[NODE]: Fence9.009_L_Lib.001
@@ -105,43 +70,6 @@ Loading of Models\The Scene.fbx
 		[NODE]: halterung_L_Lib.001
 			[MATERIAL]: wood
 			[MESH]: halterung_mesh
-		[NODE]: Landscape.000_L_Lib.001
-			[MATERIAL]: stone
-			[MESH]: Landscape.009
-		[NODE]: Landscape.001_L_Lib.001
-			[MATERIAL]: stone
-			[MESH]: Landscape.001
-		[NODE]: Landscape.002_L_Lib.001
-			[MATERIAL]: stone
-			[MESH]: Landscape.002
-		[NODE]: Landscape.003_L_Lib.001
-			[MATERIAL]: stone
-		[NODE]: Landscape.004_L_Lib.001
-			[MATERIAL]: stone
-		[NODE]: Landscape.008_L_Lib.001
-			[MATERIAL]: stone
-			[MESH]: Landscape.008
-		[NODE]: Landscape.009_L_Lib.001
-			[MATERIAL]: stone
-		[NODE]: Plane_004.001_L_Lib.001
-			[MATERIAL]: grass_2
-			Texture(diffuse): tinyworld_grassTexture1[G:\SSDLaba\Modeling\Blender\TechDemo\Models\tinyworld\textures\Gras2 - Kopie.jpg]
-			[MESH]: Plane.002
-		[NODE]: Plane_004.002_L_Lib.001
-			[MATERIAL]: grass_2
-			[MESH]: Plane.003
-		[NODE]: Plane_004.003_L_Lib.001
-			[MATERIAL]: grass_2
-			[MESH]: Plane.004
-		[NODE]: Plane_004.004_L_Lib.001
-			[MATERIAL]: grass_2
-			[MESH]: Plane.005
-		[NODE]: Plane_004.005_L_Lib.001
-			[MATERIAL]: grass_2
-			[MESH]: Plane.006
-		[NODE]: Plane_004.006_L_Lib.001
-			[MATERIAL]: grass_2
-			[MESH]: Plane.007
 		[NODE]: tafel_L_Lib.001
 			[MATERIAL]: tafel
 			[MESH]: tafel_mesh
@@ -151,34 +79,6 @@ Loading of Models\The Scene.fbx
 		[NODE]: wegstein1.045_L_Lib.001
 			[MATERIAL]: white_stone
 			[MESH]: Circle.053
-		[NODE]: wegstein1.047_L_Lib.001
-			[MATERIAL]: white_stone
-			[MESH]: Circle.055
-		[NODE]: wegstein1.048_L_Lib.001
-			[MATERIAL]: white_stone
-			[MESH]: Circle.056
-		[NODE]: wegstein1.049_L_Lib.001
-			[MATERIAL]: white_stone
-			[MESH]: Circle.057
-		[NODE]: white_tree.002_L_Lib.001
-			[MATERIAL]: white_wood
-			Texture(diffuse): tinyworld_woodTexture1[G:\SSDLaba\Modeling\Blender\TechDemo\Models\tinyworld\textures\wood3.jpg]
-			[MESH]: tree.002
-		[NODE]: white_tree_L_Lib.001
-			[MATERIAL]: white_wood
-			[MESH]: tree.001
-			[NODE]: leaves_L_Lib.001
-				[MATERIAL]: leaves
-				Texture(diffuse): tinyworld_treeTexture1[G:\SSDLaba\Modeling\Blender\TechDemo\Models\tinyworld\textures\Leaves0135_1_S.png]
-				[MESH]: leaves
-		[NODE]: tree_Object2.001
-			[MATERIAL]: Tree_material1.001
-			Texture(diffuse): Texture.006[G:\SSDLaba\Modeling\Blender\TechDemo\Models\trees\Tree1\BarkDecidious0194_7_S.jpg]
-			[MESH]: tree_Mesh2.001
-			[NODE]: tree_leavesObject2.001
-				[MATERIAL]: Tree_Leaves2.003
-				Texture(diffuse): Texture.007[G:\SSDLaba\Modeling\Blender\TechDemo\Models\trees\Tree1\Leaves0156_1_S.png]
-				[MESH]: tree_leavesMesh2.003
 Loading of Models\The Scene.fbx is done
 Loading of Models\Landscape.fbx
 	Creating scene [Landscape]
@@ -1606,406 +1506,6 @@ Loading of Models\Landscape.fbx
 				[MATERIAL]: leaves.002
 			[NODE]: ground|white_tree_LOD0.001|Dupli|299.1.0.0.0.0.0.0.0.0
 				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|300.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|300.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|301.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|301.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|302.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|302.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|303.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|303.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|304.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|304.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|305.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|305.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|306.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|306.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|307.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|307.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|308.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|308.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|309.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|309.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|310.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|310.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|311.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|311.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|312.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|312.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|313.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|313.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|314.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|314.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|315.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|315.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|316.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|316.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|317.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|317.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|318.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|318.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|319.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|319.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|320.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|320.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|321.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|321.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|322.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|322.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|323.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|323.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|324.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|324.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|325.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|325.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|326.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|326.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|327.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|327.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|328.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|328.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|329.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|329.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|330.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|330.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|331.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|331.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|332.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|332.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|333.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|333.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|334.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|334.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|335.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|335.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|336.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|336.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|337.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|337.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|338.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|338.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|339.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|339.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|340.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|340.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|341.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|341.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|342.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|342.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|343.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|343.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|344.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|344.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|345.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|345.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|346.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|346.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|347.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|347.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|348.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|348.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|349.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|349.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|350.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|350.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|351.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|351.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|352.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|352.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|353.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|353.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|354.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|354.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|355.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|355.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|356.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|356.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|357.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|357.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|358.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|358.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|359.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|359.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|360.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|360.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|361.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|361.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|362.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|362.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|363.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|363.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|364.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|364.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|365.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|365.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|366.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|366.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|367.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|367.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|368.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|368.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|369.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|369.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|370.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|370.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|371.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|371.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|372.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|372.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|373.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|373.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|374.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|374.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|375.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|375.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|376.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|376.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|377.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|377.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|378.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|378.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|379.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|379.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|380.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|380.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|381.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|381.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|382.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|382.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|383.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|383.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|384.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|384.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|385.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|385.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|386.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|386.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|387.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|387.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|388.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|388.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|389.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|389.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|390.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|390.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|391.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|391.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|392.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|392.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|393.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|393.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|394.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|394.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|395.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|395.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|396.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|396.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|397.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|397.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|398.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|398.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
-			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|399.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.002
-			[NODE]: ground|white_tree_LOD0.001|Dupli|399.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.002
 		[NODE]: Plane_004.003
 			[MATERIAL]: grass_2
 Loading of Models\Landscape.fbx is done
@@ -2020,7 +1520,7 @@ Loading of Models\Camera.fbx is done
 TechDemo::init3D()::Scene building...
 TechDemo::init3D()::Scene building is done
 TechDemo::init3D()::before Cmd list execution.
-TechDemo::init3D()::before Cmd list execution done.
+TechDemo::init3D()::Cmd list execution is done.
 TechDemo::init3D()::Flush commands is done.
 TechDemo::init3D() is done
 Application finish the work

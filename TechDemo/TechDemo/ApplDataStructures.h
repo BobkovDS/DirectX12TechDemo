@@ -12,6 +12,7 @@ enum RenderItemType {
 	RIT_SkinnedOpaque= 'skop', 
 	RIT_SkinnedNotOpaque= 'skno',
 	RIT_GH = 'gesh', // object which will be processed by Geometry Shader
+	RIT_CH = 'cesh', // object which will be processed by Compute Shader
 	RIT_Sky = 'sky' // object which will be processed by like a Sky
 };
 
@@ -54,6 +55,13 @@ struct MaterialCPU
 	int DiffuseColorTextureIDs[TEXTURESCOUNT]; //see TextureMask for texture meaning
 	bool IsTransparent; // float factor is used for Transparent factor
 	bool IsTransparencyFactorUsed; // Texture is used for transparency
+	
+	//for WaterV2 object
+	UINT WaterV2_Width; // in vertex
+	UINT WaterV2_Height; // in vertex
+	float WaterV2_Velocity;
+	float WaterV2_TimeInterval;
+	float WaterV2_Viscosity;
 };
 
 enum LightType : unsigned int {

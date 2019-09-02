@@ -65,6 +65,7 @@ void DebugRender_Normals::draw(int flags)
 	UINT lLayerToDraw = 0b110; //OPAQUELAYER and NOTOPAQUELAYER
 	//if (flags & (1 << DRN_VERTEX)) // Which Normals (Vertex, Face or Tangent) we can draw
 	{
+		// We draw only Vertex normals in this realization
 		int lInstanceOffset = 0;
 		m_cmdList->SetPipelineState(m_psoLayer.getPSO(DRN_VERTEX)); // Here we change shaders. As we have the one RootSignauture for Render, so Root areguments are not reset when we set new PSO	
 		for (int i = 0; i < m_scene->getLayersCount(); i++)
@@ -78,7 +79,7 @@ void DebugRender_Normals::draw(int flags)
 			D3D12_RESOURCE_STATE_PRESENT));
 }
 
-void DebugRender_Normals::draw_layer(int layerID, int& instanseOffset, bool doDraw, D3D12_PRIMITIVE_TOPOLOGY PrimitiveTopology)
+void DebugRender_Normals::draw_layer(int layerID, int& instanceOffset, bool doDraw, D3D12_PRIMITIVE_TOPOLOGY PrimitiveTopology)
 {	
 	Scene::SceneLayer* lObjectLayer = nullptr;
 	lObjectLayer = m_scene->getLayer(layerID);
@@ -87,19 +88,48 @@ void DebugRender_Normals::draw_layer(int layerID, int& instanseOffset, bool doDr
 	{
 		for (int ri = 0; ri < lObjectLayer->getSceneObjectCount(); ri++) // One layer has several RenderItems
 		{
-			m_cmdList->SetGraphicsRoot32BitConstant(0, instanseOffset, 0); // Instances offset for current layer objects
-			const RenderItem* lMesh = lObjectLayer->getSceneObject(ri)->getObjectMesh();
-			int lInstancesCount = lObjectLayer->getSceneObject(ri)->getInstancesCount(); // How much instances for this RenderItem we should draw
-			if (lInstancesCount == 0) return;
-			if (doDraw) // sometimes we need not to Draw but count a number of instances it use
+			Scene::SceneLayer::SceneLayerObject* lSceneObject = lObjectLayer->getSceneObject(ri);
+			int lInstancesCount = lSceneObject->getInstancesCountLOD(); // How much instances for this RenderItem we should draw
+			if (lInstancesCount == 0) continue;
+
+			/*
+			if (doDraw)
+				m_cmdList->SetPipelineState(m_psoLayer.getPSO(layerID));
+			*/			
+			const RenderItem* lRI = lSceneObject->getObjectMesh();
+
+			for (int lod_id = 0; lod_id < LODCOUNT; lod_id++)
 			{
-				auto drawArg = lMesh->Geometry->DrawArgs[lMesh->Geometry->Name];
-				m_cmdList->IASetVertexBuffers(0, 1, &lMesh->Geometry->vertexBufferView());
-				m_cmdList->IASetIndexBuffer(&lMesh->Geometry->indexBufferView());
-				m_cmdList->IASetPrimitiveTopology(PrimitiveTopology);
-				m_cmdList->DrawIndexedInstanced(drawArg.IndexCount, lInstancesCount, drawArg.StartIndexLocation, 0, 0);
+				UINT lInstanceCountByLODLevel = lSceneObject->getInstancesCountLOD_byLevel(lod_id);
+				if (lInstanceCountByLODLevel == 0) continue;
+
+				if (doDraw) // some layers we do not need to draw, but we need to count instances for it
+				{
+					Mesh* lMesh = lRI->LODGeometry[lod_id];
+
+					if (lMesh == NULL)
+					{
+						lMesh = lRI->Geometry; // we do not have LOD meshes for this RI
+						lod_id = LODCOUNT; // so lets draw it only once
+					}
+
+					auto drawArg = lMesh->DrawArgs[lMesh->Name];
+
+					m_cmdList->IASetVertexBuffers(0, 1, &lMesh->vertexBufferView());
+					m_cmdList->IASetIndexBuffer(&lMesh->indexBufferView());
+
+					m_cmdList->SetGraphicsRoot32BitConstant(0, instanceOffset, 0); // Instances offset for current layer objects
+
+					if (layerID != NOTOPAQUELAYERGH)
+						m_cmdList->IASetPrimitiveTopology(PrimitiveTopology);
+					else
+						m_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
+
+
+					m_cmdList->DrawIndexedInstanced(drawArg.IndexCount, lInstanceCountByLODLevel, drawArg.StartIndexLocation, 0, 0);
+				}
+				instanceOffset += lInstanceCountByLODLevel;
 			}
-			instanseOffset += lInstancesCount;
 		}
 	}
 }

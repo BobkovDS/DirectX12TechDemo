@@ -33,7 +33,7 @@ public:
 	
 	static OctreeSelector selector;
 	void build();
-	void update(BoundingMath::BoundingFrustum& frustom, DirectX::BoundingFrustum& dFrustum);
+	void update(BoundingMath::BoundingFrustum& frustom);
 	void update(BoundingMath::BoundingFrustum& frustom, float r1, float r2, float r3, float r4, float r5 );
 	void update();	
 	bool isContainListBBEmpty() { return m_listOfContainedBB.size() == 0; }

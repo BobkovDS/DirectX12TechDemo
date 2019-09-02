@@ -4,7 +4,7 @@
 using namespace std;
 using namespace DirectX;
 
-#define NORMALMODE 
+#define NORMALMODE // if defined, Normal is just read from file. In another case, Normal should be Averaged.
 
 int FBXFileLoader::m_materialCountForPrevCalling = 0;
 
@@ -221,6 +221,9 @@ void FBXFileLoader::build_GeoMeshesLOD(fbx_Mesh* iMesh, int LODLevel, std::strin
 
 	lgeoMesh->Name = lInnerRIName;
 
+	if (lMesh->DoNotDublicateVertices)
+		assert(0); // mesh for LOD should not ask about "Not creation" of dublicate vertices
+
 	meshVertices.resize(lMesh->Indices.size()); /* Vertices count = Indices count,
 												because a Vertex can be the same for several faces, but this Vertex should
 												have different(unique) information for this faces like Normal, TangentUV*/
@@ -288,9 +291,13 @@ inline void FBXFileLoader::build_GeoMeshesWithTypedVertex(fbx_Mesh* iMesh, bool 
 
 	lgeoMesh->Name = lInnerRIName;	
 
-	meshVertices.resize(lMesh->Indices.size()); /* Vertices count = Indices count,
+	if (lMesh->DoNotDublicateVertices == false)
+		meshVertices.resize(lMesh->Indices.size()); /* Vertices count = Indices count,
 												because if a Vertex can be the same for several faces, but this Vertex should
 												have different information for this faces like Normal, TangentUV*/
+	else
+		meshVertices.resize(lMesh->Vertices.size());
+
 	meshIndices.resize(lMesh->Indices.size());
 
 	for (int vi = 0; vi < lMesh->Indices.size(); vi++)
@@ -298,28 +305,41 @@ inline void FBXFileLoader::build_GeoMeshesWithTypedVertex(fbx_Mesh* iMesh, bool 
 		vertex = {};
 		vertex.Pos = lMesh->Vertices[lMesh->Indices[vi]];
 
-		if (lMesh->Normals.size())
+		if (lMesh->DoNotDublicateVertices == false)
 		{
-			XMVECTOR n = XMLoadFloat3(&lMesh->Normals[vi]);
-			//n = XMVector3Normalize(n);
-			XMStoreFloat3(&vertex.Normal, n);
-		}
-		if (lMesh->UVs.size())	vertex.UVText = lMesh->UVs[vi];
-		if (lMesh->Tangents.size()) vertex.TangentU = lMesh->Tangents[vi];		
+			if (lMesh->Normals.size())
+			{
+				XMVECTOR n = XMLoadFloat3(&lMesh->Normals[vi]);
+				//n = XMVector3Normalize(n);
+				XMStoreFloat3(&vertex.Normal, n);
+			}
+			if (lMesh->UVs.size())	vertex.UVText = lMesh->UVs[vi];
+			if (lMesh->Tangents.size()) vertex.TangentU = lMesh->Tangents[vi];
 
-		// write vertex/bone weight information		
-		if (lIsSkinnedMesh)
+			// write vertex/bone weight information		
+			if (lIsSkinnedMesh)
+			{
+				addSkinnedInfoToVertex(vertex, lMesh, vi);
+			}
+
+			// with vertex dublication
+			meshVertices[vi] = vertex;
+			meshIndices[vi] = vi;
+		}
+		else
 		{
-			addSkinnedInfoToVertex(vertex, lMesh, vi);			
+			// without vertex dublication
+			int lVertId = lMesh->Indices[vi];
+			if (lMesh->UVs.size())	vertex.UVText = lMesh->UVs[lVertId];
+			meshVertices[lVertId] = vertex;
+			meshIndices[vi] = lVertId;
 		}
-
-		meshVertices[vi] = vertex;
-		meshIndices[vi] = vi;
 	}
 
 	lgeoMesh->IsSkinnedMesh = lIsSkinnedMesh; // Does this mesh use at leas one skinned vertex
 
-	submesh.IndexCount = meshVertices.size();
+	submesh.VertextCount= meshVertices.size();
+	submesh.IndexCount = meshIndices.size();
 	lgeoMesh->DrawArgs[lInnerRIName] = submesh;
 
 	//Create RenderItem for this mesh		
@@ -641,8 +661,25 @@ void FBXFileLoader::build_Materials(string& pMaterialName)
 					lMaterial->DiffuseColorTextureIDs[index] = textureID;
 				}
 
-				lMaterial->IsTransparent = (*mat_it).second.IsTransparent;
+				lMaterial->IsTransparent = (*mat_it).second.IsTransparent; // TO_DO: Check this: parametr for Material is updated for each texture
 				lMaterial->IsTransparencyFactorUsed= (*mat_it).second.IsTransparencyUsed;
+			}
+
+			if (mat_it->second.IsWaterV2)
+			{		
+				// Save object parameters for compute work on Compute Shader 
+				lMaterial->WaterV2_Width = (*mat_it).second.WaterV2_Width;
+				lMaterial->WaterV2_Height = (*mat_it).second.WaterV2_Height;
+				lMaterial->WaterV2_Velocity= (*mat_it).second.WaterV2_Velocity;
+				lMaterial->WaterV2_TimeInterval = (*mat_it).second.WaterV2_TimeInterval;
+				lMaterial->WaterV2_Viscosity= (*mat_it).second.WaterV2_Viscosity;	
+				
+				// Let's texture with Compute work results (Height values) will be mapped to WaterV2 object as diffuse texture in 0 slot
+				int lTextureID = m_resourceManager->addDummyTexturePath();
+				int index = DiffuseTextureCount++;
+				lMaterial->TexturesMask |= (1 << index);				
+				lMaterial->DiffuseColorTextureIDs[index] = lTextureID;
+
 			}
 			m_resourceManager->addMaterial(lMaterial);
 			m_materialCountForThisCall++;
@@ -657,8 +694,7 @@ void FBXFileLoader::add_InstanceToRenderItem(const fbx_NodeInstance& nodeRIInsta
 	auto ri_it = m_RenderItems.find(nodeRIInstance.MeshName);
 	if (ri_it != m_RenderItems.end()) // we should already have a RenderItem, we just should add new Instance to it
 	{
-		InstanceDataGPU lBaseInstance = {};
-		//lBaseInstance.World = nodeRIInstance.LocalTransformation;
+		InstanceDataGPU lBaseInstance = {};		
 		lBaseInstance.World = nodeRIInstance.GlobalTransformation;
 
 		if (nodeRIInstance.Materials.size())
@@ -671,6 +707,8 @@ void FBXFileLoader::add_InstanceToRenderItem(const fbx_NodeInstance& nodeRIInsta
 		{
 			if (nodeRIInstance.Materials[0]->IsWater)
 				ri_it->second->Type = RenderItemType::RIT_GH; 
+			else if (nodeRIInstance.Materials[0]->IsWaterV2)
+				ri_it->second->Type = RenderItemType::RIT_CH;
 			else if (nodeRIInstance.Materials[0]->IsSky)
 				ri_it->second->Type = RenderItemType::RIT_Sky;
 			else if (nodeRIInstance.Materials[0]->IsTransparent || nodeRIInstance.Materials[0]->IsTransparencyUsed)
@@ -715,16 +753,16 @@ void FBXFileLoader::move_RenderItems()
 			
 			m_objectManager->addTransparentObject(begin_it->second);
 		}
-		else if (begin_it->second->Type == RenderItemType::RIT_GH)
-		{
-			m_objectManager->addTransparentObjectGH(begin_it->second);
-		}
+		else if (begin_it->second->Type == RenderItemType::RIT_GH)		
+			m_objectManager->addTransparentObjectGH(begin_it->second);		
+		else if (begin_it->second->Type == RenderItemType::RIT_CH)
+			m_objectManager->addTransparentObjectCH(begin_it->second);
 		else if (begin_it->second->Type == RenderItemType::RIT_Sky)		
-			m_objectManager->addSky(begin_it->second);
+			m_objectManager->addSky(begin_it->second);		
 		else
 			assert(0); 		
 	}
-	//
+	
 }
 
 int FBXFileLoader::getNextMaterialID()
@@ -798,32 +836,48 @@ void FBXFileLoader::process_node(const FbxNode* pNode)// , bool isLODMesh = fals
 		}
 		break;
 		case fbxsdk::FbxNodeAttribute::eMesh:
-		{		
-			// We use the first material for ndoe to identify which kind this Mesh is: simple mesh or mesh for Tessalation 
+		{
+			// We use the first material of a node to identify which kind this Mesh is: simple mesh or mesh for Tessalation 
 			bool lSimpleMesh = true;
-			{			
+			bool lWater2Mesh = false;
+			fbx_Material* lMaterial=nullptr;
+			{
 				int mCount = pNode->GetMaterialCount();
-				if (mCount)
-				{
-					fbx_Material lMaterial = {};
+				if (mCount) {
+
 					std::string lMaterialName = pNode->GetMaterial(0)->GetName();
 					if (m_materials.find(lMaterialName) != m_materials.end())
-						lMaterial = m_materials[lMaterialName];
-					if (lMaterial.IsWater)
-						lSimpleMesh = false;
-				}				
+						lMaterial = &m_materials[lMaterialName];
+					
+					if (lMaterial != nullptr)
+					{
+						if (lMaterial->IsWater)
+							lSimpleMesh = false;
+						if (lMaterial->IsWaterV2)
+							lWater2Mesh = true;
+					}
+				}
 			}
 
-			newNodeInstance.MeshName = process_mesh(pNodeAtrib, !lSimpleMesh);
-					   
-			FbxNode* lNode2 = const_cast<FbxNode*>(pNode);
-			//string name = lNode2->GetName(); // TO_DO: delete it
-			
-			FbxAMatrix lGlobalTransform = lNode2->EvaluateGlobalTransform();
-			FbxAMatrix lLocalTransform = lNode2->EvaluateLocalTransform();			
-			
-			convertFbxMatrixToFloat4x4(lGlobalTransform, newNodeInstance.GlobalTransformation);
-			convertFbxMatrixToFloat4x4(lLocalTransform, newNodeInstance.LocalTransformation);
+			if (lWater2Mesh)
+				newNodeInstance.MeshName = create_WaterV2Mesh(lMaterial, pNodeAtrib);
+			else
+				newNodeInstance.MeshName = process_mesh(pNodeAtrib, !lSimpleMesh);
+
+			FbxNode* lNode2 = const_cast<FbxNode*>(pNode);			
+
+			FbxAMatrix lGlobalTransform = lNode2->EvaluateGlobalTransform();			
+
+			if (lWater2Mesh) // For WaterV2 object we do not need Scale component, we use numerical parametrs for size
+			{
+				FbxVector4 lRotateV = lNode2->EvaluateLocalRotation();
+				FbxVector4 lTranslateV = lNode2->EvaluateLocalTranslation();
+				FbxVector4 lScalingV(1.0f, 1.0f, 1.0f);
+				FbxAMatrix lResult(lTranslateV, lRotateV, lScalingV);				
+				lGlobalTransform = lResult;
+			}
+
+			convertFbxMatrixToFloat4x4(lGlobalTransform, newNodeInstance.GlobalTransformation);			
 			
 			newNodeInstance.Nodetype = NT_Mesh;
 
@@ -884,12 +938,10 @@ void FBXFileLoader::process_node_LOD(const FbxNode* pNode)
 			(FbxNode* pNode) - LOD group with three LOD childs: LOD0, LOD1, LOD2
 
 		Output:
-		- only one Node_Instance for the first child LOD0. LOD1 and LOD2 no need Node instances
+		- A only one Node_Instance for the first child LOD0. LOD1 and LOD2 no need Node instances
 		- Materials (only one actually) for the first child LOD0. LOD1 and LOD2 will 'use' materials for LOD0
 	*/
 	AutoIncrementer lOutShifter;
-	//FbxLODGroup* lLODFr = (const_cast<FbxNode*>(pNode))->GetLodGroup();
-	//int nodeCount = lLODFr->GetNodeCount();
 
 	assert(pNode->GetChildCount() == 3);
 
@@ -929,10 +981,7 @@ void FBXFileLoader::process_node_LOD(const FbxNode* pNode)
 				FbxNode* lNode2 = const_cast<FbxNode*>(pNode);
 
 				FbxAMatrix lGlobalTransform = lNode2->EvaluateGlobalTransform();
-				FbxAMatrix lLocalTransform = lNode2->EvaluateLocalTransform();
-
-				convertFbxMatrixToFloat4x4(lGlobalTransform, newNodeInstance.GlobalTransformation);
-				convertFbxMatrixToFloat4x4(lLocalTransform, newNodeInstance.LocalTransformation);
+				convertFbxMatrixToFloat4x4(lGlobalTransform, newNodeInstance.GlobalTransformation);				
 
 				newNodeInstance.Nodetype = NT_Mesh;						
 		}
@@ -997,10 +1046,64 @@ void FBXFileLoader::process_node_getMaterial(const FbxNode* pNode, fbx_NodeInsta
 				if (lcustomProperty != NULL)
 				{
 					int lValue = lcustomProperty.Get<int>();
-					if (lValue == 1)
+					if (lValue == 1) // Water. Uses Tesselation stage.
 						lMaterial.IsWater = true;
 					else if (lValue == 2)
 						lMaterial.IsSky = true;
+					else if (lValue == 3) // Water Plane. Uses Compute shader
+					{
+						lMaterial.IsWaterV2 = true;
+
+						float lValue = 0;
+
+						// WaterPlane_Width
+						lcustomProperty = lphongMaterial->FindProperty("WaterPlane_Width");
+						if (lcustomProperty != NULL)
+							lValue = lcustomProperty.Get<float>();
+						else
+							lValue = 1.0f;
+						lMaterial.WaterV2_Width = lValue;
+						
+						// WaterPlane_Height
+						lcustomProperty = lphongMaterial->FindProperty("WaterPlane_Height");
+						if (lcustomProperty != NULL)
+							lValue = lcustomProperty.Get<float>();
+						else
+							lValue = 1.0f;
+						lMaterial.WaterV2_Height= lValue;
+
+						// WaterPlane_BlocksCountX
+						lcustomProperty = lphongMaterial->FindProperty("WaterPlane_BlocksCountX");
+						if (lcustomProperty != NULL)
+							lValue = lcustomProperty.Get<float>();
+						else
+							lValue = 1.0f;
+						lMaterial.WaterV2_BlocksCountX= lValue;
+
+						// WaterPlane_Velocity
+						lcustomProperty = lphongMaterial->FindProperty("WaterPlane_Velocity");
+						if (lcustomProperty != NULL)
+							lValue = lcustomProperty.Get<float>();
+						else
+							lValue = 2.0f;
+						lMaterial.WaterV2_Velocity= lValue;
+
+						// WaterPlane_TimeInterval
+						lcustomProperty = lphongMaterial->FindProperty("WaterPlane_TimeInterval");
+						if (lcustomProperty != NULL)
+							lValue = lcustomProperty.Get<float>();
+						else
+							lValue = 0.03f;
+						lMaterial.WaterV2_TimeInterval= lValue;
+
+						// WaterPlane_Viscosity
+						lcustomProperty = lphongMaterial->FindProperty("WaterPlane_Viscosity");
+						if (lcustomProperty != NULL)
+							lValue = lcustomProperty.Get<float>();
+						else
+							lValue = 0.02f;
+						lMaterial.WaterV2_Viscosity= lValue;
+					}						
 				}
 
 				lMaterial.DoesIncludeToWorldBB = true;
@@ -1328,23 +1431,6 @@ string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool m
 		}			
 	}
 
-	// get Material ID for mesh/polygons
-	//{
-	//	int count = lpcMesh->GetElementMaterialCount(); //just to know. now we will use the 0 material;
-	//	const FbxLayerElementMaterial* materialLayer = lpcMesh->GetElementMaterial();
-	//	FbxGeometryElement::EMappingMode mappingMode = materialLayer->GetMappingMode();
-
-	//	if (mappingMode == FbxGeometryElement::EMappingMode::eAllSame) // the same Material is used for all mesh
-	//	{
-	//		lmesh->Materials.push_back(materialLayer->GetIndexArray()[0]);
-	//	}
-	//	else if (mappingMode == FbxGeometryElement::EMappingMode::eByPolygon) // each polygon can have own material
-	//	{
-	//		bool MaterialByPolygonIsUsed = false;
-	//		assert(MaterialByPolygonIsUsed); // to catch when we have this variant
-	//	}
-	//}	
-
 	// get Skin Data
 	// If Bone X uses vertex Y with weight W, we will map it with VertexWeightByBoneID[Y]=pair{X, W}	
 	{		
@@ -1395,6 +1481,115 @@ string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool m
 	// This mesh can be LOD-mesh, if it is, let's add it to LOD group
 	if (LOD_level != -1)	
 		m_LODGroupByName[*groupName][LOD_level] = m_meshesByName[name].get();
+
+	return name;
+}
+
+std::string FBXFileLoader::create_WaterV2Mesh(fbx_Material* material, const FbxNodeAttribute* pNodeAtribute)
+{
+	AutoIncrementer lOutShifter;
+	const FbxMesh* lpcMesh = static_cast<const FbxMesh*>(pNodeAtribute);
+	FbxMesh* lpMesh = const_cast<FbxMesh*>(lpcMesh);
+
+	string name = lpcMesh->GetName();	
+
+	if (m_meshesByName.find(name) != m_meshesByName.end()) assert(0); // we think we do should not have more 1 instances for WaterPlane object
+	m_logger->log("[MESH][WaterV2]: " + name, lOutShifter.Shift);
+		
+	auto lmesh = std::make_unique<fbx_Mesh>();
+	lmesh->Name = name;
+	lmesh->WasUploaded = false;
+	lmesh->ExcludeFromCulling = false;
+	lmesh->DoNotDublicateVertices = true;
+
+	float lWidth = material->WaterV2_Width;	
+	float ldx = lWidth / material->WaterV2_BlocksCountX;
+	int lN = (int) material->WaterV2_BlocksCountX + 1; // count vertices in horizontal (X)
+	int lM = (int) material->WaterV2_Height / ldx + 1; // count vertices in vertical (Y)
+	float lHeight = (lM-1) * ldx;
+	int lVerticesCount = lN * lM;
+	int lTrianglesCount = ((lN -1) * (lM - 1))*2;
+	int lIndicesCount = lTrianglesCount * 3;
+
+	lmesh->Vertices.resize(lVerticesCount);
+	lmesh->UVs.resize(lVerticesCount);
+	lmesh->Indices.resize(lIndicesCount);
+	lmesh->VertexPerPolygon = 3;
+
+	// Create Vertices
+	int lVertID = 0;
+	for (int h = 0; h < lM; h++)
+	{
+		for (int w = 0; w < lN; w++)
+		{
+			lmesh->Vertices[lVertID] = XMFLOAT3(-lWidth/2 + w*ldx, lHeight / 2 - h * ldx, 0 );
+			lmesh->UVs[lVertID++] = XMFLOAT2((float) w / (float)lN, (float)h/ (float)lM);
+			//lmesh->UVs[lVertID++] = XMFLOAT2(w, h);
+		}
+	}	
+
+	// Create Indices
+	int lTrianglID = 0;
+	bool lVswap = false;
+	bool lHswap = true;
+	/*
+		lVswap and lHswap are needed to build triangles in this way:	
+		/\/\/\/\	
+		\/\/\/\/
+		/\/\/\/\
+		\/\/\/\/
+		/\/\/\/\
+	*/
+
+	for (int ty = 0; ty <(lM - 1); ty++)
+	{
+		for (int tx = 0; tx < (lN - 1); tx++)
+		{
+			int i1, i2, i3, i4;
+			int vi0, vi1, vi2, vi3;
+				
+			i1 = (ty * lN) + tx;
+			i2 = i1 + 1;
+			i3 = i2 + lN;
+			i4 = i1 + lN;
+
+			//lHswap = true;
+			if (lHswap)
+			{
+				vi0 = i1;
+				vi1 = i2;
+				vi2 = i4;
+				vi3 = i3;
+			}
+			else
+			{
+				vi0 = i4;
+				vi1 = i1;
+				vi2 = i3;
+				vi3 = i2;
+			}		
+			//in counter-clockwise order
+			lmesh->Indices[lTrianglID + 0] = vi0;
+			lmesh->Indices[lTrianglID + 1] = vi2;
+			lmesh->Indices[lTrianglID + 2] = vi1;			
+			lTrianglID += 3;
+
+			lmesh->Indices[lTrianglID + 0] = vi1;
+			lmesh->Indices[lTrianglID + 1] = vi2;
+			lmesh->Indices[lTrianglID + 2] = vi3;
+			lTrianglID += 3;
+
+			lHswap = !lHswap;
+		}
+		lHswap = lVswap;
+		lVswap = !lVswap;
+	}
+
+	// add mesh
+	m_meshesByName[name] = std::move(lmesh);	
+
+	material->WaterV2_Width = lN; // we do not need a dimensions in meters anymore, we will work with dimensions in Vertex count
+	material->WaterV2_Height = lM;
 
 	return name;
 }

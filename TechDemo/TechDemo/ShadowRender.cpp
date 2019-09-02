@@ -39,6 +39,8 @@ void ShadowRender::build()
 	}
 
 	build_TechDescriptors();
+
+	m_timer.setTickTime(0.032633); //60fps;
 }
 
 void ShadowRender::build_TechDescriptors()
@@ -71,7 +73,9 @@ void ShadowRender::resize(UINT iwidth, UINT iheight)
 
 void ShadowRender::draw(int lightID)
 {
-	const UINT lcLayerToDraw = 0b1110; // SSAO only for simple Opaque objects
+	//if (!m_timer.tick()) return;
+
+	const UINT lcLayerToDraw = 0b1110; // Shadow only for simple Opaque objects
 
 	m_cmdList->SetGraphicsRootSignature(m_psoLayer.getRootSignature());
 

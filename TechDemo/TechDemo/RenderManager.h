@@ -9,8 +9,7 @@
 #include "SSAORender.h"
 #include "BlurRender.h"
 #include "ShadowRender.h"
-
-
+#include "ComputeRender.h"
 
 struct RenderManagerMessanger {
 	ID3D12DescriptorHeap* RTVHeap;
@@ -36,6 +35,7 @@ class RenderManager
 	FinalRender m_finalRender;
 	SSAORender m_ssaoRender;
 	BlurRender m_blurRender;
+	ComputeRender m_computeRender;
 	ShadowRender m_shadowRender;
 	DebugRender_Axis m_debugRenderAxes;
 	DebugRender_Light m_debugRenderLights;
@@ -49,9 +49,9 @@ class RenderManager
 	bool m_debug_Normals_Vertex;
 	bool m_debug_View;
 	bool m_isSSAOUsing;
-	bool m_isShadowUsing;
+	bool m_isShadowUsing;	
 	bool m_isNormalMappingUsing;
-
+	bool m_isComputeWork;
 	UINT m_renderMode;	
 
 	void buildTechSRVs();
@@ -74,12 +74,13 @@ public:
 	void toggleTechnik_SSAO();
 	void toggleTechnik_Shadow();
 	void toggleTechnik_Normal();	
+	void toggleTechnik_ComputeWork();	
 	void setRenderMode_Final();
 	void setRenderMode_SSAO_Map1(); // ViewNormal Map
 	void setRenderMode_SSAO_Map2(); // AO Map
 	void setRenderMode_SSAO_Map3(); // AO Blured Map
 	void setRenderMode_Shadow(UINT mapID=0); // Shadow Map
-	
+	void test_drop();
 	bool isDebugMode() { return m_debugMode; }
 
 	UINT getTrianglesDrawnCount() { return m_finalRender.getTrianglesDrawnCount(); } // How much Triangles were sent for drawing in FinalRender

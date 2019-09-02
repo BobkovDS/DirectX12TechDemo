@@ -7,7 +7,7 @@ UINT Scene::ContainsCount = 0;
 
 Scene::Scene()
 {
-	m_Layers.resize(6);
+	m_Layers.resize(7);
 	m_doesItNeedUpdate = true;
 	m_firstBB = true;
 	m_octreeCullingMode = false;	
@@ -82,6 +82,7 @@ void Scene::build(ObjectManager* objectManager, Camera* camera, SkeletonManager*
 	m_Layers[3].setVisibility(true); // Skinned Opaque
 	m_Layers[4].setVisibility(false); // Skinned Not Opaque
 	m_Layers[5].setVisibility(true); // Tesselated object (water)
+	m_Layers[6].setVisibility(true); // Object colclutated on Compute Shader(WaterV2)
 
 	// Copy lights once to Scene		
 	for (int i = 0; i < m_objectManager->getLights().size(); i++)
@@ -112,6 +113,7 @@ void Scene::InitLayers()
 	m_Layers[3].init(m_objectManager->getSkinnedOpaqueLayer());
 	m_Layers[4].init(m_objectManager->getSkinnedNotOpaqueLayer());
 	m_Layers[5].init(m_objectManager->getNotOpaqueLayerGH());
+	m_Layers[6].init(m_objectManager->getNotOpaqueLayerCH());
 
 	UINT lAllInstancesCount = 0;
 	for (int i = 0; i < m_Layers.size(); i++)
@@ -125,6 +127,7 @@ void Scene::InitLayers()
 	m_Layers[3].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, &m_sceneBB);
 	m_Layers[4].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, &m_sceneBB);
 	m_Layers[5].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, nullptr);
+	m_Layers[6].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, &m_sceneBB);
 	
 	DirectX::BoundingBox ltempBB(XMFLOAT3(m_sceneBB.Center.x, m_sceneBB.Center.y, m_sceneBB.Center.z), m_sceneBB.Extents);
 	BoundingSphere::CreateFromBoundingBox(m_sceneBSShadow, ltempBB);
@@ -137,80 +140,20 @@ void Scene::update()
 		
 	ContainsCount = 0;
 	if (m_octreeCullingMode)
-	{
-		// Octree
-		//m_octree->update(m_camera->getFrustomBoundingShadowWorld());
-		assert(0);
-		m_octree->update(m_camera->getFrustomBoundingCameraWorld(0), m_camera->getFrustomBoundingCameraWorld());
-		updateLayer(m_Layers[0], m_objectManager->getSky(), false);
-		m_Layers[1].update(m_objectManager->getOpaqueLayer());
-		m_Layers[2].update(m_objectManager->getNotOpaqueLayer());
-		m_Layers[3].update(m_objectManager->getSkinnedOpaqueLayer());
-		m_Layers[4].update(m_objectManager->getSkinnedNotOpaqueLayer());
-		m_Layers[5].update(m_objectManager->getNotOpaqueLayerGH());		
+	{		
+		assert(0);		
 	}	
 	else
 	{
-		// Selector
-
 		// Copy at first object which should be out of Frustum Culling (e.g. Sky ) (?)
-		m_Layers[0].update();
-		m_Layers[1].update();
-		m_Layers[2].update();
-		m_Layers[3].update();
-		m_Layers[4].update();
-		m_Layers[5].update();
-
-		// Looking at Octree's bounding boxes through ViewFrustum, mark required Instances are selected. Really copy will be in TechDemo::update_objectCB() function
+		for (int i=0; i< m_Layers.size(); i++)
+			m_Layers[i].update();
 		
+		// Looking at Octree's bounding boxes through ViewFrustum, mark required Instances are selected. Really copy will be in TechDemo::update_objectCB() function
 		m_octree->selector.LOD0_distance = 30; //30
 		m_octree->selector.LOD1_distance = 80; //80
-
 		m_octree->selector.SelectorPostition = m_camera->getPosition();
-
-		BoundingMath::BoundingFrustum lFrustum = m_camera->getFrustomBoundingCameraWorld(0);
-		DirectX::BoundingFrustum lDirectXFrustum = m_camera->getFrustomBoundingCameraWorld();
-				
-		DirectX::BoundingBox ltBox(DirectX::XMFLOAT3(0,0,0), DirectX::XMFLOAT3(1, 1, 1));
-		DirectX::BoundingBox ltBox2(DirectX::XMFLOAT3(0.5f, 0.4f, 0.4f), DirectX::XMFLOAT3(0.5, 0.5, 0.5));
-
-		BoundingMath::BoundingBox lbmBox;
-		lbmBox.build(DirectX::XMFLOAT4(0, 0, 0, 0), DirectX::XMFLOAT3(1, 1, 1));
-
-		BoundingMath::BoundingBox lbmBox2;
-		lbmBox2.build(DirectX::XMFLOAT4(0.5f, 0.4f, 0.4f, 0), DirectX::XMFLOAT3(0.5, 0.5, 0.5));
-
-		BoundingMath::ContainmentType lbmResult = lbmBox.contains(lbmBox2);
-
-		DirectX::ContainmentType lcontr = ltBox.Contains(ltBox2);
-		lDirectXFrustum.Contains(ltBox);
-
-		m_octree->update(m_camera->getFrustomBoundingCameraWorld(0), m_camera->getFrustomBoundingCameraWorld());
-
-		//m_selector.setBBList(m_layerBBList);
-		//m_selector.set_selector_position(m_camera->getPosition3f());
-		//m_selector.set_selector_direction(m_camera->getLook());
-		//m_selector.set_viewMatrix(m_camera->getView4x4f());
-		//m_selector.set_cameraFrustum(static_cast<PerspectiveCameraLens*>(m_camera->lens)->get_cameraFrustum());
-		//m_selector.set_cameraFrustumFromProj(m_camera->getFrustomBoundingCamera());
-		//m_selector.set_coinAngle(35);
-		//m_selector.update();
-		
-	/*	float lAngle = 45;
-		m_octree->selector.LOD0_distance = 20;
-		m_octree->selector.LOD1_distance = 80;
-		m_octree->selector.ConeCosA = cos(lAngle * XM_PI / 180);
-		m_octree->selector.SelectorPostition = m_camera->getPosition();
-		m_octree->selector.SelectorDirection = m_camera->getLook();
-		int lBBcount = m_octree->getBBCount();
-		m_octree->update();*/
-		
-		/*updateLayer(m_Layers[0], m_objectManager->getSky(), false);
-		m_Layers[1].update(m_objectManager->getOpaqueLayer(), true);
-		m_Layers[2].update(m_objectManager->getNotOpaqueLayer(), true);
-		m_Layers[3].update(m_objectManager->getSkinnedOpaqueLayer(), true);
-		m_Layers[4].update(m_objectManager->getSkinnedNotOpaqueLayer(), true);
-		m_Layers[5].update(m_objectManager->getNotOpaqueLayerGH(), true);*/
+		m_octree->update(m_camera->getFrustomBoundingCameraWorld(0));
 	}
 
 	m_instancesDataReadTimes = FRAMERESOURCECOUNT;
@@ -252,101 +195,6 @@ bool Scene::isInstancesDataUpdateRequred()
 void Scene::cameraListener()
 {
 	m_doesItNeedUpdate = true;
-}
-
-void Scene::updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<RenderItem>>& arrayRI, bool isFrustumCullingRequired)
-{	
-	if (!layer.isLayerVisible()) return; // no need to fill this layer if it is not visible
-
-	layer.clearLayer();
-	BoundingFrustum& lBoundingFrustomCamera = m_camera->getFrustomBoundingCameraWorld();
-	BoundingFrustum& lBoundingFrustomShadowProjector = m_camera->getFrustomBoundingShadowWorld();
-
-	UINT lDrawInstanceID = 0; /*each Layer has his own through-ID for all LayerObjects */
-	for (int i = 0; i < arrayRI.size(); i++)
-	{
-		SceneLayer::SceneLayerObject lSceneObject = {};	
-		RenderItem* lRI = arrayRI[i].get();
-		lSceneObject.setObjectMesh(lRI);
-		lSceneObject.setMaxSizeForDrawingIntancesArray(lRI->Instances.size());
-		for (int j = 0; j < lRI->Instances.size(); j++)
-		{	
-			if (isFrustumCullingRequired)
-			{
-				XMMATRIX lInstanceWord = XMLoadFloat4x4(&lRI->Instances[j].World);
-				
-				BoundingBox lRIBBWord;
-				lRI->AABB.Transform(lRIBBWord, lInstanceWord);
-					
-				/*XMMATRIX lInstanceWordInv = XMMatrixInverse(&XMMatrixDeterminant(lInstanceWord), lInstanceWord);				
-				BoundingFrustum lLocalSpaceFrustom;
-				lBoundingFrustom.Transform(lLocalSpaceFrustom, lInstanceWordInv);
-				if (lLocalSpaceFrustom.Contains(lRI->AABB) != DirectX::DISJOINT)*/			
-
-				// If Instance can be seen in Camera, no need to check for Shadow Projector - it is also will be there
-				ContainsCount++;
-				bool doubleContainsCheck = true;
-				lBoundingFrustomCamera.Intersects(lRIBBWord);
-
-				if (lBoundingFrustomCamera.Contains(lRIBBWord) != DirectX::DISJOINT)
-				{
-					lSceneObject.addInstance(&lRI->Instances[j]); // add Instance 
-					lSceneObject.setDrawInstanceID(lDrawInstanceID++); //.. and also add information about DrawInstance ID
-					doubleContainsCheck = false;
-				}
-				// But if Instance out of Camera Frustom, it can be still inside of Shadow Prjector Frustum 
-				else 					
-				if (lBoundingFrustomShadowProjector.Contains(lRIBBWord) != DirectX::DISJOINT)
-				{
-					lSceneObject.addInstance(&lRI->Instances[j]); // only add Instance
-					//lDrawInstanceID++; // no add, but counting next DrawInstance ID
-					lSceneObject.setDrawInstanceID(lDrawInstanceID++);
-				}
-
-				//if (doubleContainsCheck) ContainsCount++;
-			}
-			else
-			{
-				lSceneObject.addInstance(&lRI->Instances[j]);
-				lSceneObject.setDrawInstanceID(lDrawInstanceID++);
-			}
-		}
-
-		lSceneObject.setMinSizeForDrawingIntancesArray();
-		layer.addSceneObject(lSceneObject);
-	}
-}
-
-void Scene::getLayerBoundingInfo(DirectX::BoundingBox& layerBB, DirectX::BoundingBox& layerBBShadow,
-	const std::vector<std::unique_ptr<RenderItem>>& arrayRI)
-{
-	for (int i = 0; i < arrayRI.size(); i++)
-	{
-		RenderItem* lRI = arrayRI[i].get();
-
-		if (!lRI->isNotIncludeInWorldBB) // isNotIncludeInWorldBB ==true : Do not include this RI's Instances to SceneBB
-		{
-			for (int j = 0; j < lRI->Instances.size(); j++)
-			{
-				XMMATRIX lInstanceWord = XMLoadFloat4x4(&lRI->Instances[j].World);
-				XMMATRIX lInstanceWordInv = XMMatrixInverse(&XMMatrixDeterminant(lInstanceWord), lInstanceWord);
-				BoundingBox lInstanceBB;
-				lRI->AABB.Transform(lInstanceBB, lInstanceWord);
-
-				if (!m_firstBB)
-				{
-					BoundingBox::CreateMerged(layerBB, layerBB, lInstanceBB);
-					BoundingBox::CreateMerged(layerBBShadow, layerBBShadow, lInstanceBB);
-				}
-				else
-				{
-					BoundingBox::CreateMerged(layerBB, lInstanceBB, lInstanceBB);
-					BoundingBox::CreateMerged(layerBBShadow, lInstanceBB, lInstanceBB);
-					m_firstBB = false;
-				}
-			}
-		}		
-	}
 }
 
 const std::vector<CPULight>& Scene::getLights()
@@ -450,13 +298,6 @@ UINT Scene::SceneLayer::getLayerInstancesCount()
 	return lInstancesCount;
 }
 
-void Scene::SceneLayer::getInstances(std::vector<const InstanceDataGPU*>& out_Instances, 
-	std::vector<UINT>& out_DrawInstancesID, UINT InstancesPerPrevLayer)
-{
-	for (int i = 0; i < m_objects.size(); i++)
-		m_objects[i].getInstances(out_Instances, out_DrawInstancesID, InstancesPerPrevLayer);
-}
-
 void Scene::SceneLayer::getInstances(std::vector<const InstanceDataGPU*>& out_Instances, UINT& intancesCount)
 {
 	for (int i = 0; i < m_objects.size(); i++)
@@ -490,6 +331,7 @@ void Scene::SceneLayer::update()
 		m_objects[i].copyInstancesWithoutFC();
 }
 
+//TO_DO: delete this method?
 void Scene::SceneLayer::update(const std::vector<std::unique_ptr<RenderItem>>& arrayRI)
 {
 	if (!isLayerVisible()) return; // no need to fill this layer if it is not visible
@@ -647,20 +489,13 @@ void Scene::SceneLayer::SceneLayerObject::getInstances(std::vector<const Instanc
 
 void Scene::SceneLayer::SceneLayerObject::getInstances(std::vector<const InstanceDataGPU*>& out_Instances, UINT& instancesCount)
 {
-/*
-	if (m_mesh->ExcludeFromCulling)
-	{
-		for (int i=0; i<m_mesh->Instances.size(); i++)
-			out_Instances[instancesCount++] = &m_mesh->Instances[m_mesh->InstancesID_LOD[lod_id][i]];
-	}
-	else
-	{*/
-		if (getInstancesCountLOD() == 0) return;	
+	// provide instances which have been marked to be drawn.
 
-		for (int lod_id = 0; lod_id < LODCOUNT; lod_id++) // How many LOD level we have
-			for (int i = 0; i < m_mesh->InstancesID_LOD_size[lod_id]; i++) // How many this LOD level has Objects for this SceneLayerObject
-				out_Instances[instancesCount++] = &m_mesh->Instances[m_mesh->InstancesID_LOD[lod_id][i]];
-	//}
+	if (getInstancesCountLOD() == 0) return;
+
+	for (int lod_id = 0; lod_id < LODCOUNT; lod_id++) // How many LOD level we have
+		for (int i = 0; i < m_mesh->InstancesID_LOD_size[lod_id]; i++) // How many this LOD level has Objects for this SceneLayerObject
+			out_Instances[instancesCount++] = &m_mesh->Instances[m_mesh->InstancesID_LOD[lod_id][i]];
 }
 
 void Scene::SceneLayer::SceneLayerObject::getBoundingInformation(

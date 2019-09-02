@@ -9,7 +9,8 @@ class ObjectManager
 	std::vector<std::unique_ptr<RenderItem>> m_opaqueLayer;
 	std::vector<std::unique_ptr<RenderItem>> m_opaqueLayerGH; // geometry shader
 	std::vector<std::unique_ptr<RenderItem>> m_notOpaqueLayer;
-	std::vector<std::unique_ptr<RenderItem>> m_notOpaqueLayerGH;
+	std::vector<std::unique_ptr<RenderItem>> m_notOpaqueLayerGH; // Water created in Tesselation stage
+	std::vector<std::unique_ptr<RenderItem>> m_notOpaqueLayerCH; // WaterV2 processed in Compute Shader
 	std::vector<std::unique_ptr<RenderItem>> m_skinnedOpaqueLayer;
 	std::vector<std::unique_ptr<RenderItem>> m_skinnedNotOpaqueLayer;
 
@@ -26,6 +27,7 @@ public:
 	void addOpaqueObject(std::unique_ptr<RenderItem>& object);
 	void addTransparentObject(std::unique_ptr<RenderItem>& object);
 	void addTransparentObjectGH(std::unique_ptr<RenderItem>& object);
+	void addTransparentObjectCH(std::unique_ptr<RenderItem>& object);
 	void addSkinnedOpaqueObject(std::unique_ptr<RenderItem>& object);
 	void addSkinnedNotOpaqueObject(std::unique_ptr<RenderItem>& object);
 	void addSky(std::unique_ptr<RenderItem>& object);
@@ -39,6 +41,7 @@ public:
 	const std::vector<std::unique_ptr<RenderItem>>& getOpaqueLayer();
 	const std::vector<std::unique_ptr<RenderItem>>& getNotOpaqueLayer();
 	const std::vector<std::unique_ptr<RenderItem>>& getNotOpaqueLayerGH();
+	const std::vector<std::unique_ptr<RenderItem>>& getNotOpaqueLayerCH();
 	const std::vector<std::unique_ptr<RenderItem>>& getSkinnedOpaqueLayer();
 	const std::vector<std::unique_ptr<RenderItem>>& getSkinnedNotOpaqueLayer();
 	UINT getCommonInstancesCount();	

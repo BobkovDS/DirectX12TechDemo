@@ -44,6 +44,17 @@ public:
 		UINT64 byteSize,
 		Microsoft::WRL::ComPtr<ID3D12Resource>& uploadBuffer);
 
+	static Microsoft::WRL::ComPtr<ID3D12Resource> createTextureWithData(
+		ID3D12Device* device,
+		ID3D12GraphicsCommandList* cmdList,
+		const void* initData,
+		UINT64 elementByteSize,
+		UINT Width,
+		UINT Height,
+		DXGI_FORMAT textureFormat,		
+		Microsoft::WRL::ComPtr<ID3D12Resource>& uploadBuffer,
+		D3D12_RESOURCE_FLAGS textureFlags = D3D12_RESOURCE_FLAG_NONE);
+
 	// for wstring file name
 	static Microsoft::WRL::ComPtr<ID3DBlob> compileShader(
 		const std::wstring& filename,
@@ -93,8 +104,7 @@ void Utilit3D::UploadMeshToDefaultBuffer(
 		mesh->IndexBufferByteSize,
 		mesh->IndexBufferUploader);
 
-	// store the same data for CPU using
-
+	// Store the same data for CPU using
 	D3DCreateBlob(mesh->VertexBufferByteSize, &mesh->VertexBufferCPU);
 	assert(mesh->VertexBufferCPU);
 	CopyMemory(mesh->VertexBufferCPU->GetBufferPointer(), vertexData.data(), mesh->VertexBufferByteSize);

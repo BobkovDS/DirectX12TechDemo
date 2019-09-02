@@ -16,12 +16,13 @@ void PSOFinalRenderLayer::buildShadersBlob()
 	string basedir = "Shaders\\";
 	string shaderName = "FinalRender_shaders.hlsl";
 	string shaderNameGH = "FinalRender_GH_shaders.hlsl";
-	string shaderNameSky = "FinalRender_Sky_shaders.hlsl";
-	//string shaderName = "FinalRender_LOD_shaders.hlsl";
+	string shaderNameCH = "FinalRender_CH_shaders.hlsl";
+	string shaderNameSky = "FinalRender_Sky_shaders.hlsl";	
 	string skinedShaderName = "FinalRender_skinnedShaders.hlsl";
 
 	string fullFileName = basedir + shaderName;
 	string fullFileNameGH = basedir + shaderNameGH;
+	string fullFileNameCH = basedir + shaderNameCH;
 	string fullFileNameSky = basedir + shaderNameSky;
 	string skinnedFullFileName = basedir + skinedShaderName;
 
@@ -35,6 +36,9 @@ void PSOFinalRenderLayer::buildShadersBlob()
 		shaderType = "vs_gs";
 		m_shaders[shaderType] = Utilit3D::compileShader(fullFileNameGH, NULL, "VS", "vs_5_1");
 
+		shaderType = "vs_cs";
+		m_shaders[shaderType] = Utilit3D::compileShader(fullFileNameCH, NULL, "VS", "vs_5_1");
+
 		shaderType = "vs_sky";
 		m_shaders[shaderType] = Utilit3D::compileShader(fullFileNameSky, NULL, "VS", "vs_5_1");
 
@@ -46,6 +50,9 @@ void PSOFinalRenderLayer::buildShadersBlob()
 
 		shaderType = "ps_gs";
 		m_shaders[shaderType] = Utilit3D::compileShader(fullFileNameGH, NULL, "PS", "ps_5_1");
+
+		shaderType = "ps_cs";
+		m_shaders[shaderType] = Utilit3D::compileShader(fullFileNameCH, NULL, "PS", "ps_5_1");
 
 		shaderType = "ps_sky";
 		m_shaders[shaderType] = Utilit3D::compileShader(fullFileNameSky, NULL, "PS", "ps_5_1");
@@ -139,6 +146,14 @@ void PSOFinalRenderLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, D
 	psoDescLayer5.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_EQUAL; // =1 - Far side
 	psoDescLayer5.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
+	// PSO for Layer_6: Not Opaque with Compute Shader objects: [NOTOPAQUELAYERCH]
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer6 = buildCommonPSODescription();
+	psoDescLayer6.InputLayout = { m_inputLayout[ILV1].data(), (UINT)m_inputLayout[ILV1].size() };
+	psoDescLayer6.VS = { reinterpret_cast<BYTE*>(m_shaders["vs_cs"]->GetBufferPointer()), m_shaders["vs_cs"]->GetBufferSize() };
+	psoDescLayer6.PS = { reinterpret_cast<BYTE*>(m_shaders["ps_cs"]->GetBufferPointer()), m_shaders["ps_cs"]->GetBufferSize() };	
+	psoDescLayer6.BlendState = CD3DX12_BLEND_DESC(blend_desc);
+	//psoDescLayer6.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+
 	// Create PSO objects
 	//OPAQUELAYER
 	HRESULT res = m_device->CreateGraphicsPipelineState(&psoDescLayer0, IID_PPV_ARGS(&m_pso[OPAQUELAYER]));
@@ -187,6 +202,15 @@ void PSOFinalRenderLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, D
 	
 	//SKY
 	res = m_device->CreateGraphicsPipelineState(&psoDescLayer5, IID_PPV_ARGS(&m_pso[SKY]));
+	if (res != S_OK)
+	{
+		_com_error err(res);
+		wstring errMsg = err.ErrorMessage() + std::wstring(L" ");
+		throw MyCommonRuntimeException(errMsg, L"PSO creation");
+	}
+
+	//NOTOPAQUELAYERCH
+	res = m_device->CreateGraphicsPipelineState(&psoDescLayer6, IID_PPV_ARGS(&m_pso[NOTOPAQUELAYERCH]));
 	if (res != S_OK)
 	{
 		_com_error err(res);

@@ -12,7 +12,8 @@ RenderManager::RenderManager(): m_initialized(false)
 	m_isSSAOUsing = false;
 	m_isShadowUsing = false;
 	m_isNormalMappingUsing = false;
-	m_renderMode = (1 << RM_FINAL);	
+	m_isComputeWork = false;
+	m_renderMode = (1 << RM_FINAL);		
 }
 
 RenderManager::~RenderManager()
@@ -38,6 +39,8 @@ void RenderManager::initialize(const RenderManagerMessanger& renderParams)
 	m_debugRenderNormals.initialize(renderParams.commonRenderData);
 	m_debugRenderScreen.initialize(renderParams.commonRenderData);	
 	m_debugRenderView.initialize(renderParams.commonRenderData);
+
+	m_computeRender.initialize(renderParams.commonRenderData);
 
 	RenderMessager lRenderParams = renderParams.commonRenderData;	
 	lRenderParams.Width = 4096; 
@@ -97,12 +100,16 @@ void RenderManager::buildRenders()
 
 	// build Blur Render	
 	m_blurRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
-	m_blurRender.setInputResource(m_ssaoRender.getAOResource());
+	m_blurRender.setInputResource(m_ssaoRender.getAOResource());	
 	m_blurRender.build(1);
 
 	// build Shadow Render
 	m_shadowRender.set_DescriptorHeap(m_texturesDescriptorHeap);
 	m_shadowRender.build();	
+
+	// build Compute Render
+	m_computeRender.set_DescriptorHeap(m_texturesDescriptorHeap);
+	m_computeRender.build(0);
 }
 
 void RenderManager::draw()
@@ -167,15 +174,20 @@ void RenderManager::draw()
 	}
 
 	// for using with GUI Render
+#ifdef GUI_HUD
 	m_cmdList->ResourceBarrier(1,
 		&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
 			D3D12_RESOURCE_STATE_PRESENT,
 			D3D12_RESOURCE_STATE_RENDER_TARGET));
+#endif
 
 	if (m_isSSAOUsing)
 	{
-		m_blurRender.draw(0);
+		m_blurRender.draw(0);			
 	}
+
+	if (m_isComputeWork)
+		m_computeRender.draw(0);
 }
 
 void RenderManager::buildTechSRVs()
@@ -225,7 +237,7 @@ void RenderManager::resize(int iwidth, int iheight)
 		m_debugRenderAxes.resize(iwidth, iheight);
 		m_debugRenderLights.resize(iwidth, iheight);		
 		m_debugRenderNormals.resize(iwidth, iheight);	
-		m_debugRenderScreen.resize(iwidth, iheight);
+		m_debugRenderScreen.resize(iwidth, iheight);		
 	}	
 }
 
@@ -296,4 +308,15 @@ void RenderManager::toggleTechnik_Shadow()
 void RenderManager::toggleTechnik_Normal()
 {
 	m_isNormalMappingUsing= !m_isNormalMappingUsing;
+}
+
+void RenderManager::toggleTechnik_ComputeWork()
+{
+	m_isComputeWork= !m_isComputeWork;
+}
+
+
+void RenderManager::test_drop()
+{
+	m_computeRender.drop();
 }

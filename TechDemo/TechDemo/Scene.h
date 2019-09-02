@@ -32,10 +32,7 @@ class Scene
 	bool m_octreeCullingMode;
 	int m_instancesDataReadTimes; // How many times we need provide Instances Data for FrameResource Manager;
 	int m_instancesToDraw; // How many Instances are "visible" in this Scene
-	void updateLayer(SceneLayer& layer, const std::vector<std::unique_ptr<RenderItem>>& RI, bool isFrustumCullingRequired = true);	
-	void getLayerBoundingInfo(DirectX::BoundingBox& layerBB, DirectX::BoundingBox& layerBBShadow,
-		const std::vector<std::unique_ptr<RenderItem>>& RI);
-	
+		
 	void buildOctree();
 
 public:
@@ -53,7 +50,7 @@ public:
 			std::vector<const InstanceDataGPU*> m_instancesLOD[LODCOUNT];
 			UINT m_instancesLODArraySize[LODCOUNT];
 
-			std::vector<UINT> m_drawInstancesID; // Instances ID in m_instances for drawing
+			std::vector<UINT> m_drawInstancesID; // Instances ID in m_instances for drawing // TO_DO: delete
 			UINT m_drawInstanceIDCount;
 		public:
 			//SceneLayerObject();

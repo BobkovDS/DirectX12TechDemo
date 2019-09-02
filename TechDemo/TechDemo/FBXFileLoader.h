@@ -23,7 +23,7 @@ struct fbx_Mesh {
 	std::vector<INT32> Indices;
 	bool WasUploaded;
 	bool ExcludeFromCulling;
-	//std::vector<INT32> Materials; //TO_DO: Delete it
+	bool DoNotDublicateVertices;	
 	int VertexPerPolygon;
 };
 
@@ -39,11 +39,19 @@ struct fbx_Material {
 	DirectX::XMFLOAT3 FresnelR0 = { 0.5f, 0.1f, 0.1f };
 	float Roughness = 0.1f;
 	DirectX::XMFLOAT4X4 MatTransform;
-	std::vector<std::pair<std::string, std::string>> TexturesNameByType;
+	std::vector<std::pair<std::string, std::string>> TexturesNameByType; //<texture_type, texture_name>
+	float WaterV2_Width;
+	float WaterV2_Height;
+	float WaterV2_BlocksCountX;
+	float WaterV2_Velocity;
+	float WaterV2_TimeInterval;
+	float WaterV2_Viscosity;
+
 	bool IsTransparencyUsed; //here Transparency Factor as texture is used
 	bool IsTransparent; // here Transparency Factor as float is used
-	bool IsWater;
-	bool IsSky;
+	bool IsWater; // a water created on Tesselation stage
+	bool IsWaterV2; // a water colculated in Compute shader
+	bool IsSky;	
 	bool DoesIncludeToWorldBB;
 };
 
@@ -54,8 +62,7 @@ struct fbx_NodeInstance {
 	std::vector<fbx_Material*> Materials;
 	DirectX::XMFLOAT3 Transformation;
 	DirectX::XMFLOAT3 Translation;
-	DirectX::XMFLOAT4X4 GlobalTransformation;
-	DirectX::XMFLOAT4X4 LocalTransformation;
+	DirectX::XMFLOAT4X4 GlobalTransformation;	
 };
 
 struct fbx_TreeBoneNode
@@ -119,6 +126,8 @@ private:
 	int getNextMaterialID();
 	void convertFbxMatrixToFloat4x4(FbxAMatrix& fbxm, DirectX::XMFLOAT4X4& m);	
 	void convertFbxVector4ToFloat4(FbxVector4& fbxv, DirectX::XMFLOAT4& v);	
+
+	std::string create_WaterV2Mesh(fbx_Material* material, const FbxNodeAttribute* pNodeAtribute);
 
 	// FBX process functions
 	void process_node(const FbxNode* pNode);

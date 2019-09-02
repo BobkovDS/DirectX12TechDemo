@@ -67,7 +67,7 @@ void BlurRender::build_TechDescriptors()
 			A - UAV /
 		*/
 		
-		// A -SRV		
+		// A - SRV		
 		m_device->CreateShaderResourceView(m_uavResources[0]->getResource(), nullptr, lhDescriptor);
 		// B - UAV
 		lhDescriptor.Offset(1, lSrvSize);
@@ -199,6 +199,8 @@ void BlurRender::draw(int flags)
 
 void BlurRender::build_screen()
 {
+	// TO_DO: do we need it? Maybe delete ?
+
 	std::vector<VertexGPU> lVertices(4);
 	std::vector<uint32_t> lIndices(6);
 

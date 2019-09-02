@@ -114,9 +114,7 @@ public:
 	ID3D12Resource* get_Resource_RT();
 	int get_ResourceCount();
 	ID3D12DescriptorHeap* get_rtvHeapPointer();
-	ID3D12DescriptorHeap* get_dsvHeapPointer();
-
-	
+	ID3D12DescriptorHeap* get_dsvHeapPointer();	
 
 	void initialize(const RenderMessager& renderParams); // initialize the Render
 	void build(); // Do any other operations to build Render (to add more resources, create SRVs and etc)

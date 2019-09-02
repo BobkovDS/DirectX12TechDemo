@@ -47,7 +47,7 @@ void FinalRender::build_SkyDescriptor()
 	{
 		std::vector<const InstanceDataGPU*> lInstances;
 		lInstances.resize(1);
-		std::vector<UINT> lDrawInstancesID; // we do not use it for SkyLayer
+		std::vector<UINT> lDrawInstancesID; // we do not use it for SkyLayer TO_DO: delete
 		UINT lInstanceCount = 0;
 		lSkyLayer->getInstances(lInstances, lInstanceCount);
 		if (lInstanceCount != 0)

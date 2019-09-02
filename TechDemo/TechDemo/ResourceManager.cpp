@@ -5,10 +5,11 @@ using namespace std;
 
 #define TECHSRVCOUNT 10
 
-ResourceManager::ResourceManager()
+string ResourceManager::m_dummyPath = "Dummy_path";
+
+ResourceManager::ResourceManager(): m_DummyTexturePathCount(0)
 {
 }
-
 
 ResourceManager::~ResourceManager()
 {
@@ -44,26 +45,27 @@ void ResourceManager::loadMaterials()
 		materialsGPU.push_back(tmpMat);
 	}
 
-	m_materialsResource.RessourceInDefaultHeap = Utilit3D::createDefaultBuffer(	
+	m_materialsResource.ResourceInDefaultHeap = Utilit3D::createDefaultBuffer(	
 		materialsGPU.data(),
 		materialsGPU.size() * sizeof(MaterialConstantsGPU),
-		m_materialsResource.RessourceInUploadHeap);
+		m_materialsResource.ResourceInUploadHeap);
 }
 ID3D12Resource* ResourceManager::getMaterialsResource()
 {
-	return m_materialsResource.RessourceInDefaultHeap.Get();
+	return m_materialsResource.ResourceInDefaultHeap.Get();
 }
 
 ID3D12Resource* ResourceManager::getTextureResource(UINT textureID)
 {
 	if (textureID < m_textures.size())
-		return m_textures[textureID].RessourceInDefaultHeap.Get();
+		return m_textures[textureID].ResourceInDefaultHeap.Get();
 }
 
 MaterialCPU* ResourceManager::getMaterial(UINT i)
 {
 	if (i < m_materials.size())
 		return m_materials[i].get();
+	else return nullptr;
 }
 
 void ResourceManager::addTexturePathByName(const string& textureName, const string& texturePath)
@@ -76,6 +78,10 @@ void ResourceManager::addTexturePathByName(const string& textureName, const stri
 
 int ResourceManager::getTexturePathIDByName(const string& textureName)
 {
+	/*
+		What we do:
+			TextureName->|[m_texturePathsByNames]|->TexturePath->|[m_texturePathID]|->TextureID
+	*/
 	std::string lFullTextureName = m_prefixName + textureName;
 
 	auto it1 = m_texturePathsByNames.find(lFullTextureName);
@@ -91,8 +97,10 @@ int ResourceManager::getTexturePathIDByName(const string& textureName)
 void ResourceManager::buildTexturePathList()
 {
 	/*
-		Create a list of unique texture names. So later we will upload on GPU each texture only once.
-		Materials will use this list to map their Texture_name with Texture_ID, where Texture_ID is position of this 
+		Create a list of [TexturePath->TextureID]. 
+		Texture's paths are unique for all textures. So later we will upload on GPU each texture only once.
+		Materials will use this list to map their Texture_name with Texture_ID (see getTexturePathIDByName() method),
+		where Texture_ID is position of this 
 		texture in Texture array on GPU.
 	*/
 
@@ -107,6 +115,35 @@ void ResourceManager::buildTexturePathList()
 		}
 	}
 }
+
+int ResourceManager::addDummyTexturePath()
+{
+	/*
+		Add unique dummy Path to m_texturePathID[] to get new TextureID. It is required when we do not need load a texture from
+		a file and this texture will be created in application, but we need make a reservation for texture in Application SRV Heap.
+	*/
+		
+	int lTries = 10; 
+	string lNewDummyPath;
+	
+	int ltextureID = m_texturePathID.size();
+	while (lTries > 0)
+	{
+		lNewDummyPath = m_dummyPath + "000" + std::to_string(m_DummyTexturePathCount++); //000 we need it because buildTextureFullNameList() will delete 3 chars
+
+		if (m_texturePathID.find(lNewDummyPath) == m_texturePathID.end())
+		{
+			m_texturePathID[lNewDummyPath] = ltextureID++;
+			break;
+		}
+		else
+			lTries--;
+
+	}
+
+	return m_texturePathID[lNewDummyPath]; // if adding was failed because not anough tries, return the last DummyPath ID value
+}
+
 
 void ResourceManager::buildTextureFullNameList()
 {
@@ -125,20 +162,22 @@ void ResourceManager::loadTexture()
 {	
 	buildTextureFullNameList();
 
-	assert(m_textureIsUploaded == false); //this function should be executed once
+	assert(m_textureIsUploaded == false); //this function should be executed only once
 	
 	m_textures.resize(m_orderedTextureList.size());
 
-	for (int i = 0; i < m_orderedTextureList.size(); i++)	
-		Utilit3D::UploadDDSTexture(m_orderedTextureList[i], 
-			&m_textures[i].RessourceInDefaultHeap, &m_textures[i].RessourceInUploadHeap);
+	for (int i = 0; i < m_orderedTextureList.size(); i++)
+	{
+		bool lIsNotDummyTexture = (m_orderedTextureList[i].find(m_dummyPath) == string::npos);		
+		if (lIsNotDummyTexture)
+		Utilit3D::UploadDDSTexture(m_orderedTextureList[i],
+			&m_textures[i].ResourceInDefaultHeap, &m_textures[i].ResourceInUploadHeap);		
+	}
 	
 	m_textureIsUploaded = true;
 
 	buildTextureSRVs();
 }
-
-
 
 void ResourceManager::buildTextureSRVs()
 {
@@ -183,12 +222,23 @@ void ResourceManager::buildTextureSRVs()
 	{
 		for (int i = 0; i < m_textures.size(); i++)
 		{
-			srvDesc.Format = m_textures[i].RessourceInDefaultHeap->GetDesc().Format;
-			srvDesc.Texture2D.MipLevels = m_textures[i].RessourceInDefaultHeap->GetDesc().MipLevels;
+			if (m_textures[i].ResourceInDefaultHeap != NULL)
+			{
+				//create SRV on real Texture on GPU
+				srvDesc.Format = m_textures[i].ResourceInDefaultHeap->GetDesc().Format;
+				srvDesc.Texture2D.MipLevels = m_textures[i].ResourceInDefaultHeap->GetDesc().MipLevels;
 
-			Utilit3D::getDevice()->CreateShaderResourceView(m_textures[i].RessourceInDefaultHeap.Get(),
-				&srvDesc, lhDescriptor);
-
+				Utilit3D::getDevice()->CreateShaderResourceView(m_textures[i].ResourceInDefaultHeap.Get(),
+					&srvDesc, lhDescriptor);
+			}
+			else
+			{
+				//create dummy SRV. Texture and SRV will be created later
+				srvDesc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+				srvDesc.Texture2D.MipLevels = 1;
+				Utilit3D::getDevice()->CreateShaderResourceView(nullptr,
+					&srvDesc, lhDescriptor);
+			}
 			lhDescriptor.Offset(1, lSrvSize);
 		}
 	}

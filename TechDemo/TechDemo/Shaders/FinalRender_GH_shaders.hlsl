@@ -15,7 +15,7 @@ VertexIn VS(VertexIn vin)
 PatchTess ConstantHS(InputPatch<VertexIn, 4> patch, uint patchID : SV_PrimitiveID)
 {
     float3 m = patch[3].PosL - patch[0].PosL;    
-    int lShapeID = gDrawInstancesIDData[gInstancesOffset + 0]; // Now we use only one xxx_GH object, in other case we need to use SV_INSTANCEID in vertex shader
+    int lShapeID = gInstancesOffset + 0; // Now we use only one xxx_GH object, in other case we need to use SV_INSTANCEID in vertex shader
     InstanceData instData = gInstanceData[lShapeID];
 
     float4 posW = mul(float4(m, 1.0f), instData.World);
@@ -98,7 +98,7 @@ GeometryOut DS(PatchTess patchTess, float2 uv : SV_DomainLocation, const OutputP
     float2 uv2 = lerp(inPatch[2].UVText, inPatch[3].UVText, uv.x);
     float2 uv3 = lerp(uv1, uv2, uv.y);
 
-    int lShapeID = gDrawInstancesIDData[gInstancesOffset + 0]; // Now we only one xxx_GH object, in other case we need to use SV_INSTANCEID in vertex shader
+    int lShapeID = gInstancesOffset + 0; // Now we only one xxx_GH object, in other case we need to use SV_INSTANCEID in vertex shader
     
     InstanceData instData = gInstanceData[lShapeID];
     float4x4 wordMatrix = instData.World;
@@ -129,8 +129,8 @@ GeometryOut DS(PatchTess patchTess, float2 uv : SV_DomainLocation, const OutputP
     
     p3.z += hn * 0.08 + 0.02 * hnh;
     p3.z -= 0.1;
-    p3.z = hn;
-    //p3.z = 0;
+    p3.z = hn;    
+
      //get World transform
     //float4 posW = mul(float4(p3, 1.0f), wordMatrix);
     float4 posW = mul(wordMatrix, float4(p3, 1.0f));
@@ -227,7 +227,7 @@ float4 PS(GeometryOut pin) : SV_Target
         float4 readNormal = gDiffuseMap[material.DiffuseMapIndex[0]].Sample(gsamPointWrap, textC1);    
         normal1 = NormalSampleToWorldSpace(readNormal.xyz, normal1, pin.TangentW);        
     }
-   
+       
     if ((material.textureFlags & 0x02)) //&& gShadowUsed
     {
         float4 readNormal = gDiffuseMap[material.DiffuseMapIndex[1]].Sample(gsamPointWrap, textC2);
@@ -236,7 +236,7 @@ float4 PS(GeometryOut pin) : SV_Target
    
     //float3 bumpedNormalW = normalize(normal1 + normal2);
     float3 bumpedNormalW = normal1;//   normalize(normal1);
-    //return float4(bumpedNormalW, 0.0f);
+    //return float4(bumpedNormalW, 1.0f);
 
     //if (material.textureFlags && 0x01)
     //    diffuseAlbedo = gDiffuseMap[material.DiffuseMapIndex[0]].Sample(gsamPointWrap, textC.xy);
@@ -247,12 +247,13 @@ float4 PS(GeometryOut pin) : SV_Target
     float shadow_depth = 1.0f;
     MaterialLight matLight = { diffuseAlbedo, material.FresnelR0, shiness };
     float4 directLight = ComputeLighting(cbPass.Lights, matLight, pin.PosW, bumpedNormalW, toEyeW, shadow_depth);
-    float4 litColor = ambient; //directLight + 
     
-    //float3 r = reflect(-toEyeW, bumpedNormalW);
-    //float4 reflectionColor = gCubeMap.Sample(gsamPointWrap, r);
-    //float3 fresnelFactor = SchlickFresnel(material.FresnelR0, bumpedNormalW, r);
-    //litColor.rgb += shiness * fresnelFactor * reflectionColor.rgb;
+    float4 litColor = ambient + directLight;
+    
+    float3 r = reflect(-toEyeW, bumpedNormalW);
+    float4 reflectionColor = gCubeMap.Sample(gsamPointWrap, r);
+    float3 fresnelFactor = SchlickFresnel(material.FresnelR0, bumpedNormalW, r);
+    litColor.rgb += shiness * fresnelFactor * reflectionColor.rgb;
 
     litColor.a = 0.5f; //   +abs(cos(cbPass.TotalTime));
     return litColor;

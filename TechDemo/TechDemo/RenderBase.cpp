@@ -38,7 +38,7 @@ void RenderResource::resize(UINT width, UINT height)
 	resourceDesriptor.Flags = m_resourceFlags;
 		
 	HRESULT res = m_device->CreateCommittedResource(&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE,
-		&resourceDesriptor, D3D12_RESOURCE_STATE_COMMON, m_optClear, IID_PPV_ARGS(&m_resource));
+		&resourceDesriptor, D3D12_RESOURCE_STATE_COMMON, m_optClear, IID_PPV_ARGS(&m_resource));	
 }
 
 ID3D12Resource* RenderResource::getResource()

@@ -135,7 +135,7 @@ void Octree::deleteChilds()
 	m_childs.clear();
 }
 
-void Octree::update(BoundingFrustum& frustom, DirectX::BoundingFrustum& dFrustum)
+void Octree::update(BoundingFrustum& frustom)
 {	
 	// 1) If BB intersects Shadow Frustom
 	
