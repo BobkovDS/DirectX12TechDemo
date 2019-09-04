@@ -76,31 +76,23 @@ struct GeometryOut
 
 struct PassStruct
 {
-    float4x4 View;
-    float4x4 InvView;
-    float4x4 Proj;
-    float4x4 InvProj;
-    float4x4 ViewProj;
-    float4x4 InvViewProj;
-    float4x4 ViewProjT;
-    float4x4 MirWord;
-	float4x4 ShadowWord;
-    float3 EyePosW;
-    uint doesUseMirrorLight;
-    float2 RenderTargetSize;
-    float2 InvRenderTargetSize;
-    float NearZ;
-    float FarZ;
-    float TotalTime;
-    float DeltaTime;
+    float4x4 View;    
+    float4x4 Proj; // +
+    float4x4 InvProj; //+
+    float4x4 ViewProj; //+    
+    float4x4 ViewProjT; // +    
+   
+    float3 EyePosW; 
+    float pad0;
+
     float4 AmbientLight;
     float4 FogColor;
+    
     float FogStart;
-    float FogRange;
-    float CameraDistance;
-    float pod0;
-    float3 ViewPointPosition;
-    float pod1;
+    float FogRange;    
+    float TotalTime;
+    float DeltaTime;
+    
     Light Lights[MaxLights];
 };
 

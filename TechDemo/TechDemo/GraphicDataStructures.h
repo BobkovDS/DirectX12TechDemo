@@ -149,37 +149,22 @@ struct ObjectContantsGPU
 
 struct PassConstantsGPU
 {
-	DirectX::XMFLOAT4X4 View = MathHelper::Identity4x4();
-	DirectX::XMFLOAT4X4 InvView = MathHelper::Identity4x4();
+	DirectX::XMFLOAT4X4 View = MathHelper::Identity4x4();	
 	DirectX::XMFLOAT4X4 Proj = MathHelper::Identity4x4();
 	DirectX::XMFLOAT4X4 InvProj = MathHelper::Identity4x4();
-	DirectX::XMFLOAT4X4 ViewProj = MathHelper::Identity4x4();
-	DirectX::XMFLOAT4X4 InvViewProj = MathHelper::Identity4x4();
+	DirectX::XMFLOAT4X4 ViewProj = MathHelper::Identity4x4();	
 	DirectX::XMFLOAT4X4 ViewProjT = MathHelper::Identity4x4();
-	DirectX::XMFLOAT4X4 ReflectWord = MathHelper::Identity4x4();
-	DirectX::XMFLOAT4X4 ShadowMatrix = MathHelper::Identity4x4();
 
 	DirectX::XMFLOAT3 EyePosW = { 1.0f, 1.0f, 0.0f };
-	UINT doesUseMirrorLight = 0;
+	float pad0;
 
-	DirectX::XMFLOAT2 RenderTargetSize = { 0.0f, 0.0f };
-	DirectX::XMFLOAT2 InvRenderTargetSize = { 0.0f, 0.0f };
-
-	float NearZ = 0.0f;
-	float FarZ = 0.0f;
-	float TotalTime = 0.0f;
-	float DeltaTime = 0.0f;	
-
-	DirectX::XMFLOAT4 AmbientLight = { 0.5f, 0.5f, 0.5f, 1.0f };		
+	DirectX::XMFLOAT4 AmbientLight = { 0.5f, 0.5f, 0.5f, 1.0f };
 	DirectX::XMFLOAT4 FogColor = { 0.0f, 0.5f, 0.4f, 1.0f };
-	
+
 	float FogStart = 5.0f;
 	float FogRange = 50.0f;
-	float CameraDistance = 0;
-	float dummy2 = 0;
-
-	DirectX::XMFLOAT3 ViewPointPosition;
-	float dummy3;
+	float TotalTime = 0.0f;
+	float DeltaTime = 0.0f;		
 	
 	LightGPU Lights[MaxLights];
 };

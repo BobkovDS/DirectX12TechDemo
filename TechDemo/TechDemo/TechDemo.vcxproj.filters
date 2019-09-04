@@ -162,12 +162,6 @@
     <ClCompile Include="Octree.cpp">
       <Filter>Source Files\Other</Filter>
     </ClCompile>
-    <ClCompile Include="DebugRender_View.cpp">
-      <Filter>Source Files\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="PSODebugLayer_View.cpp">
-      <Filter>Source Files\PSO</Filter>
-    </ClCompile>
     <ClCompile Include="ComputeRender.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
@@ -323,12 +317,6 @@
     <ClInclude Include="BoundingMath.h">
       <Filter>Header Files\Other</Filter>
     </ClInclude>
-    <ClInclude Include="DebugRender_View.h">
-      <Filter>Header Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="PSODebugLayer_View.h">
-      <Filter>Header Files\PSO</Filter>
-    </ClInclude>
     <ClInclude Include="ComputeRender.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
@@ -398,9 +386,6 @@
       <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\ShadowRender_shaders.hlsl">
-      <Filter>Resource Files\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Shaders\DebugViewRender_shaders.hlsl">
       <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\FinalRender_CH_shaders.hlsl">

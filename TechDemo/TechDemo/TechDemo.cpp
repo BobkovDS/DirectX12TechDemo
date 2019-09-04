@@ -86,8 +86,7 @@ void TechDemo::onKeyDown(WPARAM btnState)
 	case VK_NUMPAD0: m_renderManager.toggleDebugMode(); break;
 	case VK_NUMPAD1: m_renderManager.toggleDebug_Axes(); break;
 	case VK_NUMPAD2: m_renderManager.toggleDebug_Lights(); break;
-	case VK_NUMPAD3: m_renderManager.toggleDebug_Normals_Vertex(); break;
-	case VK_NUMPAD4: m_renderManager.toggleDebug_View(); break;
+	case VK_NUMPAD3: m_renderManager.toggleDebug_Normals_Vertex(); break;	
 	case VK_NUMPAD5: m_renderManager.test_drop(); break;
 	case VK_NUMPAD7: m_renderManager.toggleTechnik_SSAO(); break;
 	case VK_NUMPAD8: m_renderManager.toggleTechnik_Shadow(); break;
@@ -437,26 +436,16 @@ void TechDemo::update_passCB()
 
 	XMMATRIX view = m_camera->getView();
 	XMMATRIX proj = m_camera->lens->getProj();
-
-	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
-	XMMATRIX viewProjT = XMMatrixMultiply(viewProj, T);
-	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
 	XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
-	XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
-
-	// TO_DO: delete here which we no need
-	XMStoreFloat4x4(&mMainPassCB.View, XMMatrixTranspose(view));
-	XMStoreFloat4x4(&mMainPassCB.InvView, XMMatrixTranspose(invView));
+	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
+	XMMATRIX viewProjT = XMMatrixMultiply(viewProj, T);		
+		
+	XMStoreFloat4x4(&mMainPassCB.View, XMMatrixTranspose(view));	
 	XMStoreFloat4x4(&mMainPassCB.Proj, XMMatrixTranspose(proj));
 	XMStoreFloat4x4(&mMainPassCB.InvProj, XMMatrixTranspose(invProj));
-	XMStoreFloat4x4(&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));
-	XMStoreFloat4x4(&mMainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
+	XMStoreFloat4x4(&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));	
 	XMStoreFloat4x4(&mMainPassCB.ViewProjT, XMMatrixTranspose(viewProjT));	
-
-	mMainPassCB.RenderTargetSize = XMFLOAT2((float)width(), (float)height());
-	mMainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / width(), 1.0f / height());
-	mMainPassCB.NearZ = 1.0f;
-	mMainPassCB.FarZ = 1000.0f;
+		
 	mMainPassCB.EyePosW = m_camera->getPosition3f();
 	mMainPassCB.TotalTime = m_animationTimer.totalTime();	
 
@@ -480,9 +469,7 @@ void TechDemo::update_passCB()
 	lCameraPosv = lCameraPosv + lCameraDirectionInXZPlane * lLenght; /* we draw Shadow in front of camera half-plane. 
 	It works good when we look mainly forward, not down from high distance*/
 
-	XMStoreFloat3(&lcameraPos, lCameraPosv);
-
-	mMainPassCB.ViewPointPosition = lcameraPos;
+	XMStoreFloat3(&lcameraPos, lCameraPosv);	
 
 	for (size_t i = 0; i < lights.size(); i++)
 	{
@@ -514,17 +501,13 @@ void TechDemo::update_passCB()
 			XMMATRIX view = m_camerasDCM[i].getView();
 			XMMATRIX proj = m_camerasDCM[i].lens->getProj();
 
-			XMMATRIX viewProj = XMMatrixMultiply(view, proj);
-			XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
-			XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
-			XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
+			XMMATRIX viewProj = XMMatrixMultiply(view, proj);			
+			XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);			
 
-			XMStoreFloat4x4(&mMainPassCB.View, XMMatrixTranspose(view));
-			XMStoreFloat4x4(&mMainPassCB.InvView, XMMatrixTranspose(invView));
+			XMStoreFloat4x4(&mMainPassCB.View, XMMatrixTranspose(view));			
 			XMStoreFloat4x4(&mMainPassCB.Proj, XMMatrixTranspose(proj));
 			XMStoreFloat4x4(&mMainPassCB.InvProj, XMMatrixTranspose(invProj));
-			XMStoreFloat4x4(&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));
-			XMStoreFloat4x4(&mMainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
+			XMStoreFloat4x4(&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));			
 
 			currPassCB->CopyData(1 + i, mMainPassCB);
 		}

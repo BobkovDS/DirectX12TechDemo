@@ -5,7 +5,6 @@
 #include "DebugRender_Light.h"
 #include "DebugRender_Normals.h"
 #include "DebugRender_Screen.h"
-#include "DebugRender_View.h"
 #include "SSAORender.h"
 #include "BlurRender.h"
 #include "ShadowRender.h"
@@ -40,14 +39,12 @@ class RenderManager
 	DebugRender_Axis m_debugRenderAxes;
 	DebugRender_Light m_debugRenderLights;
 	DebugRender_Normals m_debugRenderNormals;
-	DebugRender_Screen m_debugRenderScreen;
-	DebugRender_View m_debugRenderView;
+	DebugRender_Screen m_debugRenderScreen;	
 	
 	bool m_debugMode;
 	bool m_debug_Axes;
 	bool m_debug_Lights;
 	bool m_debug_Normals_Vertex;
-	bool m_debug_View;
 	bool m_isSSAOUsing;
 	bool m_isShadowUsing;	
 	bool m_isNormalMappingUsing;
@@ -69,8 +66,7 @@ public:
 	void toggleDebugMode();
 	void toggleDebug_Normals_Vertex();
 	void toggleDebug_Axes();
-	void toggleDebug_Lights();
-	void toggleDebug_View();
+	void toggleDebug_Lights();	
 	void toggleTechnik_SSAO();
 	void toggleTechnik_Shadow();
 	void toggleTechnik_Normal();	

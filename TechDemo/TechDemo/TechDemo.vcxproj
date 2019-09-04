@@ -140,7 +140,6 @@
     <ClCompile Include="DebugRender_Light.cpp" />
     <ClCompile Include="DebugRender_Normals.cpp" />
     <ClCompile Include="DebugRender_Screen.cpp" />
-    <ClCompile Include="DebugRender_View.cpp" />
     <ClCompile Include="FBXFileLoader.cpp" />
     <ClCompile Include="FinalRender.cpp" />
     <ClCompile Include="main.cpp" />
@@ -157,7 +156,6 @@
     <ClCompile Include="PSOShadowLayer.cpp" />
     <ClCompile Include="PSOSSAOLayer1.cpp" />
     <ClCompile Include="PSOSSAOLayer2.cpp" />
-    <ClCompile Include="PSODebugLayer_View.cpp" />
     <ClCompile Include="RenderBase.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
@@ -190,7 +188,6 @@
     <ClInclude Include="DebugRender_Light.h" />
     <ClInclude Include="DebugRender_Normals.h" />
     <ClInclude Include="DebugRender_Screen.h" />
-    <ClInclude Include="DebugRender_View.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="FrameResourcesManager.h" />
     <ClInclude Include="FBXFileLoader.h" />
@@ -210,7 +207,6 @@
     <ClInclude Include="PSOShadowLayer.h" />
     <ClInclude Include="PSOSSAOLayer1.h" />
     <ClInclude Include="PSOSSAOLayer2.h" />
-    <ClInclude Include="PSODebugLayer_View.h" />
     <ClInclude Include="RenderBase.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="ResourceManager.h" />
@@ -260,10 +256,6 @@
     <FxCompile Include="Shaders\DebugScreenRender_shaders.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="Shaders\DebugViewRender_shaders.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Shaders\FinalRender_CH_shaders.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

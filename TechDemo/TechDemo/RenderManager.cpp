@@ -7,8 +7,7 @@ RenderManager::RenderManager(): m_initialized(false)
 	m_debugMode = false;
 	m_debug_Axes = true;
 	m_debug_Lights = false;
-	m_debug_Normals_Vertex = false;
-	m_debug_View = false;
+	m_debug_Normals_Vertex = false;	
 	m_isSSAOUsing = false;
 	m_isShadowUsing = false;
 	m_isNormalMappingUsing = false;
@@ -38,8 +37,6 @@ void RenderManager::initialize(const RenderManagerMessanger& renderParams)
 	m_debugRenderLights.initialize(renderParams.commonRenderData);
 	m_debugRenderNormals.initialize(renderParams.commonRenderData);
 	m_debugRenderScreen.initialize(renderParams.commonRenderData);	
-	m_debugRenderView.initialize(renderParams.commonRenderData);
-
 	m_computeRender.initialize(renderParams.commonRenderData);
 
 	RenderMessager lRenderParams = renderParams.commonRenderData;	
@@ -75,12 +72,6 @@ void RenderManager::buildRenders()
 	m_debugRenderLights.set_DescriptorHeap_RTV(m_applicationRTVHeap);
 	m_debugRenderLights.build();
 	m_debugRenderLights.setSwapChainResources(m_swapChainResources);
-
-	// build Debug View Render
-	m_debugRenderView.set_DescriptorHeap_RTV(m_applicationRTVHeap);
-	m_debugRenderView.set_DescriptorHeap_DSV(m_finalRender.get_dsvHeapPointer());
-	m_debugRenderView.build();
-	m_debugRenderView.setSwapChainResources(m_swapChainResources);
 
 	// build Debug Normals Render
 	m_debugRenderNormals.set_DescriptorHeap_RTV(m_applicationRTVHeap);
@@ -169,8 +160,7 @@ void RenderManager::draw()
 		if (m_debug_Lights)
 			m_debugRenderLights.draw(updatedFlags);
 		if (m_debug_Normals_Vertex)
-			m_debugRenderNormals.draw(updatedFlags);
-		if (m_debug_View) m_debugRenderView.draw(updatedFlags);
+			m_debugRenderNormals.draw(updatedFlags);		
 	}
 
 	// for using with GUI Render
@@ -262,12 +252,6 @@ void RenderManager::toggleDebug_Normals_Vertex()
 {
 	if (m_debugMode)
 		m_debug_Normals_Vertex = !m_debug_Normals_Vertex;
-}
-
-void RenderManager::toggleDebug_View()
-{
-	if (m_debugMode)
-		m_debug_View = !m_debug_View;
 }
 
 void RenderManager::setRenderMode_Final()
