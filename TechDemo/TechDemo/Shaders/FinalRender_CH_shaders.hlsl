@@ -52,8 +52,7 @@ VertexOut VS(VertexIn vin, uint instID : SV_InstanceID)
 float4 PS(VertexOut pin) : SV_Target
 {
     pin.NormalW = normalize(pin.NormalW);
-
-   // return float4(pin.NormalW, 0.0f);
+    //return float4(pin.NormalW, 1.0f);
     
     float3 toEyeW = cbPass.EyePosW - pin.PosW;
     float distToEye = length(toEyeW);
@@ -98,8 +97,9 @@ float4 PS(VertexOut pin) : SV_Target
     //return float4(ssao_factor, ssao_factor, ssao_factor, 1.0f);
     float4 ambient = ssao_factor * cbPass.AmbientLight * diffuseAlbedo;
     
-    const float shiness = 1.0f - material.Roughness;
-    material.FresnelR0 = float3(0.02f, 0.02f, 0.02f);
+    const float shiness = 1.0f;//  -material.Roughness;
+    
+    material.FresnelR0 = float3(0.08f, 0.08f, 0.08f);
     MaterialLight matLight = { diffuseAlbedo, material.FresnelR0, shiness };
         
     float shadow_depth = 1.0f;
@@ -116,19 +116,20 @@ float4 PS(VertexOut pin) : SV_Target
     float4 litColor = directLight + ambient;
     
     //if (cbPass.FogRange > 0)
-    //if (0 > 1)
+    if (0 > 1)
     {
         float fogAmount = saturate((distToEye - cbPass.FogStart) / cbPass.FogRange);
         litColor = lerp(litColor, cbPass.FogColor, fogAmount);
     }
         
        
-    float3 r = reflect(-toEyeW, Normal);
+    //float3 r = reflect(-toEyeW, Normal);
+    float3 r = refract(-toEyeW, pin.NormalW, 0.9f);
     float4 reflectionColor = gCubeMap.Sample(gsamPointWrap, r);
     float3 fresnelFactor = SchlickFresnel(material.FresnelR0, Normal, r);
     litColor.rgb += shiness * fresnelFactor * reflectionColor.rgb;
 
-    litColor.a = 0.5f;
+    litColor.a = 1.0f;
     return litColor;
 }
 

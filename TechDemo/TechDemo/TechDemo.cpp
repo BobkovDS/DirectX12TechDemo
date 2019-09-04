@@ -1,10 +1,6 @@
 #include "TechDemo.h"
 #include "ApplLogger.h"
 
-#define PASSCONSTBUFCOUNTDCM 6
-#define PASSCONSTBUFCOUNT 1/*Frame*/ + 0/*Shadow*/ +0/*Mirror*/ + PASSCONSTBUFCOUNTDCM
-#define SSAOCONSTBUFCOUNT 1
-
 using namespace DirectX;
 
 TechDemo::TechDemo(HINSTANCE hInstance, const std::wstring& applName, int width, int height)
@@ -171,7 +167,6 @@ void TechDemo::init3D()
 	
 	Utilit3D::initialize(m_device.Get(), m_cmdList.Get());
 
-
 	//// Load Wolf with Animation
 	//{
 	//	FBXFileLoader m_fbx_loader;
@@ -185,19 +180,19 @@ void TechDemo::init3D()
 	//	m_fbx_loader.loadSceneFile("Models\\Water3.fbx");
 	//}
 
-	////Load a house
+	//Load a house
 	{
 		FBXFileLoader m_fbx_loader;
 		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
 		m_fbx_loader.loadSceneFile("Models\\The Scene.fbx");		
-	}	
+	}
 
-	{
+	/*{
 		FBXFileLoader m_fbx_loader;
 		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
 		m_fbx_loader.loadSceneFile("Models\\Landscape.fbx");
 	}
-
+*/
 	// Load lights
 	{
 		FBXFileLoader m_fbx_loader;
@@ -254,9 +249,48 @@ void TechDemo::init3D()
 		m_camera->buildFrustumBounding();		
 	}
 
+	// When camera has beed updated we let a Scene to know about this (Scene is updated only when camera has been updated)
 	ExecuterVoidVoid<Scene>* sceneCameraListener =
 		new ExecuterVoidVoid<Scene>(&m_scene, &Scene::cameraListener);
 	m_camera->addObserver(sceneCameraListener);
+
+
+	// Build Cameras for DCM
+	if (PASSCONSTBUFCOUNTDCM > 0)
+	{
+		XMFLOAT3 position(1.54f, 4.85f, -0.96f); // Get Position of a Lake
+		XMFLOAT3 targets[6] =
+		{
+			XMFLOAT3(position.x + 1.0f, position.y, position.z),
+			XMFLOAT3(position.x - 1.0f, position.y, position.z),
+			XMFLOAT3(position.x, position.y + 1.0f, position.z),
+			XMFLOAT3(position.x, position.y - 1.0f, position.z),
+			XMFLOAT3(position.x, position.y, position.z + 1.0f),
+			XMFLOAT3(position.x, position.y, position.z - 1.0f)
+		};
+
+		XMFLOAT3 ups[6] =
+		{
+			XMFLOAT3(0.0f, 1.0f, 0.0f),
+			XMFLOAT3(0.0f, 1.0f, 0.0f),
+			XMFLOAT3(0.0f, 0.0f, -1.0f),
+			XMFLOAT3(0.0f, 0.0f, 1.0f),
+			XMFLOAT3(0.0f, 1.0f, 0.0f),
+			XMFLOAT3(0.0f, 1.0f, 0.0f)
+		};
+
+		float w = static_cast<float>(width());
+		float h = static_cast<float>(height());
+		float aspect = w / h;
+
+		for (int i = 0; i < PASSCONSTBUFCOUNTDCM; i++)
+		{
+			m_camerasDCM[i].lookAt(position, targets[i], ups[i]);
+			m_camerasDCM[i].lens = new PerspectiveCameraLens();
+			m_camerasDCM[i].lens->setLens(0.25f*XM_PI, aspect, 1.0f, 100.0f);
+			m_camerasDCM[i].updateViewMatrix();
+		}
+	}
 
 	//m_objectManager.mirrorZ();
 	ApplLogger::getLogger().log("TechDemo::init3D()::Scene building...", 0);
@@ -384,11 +418,9 @@ void TechDemo::update_BoneData()
 		const std::vector<DirectX::XMFLOAT4X4>& lFinalMatrices = lSkeleton.getFinalTransforms(lTickTime, 0);
 
 		InstanceDataGPU ltmp;
-		for (int i = 0; i < lFinalMatrices.size(); i++)
-		{
-			currBoneCB->CopyData(lBoneCBID++, lFinalMatrices[i]);
-			//currBoneCB->CopyData(lBoneCBID++, ltmp.World);
-		}
+		for (int i = 0; i < lFinalMatrices.size(); i++)		
+			currBoneCB->CopyData(lBoneCBID++, lFinalMatrices[i]);			
+		
 	}
 }
 
@@ -412,22 +444,21 @@ void TechDemo::update_passCB()
 	XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
 	XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
 
+	// TO_DO: delete here which we no need
 	XMStoreFloat4x4(&mMainPassCB.View, XMMatrixTranspose(view));
 	XMStoreFloat4x4(&mMainPassCB.InvView, XMMatrixTranspose(invView));
 	XMStoreFloat4x4(&mMainPassCB.Proj, XMMatrixTranspose(proj));
 	XMStoreFloat4x4(&mMainPassCB.InvProj, XMMatrixTranspose(invProj));
 	XMStoreFloat4x4(&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));
 	XMStoreFloat4x4(&mMainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
-	XMStoreFloat4x4(&mMainPassCB.ViewProjT, XMMatrixTranspose(viewProjT));
-	
+	XMStoreFloat4x4(&mMainPassCB.ViewProjT, XMMatrixTranspose(viewProjT));	
 
 	mMainPassCB.RenderTargetSize = XMFLOAT2((float)width(), (float)height());
 	mMainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / width(), 1.0f / height());
 	mMainPassCB.NearZ = 1.0f;
 	mMainPassCB.FarZ = 1000.0f;
 	mMainPassCB.EyePosW = m_camera->getPosition3f();
-	mMainPassCB.TotalTime = m_animationTimer.totalTime();
-	mMainPassCB.doesUseMirrorLight = 0; // should we use Mirror light?
+	mMainPassCB.TotalTime = m_animationTimer.totalTime();	
 
 	const std::vector<CPULight>& lights = m_scene.getLights();
 
@@ -472,6 +503,32 @@ void TechDemo::update_passCB()
 	
 	auto currPassCB = m_frameResourceManager.currentFR()->getPassCB();
 	currPassCB->CopyData(0, mMainPassCB);	
+
+
+	// Update Pass CB for Dynamic Cube Map drawcalls
+
+	if (PASSCONSTBUFCOUNTDCM > 0)
+	{
+		for (int i = 0; i < PASSCONSTBUFCOUNTDCM; i++)
+		{
+			XMMATRIX view = m_camerasDCM[i].getView();
+			XMMATRIX proj = m_camerasDCM[i].lens->getProj();
+
+			XMMATRIX viewProj = XMMatrixMultiply(view, proj);
+			XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(view), view);
+			XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
+			XMMATRIX invViewProj = XMMatrixInverse(&XMMatrixDeterminant(viewProj), viewProj);
+
+			XMStoreFloat4x4(&mMainPassCB.View, XMMatrixTranspose(view));
+			XMStoreFloat4x4(&mMainPassCB.InvView, XMMatrixTranspose(invView));
+			XMStoreFloat4x4(&mMainPassCB.Proj, XMMatrixTranspose(proj));
+			XMStoreFloat4x4(&mMainPassCB.InvProj, XMMatrixTranspose(invProj));
+			XMStoreFloat4x4(&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));
+			XMStoreFloat4x4(&mMainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
+
+			currPassCB->CopyData(1 + i, mMainPassCB);
+		}
+	}
 }
 
 void TechDemo::update_passSSAOCB()
@@ -513,8 +570,8 @@ void TechDemo::update_passSSAOCB()
 
 	float c = 4.0f;
 	float t = 0.029f;
-	float dx = 0.078f;// 3921568f;
-	float mu = 0.3f;
+	float dx = 0.058f;// 3921568f;
+	float mu = 0.2f;
 
 	float c_max = dx * sqrtf(mu*t + 2) / (2 * t);
 	if (c >= c_max) c = c_max - 0.01f;

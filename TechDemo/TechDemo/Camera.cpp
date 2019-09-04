@@ -288,7 +288,7 @@ void Camera::buildFrustumBounding()
 
 	m_frustumBoundingWorldToUpdate = true;
 
-	// Another way to find Frustum Plane vectors
+	// Another way to find Frustum Plane vectors // TO_DO: Delete it?
 	XMMATRIX lProjMatrix = lens->getProj();
 	//lProjMatrix = XMMatrixTranspose(lProjMatrix);
 	XMVECTOR lNear = lProjMatrix.r[3] + lProjMatrix.r[2];

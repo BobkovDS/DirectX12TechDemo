@@ -173,8 +173,10 @@ void ComputeRender::draw(int flags)
 
 		if (m_drop)
 		{
-			lXPos = (double)rand() / (RAND_MAX + 1) * m_width;
-			lYPos = (double)rand() / (RAND_MAX + 1) * m_height;
+			//lXPos = (double)rand() / (RAND_MAX + 1) * m_width;
+			//lYPos = (double)rand() / (RAND_MAX + 1) * m_height;
+			lXPos = (double)rand() / (RAND_MAX + 1) * 10 + m_width/2;
+			lYPos = (double)rand() / (RAND_MAX + 1) * 10;
 			lMagnitude = (double) rand() / (RAND_MAX + 1) * 50 + 10;
 			//lXPos = m_width / 2;
 			//lYPos = 2;

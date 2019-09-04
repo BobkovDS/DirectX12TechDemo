@@ -1,6 +1,7 @@
 #pragma once
 #include "RenderBase.h"
 #include "PSOBlurLayer.h"
+#include "Timer.h"
 
 class BlurRender :
 	public RenderBase
@@ -11,6 +12,7 @@ class BlurRender :
 
 	PSOBlurLayer m_psoLayer;
 	std::unique_ptr<Mesh> m_mesh;
+	Timer m_timer;
 	bool m_horizontalBlurFlag;
 	int m_blurCount;
 	bool m_isBlurReady;

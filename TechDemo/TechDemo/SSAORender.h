@@ -2,6 +2,7 @@
 #include "RenderBase.h"
 #include "PSOSSAOLayer1.h"
 #include "PSOSSAOLayer2.h"
+#include "Timer.h"
 
 #define RESOURCEID_VN 0
 #define RESOURCEID_AO 1
@@ -16,6 +17,7 @@ class SSAORender :
 	D3D12_VIEWPORT m_viewPortHalf;
 	D3D12_RECT m_scissorRectHalf;
 	ResourceWithUploader m_randomVectorsTexture;
+	Timer m_timer;
 
 	static const DXGI_FORMAT m_viewNormalMapFormat = DXGI_FORMAT_R16G16B16A16_FLOAT;
 	void build_TechDescriptors();

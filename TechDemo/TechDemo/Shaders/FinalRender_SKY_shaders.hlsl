@@ -16,10 +16,13 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
     InstanceData instData = gInstanceData[shapeID];
     float4x4 wordMatrix = instData.World;  
     
-    vout.PosW = vin.PosL; // for texturing
+    float4 posW = mul(wordMatrix, float4(vin.PosL, 1.0f));
+    //vout.PosW = vin.PosL; // for texturing old
+    vout.PosW = posW.xyz; // for texturing
     //get World transform
     
-    float4 posW = mul(wordMatrix, float4(vin.PosL, 1.0f));
+    
+    //float4 posW = float4(vin.PosL, 1.0f);
     posW.xyz  += cbPass.EyePosW;
 
     // Transform to homogeneous clip space.    
@@ -30,6 +33,8 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
 
 float4 PS(VertexOut pin) : SV_Target
 {   
+   // return float4(pin.PosW, 1.0f);
+
     float4 lColor = gCubeMap.Sample(gsamPointWrap, pin.PosW);
     lColor.a = 0;
     return lColor;

@@ -9,6 +9,10 @@
 #include "RenderManager.h"
 #include "Camera.h"
 
+#define PASSCONSTBUFCOUNTDCM 6
+#define PASSCONSTBUFCOUNT 1/*Frame*/ + PASSCONSTBUFCOUNTDCM
+#define SSAOCONSTBUFCOUNT 1
+
 class TechDemo :
 	public BasicDXGI
 {
@@ -23,6 +27,7 @@ class TechDemo :
 	FrameResourcesManager<InstanceDataGPU, PassConstantsGPU, SSAO_GPU> m_frameResourceManager;
 	Utilit3D m_utilit3D;
 	Camera* m_camera;
+	Camera m_camerasDCM[PASSCONSTBUFCOUNTDCM]; // Cameras for DCM (Dynamic Cube Map buidling)
 	Timer m_animationTimer;
 	DirectX::XMFLOAT4 m_offsets[14];
 	UINT* m_drawInstancesIDs;

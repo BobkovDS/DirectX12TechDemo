@@ -40,7 +40,7 @@ void ShadowRender::build()
 
 	build_TechDescriptors();
 
-	m_timer.setTickTime(0.032633); //60fps;
+	m_timer.setTickTime(0.0083f); //60fps;
 }
 
 void ShadowRender::build_TechDescriptors()

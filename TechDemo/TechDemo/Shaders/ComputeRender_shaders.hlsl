@@ -65,8 +65,8 @@ void CS(int3 groupThreadID : SV_GroupThreadID, int3 dispatchThreadID : SV_Dispat
 
     for (int i = 1; i < lTextureSizeW-1; i++)
     {   
-        float4 cV = gCurrentBuffer[int2(i, dispatchThreadID.y)];
-        float4 lV = gCurrentBuffer[int2(i-1, dispatchThreadID.y )];
+       // float4 cV = gCurrentBuffer[int2(i, dispatchThreadID.y)];
+       // float4 lV = gCurrentBuffer[int2(i-1, dispatchThreadID.y )];
         float4 rV = gCurrentBuffer[int2(i + 1, dispatchThreadID.y)];
         float4 tV = gCurrentBuffer[int2(i, dispatchThreadID.y - 1)];
         float4 bV = gCurrentBuffer[int2(i, dispatchThreadID.y + 1)];
@@ -75,8 +75,8 @@ void CS(int3 groupThreadID : SV_GroupThreadID, int3 dispatchThreadID : SV_Dispat
                 
         gPrevBuffer[int2(i, dispatchThreadID.y)] = float4(newHeight, cV.x, cV.z, cV.w);
         
-       // lV = cV;
-       // cV = rV;
+        lV = cV;
+        cV = rV;
     }     
 
     // make a Drop
@@ -106,7 +106,7 @@ void CS(int3 groupThreadID : SV_GroupThreadID, int3 dispatchThreadID : SV_Dispat
     cV = gPrevBuffer[int2(1, dispatchThreadID.y)];
     lV = gPrevBuffer[int2(0, dispatchThreadID.y)];
 
-    float dx = 0.078f;
+    float dx = 0.058f;
 
     for (int ii = 1; ii < lTextureSizeW-1; ii++)
     {        
@@ -114,7 +114,7 @@ void CS(int3 groupThreadID : SV_GroupThreadID, int3 dispatchThreadID : SV_Dispat
         float4 tV = gPrevBuffer[int2(ii, dispatchThreadID.y - 1)];
         float4 bV = gPrevBuffer[int2(ii, dispatchThreadID.y + 1)];
 
-        float3 Normal = float3(lV.x - rV.x, 2.0f * dx, (tV.x - bV.x));
+        float3 Normal = float3(lV.x - rV.x, -(tV.x - bV.x), 2.0f * dx);
         
         float4 cachValue = cV;
         gCurrentBuffer[int2(ii, dispatchThreadID.y)] = cachValue;

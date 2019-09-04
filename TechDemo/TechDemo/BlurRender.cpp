@@ -37,6 +37,7 @@ void BlurRender::build(int blurCount)
 	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat);
 		
 	build_TechDescriptors();	
+	m_timer.setTickTime(0.0083f); // 60 fps
 	m_isBlurReady = false;
 }
 
@@ -112,6 +113,8 @@ void BlurRender::resize(UINT iwidth, UINT iheight)
 
 void BlurRender::draw(int flags)
 {
+	if (!m_timer.tick()) return;
+
 	// Copy SSAO AO Map Input Resource to "our" A resource
 	{
 		{

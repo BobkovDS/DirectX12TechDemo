@@ -203,6 +203,8 @@ float4 PS(GeometryOut pin) : SV_Target
   // return float4(1.0f, 1.0f, 1.0f, 0.5f);
     pin.NormalW = normalize(pin.NormalW);
 
+    //return float4(pin.NormalW, 1.0f);
+
     float3 toEyeW = cbPass.EyePosW - pin.PosW;
     float distToEye = length(toEyeW);
     toEyeW = toEyeW / distToEye;

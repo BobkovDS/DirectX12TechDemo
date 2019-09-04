@@ -67,6 +67,8 @@ void SSAORender::build()
 	build_randomVectorTexture();
 	build_screen();
 	build_TechDescriptors();	
+
+	m_timer.setTickTime(0.0083f);
 }
 
 void SSAORender::build_TechDescriptors()
@@ -129,7 +131,9 @@ void SSAORender::resize(UINT iwidth, UINT iheight)
 }
 
 void SSAORender::draw(int flags)
-{	   
+{	  
+	if (!m_timer.tick()) return;
+
 	const UINT lcLayerToDraw = 0b1010; // SSAO only for simple Opaque objects
 
 	m_cmdList->SetGraphicsRootSignature(m_psoLayer1.getRootSignature());

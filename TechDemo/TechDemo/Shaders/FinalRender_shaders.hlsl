@@ -45,7 +45,7 @@ struct PixelOut
 float4 PS(VertexOut pin) : SV_Target
 //PixelOut PS(VertexOut pin)
 {   	
-   // return float4(1.0f, 0.0f, 0.0f, 0.0f);
+    //return float4(1.0f, 0.0f, 0.0f, 0.0f);
 
     pin.NormalW = normalize(pin.NormalW);
     //return float4(pin.NormalW, 1.0f);
@@ -118,6 +118,12 @@ float4 PS(VertexOut pin) : SV_Target
         litColor = lerp(litColor, cbPass.FogColor, fogAmount);
     }    
         
+    
+    float3 r = refract(-toEyeW, Normal, 0.9f);
+    float4 reflectionColor = gCubeMap.Sample(gsamPointWrap, r);
+    float3 fresnelFactor = SchlickFresnel(material.FresnelR0, Normal, r);
+    litColor.rgb += shiness * fresnelFactor * reflectionColor.rgb;
+
     litColor.a = diffuseTranspFactor;
 	return litColor;
 }

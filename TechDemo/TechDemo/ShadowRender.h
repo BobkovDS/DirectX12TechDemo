@@ -2,7 +2,7 @@
 #include "RenderBase.h"
 #include "PSOShadowLayer.h"
 #include "Timer.h"
-
+ 
 class ShadowRender :
 	public RenderBase
 {
