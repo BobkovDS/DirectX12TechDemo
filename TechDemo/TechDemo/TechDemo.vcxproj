@@ -144,6 +144,7 @@
     <ClCompile Include="FBXFileLoader.cpp" />
     <ClCompile Include="FinalRender.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MirrorRender.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="PSOBlurLayer.cpp" />
@@ -155,6 +156,7 @@
     <ClCompile Include="PSODebugLayer_Screen.cpp" />
     <ClCompile Include="PSOFinalRenderLayer.cpp" />
     <ClCompile Include="PSOBaseLayer.cpp" />
+    <ClCompile Include="PSOMirrorLayer.cpp" />
     <ClCompile Include="PSOShadowLayer.cpp" />
     <ClCompile Include="PSOSSAOLayer1.cpp" />
     <ClCompile Include="PSOSSAOLayer2.cpp" />
@@ -197,6 +199,7 @@
     <ClInclude Include="FinalRender.h" />
     <ClInclude Include="GraphicDataStructures.h" />
     <ClInclude Include="MathHelper.h" />
+    <ClInclude Include="MirrorRender.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="Octree.h" />
     <ClInclude Include="PSOBlurLayer.h" />
@@ -208,6 +211,7 @@
     <ClInclude Include="PSODebugLayer_Screen.h" />
     <ClInclude Include="PSOFinalRenderLayer.h" />
     <ClInclude Include="PSOBaseLayer.h" />
+    <ClInclude Include="PSOMirrorLayer.h" />
     <ClInclude Include="PSOShadowLayer.h" />
     <ClInclude Include="PSOSSAOLayer1.h" />
     <ClInclude Include="PSOSSAOLayer2.h" />

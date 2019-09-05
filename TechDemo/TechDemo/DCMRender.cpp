@@ -112,7 +112,7 @@ void DCMRender::draw(int flags)
 {
 	if (!m_timer.tick()) return;
 
-	const UINT lcLayerToDraw = 0b1011; // SSAO only for Opaque objects //NOTE: If it is required to add new layer, PSO should be for this created in PSODCMLayer
+	const UINT lcLayerToDraw = 0b1011; // render only Opaque objects //NOTE: If it is required to add new layer, PSO should be for this created in PSODCMLayer
 
 	m_cmdList->SetGraphicsRootSignature(m_psoLayer.getRootSignature());
 
@@ -142,7 +142,8 @@ void DCMRender::draw(int flags)
 
 	UINT passAdressOffset = m_frameResourceManager->getPassCBsize();
 	D3D12_GPU_VIRTUAL_ADDRESS lPassCBBaseAdress = passCB->GetGPUVirtualAddress();
-	lPassCBBaseAdress += passAdressOffset; // Skip the first PassCB
+	lPassCBBaseAdress += passAdressOffset; // Skip the first PassCB - Main PassCB
+	lPassCBBaseAdress += passAdressOffset; // Skip the second PassCB - Mirror PassCB
 
 	for (int side_id = 0; side_id < 6; side_id++)
 	{		

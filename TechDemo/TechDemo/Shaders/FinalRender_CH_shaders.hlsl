@@ -121,12 +121,12 @@ float4 PS(VertexOut pin) : SV_Target
        
     float3 r = reflect(-toEyeW, Normal);
     //float3 r = refract(-toEyeW, pin.NormalW, 0.9f);
-    float4 reflectionColor = gDCMCubeMap.Sample(gsamPointWrap, r);
+    float4 reflectionColor = gCubeMap.Sample(gsamPointWrap, r);
     float3 fresnelFactor = SchlickFresnel(material.FresnelR0, Normal, r);
     //litColor.rgb += shiness * fresnelFactor * reflectionColor.rgb;
     litColor.rgb = reflectionColor.rgb;
 
-    litColor.a = 1.0f;
+    litColor.a = 0.5f;
     return litColor;
 }
 

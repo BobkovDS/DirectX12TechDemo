@@ -10,13 +10,14 @@ class ShadowRender :
 	void build_TechDescriptors();
 	void draw_layer(int layerID, int& instanseOffset, bool doDraw);
 	Timer m_timer;
+	void resize(UINT newWidth, UINT newHeight) = delete;
+
 public:
 	ShadowRender();
 	~ShadowRender();
 
 	void initialize(const RenderMessager& renderParams);
 	void build();
-	void draw(int flag);
-	void resize(UINT newWidth, UINT newHeight);	
+	void draw(int flag);	
 };
 

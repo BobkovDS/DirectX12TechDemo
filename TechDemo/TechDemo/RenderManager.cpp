@@ -11,6 +11,7 @@ RenderManager::RenderManager(): m_initialized(false)
 	m_isShadowUsing = false;
 	m_isNormalMappingUsing = false;
 	m_isComputeWork = false;
+	m_isReflection = false;
 	m_renderMode = (1 << RM_FINAL);		
 }
 
@@ -31,6 +32,7 @@ void RenderManager::initialize(const RenderManagerMessanger& renderParams)
 	m_frameResourceManager= renderParams.commonRenderData.FrameResourceMngr;
 	m_texturesDescriptorHeap = renderParams.SRVHeap;
 	m_finalRender.initialize(renderParams.commonRenderData);
+	m_mirrorRender.initialize(renderParams.commonRenderData);
 	m_ssaoRender.initialize(renderParams.commonRenderData);	
 	m_debugRenderAxes.initialize(renderParams.commonRenderData);
 	m_debugRenderLights.initialize(renderParams.commonRenderData);
@@ -66,6 +68,14 @@ void RenderManager::buildRenders()
 	m_finalRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
 	m_finalRender.build();
 	m_finalRender.setSwapChainResources(m_swapChainResources);	
+
+	//build Mirror Render	
+	m_mirrorRender.set_DescriptorHeap_RTV(m_applicationRTVHeap);
+	m_mirrorRender.set_DescriptorHeap_DSV(m_finalRender.get_dsvHeapPointer());
+	m_mirrorRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
+	m_mirrorRender.build();
+	m_mirrorRender.setSwapChainResources(m_swapChainResources);
+
 
 	// build Debug Axes Render
 	m_debugRenderAxes.set_DescriptorHeap_RTV(m_applicationRTVHeap);
@@ -159,9 +169,17 @@ void RenderManager::draw()
 	}		
 
 	updatedFlags &= ~((!m_blurRender.isBlurMapReady()) << RTB_SSAO);
-	if (lFinalRender && !(m_renderMode & RM_OTHERMODE)) m_finalRender.draw(updatedFlags);
+	if (lFinalRender && !(m_renderMode & RM_OTHERMODE))
+	{
+		m_finalRender.draw(updatedFlags);
+		
+		if (m_isReflection)
+			m_mirrorRender.draw(1);
+		else
+			m_mirrorRender.draw(0);
+	}
 	  
-	m_dcmRender.draw(updatedFlags);
+	//m_dcmRender.draw(updatedFlags);
 
 	if (m_debugMode)
 	{
@@ -232,9 +250,9 @@ void RenderManager::resize(int iwidth, int iheight)
 		m_ssaoRender.resize(iwidth, iheight);
 
 		m_blurRender.setInputResource(m_ssaoRender.getAOResource());
-		m_blurRender.resize(iwidth, iheight);
-		//m_shadowRender.resize(iwidth, iheight); // we do not need resize Shadow Map everytimes
+		m_blurRender.resize(iwidth, iheight);		
 		m_finalRender.resize(iwidth, iheight);
+		m_mirrorRender.resize(iwidth, iheight);
 		m_debugRenderAxes.resize(iwidth, iheight);
 		m_debugRenderLights.resize(iwidth, iheight);		
 		m_debugRenderNormals.resize(iwidth, iheight);	
@@ -308,6 +326,11 @@ void RenderManager::toggleTechnik_Normal()
 void RenderManager::toggleTechnik_ComputeWork()
 {
 	m_isComputeWork= !m_isComputeWork;
+}
+
+void RenderManager::toggleTechnik_Reflection()
+{
+	m_isReflection = !m_isReflection;
 }
 
 

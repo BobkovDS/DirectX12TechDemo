@@ -350,6 +350,8 @@ inline void FBXFileLoader::build_GeoMeshesWithTypedVertex(fbx_Mesh* iMesh, bool 
 	lNewRI.Geometry = lgeoMesh.get();
 	lNewRI.LODTrianglesCount[0] = (UINT) lMesh->Indices.size() / 3;
 	lNewRI.ExcludeFromCulling = iMesh->ExcludeFromCulling;
+	lNewRI.ExcludeFromReflection = iMesh->ExcludeFromMirrorReflection;
+
 	if (lMesh->VertexPerPolygon == 3 || lMesh->VertexPerPolygon == 4)
 		lNewRI.Geometry->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	else
@@ -722,6 +724,8 @@ void FBXFileLoader::add_InstanceToRenderItem(const fbx_NodeInstance& nodeRIInsta
 			else
 				ri_it->second->Type = RenderItemType::RIT_Opaque;
 		}
+
+		ri_it->second->ExcludeFromReflection |= nodeRIInstance.Materials[0]->ExcludeFromMirrorReflection;
 
 		ri_it->second->Instances.push_back(lBaseInstance);
 	}
@@ -1121,6 +1125,14 @@ void FBXFileLoader::process_node_getMaterial(const FbxNode* pNode, fbx_NodeInsta
 						lMaterial.DoesIncludeToWorldBB = false;
 				}
 
+				lMaterial.ExcludeFromMirrorReflection = false;
+				lcustomProperty = lphongMaterial->FindProperty("ExcludeFromReflection");
+				if (lcustomProperty != NULL)
+				{
+					bool lValue = lcustomProperty.Get<bool>();
+					lMaterial.ExcludeFromMirrorReflection = lValue;
+				}				
+				
 				// Get Diffuse data
 				{
 					FbxDouble* lData = lphongMaterial->Diffuse.Get().Buffer();
@@ -1219,6 +1231,14 @@ string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool m
 	{
 		bool lValue = lcustomProperty.Get<bool>();
 		lmesh->ExcludeFromCulling = lValue;
+	}
+
+	// Should be this Mesh (with all Instances) excluded from mirror reflection	
+	lcustomProperty = pNodeAtribute->FindProperty("ExcludeFromReflection");
+	if (lcustomProperty != NULL)
+	{
+		bool lValue = lcustomProperty.Get<bool>();
+		lmesh->ExcludeFromMirrorReflection= lValue;
 	}
 
 	// Copy All Vertices

@@ -124,6 +124,11 @@ float4 PS(VertexOut pin) : SV_Target
     //litColor.rgb += shiness * fresnelFactor * reflectionColor.rgb;
 
     litColor.a = diffuseTranspFactor;
+
+#ifdef MIRBLEND
+    litColor.a = MIRBLEND;
+#endif
+
 	return litColor;
 }
 

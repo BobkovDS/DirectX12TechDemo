@@ -10,6 +10,7 @@
 #include "ShadowRender.h"
 #include "ComputeRender.h"
 #include "DCMRender.h"
+#include "MirrorRender.h"
 
 struct RenderManagerMessanger {
 	ID3D12DescriptorHeap* RTVHeap;
@@ -38,6 +39,7 @@ class RenderManager
 	ComputeRender m_computeRender;
 	DCMRender m_dcmRender;
 	ShadowRender m_shadowRender;
+	MirrorRender m_mirrorRender;
 	DebugRender_Axis m_debugRenderAxes;
 	DebugRender_Light m_debugRenderLights;
 	DebugRender_Normals m_debugRenderNormals;
@@ -51,6 +53,7 @@ class RenderManager
 	bool m_isShadowUsing;	
 	bool m_isNormalMappingUsing;
 	bool m_isComputeWork;
+	bool m_isReflection;
 	UINT m_renderMode;	
 
 	void buildTechSRVs();
@@ -71,6 +74,7 @@ public:
 	void toggleDebug_Lights();	
 	void toggleTechnik_SSAO();
 	void toggleTechnik_Shadow();
+	void toggleTechnik_Reflection();
 	void toggleTechnik_Normal();	
 	void toggleTechnik_ComputeWork();	
 	void setRenderMode_Final();

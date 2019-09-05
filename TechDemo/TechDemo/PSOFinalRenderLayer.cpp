@@ -25,7 +25,7 @@ void PSOFinalRenderLayer::buildShadersBlob()
 	string fullFileNameCH = basedir + shaderNameCH;
 	string fullFileNameSky = basedir + shaderNameSky;
 	string skinnedFullFileName = basedir + skinedShaderName;
-
+	
 	bool lGS = false;
 	string shaderType = "none";
 	try
@@ -153,6 +153,12 @@ void PSOFinalRenderLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, D
 	psoDescLayer6.VS = { reinterpret_cast<BYTE*>(m_shaders["vs_cs"]->GetBufferPointer()), m_shaders["vs_cs"]->GetBufferSize() };
 	psoDescLayer6.PS = { reinterpret_cast<BYTE*>(m_shaders["ps_cs"]->GetBufferPointer()), m_shaders["ps_cs"]->GetBufferSize() };	
 	psoDescLayer6.BlendState = CD3DX12_BLEND_DESC(blend_desc);
+	psoDescLayer6.BlendState.RenderTarget[0].RenderTargetWriteMask = 0; // No write data to back-buffer	
+	psoDescLayer6.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+	psoDescLayer6.DepthStencilState.StencilEnable = true; // Turn Stenciling on
+	psoDescLayer6.DepthStencilState.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+	psoDescLayer6.DepthStencilState.FrontFace.StencilPassOp = D3D12_STENCIL_OP_INCR; // If we pass stencil and depth, just ++ stancil value in buffer
+
 	//psoDescLayer6.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
 
 	// Create PSO objects

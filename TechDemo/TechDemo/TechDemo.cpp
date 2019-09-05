@@ -91,6 +91,7 @@ void TechDemo::onKeyDown(WPARAM btnState)
 	case VK_NUMPAD7: m_renderManager.toggleTechnik_SSAO(); break;
 	case VK_NUMPAD8: m_renderManager.toggleTechnik_Shadow(); break;
 	case VK_NUMPAD9: m_renderManager.toggleTechnik_ComputeWork(); break;
+	case VK_NUMPAD4: m_renderManager.toggleTechnik_Reflection(); break;
 
 	case '1': m_renderManager.setRenderMode_Final(); break;
 	case '2': m_renderManager.setRenderMode_SSAO_Map1(); break;
@@ -204,9 +205,8 @@ void TechDemo::init3D()
 		FBXFileLoader m_fbx_loader;
 		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
 		m_fbx_loader.loadSceneFile("Models\\Camera.fbx");
-	}
- 
-	m_tempVal = 0;
+	} 
+	
 	m_skeletonManager.evaluateAnimationsTime();
 	m_resourceManager.loadTexture();	
 	m_resourceManager.loadMaterials();
@@ -261,57 +261,57 @@ void TechDemo::init3D()
 	m_renderManager.initialize(lRenderManagerParams);
 	m_renderManager.buildRenders();		
 
-	// Build Cameras for DCM
-	if (PASSCONSTBUFCOUNTDCM > 0)
-	{
-		XMFLOAT3 position(0.0f, 0.0f, 0.0f); // Get Position of a Lake
+	// Build Cameras for DCM	
+	//if (PASSCONSTBUF_COUNT_DCM > 0)
+	//{
+	//	XMFLOAT3 position(0.0f, 0.0f, 0.0f); // Get Position of a Lake
 
-		// Get the first WaveV2 object position
-		Scene::SceneLayer* lWaveV2Layer = m_scene.getLayer(NOTOPAQUELAYERCH);
-		if (lWaveV2Layer)
-		{
-			Scene::SceneLayer::SceneLayerObject* lWaveV2Object = lWaveV2Layer->getSceneObject(0);
-			if (lWaveV2Object)
-			{
-				XMMATRIX lWorld = XMLoadFloat4x4(&lWaveV2Object->getObjectMesh()->Instances[0].World);
-				XMVECTOR lPosition = XMVectorSet(0.0f, 0.0f, 0.0, 1.0f);
-				lPosition = XMVector3TransformCoord(lPosition, lWorld);
-				XMStoreFloat3(&position, lPosition);
-			}
-		}
+	//	// Get the first WaveV2 object position
+	//	Scene::SceneLayer* lWaveV2Layer = nullptr;
+	//	lWaveV2Layer = m_scene.getLayer(NOTOPAQUELAYERCH);
+	//	if (lWaveV2Layer)
+	//	{
+	//		Scene::SceneLayer::SceneLayerObject* lWaveV2Object = lWaveV2Layer->getSceneObject(0);
+	//		if (lWaveV2Object)
+	//		{
+	//			XMMATRIX lWorld = XMLoadFloat4x4(&lWaveV2Object->getObjectMesh()->Instances[0].World);
+	//			XMVECTOR lPosition = XMVectorSet(0.0f, 0.0f, 0.0, 1.0f);
+	//			lPosition = XMVector3TransformCoord(lPosition, lWorld);
+	//			XMStoreFloat3(&position, lPosition);
+	//		}
+	//	}
 
+	//	XMFLOAT3 targets[6] =
+	//	{
+	//		XMFLOAT3(position.x + 1.0f, position.y, position.z),
+	//		XMFLOAT3(position.x - 1.0f, position.y, position.z),
+	//		XMFLOAT3(position.x, position.y + 1.0f, position.z),
+	//		XMFLOAT3(position.x, position.y - 1.0f, position.z),
+	//		XMFLOAT3(position.x, position.y, position.z + 1.0f),
+	//		XMFLOAT3(position.x, position.y, position.z - 1.0f)
+	//	};
 
-		XMFLOAT3 targets[6] =
-		{
-			XMFLOAT3(position.x + 1.0f, position.y, position.z),
-			XMFLOAT3(position.x - 1.0f, position.y, position.z),
-			XMFLOAT3(position.x, position.y + 1.0f, position.z),
-			XMFLOAT3(position.x, position.y - 1.0f, position.z),
-			XMFLOAT3(position.x, position.y, position.z + 1.0f),
-			XMFLOAT3(position.x, position.y, position.z - 1.0f)
-		};
+	//	XMFLOAT3 ups[6] =
+	//	{
+	//		XMFLOAT3(0.0f, 1.0f, 0.0f),
+	//		XMFLOAT3(0.0f, 1.0f, 0.0f),
+	//		XMFLOAT3(0.0f, 0.0f, -1.0f),
+	//		XMFLOAT3(0.0f, 0.0f, 1.0f),
+	//		XMFLOAT3(0.0f, 1.0f, 0.0f),
+	//		XMFLOAT3(0.0f, 1.0f, 0.0f)
+	//	};
 
-		XMFLOAT3 ups[6] =
-		{
-			XMFLOAT3(0.0f, 1.0f, 0.0f),
-			XMFLOAT3(0.0f, 1.0f, 0.0f),
-			XMFLOAT3(0.0f, 0.0f, -1.0f),
-			XMFLOAT3(0.0f, 0.0f, 1.0f),
-			XMFLOAT3(0.0f, 1.0f, 0.0f),
-			XMFLOAT3(0.0f, 1.0f, 0.0f)
-		};
+	//	float angle = 90 * XM_PI / 180.f; // we need 90 gradus angle
+	//	float aspect = 1.0f; // because out cube map texture is square
+	//	for (int i = 0; i < PASSCONSTBUF_COUNT_DCM; i++)
+	//	{
+	//		m_camerasDCM[i].lookAt(position, targets[i], ups[i]);
+	//		m_camerasDCM[i].lens = new PerspectiveCameraLens();
 
-		float angle = 90 * XM_PI / 180.f; // we need 90 gradus angle
-		float aspect = 1.0f; // because out cube map texture is square
-		for (int i = 0; i < PASSCONSTBUFCOUNTDCM; i++)
-		{
-			m_camerasDCM[i].lookAt(position, targets[i], ups[i]);
-			m_camerasDCM[i].lens = new PerspectiveCameraLens();
-
-			m_camerasDCM[i].lens->setLens(angle, aspect, 1.0f, 100.0f);
-			m_camerasDCM[i].updateViewMatrix();
-		}
-	}
+	//		m_camerasDCM[i].lens->setLens(angle, aspect, 1.0f, 100.0f);
+	//		m_camerasDCM[i].updateViewMatrix();
+	//	}
+	//}
 
 	ApplLogger::getLogger().log("TechDemo::init3D()::before Cmd list execution.", 0);
 	m_cmdList->Close();
@@ -341,6 +341,7 @@ void TechDemo::update()
 	update_objectCB();
 	update_BoneData();
 	update_passCB();
+	update_passMirror();
 	update_passSSAOCB();
 }
 
@@ -409,6 +410,7 @@ void TechDemo::update_objectCB()
 
 void TechDemo::update_BoneData()
 {	
+	return;
 	float lTickTime = m_animationTimer.deltaTime();
 
 	//lTickTime = 0;
@@ -424,7 +426,6 @@ void TechDemo::update_BoneData()
 		InstanceDataGPU ltmp;
 		for (int i = 0; i < lFinalMatrices.size(); i++)		
 			currBoneCB->CopyData(lBoneCBID++, lFinalMatrices[i]);			
-		
 	}
 }
 
@@ -494,30 +495,105 @@ void TechDemo::update_passCB()
 	}
 	
 	auto currPassCB = m_frameResourceManager.currentFR()->getPassCB();
-	currPassCB->CopyData(0, mMainPassCB);	
+	currPassCB->CopyData(PASSCONSTBUF_ID_MAIN, mMainPassCB);
+
+	
+	//// Update Pass CB for Dynamic Cube Map drawcalls
+	//if (PASSCONSTBUF_COUNT_DCM > 0)
+	//{
+	//	for (int i = 0; i < PASSCONSTBUF_COUNT_DCM; i++)
+	//	{
+	//		XMMATRIX view = m_camerasDCM[i].getView();
+	//		XMMATRIX proj = m_camerasDCM[i].lens->getProj();
+
+	//		XMMATRIX viewProj = XMMatrixMultiply(view, proj);			
+	//		XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);			
+	//		mMainPassCB.EyePosW = m_camerasDCM[i].getPosition3f();
+
+	//		XMStoreFloat4x4(&mMainPassCB.View, XMMatrixTranspose(view));			
+	//		XMStoreFloat4x4(&mMainPassCB.Proj, XMMatrixTranspose(proj));
+	//		XMStoreFloat4x4(&mMainPassCB.InvProj, XMMatrixTranspose(invProj));
+	//		XMStoreFloat4x4(&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));			
+
+	//		currPassCB->CopyData(PASSCONSTBUF_ID_DCM + i, mMainPassCB);
+	//	}
+	//}	
+}
 
 
-	// Update Pass CB for Dynamic Cube Map drawcalls
+void TechDemo::update_passMirror()
+{
+	auto mMainPassCB = m_frameResourceManager.tmpPassConsts;
 
-	if (PASSCONSTBUFCOUNTDCM > 0)
+	// Transform NDC space [-1,+1]^2 to texture space [0,1]^2
+	XMMATRIX T(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f);
+
+	XMVECTOR lMirrorPlane = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); //xz plane
+	XMMATRIX lMirrorM = XMMatrixReflect(lMirrorPlane);
+
+
+	XMMATRIX view = m_camera->getView();
+	view = lMirrorM * view;
+
+	XMMATRIX proj = m_camera->lens->getProj();
+	XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);
+	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
+	XMMATRIX viewProjT = XMMatrixMultiply(viewProj, T);
+
+	XMStoreFloat4x4(&mMainPassCB.View, XMMatrixTranspose(view));
+	XMStoreFloat4x4(&mMainPassCB.Proj, XMMatrixTranspose(proj));
+	XMStoreFloat4x4(&mMainPassCB.InvProj, XMMatrixTranspose(invProj));
+	XMStoreFloat4x4(&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));
+	XMStoreFloat4x4(&mMainPassCB.ViewProjT, XMMatrixTranspose(viewProjT));
+
+	mMainPassCB.EyePosW = m_camera->getPosition3f();
+	mMainPassCB.TotalTime = m_animationTimer.totalTime();
+
+	const std::vector<CPULight>& lights = m_scene.getLights();
+
+	// -- Find shadow box position and sise	
+	float lLenght = 38.0f;
+
+	XMFLOAT3 lcameraPos = m_camera->getPosition3f();
+	XMFLOAT4 lsceneCenter = m_scene.getSceneBB().Center;
+	XMFLOAT3 lsceneExtents = m_scene.getSceneBB().Extents;
+	float groundLevel = lsceneCenter.y - lsceneExtents.y / 2.0f;
+	float lCameraHigh = lcameraPos.y - groundLevel;
+	XMVECTOR lCameraDirection = m_camera->getLook();
+	XMVECTOR lCameraDirectionInXZPlane = lCameraDirection;
+	lCameraDirectionInXZPlane = XMVectorSetY(lCameraDirectionInXZPlane, 0.0f);
+	lCameraDirectionInXZPlane = XMVector3Normalize(lCameraDirectionInXZPlane);
+
+	lcameraPos.y -= lCameraHigh;
+	XMVECTOR lCameraPosv = XMLoadFloat3(&lcameraPos);
+	lCameraPosv = lCameraPosv + lCameraDirectionInXZPlane * lLenght; /* we draw Shadow in front of camera half-plane.
+	It works good when we look mainly forward, not down from high distance*/
+
+	XMStoreFloat3(&lcameraPos, lCameraPosv);
+
+	for (size_t i = 0; i < lights.size(); i++)
 	{
-		for (int i = 0; i < PASSCONSTBUFCOUNTDCM; i++)
-		{
-			XMMATRIX view = m_camerasDCM[i].getView();
-			XMMATRIX proj = m_camerasDCM[i].lens->getProj();
+		mMainPassCB.Lights[i].Direction = lights.at(i).Direction;
+		mMainPassCB.Lights[i].Strength = lights.at(i).Strength;
+		mMainPassCB.Lights[i].Position = lights.at(i).Position;
+		mMainPassCB.Lights[i].spotPower = lights.at(i).spotPower;
+		mMainPassCB.Lights[i].falloffStart = lights.at(i).falloffStart;
+		mMainPassCB.Lights[i].falloffEnd = lights.at(i).falloffEnd;
+		mMainPassCB.Lights[i].lightType = lights.at(i).lightType + 1; // 0 - is undefined type of light
+		mMainPassCB.Lights[i].turnOn = lights.at(i).turnOn;
 
-			XMMATRIX viewProj = XMMatrixMultiply(view, proj);			
-			XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);			
-			mMainPassCB.EyePosW = m_camerasDCM[i].getPosition3f();
-
-			XMStoreFloat4x4(&mMainPassCB.View, XMMatrixTranspose(view));			
-			XMStoreFloat4x4(&mMainPassCB.Proj, XMMatrixTranspose(proj));
-			XMStoreFloat4x4(&mMainPassCB.InvProj, XMMatrixTranspose(invProj));
-			XMStoreFloat4x4(&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));			
-
-			currPassCB->CopyData(1 + i, mMainPassCB);
-		}
+		// build ViewProjT matrix for shadow technique
+		if (lights.at(i).lightType == LightType::Directional)
+			MathHelper::buildSunOrthoLightProjection(mMainPassCB.Lights[i].Direction, mMainPassCB.Lights[i].ViewProj,
+				mMainPassCB.Lights[i].ViewProjT, lcameraPos, lLenght);
 	}
+
+	auto currPassCB = m_frameResourceManager.currentFR()->getPassCB();
+	currPassCB->CopyData(PASSCONSTBUF_ID_MIRROR, mMainPassCB);
 }
 
 void TechDemo::update_passSSAOCB()

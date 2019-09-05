@@ -90,7 +90,7 @@ float4 PS(VertexOut pin) : SV_Target
     MaterialData material = gMaterialData[instData.MaterialIndex];
     
     float4 diffuseAlbedo = material.DiffuseAlbedo;
-    float diffuseTranspFactor = 0.0f;
+    float diffuseTranspFactor = 1.0f;
 
     float3 Normal = pin.NormalW;
 
@@ -145,7 +145,12 @@ float4 PS(VertexOut pin) : SV_Target
     //float3 fresnelFactor = SchlickFresnel(material.FresnelR0, Normal, r);    
     
     //litColor.rgb += (1.0f - material.Roughness) * fresnelFactor * reflectionColor.rgb;       
-    litColor.a = diffuseTranspFactor; //   diffuseAlbedo.a;
+   litColor.a = diffuseTranspFactor; //   diffuseAlbedo.a;   
+
+#ifdef MIRBLEND
+    litColor.a = MIRBLEND;
+#endif
+   
 	return litColor;
 }
 

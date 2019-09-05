@@ -27,6 +27,7 @@ struct RenderItem {
 	bool Visable;
 	bool isNotIncludeInWorldBB; //Does Not include this RI to World BoundingBox? (false = to include)
 	bool ExcludeFromCulling;
+	bool ExcludeFromReflection;
 	RenderItemType Type;
 	DirectX::BoundingBox AABB;
 	Mesh* Geometry = nullptr;

@@ -23,6 +23,7 @@ struct fbx_Mesh {
 	std::vector<INT32> Indices;
 	bool WasUploaded;
 	bool ExcludeFromCulling;
+	bool ExcludeFromMirrorReflection;
 	bool DoNotDublicateVertices;	
 	int VertexPerPolygon;
 };
@@ -53,6 +54,8 @@ struct fbx_Material {
 	bool IsWaterV2; // a water colculated in Compute shader
 	bool IsSky;	
 	bool DoesIncludeToWorldBB;
+	bool ExcludeFromMirrorReflection;
+
 };
 
 struct fbx_NodeInstance {

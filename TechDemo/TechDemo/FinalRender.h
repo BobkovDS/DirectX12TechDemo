@@ -15,13 +15,14 @@ class FinalRender :
 {
 	IDXGISwapChain3* m_swapChain;		
 	ComPtr<ID3D12Resource>* m_swapChainResources;
-	PSOFinalRenderLayer m_psoLayer;
-
-	void build_SkyDescriptor();
+	PSOFinalRenderLayer m_psoLayer;	
 
 	UINT m_trianglesDrawnCount; // How much triangles actually were send for drawing
 	UINT m_trianglesCountIfWithoutLOD; // How much triangles would be drawn without using LOD
 	UINT m_trianglesCountInScene; //How much triangles in Scene at all (Without LOD and Frustum Culling)
+
+	void build_SkyDescriptor();
+	void draw_layer(int layerID, int& instanceOffset, bool doDraw);
 public:
 	FinalRender();
 	~FinalRender();

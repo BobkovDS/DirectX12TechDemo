@@ -62,14 +62,15 @@ void ShadowRender::build_TechDescriptors()
 	m_dsResource->changeState(m_cmdList, D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_GENERIC_READ);
 }
 
-void ShadowRender::resize(UINT iwidth, UINT iheight)
-{
-	RenderBase::resize(iwidth, iheight); 
-	m_dsResource->resize(m_width, m_height);
-	create_DSV();
-
-	build_TechDescriptors();
-}
+//TO_DO: delete
+//void ShadowRender::resize(UINT iwidth, UINT iheight)
+//{
+//	RenderBase::resize(iwidth, iheight); 
+//	m_dsResource->resize(m_width, m_height);
+//	create_DSV();
+//
+//	build_TechDescriptors();
+//}
 
 void ShadowRender::draw(int lightID)
 {
