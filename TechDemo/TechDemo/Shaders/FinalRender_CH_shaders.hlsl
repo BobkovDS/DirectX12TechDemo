@@ -3,8 +3,6 @@
 #include "commonPart.hlsl"
 #include "RootSignature.hlsl"
 
-Texture2D gHeighDiffuseMap : register(t20);
-
 [RootSignature(rootSignatureC1)]
 VertexOut VS(VertexIn vin, uint instID : SV_InstanceID)
 {
@@ -20,11 +18,9 @@ VertexOut VS(VertexIn vin, uint instID : SV_InstanceID)
     /* 
         we use texture to get Height value for this Vertex.
     */
-
-    //float4 ltextValue = gHeighDiffuseMap.Load(vin.UVText); //material.DiffuseMapIndex[0]
-    float4 ltextValue = gHeighDiffuseMap.SampleLevel(gsamPointWrap, vin.UVText, 0); //material.DiffuseMapIndex[0]
-    //float4 ltextValue = gHeighDiffuseMap[vin.UVText]; //material.DiffuseMapIndex[0]
-
+        
+    float4 ltextValue = gDiffuseMap[material.DiffuseMapIndex[0]].SampleLevel(gsamPointWrap, vin.UVText, 0);
+    
     //get World transform    
     vin.PosL.z = ltextValue.x;
     float4 posW = mul(wordMatrix, float4(vin.PosL, 1.0f));
@@ -123,11 +119,12 @@ float4 PS(VertexOut pin) : SV_Target
     }
         
        
-    //float3 r = reflect(-toEyeW, Normal);
-    float3 r = refract(-toEyeW, pin.NormalW, 0.9f);
-    float4 reflectionColor = gCubeMap.Sample(gsamPointWrap, r);
+    float3 r = reflect(-toEyeW, Normal);
+    //float3 r = refract(-toEyeW, pin.NormalW, 0.9f);
+    float4 reflectionColor = gDCMCubeMap.Sample(gsamPointWrap, r);
     float3 fresnelFactor = SchlickFresnel(material.FresnelR0, Normal, r);
-    litColor.rgb += shiness * fresnelFactor * reflectionColor.rgb;
+    //litColor.rgb += shiness * fresnelFactor * reflectionColor.rgb;
+    litColor.rgb = reflectionColor.rgb;
 
     litColor.a = 1.0f;
     return litColor;

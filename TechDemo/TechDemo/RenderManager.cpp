@@ -1,6 +1,5 @@
 #include "RenderManager.h"
 
-#define TECHSRVCOUNT 10 // see also in ResourceManager.cpp 
 
 RenderManager::RenderManager(): m_initialized(false)
 {
@@ -37,7 +36,7 @@ void RenderManager::initialize(const RenderManagerMessanger& renderParams)
 	m_debugRenderLights.initialize(renderParams.commonRenderData);
 	m_debugRenderNormals.initialize(renderParams.commonRenderData);
 	m_debugRenderScreen.initialize(renderParams.commonRenderData);	
-	m_computeRender.initialize(renderParams.commonRenderData);
+	m_computeRender.initialize(renderParams.commonRenderData);	
 
 	RenderMessager lRenderParams = renderParams.commonRenderData;	
 	lRenderParams.Width = 4096; 
@@ -49,6 +48,11 @@ void RenderManager::initialize(const RenderManagerMessanger& renderParams)
 	lRenderParams.Height/= 2;
 	lRenderParams.RTResourceFormat = SSAORender::AOMapFormat;
 	m_blurRender.initialize(lRenderParams);
+
+	lRenderParams = renderParams.commonRenderData;
+	lRenderParams.Width = 1024; 
+	lRenderParams.Height = 1024;
+	m_dcmRender.initialize(lRenderParams);
 
 	m_initialized = true;
 }
@@ -99,8 +103,12 @@ void RenderManager::buildRenders()
 	m_shadowRender.build();	
 
 	// build Compute Render
-	m_computeRender.set_DescriptorHeap(m_texturesDescriptorHeap);
+	m_computeRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
 	m_computeRender.build(0);
+
+	// build SSAO Render
+	m_dcmRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
+	m_dcmRender.build();
 }
 
 void RenderManager::draw()
@@ -135,24 +143,26 @@ void RenderManager::draw()
 			m_cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
 				D3D12_RESOURCE_STATE_COPY_DEST,
 				D3D12_RESOURCE_STATE_PRESENT));*/
-			m_debugRenderScreen.draw(2); // AO Map from SSAO render
+			m_debugRenderScreen.draw(TECHSLOT_SSAO_VSN); // ViewSpace Normal Map from SSAO render
 		}
 		else if (m_renderMode & (1 << RM_SSAO_MAP2))
-				m_debugRenderScreen.draw(4); // AO Map from SSAO render
+				m_debugRenderScreen.draw(TECHSLOT_SSAO_AO); // AO Map from SSAO render
 		else if (m_renderMode & (1 << RM_SSAO_MAP3) && m_blurRender.isBlurMapReady())
-			m_debugRenderScreen.draw(5); // Blured AO Map from Blur render
+			m_debugRenderScreen.draw(TECHSLOT_BLUR_A_SRV); // Blured AO Map from Blur render
 	}
 	
 	if (m_isShadowUsing)
 	{
 		m_shadowRender.draw(0);
 		if (m_renderMode & (1 << RM_SHADOW))
-			m_debugRenderScreen.draw(6);
+			m_debugRenderScreen.draw(TECHSLOT_SHADOW);
 	}		
 
 	updatedFlags &= ~((!m_blurRender.isBlurMapReady()) << RTB_SSAO);
 	if (lFinalRender && !(m_renderMode & RM_OTHERMODE)) m_finalRender.draw(updatedFlags);
-	   
+	  
+	m_dcmRender.draw(updatedFlags);
+
 	if (m_debugMode)
 	{
 		if (m_debug_Axes)
@@ -186,15 +196,16 @@ void RenderManager::buildTechSRVs()
 		Add [TECHSRVCOUNT] 'NULL' SRVs for technical Textures (Results for other Renders) in the beginning of
 		common DescriptorHeap (m_texturesDescriptorHeap). Later each Render will use his slot(s) and will create 'normal' SRV
 		0 - Sky Cube map
-		1 - Random Vector Map
-		2 - SSAO: View Normal Map
-		3 - SSAO: Depth Map
-		4 - SSAO: AO Map
-		5 - BLUR: Resource_A_SRV (Blur Output result)
-		6 - BLUR: Resource_B_UAV
-		7 - BLUR: Resource_B_SRV
-		8 - BLUR: Resource_A_UAV
-		9 - Shadow Map
+		1 - Dynamic Cube Map
+		2 - Random Vector Map
+		3 - SSAO: View Normal Map
+		4 - SSAO: Depth Map
+		5 - SSAO: AO Map
+		6 - BLUR: Resource_A_SRV (Blur Output result)
+		7 - BLUR: Resource_B_UAV
+		8 - BLUR: Resource_B_SRV
+		9 - BLUR: Resource_A_UAV
+		10 - Shadow Map
 	*/
 	assert(m_texturesDescriptorHeap);
 

@@ -9,6 +9,7 @@
 #include "BlurRender.h"
 #include "ShadowRender.h"
 #include "ComputeRender.h"
+#include "DCMRender.h"
 
 struct RenderManagerMessanger {
 	ID3D12DescriptorHeap* RTVHeap;
@@ -35,6 +36,7 @@ class RenderManager
 	SSAORender m_ssaoRender;
 	BlurRender m_blurRender;
 	ComputeRender m_computeRender;
+	DCMRender m_dcmRender;
 	ShadowRender m_shadowRender;
 	DebugRender_Axis m_debugRenderAxes;
 	DebugRender_Light m_debugRenderLights;

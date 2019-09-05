@@ -1,9 +1,10 @@
 #include "ResourceManager.h"
 #include "Utilit3D.h"
+#include "RenderBase.h"
 
 using namespace std;
 
-#define TECHSRVCOUNT 10
+
 
 string ResourceManager::m_dummyPath = "Dummy_path";
 

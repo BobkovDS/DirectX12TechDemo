@@ -41,7 +41,7 @@ void SSAORender::build()
 	{
 		create_Resource_RT(m_viewNormalMapFormat); // for ViewNormal Map
 		create_Resource_RT(AOMapFormat, m_width/2, m_height/2); // for AO Map
-		create_DescriptorHeap_RTV();
+		create_DescriptorHeap_RTV(m_rtResources.size());
 		
 		create_RTV(m_rtResourceFormat);
 	}
@@ -134,7 +134,7 @@ void SSAORender::draw(int flags)
 {	  
 	if (!m_timer.tick()) return;
 
-	const UINT lcLayerToDraw = 0b1010; // SSAO only for simple Opaque objects
+	const UINT lcLayerToDraw = 0b1010; // SSAO only for Opaque objects
 
 	m_cmdList->SetGraphicsRootSignature(m_psoLayer1.getRootSignature());
 
@@ -372,64 +372,8 @@ void SSAORender::build_randomVectorTexture()
 			initData[i * 256 + j] = DirectX::PackedVector::XMCOLOR(v.x, v.y, v.z, 0.0f);
 		}
 	}
-
-	/*
-	D3D12_RESOURCE_DESC textDesc = {};
-	textDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-	textDesc.Alignment = 0;
-	textDesc.Width = 256;
-	textDesc.Height = 256;
-	textDesc.DepthOrArraySize = 1;
-	textDesc.MipLevels = 1;
-	textDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	textDesc.SampleDesc.Count = 1;
-	textDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-	textDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
-
-	HRESULT res = m_device->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-		D3D12_HEAP_FLAG_NONE,
-		&textDesc,
-		D3D12_RESOURCE_STATE_COPY_DEST,
-		nullptr,
-		IID_PPV_ARGS(&m_randomVectorsTexture.ResourceInDefaultHeap));
-
-	assert(SUCCEEDED(res));
-
-	const UINT num2DSubResources = textDesc.DepthOrArraySize * textDesc.MipLevels; // TO_DO: do we realy need it here?
-	const UINT64 uploadBufferSize = GetRequiredIntermediateSize(m_randomVectorsTexture.ResourceInDefaultHeap.Get(), 0, num2DSubResources);
-
-	res = m_device->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(uploadBufferSize),
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&m_randomVectorsTexture.ResourceInUploadHeap));
-
-	assert(SUCCEEDED(res));
-
-	D3D12_SUBRESOURCE_DATA subResourceData = {};
-	subResourceData.pData = initData;
-	subResourceData.RowPitch = 256 * sizeof(DirectX::PackedVector::XMCOLOR);
-	subResourceData.SlicePitch = subResourceData.RowPitch * 256;
-
-	UpdateSubresources(m_cmdList,
-		m_randomVectorsTexture.ResourceInDefaultHeap.Get(),
-		m_randomVectorsTexture.ResourceInUploadHeap.Get(),
-		0, 0,
-		num2DSubResources,
-		&subResourceData);
-
-	m_cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
-		m_randomVectorsTexture.ResourceInDefaultHeap.Get(),
-		D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_GENERIC_READ));
-	*/
-
-	// new
+	
 	m_randomVectorsTexture.ResourceInDefaultHeap = Utilit3D::createTextureWithData(m_device, m_cmdList,
 		initData, sizeof(DirectX::PackedVector::XMCOLOR), 256, 256,
 		DXGI_FORMAT_R8G8B8A8_UNORM, m_randomVectorsTexture.ResourceInUploadHeap);
-
-
 }

@@ -186,12 +186,12 @@ void TechDemo::init3D()
 		m_fbx_loader.loadSceneFile("Models\\The Scene.fbx");		
 	}
 
-	/*{
+	{
 		FBXFileLoader m_fbx_loader;
 		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
 		m_fbx_loader.loadSceneFile("Models\\Landscape.fbx");
 	}
-*/
+
 	// Load lights
 	{
 		FBXFileLoader m_fbx_loader;
@@ -252,12 +252,35 @@ void TechDemo::init3D()
 	ExecuterVoidVoid<Scene>* sceneCameraListener =
 		new ExecuterVoidVoid<Scene>(&m_scene, &Scene::cameraListener);
 	m_camera->addObserver(sceneCameraListener);
+	
+	//m_objectManager.mirrorZ();
+	ApplLogger::getLogger().log("TechDemo::init3D()::Scene building...", 0);
+	m_scene.build(&m_objectManager, m_camera, &m_skeletonManager);
+	ApplLogger::getLogger().log("TechDemo::init3D()::Scene building is done", 0);
 
+	m_renderManager.initialize(lRenderManagerParams);
+	m_renderManager.buildRenders();		
 
 	// Build Cameras for DCM
 	if (PASSCONSTBUFCOUNTDCM > 0)
 	{
-		XMFLOAT3 position(1.54f, 4.85f, -0.96f); // Get Position of a Lake
+		XMFLOAT3 position(0.0f, 0.0f, 0.0f); // Get Position of a Lake
+
+		// Get the first WaveV2 object position
+		Scene::SceneLayer* lWaveV2Layer = m_scene.getLayer(NOTOPAQUELAYERCH);
+		if (lWaveV2Layer)
+		{
+			Scene::SceneLayer::SceneLayerObject* lWaveV2Object = lWaveV2Layer->getSceneObject(0);
+			if (lWaveV2Object)
+			{
+				XMMATRIX lWorld = XMLoadFloat4x4(&lWaveV2Object->getObjectMesh()->Instances[0].World);
+				XMVECTOR lPosition = XMVectorSet(0.0f, 0.0f, 0.0, 1.0f);
+				lPosition = XMVector3TransformCoord(lPosition, lWorld);
+				XMStoreFloat3(&position, lPosition);
+			}
+		}
+
+
 		XMFLOAT3 targets[6] =
 		{
 			XMFLOAT3(position.x + 1.0f, position.y, position.z),
@@ -278,27 +301,18 @@ void TechDemo::init3D()
 			XMFLOAT3(0.0f, 1.0f, 0.0f)
 		};
 
-		float w = static_cast<float>(width());
-		float h = static_cast<float>(height());
-		float aspect = w / h;
-
+		float angle = 90 * XM_PI / 180.f; // we need 90 gradus angle
+		float aspect = 1.0f; // because out cube map texture is square
 		for (int i = 0; i < PASSCONSTBUFCOUNTDCM; i++)
 		{
 			m_camerasDCM[i].lookAt(position, targets[i], ups[i]);
 			m_camerasDCM[i].lens = new PerspectiveCameraLens();
-			m_camerasDCM[i].lens->setLens(0.25f*XM_PI, aspect, 1.0f, 100.0f);
+
+			m_camerasDCM[i].lens->setLens(angle, aspect, 1.0f, 100.0f);
 			m_camerasDCM[i].updateViewMatrix();
 		}
 	}
 
-	//m_objectManager.mirrorZ();
-	ApplLogger::getLogger().log("TechDemo::init3D()::Scene building...", 0);
-	m_scene.build(&m_objectManager, m_camera, &m_skeletonManager);
-	ApplLogger::getLogger().log("TechDemo::init3D()::Scene building is done", 0);
-
-	m_renderManager.initialize(lRenderManagerParams);
-	m_renderManager.buildRenders();	
-	
 	ApplLogger::getLogger().log("TechDemo::init3D()::before Cmd list execution.", 0);
 	m_cmdList->Close();
 	ID3D12CommandList* cmdsList[] = { m_cmdList.Get() };
@@ -312,15 +326,6 @@ void TechDemo::init3D()
 	build_OffsetVectors();
 
 	m_animationTimer.tt_RunStop();
-
-	BoundingMath::BoundingFrustum bf;
-	bf.build(0.25f*XM_PI, 1.023f, 2.36, 1000);
-	bf.buildPlanes();
-
-	BoundingFrustum& lBoundingFrustomCamera = m_camera->getFrustomBoundingCameraWorld();
-
-	BoundingBox lBox;
-	lBoundingFrustomCamera.Contains(lBox);
 
 	ApplLogger::getLogger().log("TechDemo::init3D() is done", 0);
 }
@@ -503,6 +508,7 @@ void TechDemo::update_passCB()
 
 			XMMATRIX viewProj = XMMatrixMultiply(view, proj);			
 			XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);			
+			mMainPassCB.EyePosW = m_camerasDCM[i].getPosition3f();
 
 			XMStoreFloat4x4(&mMainPassCB.View, XMMatrixTranspose(view));			
 			XMStoreFloat4x4(&mMainPassCB.Proj, XMMatrixTranspose(proj));

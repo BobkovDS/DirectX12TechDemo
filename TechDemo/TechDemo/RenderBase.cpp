@@ -1,10 +1,11 @@
 #include "RenderBase.h"
 
-void RenderResource::createResource(ID3D12Device* device, DXGI_FORMAT resourceFormat, D3D12_RESOURCE_FLAGS resourceFlags, 
-	UINT width, UINT height, D3D12_CLEAR_VALUE* optClear)
+void RenderResource::createResource(ID3D12Device* device, DXGI_FORMAT resourceFormat, D3D12_RESOURCE_FLAGS resourceFlags,
+	UINT width, UINT height, D3D12_CLEAR_VALUE* optClear, UINT16 texturesCount)
 {
 	m_resourceFormat = resourceFormat;
 	m_resourceFlags = resourceFlags;
+	m_texturesCount = texturesCount;
 	m_device = device;
 	if (optClear)
 	{
@@ -23,14 +24,14 @@ void RenderResource::resize(UINT width, UINT height)
 		return;
 	
 	m_resource.Reset();
-
+		
 	//Create Resource for any purposes
 	D3D12_RESOURCE_DESC resourceDesriptor = {};
 	resourceDesriptor.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 	resourceDesriptor.Alignment = 0;
 	resourceDesriptor.Width = width;
 	resourceDesriptor.Height = height;
-	resourceDesriptor.DepthOrArraySize = 1;
+	resourceDesriptor.DepthOrArraySize = m_texturesCount;
 	resourceDesriptor.MipLevels = 1;
 	resourceDesriptor.Format = m_resourceFormat;
 	resourceDesriptor.SampleDesc.Count = 1;
@@ -92,7 +93,7 @@ void RenderBase::resize(UINT newWidth, UINT newHeight)
 
 // -------------------------------- RESOURCE -------------------------------------------------------------------------------
 RenderResource* RenderBase::create_Resource(DXGI_FORMAT resourceFormat, D3D12_RESOURCE_FLAGS resourceFlags,
-	UINT width, UINT height, D3D12_CLEAR_VALUE* optClear)
+	UINT width, UINT height, D3D12_CLEAR_VALUE* optClear, UINT16 texturesCount)
 {
 	assert(m_initialized == true); // Render should be initialized before
 	
@@ -104,8 +105,7 @@ RenderResource* RenderBase::create_Resource(DXGI_FORMAT resourceFormat, D3D12_RE
 
 	//Create Resource for any purposes
 
-	m_own_resources[m_currentResourceID].createResource(
-		m_device, resourceFormat, resourceFlags, lwidth, lheight, optClear);	
+	m_own_resources[m_currentResourceID].createResource(m_device, resourceFormat, resourceFlags, lwidth, lheight, optClear, texturesCount);
 
 	return &m_own_resources[m_currentResourceID++];
 }
@@ -125,7 +125,7 @@ ID3D12Resource* RenderBase::get_Resource_DS()
 	return m_dsResource->getResource();
 }
 
-void RenderBase::create_Resource_RT(DXGI_FORMAT resourceFormat, UINT width, UINT height)
+void RenderBase::create_Resource_RT(DXGI_FORMAT resourceFormat, UINT width, UINT height, UINT16 resourcesCount)
 {
 	FLOAT clearColor[4] = { 0.0f, 0.5f, 0.4f, 1.0f };
 	D3D12_CLEAR_VALUE optClear;
@@ -136,22 +136,14 @@ void RenderBase::create_Resource_RT(DXGI_FORMAT resourceFormat, UINT width, UINT
 
 	if (m_rtResourceWasSetBefore)
 		m_rtResources.clear(); // if we have RTV resources previously set - claer it. Because we do not own it here, we do not need delete it.
-	m_rtResources.push_back(create_Resource(resourceFormat, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET, width, height, &optClear));
+	
+	m_rtResources.push_back(create_Resource(resourceFormat, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET, width, height, 
+		&optClear,	resourcesCount));
+
 	m_rtResourceWasSetBefore = false; // clear flag that RT resources could be set before.
 }
 
-//TO_DO: delete
-//void RenderBase::set_Resource_RT(ID3D12Resource* resource)
-//{
-//	if (m_rtResourceWasSetBefore == false)
-//		m_rtResources.clear(); /*
-//		 Maybe we has RT Resources which were create by this render, 
-//		 but as we want to use RT resources from another source, we do not need current one
-//		 */
-//
-//	m_rtResources.push_back(resource);
-//	m_rtResourceWasSetBefore = true;
-//}
+
 
 // -------------------------------- DESCRIPTOR HEAP AND VIEWS --------------------------------------------------------------
 void RenderBase::create_DescriptorHeap_DSV()
@@ -167,13 +159,13 @@ void RenderBase::create_DescriptorHeap_DSV()
 	m_dsvHeapWasSetBefore = false;
 }
 
-void RenderBase::create_DescriptorHeap_RTV()
+void RenderBase::create_DescriptorHeap_RTV(UINT descriptorsCount)
 {
 	// Create Descriptor heap for RenderTargetViews
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};
 
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	rtvHeapDesc.NumDescriptors = m_rtResources.size();
+	rtvHeapDesc.NumDescriptors = descriptorsCount;
 	rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	HRESULT res = m_device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&m_own_rtvHeap));
 	assert(SUCCEEDED(res));

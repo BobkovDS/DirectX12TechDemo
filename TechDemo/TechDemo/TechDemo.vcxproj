@@ -136,6 +136,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Canvas.cpp" />
     <ClCompile Include="ComputeRender.cpp" />
+    <ClCompile Include="DCMRender.cpp" />
     <ClCompile Include="DebugRender_Axis.cpp" />
     <ClCompile Include="DebugRender_Light.cpp" />
     <ClCompile Include="DebugRender_Normals.cpp" />
@@ -147,6 +148,7 @@
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="PSOBlurLayer.cpp" />
     <ClCompile Include="PSOComputeLayer.cpp" />
+    <ClCompile Include="PSODCMLayer.cpp" />
     <ClCompile Include="PSODebugLayer_Axis.cpp" />
     <ClCompile Include="PSODebugLayer_Light.cpp" />
     <ClCompile Include="PSODebugLayer_Normals.cpp" />
@@ -184,6 +186,7 @@
     <ClInclude Include="Canvas.h" />
     <ClInclude Include="ComputeRender.h" />
     <ClInclude Include="d3dx12.h" />
+    <ClInclude Include="DCMRender.h" />
     <ClInclude Include="DebugRender_Axis.h" />
     <ClInclude Include="DebugRender_Light.h" />
     <ClInclude Include="DebugRender_Normals.h" />
@@ -198,6 +201,7 @@
     <ClInclude Include="Octree.h" />
     <ClInclude Include="PSOBlurLayer.h" />
     <ClInclude Include="PSOComputeLayer.h" />
+    <ClInclude Include="PSODCMLayer.h" />
     <ClInclude Include="PSODebugLayer_Axis.h" />
     <ClInclude Include="PSODebugLayer_Light.h" />
     <ClInclude Include="PSODebugLayer_Normals.h" />
@@ -238,6 +242,14 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Shaders\ComputeRender_shaders.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Shaders\DCMRender_shaders.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Shaders\DCMRender_shaders_skinned.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>

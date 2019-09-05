@@ -673,11 +673,17 @@ void FBXFileLoader::build_Materials(string& pMaterialName)
 				lMaterial->WaterV2_Velocity= (*mat_it).second.WaterV2_Velocity;
 				lMaterial->WaterV2_TimeInterval = (*mat_it).second.WaterV2_TimeInterval;
 				lMaterial->WaterV2_Viscosity= (*mat_it).second.WaterV2_Viscosity;	
-				
-				// Let's texture with Compute work results (Height values) will be mapped to WaterV2 object as diffuse texture in 0 slot
+								 
+				//Diffuse[0] - Dummy Texture for Highs values, which will be build in ComputeRender
 				int lTextureID = m_resourceManager->addDummyTexturePath();
 				int index = DiffuseTextureCount++;
 				lMaterial->TexturesMask |= (1 << index);				
+				lMaterial->DiffuseColorTextureIDs[index] = lTextureID;
+				
+				//Diffuse[1] - Dummy Texture for Dynamic Cube Map, which will be build in DCMRender and used for Reflection/Refraction 
+				lTextureID = m_resourceManager->addDummyTexturePath();
+				index = DiffuseTextureCount++;
+				lMaterial->TexturesMask |= (1 << index);
 				lMaterial->DiffuseColorTextureIDs[index] = lTextureID;
 
 			}

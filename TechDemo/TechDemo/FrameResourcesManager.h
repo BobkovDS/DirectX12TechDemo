@@ -17,6 +17,7 @@ public:
 	virtual ID3D12Resource* getCurrentBoneCBResource() = 0;
 	virtual ID3D12Resource* getCurrentSSAOCBResource() = 0;
 	virtual ID3D12Resource* getCurrentDrawIDCBResource() = 0;
+	virtual UINT getPassCBsize() = 0;
 };
 
 //--------------END of Interface Base class ---------------
@@ -37,6 +38,7 @@ public:
 	typedef ConstObjectType constObjType;
 	typedef PassConstsType passConsts;	
 	typedef SSAOType ssaoType;	
+
 	constObjType tmpConstObject;
 	passConsts tmpPassConsts;
 	ssaoType tmpPassSSAOConsts;
@@ -83,6 +85,7 @@ public:
 	ID3D12Resource* getCurrentBoneCBResource();
 	ID3D12Resource* getCurrentSSAOCBResource();
 	ID3D12Resource* getCurrentDrawIDCBResource();
+	UINT getPassCBsize();
 
 	void changeCmdAllocator(ID3D12GraphicsCommandList* cmdList, ID3D12PipelineState* pInitialState);
 };
@@ -189,6 +192,12 @@ template<class ConstObjectType, class PassConstsType, class SSAOType>
 ID3D12Resource* FrameResourcesManager<ConstObjectType, PassConstsType, SSAOType>::getCurrentDrawIDCBResource()
 {
 	return currentFR()->getDrawInstancesCB()->Resource();
+}
+
+template<class ConstObjectType, class PassConstsType, class SSAOType>
+UINT FrameResourcesManager<ConstObjectType, PassConstsType, SSAOType>::getPassCBsize()
+{
+	return Utilit3D::CalcConstantBufferByteSize(sizeof passConsts);
 }
 
 template<class ConstObjectType, class PassConstsType,   class SSAOType>

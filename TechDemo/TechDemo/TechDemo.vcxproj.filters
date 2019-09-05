@@ -168,6 +168,12 @@
     <ClCompile Include="PSOComputeLayer.cpp">
       <Filter>Source Files\PSO</Filter>
     </ClCompile>
+    <ClCompile Include="PSODCMLayer.cpp">
+      <Filter>Source Files\PSO</Filter>
+    </ClCompile>
+    <ClCompile Include="DCMRender.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PSOBaseLayer.h">
@@ -323,6 +329,12 @@
     <ClInclude Include="PSOComputeLayer.h">
       <Filter>Header Files\PSO</Filter>
     </ClInclude>
+    <ClInclude Include="DCMRender.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="PSODCMLayer.h">
+      <Filter>Header Files\PSO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\commonPart.hlsl">
@@ -392,6 +404,12 @@
       <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\ComputeRender_shaders.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\DCMRender_shaders_skinned.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\DCMRender_shaders.hlsl">
       <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
   </ItemGroup>

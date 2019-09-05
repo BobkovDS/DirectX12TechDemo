@@ -4,22 +4,26 @@
 #include "FrameResourcesManager.h"
 #include "ResourceManager.h"
 
-#define TECHSRVCOUNT 10
+#define TECHSRVCOUNT 11
 
 #define TECHSLOT_SKY 0
-#define TECHSLOT_RNDVECTORMAP 1 // Random Vector Map
-#define TECHSLOT_SSAO_VSN 2 // ViewSpace Normal Map
-#define TECHSLOT_SSAO_DPT 3// Depth Map
-#define TECHSLOT_SSAO_AO 4// AO Map
-#define TECHSLOT_BLUR_A_SRV 5// Blur Resource A: SRV
-#define TECHSLOT_BLUR_B_UAV 6// Blur Resource B: UAV
-#define TECHSLOT_BLUR_B_SRV 7// Blur Resource B: SRV
-#define TECHSLOT_BLUR_A_UAV 8// Blur Resource A: UAV
-#define TECHSLOT_SHADOW 9// Shadow Map 
+#define TECHSLOT_DCM 1
+#define TECHSLOT_RNDVECTORMAP 2 // Random Vector Map
+#define TECHSLOT_SSAO_VSN 3 // ViewSpace Normal Map
+#define TECHSLOT_SSAO_DPT 4// Depth Map
+#define TECHSLOT_SSAO_AO 5// AO Map
+#define TECHSLOT_BLUR_A_SRV 6// Blur Resource A: SRV
+#define TECHSLOT_BLUR_B_UAV 7// Blur Resource B: UAV
+#define TECHSLOT_BLUR_B_SRV 8// Blur Resource B: SRV
+#define TECHSLOT_BLUR_A_UAV 9// Blur Resource A: UAV
+#define TECHSLOT_SHADOW 10// Shadow Map 
 
 struct RenderResource {
-	void createResource(ID3D12Device* device, DXGI_FORMAT resourceFormat, D3D12_RESOURCE_FLAGS resourceFlags, UINT width, UINT height, D3D12_CLEAR_VALUE* optClear = NULL);
-	void resize(UINT width, UINT height);
+	void createResource(ID3D12Device* device, DXGI_FORMAT resourceFormat, D3D12_RESOURCE_FLAGS resourceFlags,
+		UINT width, UINT height, D3D12_CLEAR_VALUE* optClear = NULL, UINT16 texturesCount=1);
+
+	void resize(UINT width, UINT height);	
+
 	void changeState(ID3D12GraphicsCommandList* cmdList, D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter)
 	{
 		cmdList->ResourceBarrier(1,&CD3DX12_RESOURCE_BARRIER::Transition(m_resource.Get(),stateBefore, stateAfter));
@@ -34,8 +38,9 @@ struct RenderResource {
 private:
 	ID3D12Device* m_device;
 	DXGI_FORMAT m_resourceFormat;
-	D3D12_RESOURCE_FLAGS m_resourceFlags;
+	D3D12_RESOURCE_FLAGS m_resourceFlags;	
 	D3D12_CLEAR_VALUE* m_optClear;
+	UINT16 m_texturesCount;
 	Microsoft::WRL::ComPtr<ID3D12Resource> m_resource;
 };
 
@@ -95,11 +100,14 @@ protected:
 
 public:
 	RenderResource* create_Resource(DXGI_FORMAT resourceFormat, D3D12_RESOURCE_FLAGS resourceFlags,
-		UINT width=0, UINT height=0, D3D12_CLEAR_VALUE* optClear=NULL);
+		UINT width = 0, UINT height = 0,
+		D3D12_CLEAR_VALUE* optClear = NULL,
+		UINT16 texturesCount = 1);
+
 	void create_Resource_DS(DXGI_FORMAT resourceFormat);
-	void create_Resource_RT(DXGI_FORMAT resourceFormat, UINT width = 0, UINT height = 0);
+	void create_Resource_RT(DXGI_FORMAT resourceFormat, UINT width = 0, UINT height = 0, UINT16 resourcesCount =1);
 	void create_DescriptorHeap_DSV();
-	void create_DescriptorHeap_RTV();
+	void create_DescriptorHeap_RTV(UINT descriptorsCount);
 	void create_DSV(DXGI_FORMAT viewFormat = DXGI_FORMAT_UNKNOWN);
 	void create_RTV(DXGI_FORMAT viewFormat = DXGI_FORMAT_UNKNOWN);
 	//void set_Resource_DS(ID3D12Resource* Resource); //TO_DO: delete
@@ -119,9 +127,7 @@ public:
 	void initialize(const RenderMessager& renderParams); // initialize the Render
 	void build(); // Do any other operations to build Render (to add more resources, create SRVs and etc)
 	void draw(int flags);
-	void resize(UINT newWidth, UINT newHeight);
-	void releaseExternalResources();
-	void connectExternalResourcesBack();
+	void resize(UINT newWidth, UINT newHeight);	
 	RenderBase();
 	virtual ~RenderBase();
 };

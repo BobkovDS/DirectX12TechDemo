@@ -3,7 +3,6 @@
 #include "commonPart.hlsl"
 #include "RootSignature.hlsl"
 
-
 //int instID : SV_INSTANCEID
 
 [RootSignature(rootSignatureC1)]
@@ -119,10 +118,10 @@ float4 PS(VertexOut pin) : SV_Target
     }    
         
     
-    float3 r = refract(-toEyeW, Normal, 0.9f);
-    float4 reflectionColor = gCubeMap.Sample(gsamPointWrap, r);
-    float3 fresnelFactor = SchlickFresnel(material.FresnelR0, Normal, r);
-    litColor.rgb += shiness * fresnelFactor * reflectionColor.rgb;
+    //float3 r = refract(-toEyeW, Normal, 0.9f);
+    //float4 reflectionColor = gCubeMap.Sample(gsamPointWrap, r);
+    //float3 fresnelFactor = SchlickFresnel(material.FresnelR0, Normal, r);
+    //litColor.rgb += shiness * fresnelFactor * reflectionColor.rgb;
 
     litColor.a = diffuseTranspFactor;
 	return litColor;
