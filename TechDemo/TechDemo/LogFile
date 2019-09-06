@@ -82,9 +82,6 @@ Loading of Models\The Scene.fbx
 Loading of Models\The Scene.fbx is done
 Loading of Models\Landscape.fbx
 	Creating scene [Landscape]
-		[NODE]: Cube
-			[MATERIAL]: Material
-			[MESH]: Cube
 		[NODE]: LOD_Tree_part2
 			[NODE LOD GROUP]: LOD_Tree_part2
 				[MATERIAL]: leaves.002
@@ -125,6 +122,7 @@ Loading of Models\Landscape.fbx
 		[NODE]: ground
 			[MATERIAL]: ground_grass
 			Texture(diffuse): tinyworld_landTexture[G:\SSDLaba\Programming\Modeling\LightWave\WorkDirTextures\GroundForest003_COL_VAR1_3K.DDS]
+			Texture(normal): Texture[g:\SSDLaba\Programming\Modeling\LightWave\WorkDirTextures\GroundForest003_NRM_3K.jpg]
 			[MESH]: GroundPlane.001
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|0.1.0.0.0.0.0.0.0.0
 				[MATERIAL]: leaves.002

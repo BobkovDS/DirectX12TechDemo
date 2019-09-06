@@ -260,7 +260,9 @@ void BasicDXGI::create_RTV()
 		D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
 		D2D1::PixelFormat(m_backBufferFormat, D2D1_ALPHA_MODE_PREMULTIPLIED),
 		ldpiX, ldpiY);
-#endif		
+#endif	
+
+
 	// Resize SwapChain
 	/* MSDN:
 	Before you call ResizeBuffers, ensure that the application releases all references(by calling the appropriate
@@ -370,7 +372,7 @@ void BasicDXGI::onKeyDown(WPARAM btnState) {
 	switch (btnState) {
 	case 'F':
 	{
-		m_fullScreen = !m_fullScreen;
+		m_fullScreen = !m_fullScreen; // DO_TO: Does it work?
 		m_swapChain->SetFullscreenState(m_fullScreen, NULL);
 	}
 		return;

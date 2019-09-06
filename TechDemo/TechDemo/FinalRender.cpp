@@ -88,7 +88,7 @@ void FinalRender::resize(UINT iwidth, UINT iheight)
 void FinalRender::draw(int flags)
 {	
 	const UINT lcLayerWhichMayBeDrawn =
-		1 << SKY | 1 << OPAQUELAYER | 1 << NOTOPAQUELAYER | 1 << SKINNEDOPAQUELAYER | 1 << NOTOPAQUELAYERGH | 1 << NOTOPAQUELAYERCH;
+		1 << SKY | 1 << OPAQUELAYER | 1 << NOTOPAQUELAYER | 1 << SKINNEDOPAQUELAYER | 1 << NOTOPAQUELAYERGH | 1 << NOTOPAQUELAYERCH;		
 
 	int lResourceIndex = m_swapChain->GetCurrentBackBufferIndex();
 	m_cmdList->ResourceBarrier(1,

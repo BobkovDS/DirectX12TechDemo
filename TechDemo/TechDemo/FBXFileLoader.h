@@ -25,6 +25,7 @@ struct fbx_Mesh {
 	bool ExcludeFromCulling;
 	bool ExcludeFromMirrorReflection;
 	bool DoNotDublicateVertices;	
+	bool MaterailHasNormalTexture;	
 	int VertexPerPolygon;
 };
 
@@ -55,6 +56,7 @@ struct fbx_Material {
 	bool IsSky;	
 	bool DoesIncludeToWorldBB;
 	bool ExcludeFromMirrorReflection;
+	bool DoesItHaveNormaleTexture;
 
 };
 
@@ -130,14 +132,14 @@ private:
 	void convertFbxMatrixToFloat4x4(FbxAMatrix& fbxm, DirectX::XMFLOAT4X4& m);	
 	void convertFbxVector4ToFloat4(FbxVector4& fbxv, DirectX::XMFLOAT4& v);	
 
-	std::string create_WaterV2Mesh(fbx_Material* material, const FbxNodeAttribute* pNodeAtribute);
+	std::string create_WaterV2Mesh(const FbxNodeAttribute* pNodeAtribute, fbx_Material* material);
 
 	// FBX process functions
 	void process_node(const FbxNode* pNode);
 	void process_node_LOD(const FbxNode* pNode);
 
 	void process_node_getMaterial(const FbxNode* pNode, fbx_NodeInstance& newNodeInstance);
-	std::string process_mesh(const FbxNodeAttribute* pNodeAtribute, bool meshForTesselation=false,
+	std::string process_mesh(const FbxNodeAttribute* pNodeAtribute, const fbx_Material* nodeMaterial,
 		int LOD_level=-1, std::string* groupName=NULL);
 
 	void process_camera(const FbxNodeAttribute* pNodeAtribute, FbxNode* pNode);

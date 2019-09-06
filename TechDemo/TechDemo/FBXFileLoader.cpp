@@ -4,7 +4,7 @@
 using namespace std;
 using namespace DirectX;
 
-#define NORMALMODE // if defined, Normal is just read from file. In another case, Normal should be Averaged.
+#define NORMALMODE // if defined, Normal is just read from file. In another case, Normal should be averaged.
 
 int FBXFileLoader::m_materialCountForPrevCalling = 0;
 
@@ -213,43 +213,93 @@ void FBXFileLoader::build_GeoMeshesLOD(fbx_Mesh* iMesh, int LODLevel, std::strin
 
 	auto lgeoMesh = std::make_unique<Mesh>();
 
-	fbx_Mesh* lMesh = iMesh;
-	SubMesh submesh = {};
+	fbx_Mesh* lMesh = iMesh;	
 
 	std::string lInnerRIName = lMesh->Name;
 	std::string lOuterRIName = m_sceneName + "_" + lInnerRIName;
 
-	lgeoMesh->Name = lInnerRIName;
+	lgeoMesh->Name = lInnerRIName;	
 
-	if (lMesh->DoNotDublicateVertices)
-		assert(0); // mesh for LOD should not ask about "Not creation" of dublicate vertices
+	bool lToRemoveDoublicatedVertices = //we should 'delete'/Not_doublicate vertices, if
+		iMesh->DoNotDublicateVertices // this is WaterV mesh 
+		| !(iMesh->MaterailHasNormalTexture && (lMesh->Tangents.size() > 0)); // or if NOT (Material has Normal texture AND mesh has Tangent data)
 
-	meshVertices.resize(lMesh->Indices.size()); /* Vertices count = Indices count,
-												because a Vertex can be the same for several faces, but this Vertex should
-												have different(unique) information for this faces like Normal, TangentUV*/
+	if (lToRemoveDoublicatedVertices)
+		meshVertices.resize(lMesh->Vertices.size());
+	else
+		meshVertices.resize(lMesh->Indices.size()); /* Vertices count = Indices count,
+												because if a Vertex can be the same for several faces, but this Vertex should
+												has a different information for these faces, like Normal, TangentUV*/
 	meshIndices.resize(lMesh->Indices.size());
 
-	for (int vi = 0; vi < lMesh->Indices.size(); vi++)
+	bool lDoesHaveNormals = lMesh->Normals.size();
+	bool lDoesHaveUV = lMesh->UVs.size() > 0;
+	bool lDoesHaveTangents = lMesh->Tangents.size();
+	size_t lMeshIndicesSize = lMesh->Indices.size();
+
+	for (int vi = 0; vi < lMeshIndicesSize; vi++)
 	{
 		vertex = {};
 		vertex.Pos = lMesh->Vertices[lMesh->Indices[vi]];
 
-		if (lMesh->Normals.size())
+		if (lToRemoveDoublicatedVertices)
 		{
-			XMVECTOR n = XMLoadFloat3(&lMesh->Normals[vi]);
-			//n = XMVector3Normalize(n);
-			XMStoreFloat3(&vertex.Normal, n);
-		}
-		if (lMesh->UVs.size())	vertex.UVText = lMesh->UVs[vi];
-		if (lMesh->Tangents.size()) vertex.TangentU = lMesh->Tangents[vi];
+			// without vertex dublication
+			int lVertId = lMesh->Indices[vi];
+			if (lDoesHaveUV) vertex.UVText = lMesh->UVs[vi];
+			if (lDoesHaveNormals)
+			{
+				/*
+				if we have NORMALMODE defined, it means that we loaded Vertex normal as it was - each Vertex has own Normal,
+				but now we want to delete vertex dublication, so for each Vertex we should count average Normal.
+				And then below, we need to make normalization.
+				*/
+#ifdef NORMALMODE
+				XMVECTOR lCurrentVertexNormal = XMLoadFloat3(&meshVertices[lVertId].Normal);
+				XMVECTOR lNewAddedNormal = XMLoadFloat3(&lMesh->Normals[vi]);
+				lNewAddedNormal += lCurrentVertexNormal;
+				XMStoreFloat3(&vertex.Normal, lNewAddedNormal);
+#else
+				vertex.Normal = lMesh->Normals[vi];
+#endif // NORMALMODE			
+			}
 
-		meshVertices[vi] = vertex;
-		meshIndices[vi] = vi;
+			meshVertices[lVertId] = vertex;
+			meshIndices[vi] = lVertId;
+		}
+		else
+		{
+			if (lDoesHaveNormals)
+			{
+				XMVECTOR n = XMLoadFloat3(&lMesh->Normals[vi]);			
+				XMStoreFloat3(&vertex.Normal, n);
+			}
+			if (lDoesHaveUV) vertex.UVText = lMesh->UVs[vi];
+			if (lDoesHaveTangents) vertex.TangentU = lMesh->Tangents[vi];
+
+			meshVertices[vi] = vertex;
+			meshIndices[vi] = vi;
+		}
 	}
 
-	lgeoMesh->IsSkinnedMesh = false; // LOD meshes are not skinned
+#ifdef NORMALMODE
+	if (lToRemoveDoublicatedVertices)
+	{
+		int lVcount = meshVertices.size();
+		for (int i = 0; i < lVcount; i++)
+		{
+			XMVECTOR n = XMLoadFloat3(&meshVertices[i].Normal);
+			n = XMVector3Normalize(n);
+			XMStoreFloat3(&meshVertices[i].Normal, n);
+		}
+	}
+#endif
 
-	submesh.IndexCount = meshVertices.size();
+	lgeoMesh->IsSkinnedMesh = false; // LOD meshes are not skinned
+	
+	SubMesh submesh = {};
+	submesh.VertextCount= meshVertices.size();
+	submesh.IndexCount = meshIndices.size();
 	lgeoMesh->DrawArgs[lInnerRIName] = submesh;
 
 	RenderItem& lNewRI = *m_RenderItems[RIName].get();
@@ -283,38 +333,78 @@ inline void FBXFileLoader::build_GeoMeshesWithTypedVertex(fbx_Mesh* iMesh, bool 
 
 	auto lgeoMesh = std::make_unique<Mesh>();
 
-	fbx_Mesh* lMesh = iMesh;
-	SubMesh submesh = {};
+	fbx_Mesh* lMesh = iMesh;	
 
 	std::string lInnerRIName = lMesh->Name;
 	std::string lOuterRIName = m_sceneName + "_" + lInnerRIName;
 
 	lgeoMesh->Name = lInnerRIName;	
+	//ri_it->second-> |= nodeRIInstance.Materials[0]->DoesItHaveNormaleTexture;
 
-	if (lMesh->DoNotDublicateVertices == false)
+	bool lToRemoveDoublicatedVertices = //we should 'delete'/Not_doublicate vertices, if
+		iMesh->DoNotDublicateVertices // this is WaterV mesh 
+		| !(iMesh->MaterailHasNormalTexture && (lMesh->Tangents.size() > 0)); // or if NOT (Material has Normal texture AND mesh has Tangent data)
+	
+	if (lMesh->Tangents.size() > 0)
+	{
+		int a = 101;
+	}
+
+	if (lToRemoveDoublicatedVertices)
+		meshVertices.resize(lMesh->Vertices.size());
+	else
 		meshVertices.resize(lMesh->Indices.size()); /* Vertices count = Indices count,
 												because if a Vertex can be the same for several faces, but this Vertex should
-												have different information for this faces like Normal, TangentUV*/
-	else
-		meshVertices.resize(lMesh->Vertices.size());
+												has a different information for these faces, like Normal, TangentUV*/		
 
 	meshIndices.resize(lMesh->Indices.size());
 
-	for (int vi = 0; vi < lMesh->Indices.size(); vi++)
+	bool lDoesHaveNormals = lMesh->Normals.size();
+	bool lDoesHaveUV = lMesh->UVs.size() > 0;
+	bool lDoesHaveTangents = lMesh->Tangents.size();
+	size_t lMeshIndicesSize = lMesh->Indices.size();
+	for (int vi = 0; vi < lMeshIndicesSize; vi++)
 	{
 		vertex = {};
 		vertex.Pos = lMesh->Vertices[lMesh->Indices[vi]];
 
-		if (lMesh->DoNotDublicateVertices == false)
+		if (lToRemoveDoublicatedVertices)		
 		{
-			if (lMesh->Normals.size())
+			// without vertex dublication
+			int lVertId = lMesh->Indices[vi];
+			if (lDoesHaveNormals)
 			{
+				/*
+				if we have NORMALMODE defined, it means that we loaded Vertex normal as it was - each Vertex has own Normal,
+				but now we want to delete vertex dublication, so for each Vertex we should count average Normal.
+				And then below, we need to make normalization.
+				*/
+#ifdef NORMALMODE
+				XMVECTOR lCurrentVertexNormal = XMLoadFloat3(&meshVertices[lVertId].Normal);
+				XMVECTOR lNewAddedNormal = XMLoadFloat3(&lMesh->Normals[vi]);
+				lNewAddedNormal += lCurrentVertexNormal;
+				XMStoreFloat3(&vertex.Normal, lNewAddedNormal);						
+#else
+				vertex.Normal = lMesh->Normals[vi];
+#endif // NORMALMODE			
+			}
+
+			if (lDoesHaveUV) vertex.UVText = lMesh->UVs[vi];
+
+			meshVertices[lVertId] = vertex;
+			meshIndices[vi] = lVertId;
+		}
+		else
+		{
+			if (lDoesHaveNormals)
+			{
+
 				XMVECTOR n = XMLoadFloat3(&lMesh->Normals[vi]);
 				//n = XMVector3Normalize(n);
 				XMStoreFloat3(&vertex.Normal, n);
 			}
-			if (lMesh->UVs.size())	vertex.UVText = lMesh->UVs[vi];
-			if (lMesh->Tangents.size()) vertex.TangentU = lMesh->Tangents[vi];
+			if (lDoesHaveUV)	vertex.UVText = lMesh->UVs[vi];
+			if (lDoesHaveTangents) vertex.TangentU = lMesh->Tangents[vi];
 
 			// write vertex/bone weight information		
 			if (lIsSkinnedMesh)
@@ -325,19 +415,25 @@ inline void FBXFileLoader::build_GeoMeshesWithTypedVertex(fbx_Mesh* iMesh, bool 
 			// with vertex dublication
 			meshVertices[vi] = vertex;
 			meshIndices[vi] = vi;
-		}
-		else
+		}		
+	}
+
+#ifdef NORMALMODE
+	if (lToRemoveDoublicatedVertices)
+	{
+		int lVcount = meshVertices.size();
+		for (int i = 0; i < lVcount; i++)
 		{
-			// without vertex dublication
-			int lVertId = lMesh->Indices[vi];
-			if (lMesh->UVs.size())	vertex.UVText = lMesh->UVs[lVertId];
-			meshVertices[lVertId] = vertex;
-			meshIndices[vi] = lVertId;
+			XMVECTOR n = XMLoadFloat3(&meshVertices[i].Normal);
+			n = XMVector3Normalize(n);
+			XMStoreFloat3(&meshVertices[i].Normal, n);
 		}
 	}
+#endif
 
 	lgeoMesh->IsSkinnedMesh = lIsSkinnedMesh; // Does this mesh use at leas one skinned vertex
 
+	SubMesh submesh = {};
 	submesh.VertextCount= meshVertices.size();
 	submesh.IndexCount = meshIndices.size();
 	lgeoMesh->DrawArgs[lInnerRIName] = submesh;
@@ -636,6 +732,8 @@ void FBXFileLoader::build_Materials(string& pMaterialName)
 			std::unique_ptr<MaterialCPU> lMaterial = std::make_unique<MaterialCPU>();
 			lMaterial->Name = (*mat_it).second.Name;
 			lMaterial->DiffuseAlbedo = (*mat_it).second.DiffuseAlbedo;
+			lMaterial->Roughness =(*mat_it).second.Roughness;
+			lMaterial->FresnelR0 = XMFLOAT3((*mat_it).second.Specular.x, (*mat_it).second.Specular.y, (*mat_it).second.Specular.z);
 
 			int DiffuseTextureCount = 0;
 			for (int i = 0; i < (*mat_it).second.TexturesNameByType.size(); i++)
@@ -700,13 +798,14 @@ void FBXFileLoader::build_Materials(string& pMaterialName)
 void FBXFileLoader::add_InstanceToRenderItem(const fbx_NodeInstance& nodeRIInstance)
 {
 	auto ri_it = m_RenderItems.find(nodeRIInstance.MeshName);
-	if (ri_it != m_RenderItems.end()) // we should already have a RenderItem, we just should add new Instance to it
+	if (ri_it != m_RenderItems.end()) // we should have a RenderItem already, we just should add new Instance to it
 	{
 		InstanceDataGPU lBaseInstance = {};		
 		lBaseInstance.World = nodeRIInstance.GlobalTransformation;
 
 		if (nodeRIInstance.Materials.size())
 			lBaseInstance.MaterialIndex = nodeRIInstance.Materials[0]->MatCBIndex;
+
 
 		ri_it->second->Visable = nodeRIInstance.Visible;
 		ri_it->second->isNotIncludeInWorldBB = !nodeRIInstance.Materials[0]->DoesIncludeToWorldBB;
@@ -848,8 +947,8 @@ void FBXFileLoader::process_node(const FbxNode* pNode)// , bool isLODMesh = fals
 		case fbxsdk::FbxNodeAttribute::eMesh:
 		{
 			// We use the first material of a node to identify which kind this Mesh is: simple mesh or mesh for Tessalation 
-			bool lSimpleMesh = true;
-			bool lWater2Mesh = false;
+			
+			bool lWater2Mesh = false;			
 			fbx_Material* lMaterial=nullptr;
 			{
 				int mCount = pNode->GetMaterialCount();
@@ -859,20 +958,15 @@ void FBXFileLoader::process_node(const FbxNode* pNode)// , bool isLODMesh = fals
 					if (m_materials.find(lMaterialName) != m_materials.end())
 						lMaterial = &m_materials[lMaterialName];
 					
-					if (lMaterial != nullptr)
-					{
-						if (lMaterial->IsWater)
-							lSimpleMesh = false;
-						if (lMaterial->IsWaterV2)
-							lWater2Mesh = true;
-					}
+					if (lMaterial != nullptr)						
+						lWater2Mesh = lMaterial->IsWaterV2;
 				}
 			}
 
 			if (lWater2Mesh)
-				newNodeInstance.MeshName = create_WaterV2Mesh(lMaterial, pNodeAtrib);
+				newNodeInstance.MeshName = create_WaterV2Mesh(pNodeAtrib, lMaterial);
 			else
-				newNodeInstance.MeshName = process_mesh(pNodeAtrib, !lSimpleMesh);
+				newNodeInstance.MeshName = process_mesh(pNodeAtrib, lMaterial);
 
 			FbxNode* lNode2 = const_cast<FbxNode*>(pNode);			
 
@@ -986,7 +1080,7 @@ void FBXFileLoader::process_node_LOD(const FbxNode* pNode)
 			
 			assert(type == fbxsdk::FbxNodeAttribute::eMesh);
 			
-				newNodeInstance.MeshName  = process_mesh(pNodeAtrib, false, 0, &nodeName); // Name of the first Mesh = LOD group name
+				newNodeInstance.MeshName  = process_mesh(pNodeAtrib, nullptr, 0, &nodeName); // Name of the first Mesh = LOD group name
 				
 				FbxNode* lNode2 = const_cast<FbxNode*>(pNode);
 
@@ -1010,7 +1104,7 @@ void FBXFileLoader::process_node_LOD(const FbxNode* pNode)
 
 			assert(type == fbxsdk::FbxNodeAttribute::eMesh);
 
-			process_mesh(pNodeAtrib, false, 1, &nodeName); // LOD1			
+			process_mesh(pNodeAtrib, nullptr, 1, &nodeName); // LOD1			
 		}		
 	}
 
@@ -1025,7 +1119,7 @@ void FBXFileLoader::process_node_LOD(const FbxNode* pNode)
 
 			assert(type == fbxsdk::FbxNodeAttribute::eMesh);
 
-			process_mesh(pNodeAtrib, false, 2, &nodeName); // LOD2			
+			process_mesh(pNodeAtrib, nullptr, 2, &nodeName); // LOD2			
 		}
 	}	
 }
@@ -1148,19 +1242,24 @@ void FBXFileLoader::process_node_getMaterial(const FbxNode* pNode, fbx_NodeInsta
 				// Get Specular data
 				{
 					FbxDouble* lData = lphongMaterial->Specular.Get().Buffer();
+										
 					float f1 = lData[0];
 					float f2 = lData[1];
 					float f3 = lData[2];
-					float f4 = lphongMaterial->SpecularFactor;
+					float f4 = lphongMaterial->SpecularFactor;				
 
-					lMaterial.Specular = XMFLOAT4(f1, f2, f3, f4);
-					read_texture_data(&lMaterial, &lphongMaterial->Specular, "specular");
-				}
+					lMaterial.Roughness = 1.0f - f4;
+					if (lMaterial.Roughness > 0.999f) lMaterial.Roughness = 0.999f;
+
+					lMaterial.Specular = XMFLOAT4(f1, f2, f3, f4);// is used not to represent FresnelR0;
+					read_texture_data(&lMaterial, &lphongMaterial->Specular, "specular"); 
+				}							
 
 				// Get Normal data
 				{
-					read_texture_data(&lMaterial, &lphongMaterial->NormalMap, "normal");
-				}
+					lMaterial.DoesItHaveNormaleTexture =
+						read_texture_data(&lMaterial, &lphongMaterial->NormalMap, "normal");
+				}				
 
 				// Get Transparency data
 				{
@@ -1191,7 +1290,7 @@ void FBXFileLoader::process_node_getMaterial(const FbxNode* pNode, fbx_NodeInsta
 	}	
 }
 
-string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool meshForTesselation, 
+string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, const fbx_Material* nodeMaterial,
 	int LOD_level, std::string* groupName)
 {
 	AutoIncrementer lOutShifter;
@@ -1199,9 +1298,8 @@ string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool m
 	FbxMesh* lpMesh = const_cast<FbxMesh*>(lpcMesh);
 	
 	string name = lpcMesh->GetName();		
-
 	FbxNode* lParentNode = pNodeAtribute->GetNode();	
-	
+
 	FbxProperty lcustomProperty = lParentNode->FindProperty("LODParentMesh");
 	if (lcustomProperty != NULL)
 	{
@@ -1209,12 +1307,20 @@ string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool m
 		string value(lValue.Buffer());
 		return value; // we do not need process mesh for "Instances" anyway, only for meshes from LOD group
 	}
+
 	if (LOD_level == 0)
 		name = *groupName; // for the first mesh from LOD group we use name of this group, because Blender can change name for mesh, we cannot trust it
 	
 	if (m_meshesByName.find(name) != m_meshesByName.end()) return name;
-
 	m_logger->log("[MESH]: " + name, lOutShifter.Shift);
+
+	bool lSimpleMesh = true; // Will be in simple or Tessalated mesh (WaterV1)	
+	bool lDoesItHaveNormmalTexture = false;
+	if (nodeMaterial != nullptr)
+	{
+		lSimpleMesh = !nodeMaterial->IsWater;
+		lDoesItHaveNormmalTexture = nodeMaterial->DoesItHaveNormaleTexture;
+	}
 
 	FbxVector4* vertexData = lpcMesh->GetControlPoints();
 	int vertex_count = lpcMesh->GetControlPointsCount();//get count unique vertices	
@@ -1224,6 +1330,7 @@ string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool m
 	lmesh->Name = name;
 	lmesh->WasUploaded = false;
 	lmesh->ExcludeFromCulling = false;
+	lmesh->MaterailHasNormalTexture = lDoesItHaveNormmalTexture;
 	
 	// Should be this Mesh (with all Instances) excluded from Frustum culling in future? (for the Sky and the Land meshes)	
 	lcustomProperty = pNodeAtribute->FindProperty("ExcludeFromCulling");
@@ -1269,10 +1376,10 @@ string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool m
 		bool lWeAreOkWithNormalMappingMode = mappingMode == FbxGeometryElement::EMappingMode::eByPolygonVertex &&
 			referenceMode == FbxGeometryElement::EReferenceMode::eDirect;
 
-		assert(lWeAreOkWithNormalMappingMode);
+		assert(lWeAreOkWithNormalMappingMode);	
 
+#ifndef NORMALMODE
 		int normalCount = normalLayer->GetDirectArray().GetCount();
-
 		// We should sum all normals for the same vertex and normalize it later
 		int* indicesData = lpcMesh->GetPolygonVertices(); //get a point to Indices data
 		for (int i = 0; i < normalCount; i++)
@@ -1285,6 +1392,7 @@ string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool m
 			n = n + n0;
 			XMStoreFloat3(&averageNormal[vertexID], n);
 		}
+#endif
 	}
 	
 	const FbxLayerElementTangent* tangentLayer = lpcMesh->GetElementTangent();
@@ -1311,8 +1419,8 @@ string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool m
 
 		if (polygon_size == 3)
 		{
-			if (meshForTesselation)
-				assert(!meshForTesselation); //we do not process Triangles for Tesselation
+			if (!lSimpleMesh)
+				assert(!!lSimpleMesh); //we do not process Triangles for Tesselation
 
 			int i0 = lpcMesh->GetPolygonVertex(pi, 0);
 			int i1 = lpcMesh->GetPolygonVertex(pi, 1);
@@ -1386,7 +1494,7 @@ string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool m
 			int i2 = lpcMesh->GetPolygonVertex(pi, 2);
 			int i3 = lpcMesh->GetPolygonVertex(pi, 3);
 
-			add_quadInfo_to_mesh<int>(lmesh->Indices, i0, i1, i2, i3, meshForTesselation);
+			add_quadInfo_to_mesh<int>(lmesh->Indices, i0, i1, i2, i3, !lSimpleMesh);
 
 			// UV
 			if (UVLayer)
@@ -1406,7 +1514,7 @@ string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool m
 				XMFLOAT2 xmuv2 = XMFLOAT2(uv2.mData[0], 1.0f - uv2.mData[1]);
 				XMFLOAT2 xmuv3 = XMFLOAT2(uv3.mData[0], 1.0f - uv3.mData[1]);
 
-				add_quadInfo_to_mesh<XMFLOAT2>(lmesh->UVs, xmuv0, xmuv1, xmuv2, xmuv3, meshForTesselation);
+				add_quadInfo_to_mesh<XMFLOAT2>(lmesh->UVs, xmuv0, xmuv1, xmuv2, xmuv3, !lSimpleMesh);
 			}
 
 			// Normal
@@ -1429,7 +1537,7 @@ string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool m
 				XMFLOAT3 normal3 = averageNormal[i3];
 #endif // NORMALMODE
 
-				add_quadInfo_to_mesh<XMFLOAT3>(lmesh->Normals, normal0, normal1, normal2, normal3, meshForTesselation);
+				add_quadInfo_to_mesh<XMFLOAT3>(lmesh->Normals, normal0, normal1, normal2, normal3, !lSimpleMesh);
 			}
 
 			// Tangent
@@ -1445,7 +1553,7 @@ string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool m
 				XMFLOAT3 tangent2(tanV2.mData[0], tanV2.mData[1], tanV2.mData[2]);
 				XMFLOAT3 tangent3(tanV3.mData[0], tanV3.mData[1], tanV3.mData[2]);
 
-				add_quadInfo_to_mesh<XMFLOAT3>(lmesh->Tangents, tangent0, tangent1, tangent2, tangent3, meshForTesselation);
+				add_quadInfo_to_mesh<XMFLOAT3>(lmesh->Tangents, tangent0, tangent1, tangent2, tangent3, !lSimpleMesh);
 			}
 
 			lVertexID += 4;
@@ -1511,7 +1619,7 @@ string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, bool m
 	return name;
 }
 
-std::string FBXFileLoader::create_WaterV2Mesh(fbx_Material* material, const FbxNodeAttribute* pNodeAtribute)
+std::string FBXFileLoader::create_WaterV2Mesh(const FbxNodeAttribute* pNodeAtribute, fbx_Material* material )
 {
 	AutoIncrementer lOutShifter;
 	const FbxMesh* lpcMesh = static_cast<const FbxMesh*>(pNodeAtribute);
@@ -1537,8 +1645,8 @@ std::string FBXFileLoader::create_WaterV2Mesh(fbx_Material* material, const FbxN
 	int lTrianglesCount = ((lN -1) * (lM - 1))*2;
 	int lIndicesCount = lTrianglesCount * 3;
 
-	lmesh->Vertices.resize(lVerticesCount);
-	lmesh->UVs.resize(lVerticesCount);
+	lmesh->Vertices.resize(lVerticesCount);	
+	lmesh->UVs.resize(lIndicesCount);
 	lmesh->Indices.resize(lIndicesCount);
 	lmesh->VertexPerPolygon = 3;
 
@@ -1548,9 +1656,7 @@ std::string FBXFileLoader::create_WaterV2Mesh(fbx_Material* material, const FbxN
 	{
 		for (int w = 0; w < lN; w++)
 		{
-			lmesh->Vertices[lVertID] = XMFLOAT3(-lWidth/2 + w*ldx, lHeight / 2 - h * ldx, 0 );
-			lmesh->UVs[lVertID++] = XMFLOAT2((float) w / (float)lN, (float)h/ (float)lM);
-			//lmesh->UVs[lVertID++] = XMFLOAT2(w, h);
+			lmesh->Vertices[lVertID++] = XMFLOAT3(-lWidth/2 + w*ldx, lHeight / 2 - h * ldx, 0 );
 		}
 	}	
 
@@ -1567,17 +1673,30 @@ std::string FBXFileLoader::create_WaterV2Mesh(fbx_Material* material, const FbxN
 		/\/\/\/\
 	*/
 
+
 	for (int ty = 0; ty <(lM - 1); ty++)
 	{
 		for (int tx = 0; tx < (lN - 1); tx++)
 		{
 			int i1, i2, i3, i4;
 			int vi0, vi1, vi2, vi3;
-				
+			XMFLOAT2 uv0, uv1, uv2, uv3;
+			/*
+
+			Vertex ID:
+			i1.--------.i2
+			  |			|
+			  |			|
+			  |			|
+			i4.--------.i3
+
+			*/
+
 			i1 = (ty * lN) + tx;
 			i2 = i1 + 1;
 			i3 = i2 + lN;
 			i4 = i1 + lN;
+			
 
 			//lHswap = true;
 			if (lHswap)
@@ -1586,6 +1705,11 @@ std::string FBXFileLoader::create_WaterV2Mesh(fbx_Material* material, const FbxN
 				vi1 = i2;
 				vi2 = i4;
 				vi3 = i3;
+
+				uv0 = XMFLOAT2((float) tx / (float)lN,		(float) ty / (float)lM);
+				uv1 = XMFLOAT2((float)(tx+1) / (float)lN,	(float) ty / (float)lM);
+				uv2 = XMFLOAT2((float)(tx+1) / (float)lN,	(float) (ty + 1) / (float)lM);				
+				uv3 = XMFLOAT2((float) tx / (float)lN,		(float) (ty +1)/ (float)lM);
 			}
 			else
 			{
@@ -1593,16 +1717,29 @@ std::string FBXFileLoader::create_WaterV2Mesh(fbx_Material* material, const FbxN
 				vi1 = i1;
 				vi2 = i3;
 				vi3 = i2;
+
+				uv0 = XMFLOAT2((float)tx / (float)lN, (float)(ty+1) / (float)lM);
+				uv1 = XMFLOAT2((float)tx / (float)lN, (float)ty / (float)lM);
+				uv2 = XMFLOAT2((float)(tx + 1) / (float)lN, (float)(ty + 1) / (float)lM);
+				uv3 = XMFLOAT2((float)(tx+1) / (float)lN, (float)ty / (float)lM);
 			}		
 			//in counter-clockwise order
 			lmesh->Indices[lTrianglID + 0] = vi0;
 			lmesh->Indices[lTrianglID + 1] = vi2;
-			lmesh->Indices[lTrianglID + 2] = vi1;			
+			lmesh->Indices[lTrianglID + 2] = vi1;
+
+			lmesh->UVs[lTrianglID + 0] = uv0;
+			lmesh->UVs[lTrianglID + 1] = uv2;
+			lmesh->UVs[lTrianglID + 2] = uv1;
 			lTrianglID += 3;
 
 			lmesh->Indices[lTrianglID + 0] = vi1;
 			lmesh->Indices[lTrianglID + 1] = vi2;
 			lmesh->Indices[lTrianglID + 2] = vi3;
+
+			lmesh->UVs[lTrianglID + 0] = uv1;
+			lmesh->UVs[lTrianglID + 1] = uv2;
+			lmesh->UVs[lTrianglID + 2] = uv3;
 			lTrianglID += 3;
 
 			lHswap = !lHswap;

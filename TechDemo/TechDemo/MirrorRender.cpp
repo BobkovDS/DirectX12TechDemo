@@ -60,7 +60,8 @@ void MirrorRender::draw(int flags)
 
 	m_cmdList->OMSetRenderTargets(1, &currentRTV, true, &m_dsvHeap->GetCPUDescriptorHandleForHeapStart());
 
-	FLOAT clearColor[4] = { 0.0f, 0.5f, 0.4f, 1.0f };	
+	FLOAT clearColor[4] = { 0.0f, 0.5f, 0.4f, 1.0f };		
+	//m_cmdList->ClearRenderTargetView(currentRTV, clearColor, 0, nullptr);
 	m_cmdList->ClearDepthStencilView(m_dsvHeap->GetCPUDescriptorHandleForHeapStart(), D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 	//m_cmdList->OMSetStencilRef(0);
@@ -79,7 +80,7 @@ void MirrorRender::draw(int flags)
 	UINT passAdressOffset = m_frameResourceManager->getPassCBsize();
 	D3D12_GPU_VIRTUAL_ADDRESS lPassCBBaseAdress = passCB->GetGPUVirtualAddress();		
 
-	UINT lTechFlags = flags;
+	UINT lTechFlags = 0;
 	m_cmdList->SetGraphicsRoot32BitConstant(0, lTechFlags, 1); // Tech Flags	
 	m_cmdList->SetGraphicsRootShaderResourceView(1, objectCB->GetGPUVirtualAddress()); // Instances constant buffer arrray data
 	m_cmdList->SetGraphicsRootShaderResourceView(2, m_resourceManager->getMaterialsResource()->GetGPUVirtualAddress());

@@ -3,7 +3,8 @@
 #include "commonPart.hlsl"
 #include "RootSignature.hlsl"
 
-//int instID : SV_INSTANCEID
+/*
+*/
 
 [RootSignature(rootSignatureC1)]
 VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID) 
@@ -21,8 +22,8 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
     float4x4 ViewProj = cbPass.ViewProj;
 
     // Transform to homogeneous clip space.    
-    vout.PosH = mul(posW, ViewProj);    
-    vout.NormalW = mul((float3x3) wordMatrix, vin.Normal);
+    vout.PosH = mul(posW, ViewProj);        
+    vout.NormalW = mul((float3x3) wordMatrix, vin.Normal);        
     vout.UVText = vin.UVText;
 
     float3 tangentNU = vin.TangentU;//   normalize(vin.TangentU - dot(vin.TangentU, vin.Normal));
@@ -35,19 +36,11 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
     return vout;
 }
 
-struct PixelOut
-{
-    float4 color : SV_Target;
-    float depth : SV_Depth;
-};
 
 float4 PS(VertexOut pin) : SV_Target
-//PixelOut PS(VertexOut pin)
-{   	
-    //return float4(1.0f, 0.0f, 0.0f, 0.0f);
-
+{       
     pin.NormalW = normalize(pin.NormalW);
-    //return float4(pin.NormalW, 1.0f);
+   // return float4(pin.NormalW, 1.0f);
 
     float3 toEyeW = cbPass.EyePosW - pin.PosW;
     float distToEye = length(toEyeW);
@@ -69,15 +62,18 @@ float4 PS(VertexOut pin) : SV_Target
     diffuseTranspFactor = diffuseAlbedo.a;
        
     // Get Normal
-    if (gTechFlags & 0x01 > 0)
+    if ((gTechFlags & (1 << RTB_NORMALMAPPING)) > 0)    
     {
         if ((material.textureFlags & 0x04))
         {
-            float4 readNormal = gDiffuseMap[material.DiffuseMapIndex[2]].Sample(gsamPointWrap, pin.UVText);
+            float4 readNormal = gDiffuseMap[material.DiffuseMapIndex[2]].Sample(gsamPointWrap, pin.UVText);     
+            //return readNormal;
             Normal = NormalSampleToWorldSpace(readNormal.xyz, Normal, pin.TangentW);
+            //return float4(Normal, 1.0f);
         }
     }
 
+    //return float4(Normal, 1.0f);
     // Get Alpha value
     if ((material.textureFlags & 0x10))        
         diffuseTranspFactor = gDiffuseMap[material.DiffuseMapIndex[4]].Sample(gsamPointWrap, pin.UVText);        
@@ -91,10 +87,11 @@ float4 PS(VertexOut pin) : SV_Target
     }   
     
     //return float4(ssao_factor, ssao_factor, ssao_factor, 1.0f);
-    float4 ambient = ssao_factor * cbPass.AmbientLight * diffuseAlbedo;
-    
-    const float shiness = 1.0f - material.Roughness;
-    material.FresnelR0 = float3(0.02f, 0.02f, 0.02f);
+    float4 ambient = ssao_factor * cbPass.AmbientLight * diffuseAlbedo;    
+       
+    const float shiness = 1.0f - material.Roughness;    
+    //material.FresnelR0 = float3(0.02f, 0.02f, 0.02f);
+    //material.FresnelR0 = float3(0.05f, 0.05f, 0.05f);
     MaterialLight matLight = { diffuseAlbedo, material.FresnelR0, shiness };
         
     float shadow_depth = 1.0f;   
@@ -115,8 +112,7 @@ float4 PS(VertexOut pin) : SV_Target
     {
         float fogAmount = saturate((distToEye - cbPass.FogStart) / cbPass.FogRange);
         litColor = lerp(litColor, cbPass.FogColor, fogAmount);
-    }    
-        
+    }           
     
     //float3 r = refract(-toEyeW, Normal, 0.9f);
     //float4 reflectionColor = gCubeMap.Sample(gsamPointWrap, r);

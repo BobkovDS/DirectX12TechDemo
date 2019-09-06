@@ -64,7 +64,7 @@ protected:
 	void update_camera();
 	void update_light();
 	void update_passCB();
-	void update_passMirror();
+	void update_passMirror(PassConstantsGPU& passCB);
 	void update_passSSAOCB();
 	void update_objectCB();
 	void build_defaultCamera();

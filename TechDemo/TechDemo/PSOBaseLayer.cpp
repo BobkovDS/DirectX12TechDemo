@@ -72,7 +72,7 @@ D3D12_GRAPHICS_PIPELINE_STATE_DESC PSOBaseLayer::buildCommonPSODescription()
 		- Stencil test is turn off
 		- Blending is turn off
 		- FillMode is D3D12_FILL_MODE_SOLID
-		- FrontCounterClockwise is True;
+		- FrontCounterClockwise is False;
 	*/
 	assert(m_shaders["vs"]); //did we call buildShadersBlob() before?
 
@@ -89,7 +89,7 @@ D3D12_GRAPHICS_PIPELINE_STATE_DESC PSOBaseLayer::buildCommonPSODescription()
 	psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 	psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // Do not draw Back-faces. For performances
 
-	//psoDesc.RasterizerState.DepthBias = 100000;
+	//psoDesc.RasterizerState.DepthBias = d00000;
 	//psoDesc.RasterizerState.DepthBiasClamp = 0.0f;
 	//psoDesc.RasterizerState.SlopeScaledDepthBias = 1.0f;
 

@@ -92,6 +92,7 @@ void TechDemo::onKeyDown(WPARAM btnState)
 	case VK_NUMPAD8: m_renderManager.toggleTechnik_Shadow(); break;
 	case VK_NUMPAD9: m_renderManager.toggleTechnik_ComputeWork(); break;
 	case VK_NUMPAD4: m_renderManager.toggleTechnik_Reflection(); break;
+	case VK_NUMPAD6: m_renderManager.toggleTechnik_Normal(); break;
 
 	case '1': m_renderManager.setRenderMode_Final(); break;
 	case '2': m_renderManager.setRenderMode_SSAO_Map1(); break;
@@ -340,8 +341,7 @@ void TechDemo::update()
 	update_camera();	
 	update_objectCB();
 	update_BoneData();
-	update_passCB();
-	update_passMirror();
+	update_passCB();	
 	update_passSSAOCB();
 }
 
@@ -409,8 +409,7 @@ void TechDemo::update_objectCB()
 }
 
 void TechDemo::update_BoneData()
-{	
-	return;
+{		
 	float lTickTime = m_animationTimer.deltaTime();
 
 	//lTickTime = 0;
@@ -518,13 +517,12 @@ void TechDemo::update_passCB()
 	//		currPassCB->CopyData(PASSCONSTBUF_ID_DCM + i, mMainPassCB);
 	//	}
 	//}	
+
+	update_passMirror(mMainPassCB);
 }
 
-
-void TechDemo::update_passMirror()
+void TechDemo::update_passMirror(PassConstantsGPU& passCB)
 {
-	auto mMainPassCB = m_frameResourceManager.tmpPassConsts;
-
 	// Transform NDC space [-1,+1]^2 to texture space [0,1]^2
 	XMMATRIX T(
 		0.5f, 0.0f, 0.0f, 0.0f,
@@ -535,7 +533,6 @@ void TechDemo::update_passMirror()
 	XMVECTOR lMirrorPlane = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); //xz plane
 	XMMATRIX lMirrorM = XMMatrixReflect(lMirrorPlane);
 
-
 	XMMATRIX view = m_camera->getView();
 	view = lMirrorM * view;
 
@@ -544,56 +541,19 @@ void TechDemo::update_passMirror()
 	XMMATRIX viewProj = XMMatrixMultiply(view, proj);
 	XMMATRIX viewProjT = XMMatrixMultiply(viewProj, T);
 
-	XMStoreFloat4x4(&mMainPassCB.View, XMMatrixTranspose(view));
-	XMStoreFloat4x4(&mMainPassCB.Proj, XMMatrixTranspose(proj));
-	XMStoreFloat4x4(&mMainPassCB.InvProj, XMMatrixTranspose(invProj));
-	XMStoreFloat4x4(&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));
-	XMStoreFloat4x4(&mMainPassCB.ViewProjT, XMMatrixTranspose(viewProjT));
-
-	mMainPassCB.EyePosW = m_camera->getPosition3f();
-	mMainPassCB.TotalTime = m_animationTimer.totalTime();
-
-	const std::vector<CPULight>& lights = m_scene.getLights();
-
-	// -- Find shadow box position and sise	
-	float lLenght = 38.0f;
-
-	XMFLOAT3 lcameraPos = m_camera->getPosition3f();
-	XMFLOAT4 lsceneCenter = m_scene.getSceneBB().Center;
-	XMFLOAT3 lsceneExtents = m_scene.getSceneBB().Extents;
-	float groundLevel = lsceneCenter.y - lsceneExtents.y / 2.0f;
-	float lCameraHigh = lcameraPos.y - groundLevel;
-	XMVECTOR lCameraDirection = m_camera->getLook();
-	XMVECTOR lCameraDirectionInXZPlane = lCameraDirection;
-	lCameraDirectionInXZPlane = XMVectorSetY(lCameraDirectionInXZPlane, 0.0f);
-	lCameraDirectionInXZPlane = XMVector3Normalize(lCameraDirectionInXZPlane);
-
-	lcameraPos.y -= lCameraHigh;
-	XMVECTOR lCameraPosv = XMLoadFloat3(&lcameraPos);
-	lCameraPosv = lCameraPosv + lCameraDirectionInXZPlane * lLenght; /* we draw Shadow in front of camera half-plane.
-	It works good when we look mainly forward, not down from high distance*/
-
-	XMStoreFloat3(&lcameraPos, lCameraPosv);
-
-	for (size_t i = 0; i < lights.size(); i++)
-	{
-		mMainPassCB.Lights[i].Direction = lights.at(i).Direction;
-		mMainPassCB.Lights[i].Strength = lights.at(i).Strength;
-		mMainPassCB.Lights[i].Position = lights.at(i).Position;
-		mMainPassCB.Lights[i].spotPower = lights.at(i).spotPower;
-		mMainPassCB.Lights[i].falloffStart = lights.at(i).falloffStart;
-		mMainPassCB.Lights[i].falloffEnd = lights.at(i).falloffEnd;
-		mMainPassCB.Lights[i].lightType = lights.at(i).lightType + 1; // 0 - is undefined type of light
-		mMainPassCB.Lights[i].turnOn = lights.at(i).turnOn;
-
-		// build ViewProjT matrix for shadow technique
-		if (lights.at(i).lightType == LightType::Directional)
-			MathHelper::buildSunOrthoLightProjection(mMainPassCB.Lights[i].Direction, mMainPassCB.Lights[i].ViewProj,
-				mMainPassCB.Lights[i].ViewProjT, lcameraPos, lLenght);
-	}
-
+	XMStoreFloat4x4(&passCB.View, XMMatrixTranspose(view));
+	XMStoreFloat4x4(&passCB.Proj, XMMatrixTranspose(proj));
+	XMStoreFloat4x4(&passCB.InvProj, XMMatrixTranspose(invProj));
+	XMStoreFloat4x4(&passCB.ViewProj, XMMatrixTranspose(viewProj));
+	XMStoreFloat4x4(&passCB.ViewProjT, XMMatrixTranspose(viewProjT));
+	
+	/*
+		Other parametrs of passCB will stay the same, in partucular we do not need make Light direction reflection (It because we apply
+		Reflection matrix on View Matrix, not on World of each Object Instance, so Normal is not changed)
+	*/
 	auto currPassCB = m_frameResourceManager.currentFR()->getPassCB();
-	currPassCB->CopyData(PASSCONSTBUF_ID_MIRROR, mMainPassCB);
+	currPassCB->CopyData(PASSCONSTBUF_ID_MIRROR, passCB);
+
 }
 
 void TechDemo::update_passSSAOCB()

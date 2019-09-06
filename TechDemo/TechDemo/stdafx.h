@@ -19,7 +19,7 @@
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers.
 #endif
 
-#define GUI_HUD	// To use GUI HUD in a project (To add d3d11on12.h and Direct2D support). PIX and RenderDoc cannot work with it.
+//#define GUI_HUD	// To use GUI HUD in a project (To add d3d11on12.h and Direct2D support). PIX and RenderDoc cannot work with it.
 
 #include <windows.h>
 #include <WinError.h>
