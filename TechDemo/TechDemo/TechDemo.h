@@ -8,6 +8,7 @@
 #include "FBXFileLoader.h"
 #include "RenderManager.h"
 #include "Camera.h"
+#include "LogoRender.h"
 
 // How many Pass constant buffers we have
 #define PASSCONSTBUF_COUNT_MAIN 1
@@ -34,7 +35,7 @@ class TechDemo :
 	ResourceManager m_resourceManager;
 	RenderManager m_renderManager;
 	SkeletonManager m_skeletonManager;
-	FrameResourcesManager<InstanceDataGPU, PassConstantsGPU, SSAO_GPU> m_frameResourceManager;
+	FrameResourcesManager<InstanceDataGPU, PassConstantsGPU, SSAO_GPU> m_frameResourceManager;	
 	Utilit3D m_utilit3D;
 	Camera* m_camera;
 	Camera m_camerasDCM[PASSCONSTBUF_COUNT_DCM]; // Cameras for DCM (Dynamic Cube Map buidling)

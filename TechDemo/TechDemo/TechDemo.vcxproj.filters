@@ -180,6 +180,15 @@
     <ClCompile Include="PSOMirrorLayer.cpp">
       <Filter>Source Files\PSO</Filter>
     </ClCompile>
+    <ClCompile Include="LogoAwaiter.cpp">
+      <Filter>Source Files\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="LogoRender.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="PSOLogoLayer.cpp">
+      <Filter>Source Files\PSO</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PSOBaseLayer.h">
@@ -347,6 +356,15 @@
     <ClInclude Include="PSOMirrorLayer.h">
       <Filter>Header Files\PSO</Filter>
     </ClInclude>
+    <ClInclude Include="LogoAwaiter.h">
+      <Filter>Header Files\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="LogoRender.h">
+      <Filter>Header Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="PSOLogoLayer.h">
+      <Filter>Header Files\PSO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\commonPart.hlsl">
@@ -422,6 +440,9 @@
       <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\DCMRender_shaders.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\LogoRender_shaders.hlsl">
       <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
   </ItemGroup>

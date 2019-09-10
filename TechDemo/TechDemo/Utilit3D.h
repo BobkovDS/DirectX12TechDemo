@@ -7,12 +7,14 @@
 #include "TextureLoader\DDSTextureLoader.h"
 #include <D3DCompiler.h>
 #include <wrl.h>
+#include <mutex>
 
 class Utilit3D
 {
 	static ID3D12Device* m_device;
 	static ID3D12GraphicsCommandList* m_cmdList;
 	static bool m_initialized;
+	static std::mutex cdb_mutex; // createDefaultBuffer mutex
 public:
 	Utilit3D();
 	~Utilit3D();

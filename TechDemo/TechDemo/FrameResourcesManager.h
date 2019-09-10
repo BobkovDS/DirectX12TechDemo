@@ -7,6 +7,7 @@
 //#include <wrl.h>
 #include "UploadBuffer.h"
 #include "ApplDataStructures.h"
+#include <comdef.h>
 
 // ------------ Interface Base class ----------------------
 class IFrameResourcesManager
@@ -28,6 +29,7 @@ class FrameResourcesManager: public IFrameResourcesManager
 	class FrameResource;
 	std::vector<FrameResource*> m_frameResources;
 	ID3D12Fence* m_fence;
+	HANDLE m_eventHandle;
 	UINT m_currentFR; // points to current FR. Function getFreeFR moves to next one
 	bool m_initialized;
 	//closed
@@ -97,11 +99,14 @@ template<class ConstObjectType, class PassConstsType,   class SSAOType>
 FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::FrameResourcesManager()
 	:m_currentFR(0), m_initialized(false)
 {
+	m_eventHandle = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
 }
 
 template<class ConstObjectType, class PassConstsType,   class SSAOType>
 FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::~FrameResourcesManager()
 {
+	CloseHandle(m_eventHandle);
+
 	for (int i = 0; i < m_frameResources.size(); i++)
 	{
 		delete m_frameResources.back();
@@ -148,11 +153,9 @@ void FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::getFreeF
 		(fenceValue != 0) &&
 		(m_fence->GetCompletedValue() < fenceValue)
 		)
-	{
-		HANDLE eventHandle = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
-		m_fence->SetEventOnCompletion(fenceValue, eventHandle);
-		WaitForSingleObject(eventHandle, INFINITE);
-		CloseHandle(eventHandle);
+	{	
+		m_fence->SetEventOnCompletion(fenceValue, m_eventHandle);
+		WaitForSingleObject(m_eventHandle, INFINITE);		
 	}
 };
 
@@ -207,6 +210,8 @@ FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::FrameResource
 {
 	HRESULT res;
 
+	m_fenceValue = 0;
+
 	res = device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
 		IID_PPV_ARGS(m_commandAllocator.GetAddressOf()));
 	assert(SUCCEEDED(res));
@@ -215,10 +220,10 @@ FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::FrameResource
 		(device, constObjCount, false); // <- false here because InstanceData goes how SRV
 	m_passCB = std::make_unique<UploadBuffer<PassConstsType>>
 		(device, passCount, true);
-	//m_materialCB = std::make_unique<UploadBuffer<MaterialType>>	(device, materialCount, true);
+	
 	m_SSAOCB = std::make_unique<UploadBuffer<ssaoType>>(device, SSAOCount, true);
 	m_bonesTransform= std::make_unique<UploadBuffer<DirectX::XMFLOAT4X4>>(device, BoneTransformCount, false);
-	m_drawInstancesID= std::make_unique<UploadBuffer<UINT>>(device, DrawIntancesCount, false);
+	m_drawInstancesID= std::make_unique<UploadBuffer<UINT>>(device, DrawIntancesCount, false); // TO_DO: Delete this
 
 }
 
@@ -234,5 +239,10 @@ void FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::changeCm
 	assert(SUCCEEDED(res));
 
 	res = cmdList->Reset(currentCmdAllocator.Get(), pInitialState);
+	//_com_error err(res);
+	//std::wstring errMsg = err.ErrorMessage();
+
 	assert(SUCCEEDED(res));
+
+
 }

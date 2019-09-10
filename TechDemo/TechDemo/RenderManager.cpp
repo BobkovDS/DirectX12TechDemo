@@ -21,16 +21,17 @@ RenderManager::~RenderManager()
 
 void RenderManager::initialize(const RenderManagerMessanger& renderParams)
 {
-	m_device = renderParams.commonRenderData.Device;
-	m_cmdList= renderParams.commonRenderData.CmdList;
-	m_swapChain= renderParams.commonRenderData.SwapChain;
 	m_swapChainResources = renderParams.RTResources;
 	m_applicationRTVHeap = renderParams.RTVHeap;
+	m_texturesDescriptorHeap = renderParams.SRVHeap;
+	m_device = renderParams.commonRenderData.Device;
+	m_cmdList= renderParams.commonRenderData.CmdList;
+	m_swapChain= renderParams.commonRenderData.SwapChain;	
 	m_width= renderParams.commonRenderData.Width;
 	m_height= renderParams.commonRenderData.Height;
 	m_rtResourceFormat= renderParams.commonRenderData.RTResourceFormat;		
-	m_frameResourceManager= renderParams.commonRenderData.FrameResourceMngr;
-	m_texturesDescriptorHeap = renderParams.SRVHeap;
+	m_frameResourceManager= renderParams.commonRenderData.FrameResourceMngr;	
+
 	m_finalRender.initialize(renderParams.commonRenderData);
 	m_mirrorRender.initialize(renderParams.commonRenderData);
 	m_ssaoRender.initialize(renderParams.commonRenderData);	
@@ -73,8 +74,8 @@ void RenderManager::buildRenders()
 	m_mirrorRender.set_DescriptorHeap_RTV(m_applicationRTVHeap);
 	m_mirrorRender.set_DescriptorHeap_DSV(m_finalRender.get_dsvHeapPointer());
 	m_mirrorRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
-	m_mirrorRender.build();
 	m_mirrorRender.setSwapChainResources(m_swapChainResources);
+	m_mirrorRender.build();	
 
 
 	// build Debug Axes Render
@@ -143,16 +144,7 @@ void RenderManager::draw()
 		
 		if (m_renderMode & (1 << RM_SSAO_MAP1))
 		{
-		/* we do not copy in this because dest_resource_format and source_resource_format are not equal
-
-		m_cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
-				D3D12_RESOURCE_STATE_PRESENT,
-				D3D12_RESOURCE_STATE_COPY_DEST));
-			m_cmdList->CopyResource(m_swapChainResources[lResourceIndex].Get(), m_ssaoRender.getVNResource());
-
-			m_cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
-				D3D12_RESOURCE_STATE_COPY_DEST,
-				D3D12_RESOURCE_STATE_PRESENT));*/
+			/* we do not copy in this because dest_resource_format and source_resource_format are not equal	*/
 			m_debugRenderScreen.draw(TECHSLOT_SSAO_VSN); // ViewSpace Normal Map from SSAO render
 		}
 		else if (m_renderMode & (1 << RM_SSAO_MAP2))
@@ -191,7 +183,7 @@ void RenderManager::draw()
 			m_debugRenderNormals.draw(updatedFlags);		
 	}
 
-	// for using with GUI Render
+	// for using with GUI Render function. GUI_render function waits render target resource in D3D12_RESOURCE_STATE_RENDER_TARGET
 #ifdef GUI_HUD
 	m_cmdList->ResourceBarrier(1,
 		&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),

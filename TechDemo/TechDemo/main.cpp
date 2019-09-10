@@ -1,6 +1,7 @@
 #include "TechDemo.h"
 #include "ApplException.h"
 #include "ApplLogger.h"
+#include "LogoAwaiter.h"
 
 using namespace std;
 
@@ -14,6 +15,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 	try
 	{
 		TechDemo my3DAppl(hInstance, L"my 3D application", 1000, 1000);
+		
 		//BasicDXGI my3DAppl(hInstance );
 		my3DAppl.run();
 	}

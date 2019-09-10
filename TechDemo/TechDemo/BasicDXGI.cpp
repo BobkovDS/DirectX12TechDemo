@@ -228,6 +228,8 @@ void BasicDXGI::create_RTV()
 
 		// Create a Direct2D Factory		
 		{
+			//if (m_HUDContext)	m_HUDContext->Release();
+
 			D2D1_DEVICE_CONTEXT_OPTIONS deviceOptions = D2D1_DEVICE_CONTEXT_OPTIONS_NONE;
 			res = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, m_HUDFactory.GetAddressOf());
 			ComPtr<IDXGIDevice> ldxgiDevice;

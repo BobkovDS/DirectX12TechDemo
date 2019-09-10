@@ -1,4 +1,7 @@
 #pragma once
+#include <d2d1.h>
+#include <d2d1_3.h>
+#include <d3d11on12.h>
 #include "GraphicDataStructures.h"
 #include "Scene.h"
 #include "FrameResourcesManager.h"
@@ -56,6 +59,16 @@ struct RenderMessager {
 	IFrameResourcesManager* FrameResourceMngr;
 	ResourceManager* ResourceMngr;
 };
+
+struct RenderMessager11on12 {
+	ID3D11On12Device* D3d11On12Device;
+	ID3D11DeviceContext* D3d11Context;	
+	ID2D1DeviceContext* HUDContext;	
+	IDWriteFactory* WriteFactory;	
+	Microsoft::WRL::ComPtr<ID3D11Resource>* WrappedBackBuffers;
+	Microsoft::WRL::ComPtr<ID2D1Bitmap1>* HUDRenderTargets;
+};
+
 
 class RenderBase
 {

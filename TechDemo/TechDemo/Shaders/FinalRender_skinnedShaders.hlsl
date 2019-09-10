@@ -79,8 +79,7 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
 
 float4 PS(VertexOut pin) : SV_Target
 {	
-    pin.NormalW = normalize(pin.NormalW);
-    return float4(pin.NormalW, 1.0f);
+    pin.NormalW = normalize(pin.NormalW);    
 
     float3 toEyeW = cbPass.EyePosW - pin.PosW;
     float distToEye = length(toEyeW);

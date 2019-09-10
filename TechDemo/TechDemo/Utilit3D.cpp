@@ -8,7 +8,7 @@ using Microsoft::WRL::ComPtr;
 ID3D12Device* Utilit3D::m_device = nullptr;
 ID3D12GraphicsCommandList* Utilit3D::m_cmdList = nullptr;
 bool Utilit3D::m_initialized = false;
-
+std::mutex Utilit3D::cdb_mutex;
 
 Utilit3D::Utilit3D()
 {
@@ -35,6 +35,8 @@ ComPtr<ID3D12Resource> Utilit3D::createDefaultBuffer(ID3D12Device* device, ID3D1
 	ComPtr<ID3D12Resource> defaultBuffer;
 	HRESULT res;
 	
+	std::lock_guard<std::mutex> guard(cdb_mutex);
+
 	//create the actual default buffer resource
 	res = device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
@@ -44,6 +46,14 @@ ComPtr<ID3D12Resource> Utilit3D::createDefaultBuffer(ID3D12Device* device, ID3D1
 		nullptr,
 		IID_PPV_ARGS(&defaultBuffer));
 
+	HRESULT removeReason;
+	if (res != S_OK)
+	{
+		removeReason= device->GetDeviceRemovedReason();
+		_com_error err(removeReason);
+		wstring errMsg = err.ErrorMessage();
+
+	}
 	assert(SUCCEEDED(res));
 
 	// To copy CPU memory to Default buffer, we need to create an intermediate upload heap

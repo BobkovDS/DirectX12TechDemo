@@ -1,5 +1,6 @@
 #include "TechDemo.h"
 #include "ApplLogger.h"
+#include <thread>
 
 using namespace DirectX;
 
@@ -162,11 +163,53 @@ void TechDemo::init3D()
 	//here we come with closed m_cmdList
 	HRESULT res;
 
+	LogoRender lLogoRender;
 	// create_DSV has closed m_cmdList, lets open it again
 	res = m_cmdList->Reset(m_cmdAllocator.Get(), nullptr);
 	assert(SUCCEEDED(res));
-	
+
 	Utilit3D::initialize(m_device.Get(), m_cmdList.Get());
+
+	// Create logo render and run it in other thread
+	{	
+		// to create logo render information (logo mesh), we use DirectX resources from main class.
+		RenderMessager lRenderMessager = {};		
+		lRenderMessager.Device = m_device.Get();
+		lRenderMessager.CmdList = m_cmdList.Get();
+		lRenderMessager.SwapChain = m_swapChain.Get();
+		lRenderMessager.RTResourceFormat = backBufferFormat();
+		lRenderMessager.DSResourceFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		lRenderMessager.Width = width();
+		lRenderMessager.Height = height();		
+		lRenderMessager.FrameResourceMngr = nullptr;
+
+		RenderMessager11on12 lGuiMessager = {};
+		lGuiMessager.D3d11On12Device = m_d3d11On12Device.Get();
+		lGuiMessager.D3d11Context = m_d3d11Context.Get();
+		lGuiMessager.HUDContext = m_HUDContext.Get();
+		lGuiMessager.WriteFactory = m_writeFactory.Get();
+		lGuiMessager.WrappedBackBuffers = m_wrappedBackBuffers;
+		lGuiMessager.HUDRenderTargets = m_HUDRenderTargets;
+
+		lLogoRender.initialize(lRenderMessager, lGuiMessager, m_cmdQueue.Get());
+		lLogoRender.set_DescriptorHeap_RTV(m_rtvHeap.Get());
+		lLogoRender.setSwapChainResources(m_swapChainBuffers);
+		lLogoRender.build();
+		
+		m_cmdList->Close();
+		ID3D12CommandList* cmdsList[] = { m_cmdList.Get() };
+		m_cmdQueue->ExecuteCommandLists(1, cmdsList);
+
+		FlushCommandQueue();
+
+		// Run logo render in another thread. It will use his own cmdQueue and cmdAllocator, and cmdList	
+	}		
+	std::thread lLogoThread(&LogoRender::work, &lLogoRender);
+	
+	// create_DSV has closed m_cmdList, lets open it again
+	res = m_cmdList->Reset(m_cmdAllocator.Get(), nullptr);
+	assert(SUCCEEDED(res));
+
 
 	//// Load Wolf with Animation
 	//{
@@ -180,36 +223,48 @@ void TechDemo::init3D()
 	//	m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
 	//	m_fbx_loader.loadSceneFile("Models\\Water3.fbx");
 	//}
-
+		
 	//Load a house
 	{
+		lLogoRender.addLine(L"Loading FBX file: Scene part 1");
 		FBXFileLoader m_fbx_loader;
 		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
 		m_fbx_loader.loadSceneFile("Models\\The Scene.fbx");		
 	}
+	
 
 	{
+		lLogoRender.addLine(L"Loading FBX file: Scene part 2");
 		FBXFileLoader m_fbx_loader;
 		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
 		m_fbx_loader.loadSceneFile("Models\\Landscape.fbx");
 	}
 
+	
 	// Load lights
 	{
+		lLogoRender.addLine(L"Loading FBX file: Light");
 		FBXFileLoader m_fbx_loader;
 		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
 		m_fbx_loader.loadSceneFile("Models\\Lights.fbx");
 	}
+	
 
 	// Load a Camera
 	{
+		lLogoRender.addLine(L"Loading FBX file: Camera");
 		FBXFileLoader m_fbx_loader;
 		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
 		m_fbx_loader.loadSceneFile("Models\\Camera.fbx");
 	} 
-	
+
+	lLogoRender.addLine(L"Skeleton animation time");
 	m_skeletonManager.evaluateAnimationsTime();
+	
+	lLogoRender.addLine(L"Textures loading");
 	m_resourceManager.loadTexture();	
+	
+	lLogoRender.addLine(L"Materials loading");
 	m_resourceManager.loadMaterials();
 
 	RenderManagerMessanger lRenderManagerParams;
@@ -227,6 +282,7 @@ void TechDemo::init3D()
 	lRenderManagerParams.commonRenderData.ResourceMngr = &m_resourceManager;
 	lRenderManagerParams.SRVHeap = m_resourceManager.getTexturesSRVDescriptorHeap();
 
+	lLogoRender.addLine(L"Frames resources building");
 	int lBonesCount = 100;
 	m_frameResourceManager.Initialize(m_device.Get(), m_fence.Get(), m_objectManager.getCommonInstancesCount(),
 		PASSCONSTBUFCOUNT, SSAOCONSTBUFCOUNT, lBonesCount, MaxInstancesCount);
@@ -256,9 +312,11 @@ void TechDemo::init3D()
 	
 	//m_objectManager.mirrorZ();
 	ApplLogger::getLogger().log("TechDemo::init3D()::Scene building...", 0);
+	lLogoRender.addLine(L"Scene building");
 	m_scene.build(&m_objectManager, m_camera, &m_skeletonManager);
 	ApplLogger::getLogger().log("TechDemo::init3D()::Scene building is done", 0);
 
+	lLogoRender.addLine(L"Renders building");
 	m_renderManager.initialize(lRenderManagerParams);
 	m_renderManager.buildRenders();		
 
@@ -314,6 +372,8 @@ void TechDemo::init3D()
 	//	}
 	//}
 
+	lLogoRender.addLine(L"Done");
+
 	ApplLogger::getLogger().log("TechDemo::init3D()::before Cmd list execution.", 0);
 	m_cmdList->Close();
 	ID3D12CommandList* cmdsList[] = { m_cmdList.Get() };
@@ -323,10 +383,13 @@ void TechDemo::init3D()
 	FlushCommandQueue();
 	ApplLogger::getLogger().log("TechDemo::init3D()::Flush commands is done.", 0);
 	m_init3D_done = true;
-
+	
 	build_OffsetVectors();
 
 	m_animationTimer.tt_RunStop();
+
+	lLogoRender.exit();
+	lLogoThread.detach();
 
 	ApplLogger::getLogger().log("TechDemo::init3D() is done", 0);
 }
@@ -638,8 +701,7 @@ void TechDemo::build_defaultCamera()
 }
 
 void TechDemo::work()
-{
-	FlushCommandQueue();
+{	
 	// here we begin new Graphic Frame
 	m_frameResourceManager.getFreeFR(); // so we need new Frame resource
 
@@ -652,18 +714,19 @@ void TechDemo::work()
 	// draw data
 	m_renderManager.draw();
 
+	// excute command queue
 	m_cmdList->Close();
 	ID3D12CommandList* CmdLists[] = { m_cmdList.Get() };
 	m_cmdQueue->ExecuteCommandLists(1, CmdLists);
 
+	// draw GUI, if it is required
 #ifdef GUI_HUD
 	renderUI();
 #endif
 
 	m_swapChain->Present(0, 0);
 	m_frameResourceManager.currentFR()->setFenceValue(getFenceValue());
-	//setFence(); ???
-	FlushCommandQueue();
+	setFence(); //new frame is done
 }
 
 void TechDemo::renderUI()

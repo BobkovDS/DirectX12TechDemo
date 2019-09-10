@@ -344,11 +344,7 @@ inline void FBXFileLoader::build_GeoMeshesWithTypedVertex(fbx_Mesh* iMesh, bool 
 	bool lToRemoveDoublicatedVertices = //we should 'delete'/Not_doublicate vertices, if
 		iMesh->DoNotDublicateVertices // this is WaterV mesh 
 		| !(iMesh->MaterailHasNormalTexture && (lMesh->Tangents.size() > 0)); // or if NOT (Material has Normal texture AND mesh has Tangent data)
-	
-	if (lMesh->Tangents.size() > 0)
-	{
-		int a = 101;
-	}
+
 
 	if (lToRemoveDoublicatedVertices)
 		meshVertices.resize(lMesh->Vertices.size());
@@ -390,6 +386,12 @@ inline void FBXFileLoader::build_GeoMeshesWithTypedVertex(fbx_Mesh* iMesh, bool 
 			}
 
 			if (lDoesHaveUV) vertex.UVText = lMesh->UVs[vi];
+
+			// write vertex/bone weight information		
+			if (lIsSkinnedMesh)
+			{
+				addSkinnedInfoToVertex(vertex, lMesh, vi);
+			}
 
 			meshVertices[lVertId] = vertex;
 			meshIndices[vi] = lVertId;
