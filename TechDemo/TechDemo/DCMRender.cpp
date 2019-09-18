@@ -112,7 +112,8 @@ void DCMRender::draw(int flags)
 {
 	if (!m_timer.tick()) return;
 
-	const UINT lcLayerToDraw = 0b1011; // render only Opaque objects //NOTE: If it is required to add new layer, PSO should be for this created in PSODCMLayer
+	const UINT lcLayerWhichMayBeDrawn =
+		1 << SKY | 1 << OPAQUELAYER | 1 << SKINNEDOPAQUELAYER; // render only Opaque objects //NOTE: If it is required to add new layer, PSO should be for this created in PSODCMLayer 
 
 	m_cmdList->SetGraphicsRootSignature(m_psoLayer.getRootSignature());
 
@@ -162,7 +163,7 @@ void DCMRender::draw(int flags)
 		int lInstanceOffset = 0;
 		for (int i = 0; i < m_scene->getLayersCount(); i++) // Draw all Layers
 		{
-			draw_layer(i, lInstanceOffset, lcLayerToDraw & (1 << i));
+			draw_layer(i, lInstanceOffset, lcLayerWhichMayBeDrawn & (1 << i));
 		}
 
 		lPassCBBaseAdress += passAdressOffset;

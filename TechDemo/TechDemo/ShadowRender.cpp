@@ -75,8 +75,9 @@ void ShadowRender::build_TechDescriptors()
 void ShadowRender::draw(int lightID)
 {
 	//if (!m_timer.tick()) return;
-
-	const UINT lcLayerToDraw = 0b1110; // Shadow only for simple Opaque objects
+	
+	const UINT lcLayerWhichMayBeDrawn =
+		 1 << OPAQUELAYER | 1 << NOTOPAQUELAYER | 1 << SKINNEDOPAQUELAYER; 
 
 	m_cmdList->SetGraphicsRootSignature(m_psoLayer.getRootSignature());
 
@@ -116,7 +117,7 @@ void ShadowRender::draw(int lightID)
 		int lInstanceOffset = 0;
 		for (int i = 0; i < m_scene->getLayersCount(); i++) // Draw all Layers
 		{			
-			draw_layer(i, lInstanceOffset, lcLayerToDraw & (1 << i));
+			draw_layer(i, lInstanceOffset, lcLayerWhichMayBeDrawn & (1 << i));
 		}
 	}
 

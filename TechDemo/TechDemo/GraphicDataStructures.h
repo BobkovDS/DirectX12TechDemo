@@ -102,7 +102,7 @@ struct VertexGPU // Simple Vertex structure
 {
 	DirectX::XMFLOAT3 Pos;
 	DirectX::XMFLOAT3 Normal;
-	DirectX::XMFLOAT3 TangentU;
+	DirectX::XMFLOAT4 TangentU;
 	DirectX::XMFLOAT2 UVText;
 };
 
@@ -110,7 +110,7 @@ struct VertexExtGPU // Vertex structure for Skinned mesh
 {
 	DirectX::XMFLOAT3 Pos;
 	DirectX::XMFLOAT3 Normal;
-	DirectX::XMFLOAT3 TangentU;
+	DirectX::XMFLOAT4 TangentU;
 	DirectX::XMFLOAT2 UVText;
 
 	UINT pad; 
