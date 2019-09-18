@@ -85,28 +85,30 @@ void MirrorRender::draw(int flags)
 	m_cmdList->SetGraphicsRootShaderResourceView(1, objectCB->GetGPUVirtualAddress()); // Instances constant buffer arrray data
 	m_cmdList->SetGraphicsRootShaderResourceView(2, m_resourceManager->getMaterialsResource()->GetGPUVirtualAddress());
 	m_cmdList->SetGraphicsRootShaderResourceView(3, boneCB->GetGPUVirtualAddress()); // bones constant buffer array data
-	m_cmdList->SetGraphicsRootShaderResourceView(4, drawCB->GetGPUVirtualAddress()); // DrawInstancesID constant buffer array data
-	m_cmdList->SetGraphicsRootConstantBufferView(5, lPassCBBaseAdress); // Pass constant buffer data
+	m_cmdList->SetGraphicsRootShaderResourceView(4, drawCB->GetGPUVirtualAddress()); // DrawInstancesID constant buffer array data	
 	m_cmdList->SetGraphicsRootDescriptorTable(6, m_techSRVHandle); // Technical SRV (CubeMap ViewNormal, SSAO maps and etc)
 	m_cmdList->SetGraphicsRootDescriptorTable(7, m_textureSRVHandle); // Textures SRV
 
 	//--- draw calls	
 	
+	// 0. A Mirror stencil information was drawn befor in FinalRender.
+
+	// 1. Draw a scene in reflection way 
 	int lInstanceOffset = 0;
 	int lLayerToDraw = 0;
 	m_cmdList->OMSetStencilRef(1);
 
-	if (flags)
-	{
-		// 1. Draw a scene in reflection way 
-		lPassCBBaseAdress += passAdressOffset; // Skip the first PassCB - Main PassCB
-		m_cmdList->SetGraphicsRootConstantBufferView(5, lPassCBBaseAdress); // Pass constant buffer data		
+	if (flags) // Mirror reflection drawing is turn-off
+	{	
+		D3D12_GPU_VIRTUAL_ADDRESS lReflectionPassCB = lPassCBBaseAdress + passAdressOffset; // Skip the first PassCB - Main PassCB, to get Reflection Pass CB	
+		m_cmdList->SetGraphicsRootConstantBufferView(5, lReflectionPassCB); // Pass constant buffer data		
 		lLayerToDraw = lcLayerWhichMayBeDrawn & ~(1 << NOTOPAQUELAYERCH); // All Layers, which can be drawn here, except a WaterV2 layer
 		for (int i = 0; i < m_scene->getLayersCount(); i++) // Draw all Layers		
 			draw_layer(i, lInstanceOffset, lLayerToDraw & (1 << i));
 	}
 
-	// 2. Draw a mirror 		
+	// 2. Draw a mirror 
+	m_cmdList->SetGraphicsRootConstantBufferView(5, lPassCBBaseAdress); // Pass constant buffer data
 	lInstanceOffset = 0;
 	lLayerToDraw = lcLayerWhichMayBeDrawn & (1 << NOTOPAQUELAYERCH); // Only WaterV2 layer (it uses WaterV2 object for stenceling)
 	for (int i = 0; i < m_scene->getLayersCount(); i++) // Draw all Layers			

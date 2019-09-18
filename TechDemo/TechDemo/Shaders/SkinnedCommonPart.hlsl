@@ -10,13 +10,8 @@ struct BoneData
 
 struct InstanceData
 {
-    float4x4 World;
-    float4x4 TexTransform;
+    float4x4 World;    
     uint MaterialIndex;
-    //for alignment
-    uint Pad0;
-    uint Pad1;
-    uint Pad2;
 };
 
 struct MaterialData
@@ -66,10 +61,10 @@ struct VertexOut
 struct PassStruct
 {
     float4x4 View;
-    float4x4 Proj; // +
-    float4x4 InvProj; //+
-    float4x4 ViewProj; //+    
-    float4x4 ViewProjT; // +    
+    float4x4 Proj;
+    float4x4 InvProj;
+    float4x4 ViewProj;
+    float4x4 ViewProjT;
    
     float3 EyePosW;
     float pad0;

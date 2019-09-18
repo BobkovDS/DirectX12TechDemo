@@ -70,15 +70,13 @@ struct Mesh {
 	}
 };
 
+struct testStruct {
+	int a;
+};
+
 struct InstanceDataGPU {
 	DirectX::XMFLOAT4X4 World = MathHelper::Identity4x4();
-	DirectX::XMFLOAT4X4 TexTransform = MathHelper::Identity4x4();
-
 	UINT MaterialIndex;
-private:
-	UINT InstancePad0;
-	UINT InstancePad1;
-	UINT InstancePad2;
 };
 
 struct LightGPU
@@ -108,16 +106,14 @@ struct VertexGPU // Simple Vertex structure
 	DirectX::XMFLOAT2 UVText;
 };
 
-struct VertexExtGPU // Vertex structure with Shape ID
+struct VertexExtGPU // Vertex structure for Skinned mesh
 {
 	DirectX::XMFLOAT3 Pos;
 	DirectX::XMFLOAT3 Normal;
 	DirectX::XMFLOAT3 TangentU;
 	DirectX::XMFLOAT2 UVText;
 
-	UINT pad; // this ID is used to find ConstatBuffer for this shape with info about matrices and material id
-	//float dummy2;
-	//DirectX::XMFLOAT2 dummy;
+	UINT pad; 
 	UINT BoneIndices[16];
 	float BoneWeight[16];
 };

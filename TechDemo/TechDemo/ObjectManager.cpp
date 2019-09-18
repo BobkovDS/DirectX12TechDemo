@@ -58,12 +58,12 @@ void ObjectManager::addCamera(std::unique_ptr<Camera>& camera)
 	m_cameras.push_back(std::move(camera));
 }
 
-void ObjectManager::addLight(CPULight light)
+void ObjectManager::addLight(LightCPU light)
 {
 	m_lights.push_back(light);
 }
 
-vector<CPULight>& ObjectManager::getLights()
+vector<LightCPU>& ObjectManager::getLights()
 {
 	return m_lights;
 }

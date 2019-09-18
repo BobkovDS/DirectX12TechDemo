@@ -12,7 +12,7 @@ ConstantBuffer<PassStruct> cbPass : register(b0);
 [RootSignature(rootSignatureC1)]
 VertexOut VS(VertexIn vin) 
 {   
-    VertexOut vout;   
+    VertexOut vout ;
   
     InstanceData instData = gInstanceData[0];
     float4x4 wordMatrix = instData.World;
@@ -33,6 +33,5 @@ VertexOut VS(VertexIn vin)
 
 float4 PS(VertexOut pin) : SV_Target
 {       
-    return pin.TangentW;
-    //return float4(1.0f, 0.0f, 0.0f, 1.0f);
+    return pin.TangentW;    
 }

@@ -8,6 +8,7 @@ LogoRender::LogoRender()
 
 LogoRender::~LogoRender()
 {
+	m_toWork = false;	
 	FlushCommandQueue();
 	CloseHandle(m_fenceEvent);
 	//m_HUDContext = nullptr;
@@ -260,12 +261,12 @@ void LogoRender::update_PassCB()
 	mMainPassCB.EyePosW = m_camera.getPosition3f();
 	mMainPassCB.TotalTime = m_animationTimer.totalTime();
 
-	const std::vector<CPULight> lights;
+	const std::vector<LightCPU> lights;
 
 	for (size_t i = 0; i < lights.size(); i++)
 	{
 		mMainPassCB.Lights[i].Direction = lights.at(i).Direction;
-		mMainPassCB.Lights[i].Strength = lights.at(i).Strength;
+		mMainPassCB.Lights[i].Strength = lights.at(i).Color;
 		mMainPassCB.Lights[i].Position = lights.at(i).Position;
 		mMainPassCB.Lights[i].spotPower = lights.at(i).spotPower;
 		mMainPassCB.Lights[i].falloffStart = lights.at(i).falloffStart;

@@ -125,14 +125,14 @@ void DebugRender_Screen::build_screen()
 	m_mesh = std::make_unique<Mesh>();
 	int vertexByteStride = sizeof(VertexGPU);
 
-	m_mesh->VertexBufferByteSize = vertexByteStride * lVertices.size();
-	m_mesh->IndexBufferByteSize = sizeof(uint32_t) * lIndices.size();
+	m_mesh->VertexBufferByteSize = (UINT) vertexByteStride * lVertices.size();
+	m_mesh->IndexBufferByteSize = (UINT)  sizeof(uint32_t) * lIndices.size();
 	m_mesh->VertexByteStride = vertexByteStride;
 	m_mesh->IndexFormat = DXGI_FORMAT_R32_UINT;
 
 	SubMesh submesh = {};
 	m_mesh->Name = "screen";
-	submesh.IndexCount = lIndices.size();
+	submesh.IndexCount = (UINT) lIndices.size();
 	m_mesh->DrawArgs[m_mesh->Name] = submesh;
 
 	Utilit3D::UploadMeshToDefaultBuffer<Mesh, VertexGPU, uint32_t>(m_mesh.get(), lVertices, lIndices);

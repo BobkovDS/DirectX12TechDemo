@@ -12,6 +12,8 @@ Scene::Scene()
 	m_firstBB = true;
 	m_octreeCullingMode = false;	
 	m_instancesToDraw = 0;
+
+	m_isAfternoon = true; 
 }
 
 Scene::~Scene()
@@ -84,9 +86,21 @@ void Scene::build(ObjectManager* objectManager, Camera* camera, SkeletonManager*
 	m_Layers[5].setVisibility(true); // Tesselated object (water)
 	m_Layers[6].setVisibility(true); // Object colclutated on Compute Shader(WaterV2)
 
-	// Copy lights once to Scene		
-	for (int i = 0; i < m_objectManager->getLights().size(); i++)
-		m_lights.push_back(m_objectManager->getLights()[i]);
+
+	/* ObjectManager stores Lights in order in which FBXReader put it there (read order), but
+	for some application logic we need specific order of Light type, e.g. Directional at first. It because some some Renders
+	like SSAO and Shadow renders assume that Directional light in 0-slot. Scene builder takes care about this order.
+	*/
+	std::vector<LightCPU>& lObjectManagersLigths = m_objectManager->getLights();
+	int lLightsCount = lObjectManagersLigths.size();
+	for (int lt = 0; lt < LightType::lightCount; lt++)
+	{
+		for (int i = 0; i < lLightsCount; i++)
+		{
+			if (lObjectManagersLigths[i].lightType == lt)
+				m_lights.push_back(lObjectManagersLigths[i]);
+		}
+	}
 		
 	InitLayers();
 	buildOctree();
@@ -150,8 +164,8 @@ void Scene::update()
 			m_Layers[i].update();
 		
 		// Looking at Octree's bounding boxes through ViewFrustum, mark required Instances are selected. Really copy will be in TechDemo::update_objectCB() function
-		m_octree->selector.LOD0_distance = 30; //30
-		m_octree->selector.LOD1_distance = 80; //80
+		m_octree->selector.LOD0_distance = 15; //30
+		m_octree->selector.LOD1_distance = 50; //80
 		m_octree->selector.SelectorPostition = m_camera->getPosition();
 		m_octree->update(m_camera->getFrustomBoundingCameraWorld(0));
 	}
@@ -164,6 +178,7 @@ void Scene::updateLight(float time)
 {
 	if (!m_lightAnimation) return;
 
+	bool lIsNight = false;
 	for (int i = 0; i < m_lights.size(); i++)
 	{
 		if (m_skeletonManager->isExistSkeletonNodeAnimated(m_lights[i].Name))
@@ -174,17 +189,86 @@ void Scene::updateLight(float time)
 			XMMATRIX lLcTr = DirectX::XMLoadFloat4x4(&lFinalMatrix);
 			if (XMMatrixIsIdentity(lLcTr)) continue;
 
-			DirectX::XMVECTOR lPos = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-			DirectX::XMVECTOR lLook = XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f);
-			
+			DirectX::XMVECTOR lPos = XMVectorSet(0.2f, 0.2f, 0.2f, 1.0f);
+			DirectX::XMVECTOR lLightDirection = XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f);
+
 			lPos = XMVector3Transform(lPos, lLcTr);
-			lLook = XMVector3Normalize(XMVector3TransformNormal(lLook, lLcTr));
+			lLightDirection = XMVector3Normalize(XMVector3TransformNormal(lLightDirection, lLcTr));
 
 			XMStoreFloat3(&m_lights[i].Position, lPos);
-			XMStoreFloat3(&m_lights[i].Direction, lLook);
-			XMStoreFloat3(&m_lights[i].initDirection, lLook);
+			XMStoreFloat3(&m_lights[i].Direction, lLightDirection);
+			XMStoreFloat3(&m_lights[i].initDirection, lLightDirection);
+
+			if (m_lights[i].lightType == LightType::Directional)
+			{
+				DirectX::XMVECTOR lWorldDown = XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f);
+				float cosA = XMVectorGetX(DirectX::XMVector3Dot(lWorldDown, lLightDirection));
+
+				float lSaturateVal = min(max(cosA, 0.0f), 1.0f);
+				float lLightIntensity = lSaturateVal;
+				m_lights[i].Intensity = lLightIntensity;
+
+				float lRed = m_lights[i].bkColor.x;
+				float lGreen = m_lights[i].bkColor.y;
+				float lBlue = m_lights[i].bkColor.z;
+
+				if (m_isAfternoon)
+				{
+					XMFLOAT3 lDeclineColor = XMFLOAT3(1.0f, 0.4f, 0.6f);
+					//XMFLOAT3 lDeclineColor = XMFLOAT3(1.0f, 0.0f, 0.0f);
+
+					float lRedDiff = m_lights[i].bkColor.x - lDeclineColor.x;
+					float lGreenDiff = m_lights[i].bkColor.y - lDeclineColor.y;
+					float lBlueDiff = m_lights[i].bkColor.z - lDeclineColor.z;
+
+					lRed -= lRedDiff * (1 - cosA) * (1 - cosA);
+					lGreen -= lGreenDiff * (1 - cosA) * (1 - cosA);
+					lBlue -= lBlueDiff * (1 - cosA) * (1 - cosA);
+				}				
+
+				//m_lights[i].Color = XMFLOAT3(lRed, lGreen, lBlue);
+
+				if (cosA < 0.25f) // >75 grad
+				{
+					lIsNight = true;						
+				}
+				else
+				{
+					lIsNight = false;					
+				}
+
+				if (cosA < 0.01f) 
+				{
+					m_isAfternoon = false;
+					m_prevCosA = 0;
+				}
+
+				if (!lIsNight && !m_isAfternoon)
+				{
+					if (cosA >= m_prevCosA)
+						m_prevCosA = cosA;
+					else
+						m_isAfternoon = true;
+				}
+					
+			}
 		}
 	}
+
+	for (int i = 0; i < m_lights.size(); i++)
+	{
+		if (m_lights[i].lightType == LightType::Point)
+		{
+			if (lIsNight)
+			{
+				m_lights[i].Intensity = 0.5f + 0.2f * (float)rand() / (float)RAND_MAX;
+				m_lights[i].turnOn = true;
+			}
+			else
+				m_lights[i].turnOn = false;
+		}
+	}
+
 }
 
 bool Scene::isInstancesDataUpdateRequred()
@@ -197,7 +281,7 @@ void Scene::cameraListener()
 	m_doesItNeedUpdate = true;
 }
 
-const std::vector<CPULight>& Scene::getLights()
+const std::vector<LightCPU>& Scene::getLights()
 {
 	if (m_lights.size() == 0) //if we do not have any light, lets add default one
 	{
@@ -212,7 +296,7 @@ const std::vector<CPULight>& Scene::getLights()
 		pos = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 		direction = DirectX::XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f);
 
-		CPULight tmpLight = {};
+		LightCPU tmpLight = {};
 		tmpLight.lightType = LightType::Directional;
 		tmpLight.mPhi = 0;
 		tmpLight.mTheta = 0;
@@ -222,7 +306,7 @@ const std::vector<CPULight>& Scene::getLights()
 		XMStoreFloat3(&tmpLight.initDirection, direction);
 		XMStoreFloat3(&tmpLight.Position, pos);
 
-		tmpLight.Strength = DirectX::XMFLOAT3(0.8f, 0.8f, 0.8f);
+		tmpLight.Color = DirectX::XMFLOAT3(0.8f, 0.8f, 0.8f);
 
 		tmpLight.spotPower = 4;
 		tmpLight.falloffStart = 1;

@@ -40,7 +40,7 @@ void ComputeRender::build(int ObjectID)
 		UINT lWidth = lpMaterial->WaterV2_Width;
 		UINT lHeight = lpMaterial->WaterV2_Height;
 		
-		m_width = lWidth;
+		m_width = lWidth; 
 		m_height = lHeight;
 		m_textureID = lpMaterial->DiffuseColorTextureIDs[0];
 
@@ -173,8 +173,8 @@ void ComputeRender::draw(int flags)
 
 		if (m_drop)
 		{
-			lXPos = (double)rand() / (RAND_MAX + 1) * m_width;
-			lYPos = (double)rand() / (RAND_MAX + 1) * m_height;
+			lXPos = (double)rand() / (RAND_MAX + 1.0f) * m_width;
+			lYPos = (double)rand() / (RAND_MAX + 1.0f) * m_height;
 			//lXPos = (double)rand() / (RAND_MAX + 1) * 10 + m_width/2;
 			//lYPos = (double)rand() / (RAND_MAX + 1) * 10;
 			lMagnitude = (double) rand() / (RAND_MAX + 1) * 50 + 10;

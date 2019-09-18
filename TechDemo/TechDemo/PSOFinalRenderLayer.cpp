@@ -135,8 +135,7 @@ void PSOFinalRenderLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, D
 	psoDescLayer4.GS = { reinterpret_cast<BYTE*>(m_shaders["gs_gs"]->GetBufferPointer()), m_shaders["gs_gs"]->GetBufferSize() };
 	psoDescLayer4.HS = { reinterpret_cast<BYTE*>(m_shaders["hs_gs"]->GetBufferPointer()), m_shaders["hs_gs"]->GetBufferSize() };
 	psoDescLayer4.DS = { reinterpret_cast<BYTE*>(m_shaders["ds_gs"]->GetBufferPointer()), m_shaders["ds_gs"]->GetBufferSize() };
-	psoDescLayer4.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
-//	psoDescLayer4.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+	psoDescLayer4.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;		
 	
 	// PSO for Layer_5: The Sky Cube map object: [SKY]
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer5 = buildCommonPSODescription();
@@ -144,8 +143,7 @@ void PSOFinalRenderLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, D
 	psoDescLayer5.VS = { reinterpret_cast<BYTE*>(m_shaders["vs_sky"]->GetBufferPointer()), m_shaders["vs_sky"]->GetBufferSize() };
 	psoDescLayer5.PS = { reinterpret_cast<BYTE*>(m_shaders["ps_sky"]->GetBufferPointer()), m_shaders["ps_sky"]->GetBufferSize() };
 	psoDescLayer5.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_EQUAL; // =1 - Far side
-	psoDescLayer5.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
-	//psoDescLayer5.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+	psoDescLayer5.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;	
 
 	// PSO for Layer_6: Not Opaque with Compute Shader objects: [NOTOPAQUELAYERCH]
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer6 = buildCommonPSODescription();
@@ -157,8 +155,7 @@ void PSOFinalRenderLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, D
 	psoDescLayer6.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
 	psoDescLayer6.DepthStencilState.StencilEnable = true; // Turn Stenciling on
 	psoDescLayer6.DepthStencilState.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS;
-	psoDescLayer6.DepthStencilState.FrontFace.StencilPassOp = D3D12_STENCIL_OP_INCR; // If we pass stencil and depth, just ++ stancil value in buffer
-
+	psoDescLayer6.DepthStencilState.FrontFace.StencilPassOp = D3D12_STENCIL_OP_REPLACE; // If we pass stencil and depth, we set stencil to StencilRef Value (=1)
 	//psoDescLayer6.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
 
 	// Create PSO objects

@@ -72,7 +72,7 @@ enum LightType : unsigned int {
 	lightCount
 };
 
-struct CPULight
+struct LightCPU
 {
 	// Struct for using to manipulate Light on CPU (move it, rotate, change Light parametrs). 
 	// Data from this struct will copy to RenderItem - Light (to set position and directioanl) and
@@ -90,12 +90,14 @@ struct CPULight
 	float posPhi;
 	float posTheta;
 
-	DirectX::XMFLOAT3 Strength;
+
+	DirectX::XMFLOAT3 bkColor;
+	DirectX::XMFLOAT3 Color;
 	DirectX::XMFLOAT3 Position;
 	DirectX::XMFLOAT3 Direction;
 	DirectX::XMFLOAT3 ReflectDirection;
 	DirectX::XMFLOAT3 initDirection;
-
+	float Intensity;
 	float falloffStart;
 	float falloffEnd;
 	float spotPower;

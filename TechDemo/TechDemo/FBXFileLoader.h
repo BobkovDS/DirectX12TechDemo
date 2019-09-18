@@ -42,9 +42,11 @@ struct fbx_Material {
 	float Roughness = 0.1f;
 	DirectX::XMFLOAT4X4 MatTransform;
 	std::vector<std::pair<std::string, std::string>> TexturesNameByType; //<texture_type, texture_name>
-	float WaterV2_Width;
-	float WaterV2_Height;
-	float WaterV2_BlocksCountX;
+	float WaterV2_Width_inMeter;
+	float WaterV2_Height_inMeter;
+	UINT WaterV2_Width_inVertexCount;
+	UINT WaterV2_Height_inVertexCount;
+	UINT WaterV2_BlocksCountX;
 	float WaterV2_Velocity;
 	float WaterV2_TimeInterval;
 	float WaterV2_Viscosity;

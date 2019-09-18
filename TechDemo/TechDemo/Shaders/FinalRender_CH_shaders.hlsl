@@ -5,11 +5,9 @@
 
 [RootSignature(rootSignatureC1)]
 VertexOut VS(VertexIn vin, uint instID : SV_InstanceID)
-{
-    
+{    
     VertexOut vout;
-
-    //uint shapeID = gDrawInstancesIDData[instID + gInstancesOffset]; 
+    
     uint shapeID = instID + gInstancesOffset;
     InstanceData instData = gInstanceData[shapeID];
     MaterialData material = gMaterialData[instData.MaterialIndex];
@@ -32,13 +30,10 @@ VertexOut VS(VertexIn vin, uint instID : SV_InstanceID)
     // Transform to homogeneous clip space.    
     vout.PosH = mul(posW, ViewProj);
     vout.NormalW = mul((float3x3) wordMatrix, ltextValue.yzw);
-    vout.UVText = vin.UVText;
-    //vout.UVText = float2(vin.UVText.x / 500.0f, vin.UVText.y / 500.0f);
+    vout.UVText = vin.UVText;    
 
-    float3 tangentNU = vin.TangentU; //   normalize(vin.TangentU - dot(vin.TangentU, vin.Normal));
-    vout.TangentW = float4(mul((float3x3) wordMatrix, tangentNU), 0.0f);
-   
-   // vout.UVTextProj = mul(orthogProj, T);
+    float3 tangentNU = vin.TangentU; 
+    vout.TangentW = float4(mul((float3x3) wordMatrix, tangentNU), 0.0f);      
     vout.SSAOPosH = mul(posW, cbPass.ViewProjT);
     vout.ShapeID = shapeID;
     
@@ -47,8 +42,7 @@ VertexOut VS(VertexIn vin, uint instID : SV_InstanceID)
 
 float4 PS(VertexOut pin) : SV_Target
 {
-    pin.NormalW = normalize(pin.NormalW);
-    //return float4(pin.NormalW, 1.0f);
+    pin.NormalW = normalize(pin.NormalW);    
     
     float3 toEyeW = cbPass.EyePosW - pin.PosW;
     float distToEye = length(toEyeW);
@@ -61,11 +55,7 @@ float4 PS(VertexOut pin) : SV_Target
     
     float3 Normal = pin.NormalW;
     float diffuseTranspFactor = 1.0f;
-   
-    // Diffuse Color
-    ///if ((material.textureFlags & 0x01)) diffuseAlbedo = gDiffuseMap[material.DiffuseMapIndex[0]].Sample(gsamPointWrap, pin.UVText);
-
-    //return diffuseAlbedo;
+        
     diffuseTranspFactor = diffuseAlbedo.a;
        
     // Get Normal
@@ -80,7 +70,7 @@ float4 PS(VertexOut pin) : SV_Target
 
     // Get Alpha value
     if ((material.textureFlags & 0x10))        
-        diffuseTranspFactor = gDiffuseMap[material.DiffuseMapIndex[4]].Sample(gsamPointWrap, pin.UVText);
+        diffuseTranspFactor = gDiffuseMap[material.DiffuseMapIndex[4]].Sample(gsamPointWrap, pin.UVText).x;
     
     // Get SSAO factor
     float ssao_factor = 1.0f;
@@ -89,8 +79,7 @@ float4 PS(VertexOut pin) : SV_Target
         float2 lUV = pin.SSAOPosH.xy / pin.SSAOPosH.w;
         ssao_factor = gSSAOBlurMap.Sample(gsamPointWrap, lUV).r;
     }
-    
-    //return float4(ssao_factor, ssao_factor, ssao_factor, 1.0f);
+        
     float4 ambient = ssao_factor * cbPass.AmbientLight * diffuseAlbedo;
     
     const float shiness = 1.0f;//  -material.Roughness;
@@ -103,8 +92,7 @@ float4 PS(VertexOut pin) : SV_Target
     {
         float4 lShadowPosH = mul(float4(pin.PosW, 1.0f), cbPass.Lights[0].ViewProjT);
         shadow_depth = CalcShadowFactor(lShadowPosH, gShadowMap0, gsamShadow);
-    }
-   // return float4(shadow_depth, shadow_depth, shadow_depth, 1.0f);
+    }   
 
     //shadow_depth = 1.0f;
     float4 directLight = ComputeLighting(cbPass.Lights, matLight, pin.PosW, Normal, toEyeW, shadow_depth);
@@ -116,8 +104,7 @@ float4 PS(VertexOut pin) : SV_Target
     {
         float fogAmount = saturate((distToEye - cbPass.FogStart) / cbPass.FogRange);
         litColor = lerp(litColor, cbPass.FogColor, fogAmount);
-    }
-        
+    }        
        
     float3 r = reflect(-toEyeW, Normal);
     //float3 r = refract(-toEyeW, pin.NormalW, 0.9f);
@@ -129,4 +116,3 @@ float4 PS(VertexOut pin) : SV_Target
     litColor.a = 0.5f;
     return litColor;
 }
-

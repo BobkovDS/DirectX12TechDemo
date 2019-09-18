@@ -60,6 +60,8 @@ ID3D12Resource* ResourceManager::getTextureResource(UINT textureID)
 {
 	if (textureID < m_textures.size())
 		return m_textures[textureID].ResourceInDefaultHeap.Get();
+	else
+		return nullptr;
 }
 
 MaterialCPU* ResourceManager::getMaterial(UINT i)

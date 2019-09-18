@@ -36,7 +36,8 @@ void GS_VN(point GeometryIn inputVertex[1], inout LineStream<GeometryOut> output
     float lOffset = 0.2;
 
     GeometryIn p1 = inputVertex[0];
-    GeometryIn p2 = p1;
+    GeometryIn p2 = p1;   
+
     p2.PosL = p1.PosL + lOffset * p1.Normal;
 
     PutVertexOut2(p1, outputLines);

@@ -64,7 +64,7 @@ void PSOShadowLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, DXGI_F
 	psoDescLayer0.PS = { reinterpret_cast<BYTE*>(m_shaders["ps"]->GetBufferPointer()), m_shaders["ps"]->GetBufferSize() };
 	psoDescLayer0.RTVFormats[0] = DXGI_FORMAT_UNKNOWN;
 	psoDescLayer0.NumRenderTargets = 0;
-	psoDescLayer0.RasterizerState.DepthBias = 100000;
+	psoDescLayer0.RasterizerState.DepthBias = 50000; //100000;
 	psoDescLayer0.RasterizerState.DepthBiasClamp = 0.0f;
 	psoDescLayer0.RasterizerState.SlopeScaledDepthBias = 1.0f;
 

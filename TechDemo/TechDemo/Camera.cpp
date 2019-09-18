@@ -428,8 +428,8 @@ void PerspectiveCameraLens::setLens(float fovY, float aspect, float zn, float zf
 	m_nearZ = zn;
 	m_farZ = zf;
 
-	m_nearWindowHeight = 2.0f * m_nearZ * tanf(0.5*m_fovY);
-	m_farWindowHeight = 2.0f * m_farZ * tanf(0.5*m_fovY);
+	m_nearWindowHeight = 2.0f * m_nearZ * tanf(0.5f*m_fovY);
+	m_farWindowHeight = 2.0f * m_farZ * tanf(0.5f*m_fovY);
 
 	XMMATRIX P = XMMatrixPerspectiveFovLH(m_fovY, m_aspect, m_nearZ, m_farZ);
 	XMStoreFloat4x4(&m_projectionMatrix, P);

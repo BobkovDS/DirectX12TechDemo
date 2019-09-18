@@ -385,9 +385,6 @@
     <FxCompile Include="Shaders\SkinnedCommonPart.hlsl">
       <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\FinalRender_LOD_shaders.hlsl">
-      <Filter>Resource Files\Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shaders\FinalRender_GH_shaders.hlsl">
       <Filter>Resource Files\Shaders</Filter>
     </FxCompile>

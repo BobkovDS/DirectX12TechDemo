@@ -134,6 +134,8 @@ void FinalRender::draw(int flags)
 	m_cmdList->SetGraphicsRootDescriptorTable(6, m_techSRVHandle); // Technical SRV (CubeMap ViewNormal, SSAO maps and etc)
 	m_cmdList->SetGraphicsRootDescriptorTable(7, m_textureSRVHandle); // Textures SRV
 	
+	m_cmdList->OMSetStencilRef(1);
+
 	//--- draw calls	
 	m_trianglesDrawnCount = 0;
 	m_trianglesCountIfWithoutLOD = 0;
@@ -142,75 +144,7 @@ void FinalRender::draw(int flags)
 	int lInstanceOffset = 0;
 	for (int i = 0; i < m_scene->getLayersCount(); i++) // Draw all Layers	
 		draw_layer(i, lInstanceOffset, lcLayerWhichMayBeDrawn & (1 << i));
-	
-	/* //TO_DO: Delete this
-
-	//--- draw calls	
-	m_trianglesDrawnCount = 0;
-	m_trianglesCountIfWithoutLOD = 0;
-	m_trianglesCountInScene = 0;
-	int lInstanceOffset = 0;
-	for (int i = 0; i < m_scene->getLayersCount(); i++) // Draw all Layers
-	{
-		Scene::SceneLayer* lObjectLayer = nullptr;
-		lObjectLayer = m_scene->getLayer(i);
-
-		if (lObjectLayer->isLayerVisible()) // Draw Layer if it visible
-		{
-			m_cmdList->SetPipelineState(m_psoLayer.getPSO(i)); // Here we change shaders. As we have the one RootSignauture for Render, so Root areguments are not reset when we set new PSO
-
-			//int lInstanceOffset = m_scene->getLayerInstanceOffset(i); // How many Instances were on prev layers
-						
-			for (int ri = 0; ri < lObjectLayer->getSceneObjectCount(); ri++) // One layer has several RenderItems
-			{		
-				Scene::SceneLayer::SceneLayerObject* lSceneObject = lObjectLayer->getSceneObject(ri);
-							   				
-				int lInstancesCount = lSceneObject->getInstancesCountLOD(); // How much instances for this RenderItem we should draw
-				if (lInstancesCount == 0) continue;
-				
-				UINT lInstancesForThisMesh = 0; // How much instances for this Mesh have been drawn (without LOD difference)
-				const RenderItem* lRI= lSceneObject->getObjectMesh();
-				
-				for (int lod_id = 0; lod_id < LODCOUNT; lod_id++)
-				{					
-
-					UINT lInstanceCountByLODLevel = lSceneObject->getInstancesCountLOD_byLevel(lod_id);
-					if (lInstanceCountByLODLevel == 0) continue;
-
-					lInstancesForThisMesh += lInstanceCountByLODLevel;
-					Mesh* lMesh = lRI->LODGeometry[lod_id];
-					
-					m_trianglesDrawnCount += lRI->LODTrianglesCount[lod_id] * lInstanceCountByLODLevel;
-					if (lMesh == NULL)
-					{
-						lMesh = lRI->Geometry; // we do not have LOD meshes for this RI
-						lod_id = LODCOUNT; // so lets draw it only once
-					}
-
-					auto drawArg = lMesh->DrawArgs[lMesh->Name];
-					 
-					m_cmdList->IASetVertexBuffers(0, 1, &lMesh->vertexBufferView());
-					m_cmdList->IASetIndexBuffer(&lMesh->indexBufferView());
-
-					m_cmdList->SetGraphicsRoot32BitConstant(0, lInstanceOffset, 0); // Instances offset for current layer objects
-
-					if (i != 5)
-						m_cmdList->IASetPrimitiveTopology(lMesh->PrimitiveType);
-					else
-						m_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_4_CONTROL_POINT_PATCHLIST);
-
-					m_cmdList->DrawIndexedInstanced(drawArg.IndexCount, lInstanceCountByLODLevel, drawArg.StartIndexLocation, 0, 0);
-
-					lInstanceOffset += lInstanceCountByLODLevel;
-				}
-
-				m_trianglesCountIfWithoutLOD += lRI->LODTrianglesCount[0] * lInstancesForThisMesh;
-				m_trianglesCountInScene += lRI->LODTrianglesCount[0] * lRI->Instances.size();				
-			}
-		}
-	}
-
-	*/
+		
 	//-----------------------
 	m_cmdList->ResourceBarrier(1,
 		&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),

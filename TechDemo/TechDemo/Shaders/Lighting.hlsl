@@ -29,16 +29,7 @@ float CalcAttenuation(float d, float falloffStart, float falloffEnd)
 {
 	float result = saturate((falloffEnd - d) / (falloffEnd - falloffStart));
 
-	return result;	
-	
-	if (result<=0 )result = 0.2f;
-		else if ((result>0.0f) && (result<=0.4f)) result = 0.4f;
-		else if ((result>0.4f) && (result<=0.6f)) result = 0.6f;
-		else if ((result>0.6f) && (result<=0.8f)) result = 0.8f;
-		else if ((result>0.8f) && (result<=1.0f)) result = 1;
-				
-	return result;	
-	
+	return result;		
 }
 
 float3 SchlickFresnel(float3 R0, float3 normal, float3 lightVec)
@@ -191,7 +182,8 @@ float CalcShadowFactor(float4 shadowPosH, Texture2D shadowMap, SamplerComparison
     for (int i = 0; i < 9; ++i)
     {
         percentLit += shadowMap.SampleCmpLevelZero(gsamShadow, shadowPosH.xy + offset[i], depth).r;
-    }
+        //percentLit += shadowMap.SampleCmp(gsamShadow, shadowPosH.xy + offset[i], depth).r;
+    }   
 
-    return (percentLit / 9); // * spot_factor
+    return (percentLit / 9.0f); // * spot_factor
 }

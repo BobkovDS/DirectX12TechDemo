@@ -9,7 +9,7 @@
 [RootSignature(rootSignatureC1)]
 VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID) 
 {   
-	VertexOut vout;
+    VertexOut vout;
     
     uint shapeID = instID + gInstancesOffset; 
     InstanceData instData = gInstanceData[shapeID];
@@ -36,11 +36,10 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
     return vout;
 }
 
-
 float4 PS(VertexOut pin) : SV_Target
 {       
     pin.NormalW = normalize(pin.NormalW);
-   // return float4(pin.NormalW, 1.0f);
+    //return float4(pin.NormalW, 1.0f);
 
     float3 toEyeW = cbPass.EyePosW - pin.PosW;
     float distToEye = length(toEyeW);
@@ -50,33 +49,28 @@ float4 PS(VertexOut pin) : SV_Target
     MaterialData material = gMaterialData[instData.MaterialIndex];
     
     float4 diffuseAlbedo = material.DiffuseAlbedo;
-    
-    float3 Normal = pin.NormalW;
-    float diffuseTranspFactor = 1.0f;
-   
+
+    float3 Normal = pin.NormalW;    
     // Diffuse Color
     if ((material.textureFlags & 0x01))
         diffuseAlbedo = gDiffuseMap[material.DiffuseMapIndex[0]].Sample(gsamPointWrap, pin.UVText);        
 
-    //return diffuseAlbedo;
-    diffuseTranspFactor = diffuseAlbedo.a;
+    float diffuseTranspFactor = diffuseAlbedo.a;
        
     // Get Normal
     if ((gTechFlags & (1 << RTB_NORMALMAPPING)) > 0)    
     {
         if ((material.textureFlags & 0x04))
         {
-            float4 readNormal = gDiffuseMap[material.DiffuseMapIndex[2]].Sample(gsamPointWrap, pin.UVText);     
-            //return readNormal;
+            float4 readNormal = gDiffuseMap[material.DiffuseMapIndex[2]].Sample(gsamPointWrap, pin.UVText);                 
             Normal = NormalSampleToWorldSpace(readNormal.xyz, Normal, pin.TangentW);
             //return float4(Normal, 1.0f);
         }
     }
-
-    //return float4(Normal, 1.0f);
+    
     // Get Alpha value
     if ((material.textureFlags & 0x10))        
-        diffuseTranspFactor = gDiffuseMap[material.DiffuseMapIndex[4]].Sample(gsamPointWrap, pin.UVText);        
+        diffuseTranspFactor = gDiffuseMap[material.DiffuseMapIndex[4]].Sample(gsamPointWrap, pin.UVText).x;        
     
     // Get SSAO factor
     float ssao_factor = 1.0f;
@@ -91,7 +85,7 @@ float4 PS(VertexOut pin) : SV_Target
        
     const float shiness = 1.0f - material.Roughness;    
     //material.FresnelR0 = float3(0.02f, 0.02f, 0.02f);
-    //material.FresnelR0 = float3(0.05f, 0.05f, 0.05f);
+    
     MaterialLight matLight = { diffuseAlbedo, material.FresnelR0, shiness };
         
     float shadow_depth = 1.0f;   
@@ -99,10 +93,8 @@ float4 PS(VertexOut pin) : SV_Target
     {
         float4 lShadowPosH = mul(float4(pin.PosW, 1.0f), cbPass.Lights[0].ViewProjT);        
         shadow_depth = CalcShadowFactor(lShadowPosH, gShadowMap0, gsamShadow);
-    }
-   // return float4(shadow_depth, shadow_depth, shadow_depth, 1.0f);
-
-    //shadow_depth = 1.0f;
+    }   
+    
     float4 directLight = ComputeLighting(cbPass.Lights, matLight, pin.PosW, Normal, toEyeW, shadow_depth);
 
     float4 litColor = directLight + ambient;
@@ -121,8 +113,8 @@ float4 PS(VertexOut pin) : SV_Target
 
     litColor.a = diffuseTranspFactor;
 
-#ifdef MIRBLEND
-    litColor.a = MIRBLEND;
+#ifdef MIRBLEND // in a mirror reflection we use next calculated Aplha value (to avoid const Aplha value for Transparent objects)
+    litColor.a = litColor.a - MIRBLEND;
 #endif
 
 	return litColor;

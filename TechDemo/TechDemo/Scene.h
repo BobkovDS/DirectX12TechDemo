@@ -19,7 +19,7 @@ class Scene
 	Camera* m_camera;
 	Octree* m_octree;	
 
-	std::vector<CPULight> m_lights; //lights in the scene
+	std::vector<LightCPU> m_lights; //lights in the scene
 	DirectX::BoundingSphere m_sceneBS; // scene bounding sphere  TO_DO: Delete
 	DirectX::BoundingSphere m_sceneBSShadow; // scene bounding sphere for creation Sun-light Ortho Frustom 
 	BoundingMath::BoundingBox m_sceneBB;
@@ -31,10 +31,13 @@ class Scene
 	bool m_lightAnimation;
 	bool m_octreeCullingMode;
 	int m_instancesDataReadTimes; // How many times we need provide Instances Data for FrameResource Manager;
-	int m_instancesToDraw; // How many Instances are "visible" in this Scene
-		
+	int m_instancesToDraw; // How many Instances are "visible" in this Scene		
+	
 	void buildOctree();
-
+	
+	//some for visualization drawing logic 
+	bool m_isAfternoon;
+	float m_prevCosA;
 public:
 	static UINT ContainsCount;
 	class SceneLayer
@@ -58,10 +61,10 @@ public:
 			void getInstances(std::vector<const InstanceDataGPU*>& out_Instances, 
 				std::vector<UINT>& out_DrawInstancesID, UINT InstancesPerPrevLayer);			
 			void getInstances(std::vector<const InstanceDataGPU*>& out_Instances, UINT& instancesCount);
-			UINT getInstancesCount() { return m_mesh->Instances.size(); }
+			UINT getInstancesCount() { return (UINT) m_mesh->Instances.size(); }
 			inline UINT getInstancesCountLOD();
 			inline UINT getInstancesCountLOD_byLevel(UINT levelID);
-			UINT getDrawInstancesIDCount() { return m_drawInstancesID.size(); }
+			UINT getDrawInstancesIDCount() { return (UINT) m_drawInstancesID.size(); }
 			void clearInstances();
 			void clearInstancesLODSize();
 			void init(RenderItem* RI);
@@ -106,7 +109,7 @@ public:
 	std::vector<UINT>& getDrawInstancesID();
 	
 
-	const std::vector<CPULight>& getLights();
+	const std::vector<LightCPU>& getLights();
 	const BoundingMath::BoundingBox& getSceneBB() { return m_sceneBB; }	
 	const DirectX::BoundingSphere& getSceneBS() { return m_sceneBS; } // TO_DO: Delete
 	const DirectX::BoundingSphere& getSceneBSShadow() { return m_sceneBSShadow; }

@@ -24,7 +24,7 @@ void PSOMirrorLayer::buildShadersBlob()
 	string fullFileNameSky = basedir + shaderNameSky;
 	string skinnedFullFileName = basedir + skinedShaderName;
 	
-	D3D_SHADER_MACRO lShadersDefinitions[] = { "MIRBLEND", "0.3f" , NULL, NULL };
+	D3D_SHADER_MACRO lShadersDefinitions[] = { "MIRBLEND", "0.6f" , NULL, NULL };
 
 	string shaderType = "none";
 	try
@@ -89,11 +89,12 @@ void PSOMirrorLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, DXGI_F
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer0 = buildCommonPSODescription();
 	psoDescLayer0.InputLayout = { m_inputLayout[ILV1].data(), (UINT)m_inputLayout[ILV1].size() };
 	psoDescLayer0.VS = { reinterpret_cast<BYTE*>(m_shaders["vs"]->GetBufferPointer()), m_shaders["vs"]->GetBufferSize() };
-	psoDescLayer0.PS = { reinterpret_cast<BYTE*>(m_shaders["ps"]->GetBufferPointer()), m_shaders["ps"]->GetBufferSize() };
-	//psoDescLayer0.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_GREATER_EQUAL;
+	psoDescLayer0.PS = { reinterpret_cast<BYTE*>(m_shaders["ps"]->GetBufferPointer()), m_shaders["ps"]->GetBufferSize() };	
 	psoDescLayer0.BlendState = CD3DX12_BLEND_DESC(blend_desc);
 	psoDescLayer0.DepthStencilState.StencilEnable = true; // Turn Stenciling on
-	psoDescLayer0.DepthStencilState.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL; // to pass it should be = 0		
+	psoDescLayer0.DepthStencilState.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL; // to pass it should be = 1		
+	//psoDescLayer0.DepthStencilState.FrontFace.StencilPassOp = D3D12_STENCIL_OP_INCR; // 
+
 	psoDescLayer0.RasterizerState.FrontCounterClockwise = true;
 
 	if (m_shaders.find("gs") != m_shaders.end())
@@ -112,7 +113,8 @@ void PSOMirrorLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, DXGI_F
 	psoDescLayer2.PS = { reinterpret_cast<BYTE*>(m_shaders["ps_skinned"]->GetBufferPointer()), m_shaders["ps_skinned"]->GetBufferSize() };
 	psoDescLayer2.BlendState = CD3DX12_BLEND_DESC(blend_desc);
 	psoDescLayer2.DepthStencilState.StencilEnable = true; // Turn Stenciling on
-	psoDescLayer2.DepthStencilState.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL; // to pass it should be = 0	
+	psoDescLayer2.DepthStencilState.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL; // to pass it should be = 1	
+	//psoDescLayer2.DepthStencilState.FrontFace.StencilPassOp = D3D12_STENCIL_OP_INCR;  
 	psoDescLayer2.RasterizerState.FrontCounterClockwise = true;
 
 	// PSO for Layer_3: Skinned Not Opaque objects: [SKINNEDNOTOPAQUELAYER]
@@ -132,8 +134,7 @@ void PSOMirrorLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, DXGI_F
 	psoDescLayer5.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 	psoDescLayer5.DepthStencilState.StencilEnable = true; // Turn Stenciling on
 	psoDescLayer5.DepthStencilState.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL; // to pass it should be = 1	
-	psoDescLayer5.RasterizerState.FrontCounterClockwise = true;
-	//psoDescLayer5.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+	psoDescLayer5.RasterizerState.FrontCounterClockwise = true;	
 
 	// PSO for Layer_6: Not Opaque with Compute Shader objects: [NOTOPAQUELAYERCH]
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer6 = buildCommonPSODescription();
@@ -141,16 +142,8 @@ void PSOMirrorLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, DXGI_F
 	psoDescLayer6.VS = { reinterpret_cast<BYTE*>(m_shaders["vs_cs"]->GetBufferPointer()), m_shaders["vs_cs"]->GetBufferSize() };
 	psoDescLayer6.PS = { reinterpret_cast<BYTE*>(m_shaders["ps_cs"]->GetBufferPointer()), m_shaders["ps_cs"]->GetBufferSize() };
 	psoDescLayer6.BlendState = CD3DX12_BLEND_DESC(blend_desc);
-	psoDescLayer6.DepthStencilState.StencilEnable = true; // Turn Stenciling on
-	psoDescLayer6.DepthStencilState.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL; // to pass it should be = 1	
-	//psoDescLayer6.RasterizerState.FrontCounterClockwise = true;
-
-	//psoDescLayer6.BlendState.RenderTarget[0].RenderTargetWriteMask = 0; // No write data to back-buffer
-	//psoDescLayer6.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
-	//psoDescLayer6.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
-	//psoDescLayer6.DepthStencilState.StencilEnable = true; // Turn Stenciling on
-	//psoDescLayer6.DepthStencilState.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS;
-	//psoDescLayer6.DepthStencilState.FrontFace.StencilPassOp = D3D12_STENCIL_OP_INCR; // If we pass stencil and depth, just ++ stancil value in buffer
+	psoDescLayer6.DepthStencilState.StencilEnable = true; // Turn Stenciling on	
+	psoDescLayer6.DepthStencilState.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;; // to pass it should be = 1		
 
 	//psoDescLayer6.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
 

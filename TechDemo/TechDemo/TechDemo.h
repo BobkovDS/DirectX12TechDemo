@@ -9,6 +9,7 @@
 #include "RenderManager.h"
 #include "Camera.h"
 #include "LogoRender.h"
+#include <Thread>
 
 // How many Pass constant buffers we have
 #define PASSCONSTBUF_COUNT_MAIN 1
@@ -40,6 +41,7 @@ class TechDemo :
 	Camera* m_camera;
 	Camera m_camerasDCM[PASSCONSTBUF_COUNT_DCM]; // Cameras for DCM (Dynamic Cube Map buidling)
 	Timer m_animationTimer;
+	std::thread m_logoThread;
 	DirectX::XMFLOAT4 m_offsets[14];
 	UINT* m_drawInstancesIDs;
 

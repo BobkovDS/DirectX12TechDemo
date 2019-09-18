@@ -3,9 +3,6 @@
 #include "commonPart.hlsl"
 #include "RootSignature.hlsl"
 
-
-//int instID : SV_INSTANCEID
-
 [RootSignature(rootSignatureC1)]
 VertexIn VS(VertexIn vin)
 {
@@ -14,24 +11,27 @@ VertexIn VS(VertexIn vin)
 
 PatchTess ConstantHS(InputPatch<VertexIn, 4> patch, uint patchID : SV_PrimitiveID)
 {
-    float3 m = patch[3].PosL - patch[0].PosL;    
-    int lShapeID = gInstancesOffset + 0; // Now we use only one xxx_GH object, in other case we need to use SV_INSTANCEID in vertex shader
-    InstanceData instData = gInstanceData[lShapeID];
-
-    float4 posW = mul(float4(m, 1.0f), instData.World);
-    float3 toEyeW = cbPass.EyePosW - posW.xyz;
-    float distToEye = length(toEyeW);
-    
-    float koef = 1 - distToEye / 10;
     float tess = 4.0f;
-    if (distToEye > 10)
-        tess = 2;
-    else
-        tess = lerp(2, 62, koef);
     
+    //this is here kist to have a example how to calculate a tess koef for distance
+    {    
+        //float3 m = patch[3].PosL - patch[0].PosL;
+        //int lShapeID = gInstancesOffset + 0; // Now we use only one xxx_GH object, in other case we need to use SV_INSTANCEID in vertex shader
+        //InstanceData instData = gInstanceData[lShapeID];
+
+        //float4 posW = mul(float4(m, 1.0f), instData.World);
+        //float3 toEyeW = cbPass.EyePosW - posW.xyz;
+        //float distToEye = length(toEyeW);
+    
+        //float koef = 1 - distToEye / 10;        
+        //if (distToEye > 10)
+        //    tess = 2;
+        //else
+        //    tess = lerp(2, 62, koef);
+    }
     PatchTess pt;
     
-    tess = 60;
+    tess = 60; // 
     pt.EdgeTess[0] = tess;
     pt.EdgeTess[1] = tess;
     pt.EdgeTess[2] = tess;
@@ -119,20 +119,15 @@ GeometryOut DS(PatchTess patchTess, float2 uv : SV_DomainLocation, const OutputP
    
        
     float kf = 1.0f - heigh_low.w;
-    float hn = lerp(0.0f, 0.05f, kf); //
-    (1.0f - heigh_low.w); //
-    (1.0f - heigh_low.w) - 0.5;
-   // hn = clamp(hn, 0.0f, 0.1f);
+    float hn = lerp(0.0f, 0.05f, kf); 
     
-    float hnh = heigh_high.w;
-    //hnh = clamp(hnh, 0.0f, 0.5f);
+    float hnh = heigh_high.w;    
     
     p3.z += hn * 0.08 + 0.02 * hnh;
     p3.z -= 0.1;
     p3.z = hn;    
 
-     //get World transform
-    //float4 posW = mul(float4(p3, 1.0f), wordMatrix);
+     //get World transform    
     float4 posW = mul(wordMatrix, float4(p3, 1.0f));
     dout.PosW = posW.xyz;
 
@@ -161,8 +156,7 @@ void GS(triangle GeometryOut inputTrianglVertecis[3], inout TriangleStream<Geome
 
     Normal = -mul(worldM, float4(Normal, 1.0f)).xyz;
     Normal = normalize(Normal);
-    //Normal = -mul(float4(Normal, 1.0f), worldM).xyz;
-   // Normal = Normal * cos(cbPass.TotalTime);
+    
     p1.NormalW = Normal;
     p2.NormalW = Normal;
     p3.NormalW = Normal;
@@ -199,11 +193,8 @@ void GS(triangle GeometryOut inputTrianglVertecis[3], inout TriangleStream<Geome
 };
 
 float4 PS(GeometryOut pin) : SV_Target
-{
-  // return float4(1.0f, 1.0f, 1.0f, 0.5f);
-    pin.NormalW = normalize(pin.NormalW);
-
-    //return float4(pin.NormalW, 1.0f);
+{ 
+    pin.NormalW = normalize(pin.NormalW); 
 
     float3 toEyeW = cbPass.EyePosW - pin.PosW;
     float distToEye = length(toEyeW);
@@ -216,9 +207,7 @@ float4 PS(GeometryOut pin) : SV_Target
     diffuseAlbedo += float4(0.0f, 0.0f, -0.2f, -0.2f);
 
     float2 textC1 = updateUVLow(pin.UVText, instData.World);
-    //float2 textC2 = updateUVHigh(pin.UVText, instData.World);    
-
-    //float2 textC1 = pin.UVText;
+    
     float2 textC2 = pin.UVText;
     
     float3 normal1 = pin.NormalW;

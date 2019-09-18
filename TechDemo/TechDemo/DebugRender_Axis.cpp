@@ -101,7 +101,7 @@ void DebugRender_Axis::resize(UINT iwidth, UINT iheight)
 void DebugRender_Axis::buildAxisGeometry()
 {
 	float lLenght = 10.0f;
-	float lLabelSize = 0.3;
+	float lLabelSize = 0.3f;
 	DirectX::XMFLOAT3 lRedColor = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
 	DirectX::XMFLOAT3 lGreenColor = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
 	DirectX::XMFLOAT3 lBlueColor = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
@@ -184,7 +184,7 @@ void DebugRender_Axis::buildAxisGeometry()
 	m_axesMesh = std::make_unique<Mesh>();
 	SubMesh submesh = {};
 	m_axesMesh->Name = "Axes";
-	submesh.IndexCount = lIndices.size();
+	submesh.IndexCount = (UINT) lIndices.size();
 	m_axesMesh->DrawArgs[m_axesMesh->Name] = submesh;
 
 	Utilit3D::UploadMeshToDefaultBuffer<Mesh, VertexGPU, uint32_t>(m_axesMesh.get(), lVertices, lIndices);

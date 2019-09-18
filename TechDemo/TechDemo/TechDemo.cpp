@@ -16,6 +16,9 @@ TechDemo::TechDemo(HINSTANCE hInstance, const std::wstring& applName, int width,
 }
 TechDemo::~TechDemo()
 {
+	if (m_logoThread.native_handle())
+			m_logoThread.detach();
+
 	FlushCommandQueue();
 	if (m_defaultCamera)
 		delete m_camera;
@@ -39,7 +42,6 @@ void TechDemo::onMouseMove(WPARAM btnState, int x, int y)
 {
 	if (m_mouseDown)
 	{
-
 		//if CTRL
 		if (btnState == (MK_LBUTTON | MK_CONTROL))
 		{
@@ -200,46 +202,40 @@ void TechDemo::init3D()
 		ID3D12CommandList* cmdsList[] = { m_cmdList.Get() };
 		m_cmdQueue->ExecuteCommandLists(1, cmdsList);
 
-		FlushCommandQueue();
-
-		// Run logo render in another thread. It will use his own cmdQueue and cmdAllocator, and cmdList	
+		FlushCommandQueue();		
 	}		
-	std::thread lLogoThread(&LogoRender::work, &lLogoRender);
-	
-	// create_DSV has closed m_cmdList, lets open it again
+	// Run logo render in another thread. It will use his own cmdAllocator and cmdList	
+	//std::thread lLogoThread(&LogoRender::work, &lLogoRender);
+	//m_logoThread = std::move(lLogoThread); // If it will be some Exception raised, we need to be able to leave this scope with not detached thread
+
+	// Initialization of LogoRender has closed m_cmdList, lets open it again
 	res = m_cmdList->Reset(m_cmdAllocator.Get(), nullptr);
-	assert(SUCCEEDED(res));
+	assert(SUCCEEDED(res));	   	 	
 
 
-	//// Load Wolf with Animation
-	//{
-	//	FBXFileLoader m_fbx_loader;
-	//	m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
-	//	m_fbx_loader.loadSceneFile("Models\\Wolf.fbx");
-	//}
-
-	//{
-	//	FBXFileLoader m_fbx_loader;
-	//	m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
-	//	m_fbx_loader.loadSceneFile("Models\\Water3.fbx");
-	//}
-		
-	//Load a house
+	// Load a house
 	{
 		lLogoRender.addLine(L"Loading FBX file: Scene part 1");
 		FBXFileLoader m_fbx_loader;
 		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
-		m_fbx_loader.loadSceneFile("Models\\The Scene.fbx");		
-	}
-	
-
-	{
-		lLogoRender.addLine(L"Loading FBX file: Scene part 2");
-		FBXFileLoader m_fbx_loader;
-		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
-		m_fbx_loader.loadSceneFile("Models\\Landscape.fbx");
+		m_fbx_loader.loadSceneFile("Models\\input.fbx");
 	}
 
+	////// Load a house
+	//{
+	//	lLogoRender.addLine(L"Loading FBX file: Scene part 1");
+	//	FBXFileLoader m_fbx_loader;
+	//	m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
+	//	m_fbx_loader.loadSceneFile("Models\\The Scene.fbx");		
+	//}	
+
+	////// Load Landscape
+	//{
+	//	lLogoRender.addLine(L"Loading FBX file: Scene part 2");
+	//	FBXFileLoader m_fbx_loader;
+	//	m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
+	//	m_fbx_loader.loadSceneFile("Models\\Landscape.fbx");
+	//}
 	
 	// Load lights
 	{
@@ -247,8 +243,7 @@ void TechDemo::init3D()
 		FBXFileLoader m_fbx_loader;
 		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
 		m_fbx_loader.loadSceneFile("Models\\Lights.fbx");
-	}
-	
+	}	
 
 	// Load a Camera
 	{
@@ -287,8 +282,6 @@ void TechDemo::init3D()
 	m_frameResourceManager.Initialize(m_device.Get(), m_fence.Get(), m_objectManager.getCommonInstancesCount(),
 		PASSCONSTBUFCOUNT, SSAOCONSTBUFCOUNT, lBonesCount, MaxInstancesCount);
 	
-	//build_defaultCamera();
-
 	// Camera
 	if (m_objectManager.getCameras().size() == 0)
 		build_defaultCamera();	
@@ -309,8 +302,7 @@ void TechDemo::init3D()
 	ExecuterVoidVoid<Scene>* sceneCameraListener =
 		new ExecuterVoidVoid<Scene>(&m_scene, &Scene::cameraListener);
 	m_camera->addObserver(sceneCameraListener);
-	
-	//m_objectManager.mirrorZ();
+		
 	ApplLogger::getLogger().log("TechDemo::init3D()::Scene building...", 0);
 	lLogoRender.addLine(L"Scene building");
 	m_scene.build(&m_objectManager, m_camera, &m_skeletonManager);
@@ -388,8 +380,7 @@ void TechDemo::init3D()
 
 	m_animationTimer.tt_RunStop();
 
-	lLogoRender.exit();
-	lLogoThread.detach();
+	lLogoRender.exit();	
 
 	ApplLogger::getLogger().log("TechDemo::init3D() is done", 0);
 }
@@ -517,7 +508,7 @@ void TechDemo::update_passCB()
 	mMainPassCB.EyePosW = m_camera->getPosition3f();
 	mMainPassCB.TotalTime = m_animationTimer.totalTime();	
 
-	const std::vector<CPULight>& lights = m_scene.getLights();
+	const std::vector<LightCPU>& lights = m_scene.getLights();
 
 	// -- Find shadow box position and sise	
 	float lLenght = 38.0f;
@@ -539,21 +530,32 @@ void TechDemo::update_passCB()
 
 	XMStoreFloat3(&lcameraPos, lCameraPosv);	
 
+	
 	for (size_t i = 0; i < lights.size(); i++)
 	{
-		mMainPassCB.Lights[i].Direction = lights.at(i).Direction;
-		mMainPassCB.Lights[i].Strength = lights.at(i).Strength;
-		mMainPassCB.Lights[i].Position = lights.at(i).Position;
-		mMainPassCB.Lights[i].spotPower = lights.at(i).spotPower;
-		mMainPassCB.Lights[i].falloffStart = lights.at(i).falloffStart;
-		mMainPassCB.Lights[i].falloffEnd = lights.at(i).falloffEnd;
-		mMainPassCB.Lights[i].lightType = lights.at(i).lightType + 1; // 0 - is undefined type of light
-		mMainPassCB.Lights[i].turnOn = lights.at(i).turnOn;	
+		LightGPU& lLightGPU = mMainPassCB.Lights[i];
+		const LightCPU& lLightCPU = lights[i];
+		lLightGPU.Direction = lLightCPU.Direction;
+		
+		lLightGPU.Strength = XMFLOAT3(lLightCPU.Color.x * lLightCPU.Intensity, lLightCPU.Color.y * lLightCPU.Intensity, 
+			lLightCPU.Color.z * lLightCPU.Intensity);
+
+		lLightGPU.Position = lLightCPU.Position;
+		lLightGPU.spotPower = lLightCPU.spotPower;
+		lLightGPU.falloffStart = lLightCPU.falloffStart;
+		lLightGPU.falloffEnd = lLightCPU.falloffEnd;
+		lLightGPU.lightType = lLightCPU.lightType + 1; // 0 - is undefined type of light
+		lLightGPU.turnOn = lLightCPU.turnOn;
 
 		// build ViewProjT matrix for shadow technique
-		if (lights.at(i).lightType == LightType::Directional)
-			MathHelper::buildSunOrthoLightProjection(mMainPassCB.Lights[i].Direction, mMainPassCB.Lights[i].ViewProj,
-				mMainPassCB.Lights[i].ViewProjT, lcameraPos, lLenght);
+		if (lLightCPU.lightType == LightType::Directional)
+		{
+			MathHelper::buildSunOrthoLightProjection(lLightGPU.Direction, lLightGPU.ViewProj, lLightGPU.ViewProjT,
+				lcameraPos, lLenght);
+
+			float lAmbientColor = 0.2f + 0.3f * lLightCPU.Intensity;
+			//mMainPassCB.AmbientLight = { lAmbientColor, lAmbientColor, lAmbientColor, 1.0f };
+		}
 	}
 	
 	auto currPassCB = m_frameResourceManager.currentFR()->getPassCB();
@@ -658,9 +660,9 @@ void TechDemo::update_passSSAOCB()
 
 	float c = 4.0f;
 	float t = 0.029f;
-	float dx = 0.058f;// 3921568f;
+	float dx = 0.043f;
 	float mu = 0.2f;
-
+	//check limit values 
 	float c_max = dx * sqrtf(mu*t + 2) / (2 * t);
 	if (c >= c_max) c = c_max - 0.01f;
 

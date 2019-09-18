@@ -6,9 +6,8 @@
 [RootSignature(rootSignatureC1)]
 VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
 {
-	VertexOut vout;
-        
-    //uint shapeID = gDrawInstancesIDData[instID + gInstancesOffset];
+	VertexOut vout;       
+    
     uint shapeID = instID + gInstancesOffset;
     InstanceData instData = gInstanceData[shapeID];
     float4x4 wordMatrix = instData.World;
@@ -52,34 +51,18 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
     vout.PosH = mul(posW, ViewProj);   
     
     vout.NormalW = mul((float3x3) wordMatrix, vin.Normal );
-    float3 tangentNU = vin.TangentU;//   normalize(vin.TangentU - dot(vin.TangentU, vin.Normal));
-    vout.TangentW = float4(mul((float3x3) wordMatrix, tangentNU), 0.0f);
-    
-    vout.UVText = vin.UVText;
-
-    //// for projection
-    //matrix<float, 4, 4> T;
-    //T._11_12_13_14 = float4(0.5f, 0.0f, 0.0f, 0.0f);
-    //T._21_22_23_24 = float4(0.0f, -0.5f, 0.0f, 0.0f);
-    //T._31_32_33_34 = float4(0.0f, 0.0f, 1.0f, 0.0f);
-    //T._41_42_43_44 = float4(0.5f, 0.5f, 0.0f, 1.0f);
-
-    //vout.UVTextProj = mul(vout.PosH, T);
-
-    //float4 orthogProj = mul(posW, cbPass.MirWord);
-    //float4 SSAOProj = mul(posW, cbPass.ViewProj); 
-    //vout.UVTextProj = mul(orthogProj, T);
-    //vout.SSAOPosH = mul(SSAOProj, T);
+    float3 tangentNU = vin.TangentU;
+    vout.TangentW = float4(mul((float3x3) wordMatrix, tangentNU), 0.0f);    
+    vout.UVText = vin.UVText; 
     vout.SSAOPosH = mul(posW, cbPass.ViewProjT);
-
     vout.ShapeID = shapeID; 
     
     return vout;
 }
 
 float4 PS(VertexOut pin) : SV_Target
-{	
-    pin.NormalW = normalize(pin.NormalW);    
+{
+    pin.NormalW = normalize(pin.NormalW);
 
     float3 toEyeW = cbPass.EyePosW - pin.PosW;
     float distToEye = length(toEyeW);
@@ -96,62 +79,55 @@ float4 PS(VertexOut pin) : SV_Target
     float3 Normal = pin.NormalW;
 
     if ((material.textureFlags & 0x01))
-        diffuseAlbedo = gDiffuseMap[material.DiffuseMapIndex[0]].Sample(gsamPointWrap, pin.UVText);    
+        diffuseAlbedo = gDiffuseMap[material.DiffuseMapIndex[0]].Sample(gsamPointWrap, pin.UVText);
     
-    if ((material.textureFlags & 0x10))
-    {
-        //diffuseAlbedo = gDiffuseMap[material.DiffuseMapIndex[4]].Sample(gsamPointWrap, pin.UVText);
-        //diffuseTranspFactor = diffuseAlbedo.x;
-        diffuseTranspFactor = gDiffuseMap[material.DiffuseMapIndex[4]].Sample(gsamPointWrap, pin.UVText);        
-    }      
+    if ((material.textureFlags & 0x10))            
+        diffuseTranspFactor = gDiffuseMap[material.DiffuseMapIndex[4]].Sample(gsamPointWrap, pin.UVText).x;
     
     //if ((material.textureFlags & 0x02) && gShadowUsed && 0) //&& gShadowUsed
     //{
     //   float4 readNormal = gDiffuseMap[material.DiffuseMapIndex[1]].Sample(gsamPointWrap, pin.UVText);
     //   Normal = NormalSampleToWorldSpace(readNormal.xyz, Normal, pin.TangentW);
-    //}
-      
+    //}      
     
     // Get SSAO factor
     float ssao_factor = 1.0f;
     if ((gTechFlags & (1 << RTB_SSAO)) > 0) // if we use SSAO information
     {
-        float4 lUV = pin.SSAOPosH ;// mul(float4(pin.PosW, 1.0f), cbPass.ViewProjT);
+        float4 lUV = pin.SSAOPosH; // mul(float4(pin.PosW, 1.0f), cbPass.ViewProjT);
         lUV.xyz /= lUV.w;
         ssao_factor = gSSAOBlurMap.Sample(gsamPointWrap, lUV.xy).r;
-    }    
-    //return float4(ssao_factor, ssao_factor, ssao_factor, 1.0f);    
+    }
+    
     float4 ambient = ssao_factor * cbPass.AmbientLight * diffuseAlbedo;
             
-    const float shiness = 0.0f;//  1.0f - material.Roughness;
+    const float shiness = 0.0f; //  1.0f - material.Roughness;
     MaterialLight matLight = { diffuseAlbedo, material.FresnelR0, shiness };
     
-    float shadow_depth;// = CalcShadowFactor(pin.UVTextProj, gDiffuseMap[0], gsamShadow);
+    float shadow_depth = 1.0f;
+    if ((gTechFlags & (1 << RTB_SHADOWMAPPING)) > 0)  // if we use Shadow mapping
+    {
+        float4 lShadowPosH = mul(float4(pin.PosW, 1.0f), cbPass.Lights[0].ViewProjT);
+        shadow_depth = CalcShadowFactor(lShadowPosH, gShadowMap0, gsamShadow);
+    }
     
-    shadow_depth = 1.0f;
     float4 directLight = ComputeLighting(cbPass.Lights, matLight, pin.PosW, Normal, toEyeW, shadow_depth);
         
     float4 litColor = directLight + ambient;
     
     //if (cbPass.FogRange > 0)
-    if (0> 1)
+    if (0 > 1)
     {
         float fogAmount = saturate((distToEye - cbPass.FogStart) / cbPass.FogRange);
         litColor = lerp(litColor, cbPass.FogColor, fogAmount);
-    }    
+    }
+     
+    litColor.a = diffuseTranspFactor; //   diffuseAlbedo.a;   
 
-    // get light from cube map reflection
-    //float3 r = reflect(-toEyeW, Normal);
-    //float4 reflectionColor = gCubeMap.Sample(gsamPointWrap, r);
-    //float3 fresnelFactor = SchlickFresnel(material.FresnelR0, Normal, r);    
-    
-    //litColor.rgb += (1.0f - material.Roughness) * fresnelFactor * reflectionColor.rgb;       
-   litColor.a = diffuseTranspFactor; //   diffuseAlbedo.a;   
-
-#ifdef MIRBLEND
+#ifdef MIRBLEND // in a mirror reflection we use some Aplha const value
     litColor.a = MIRBLEND;
 #endif
-   
-	return litColor;
+    
+    return litColor;
 }
 

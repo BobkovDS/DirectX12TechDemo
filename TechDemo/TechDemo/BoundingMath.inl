@@ -394,7 +394,7 @@ inline float BoundingMath::BoundingBox::getEffectiveRadius(const DirectX::XMVECT
 	float Sdot = XMVectorGetX(XMVector3Dot(S, L));
 	float Tdot = XMVectorGetX(XMVector3Dot(T, L));
 
-	float rEff = 0.5 * (fabsf(Rdot) + fabsf(Sdot) + fabsf(Tdot));
+	float rEff = 0.5f * (fabsf(Rdot) + fabsf(Sdot) + fabsf(Tdot));
 
 	return rEff;
 }

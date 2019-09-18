@@ -11,13 +11,8 @@ struct BoneData
 
 struct InstanceData
 {
-    float4x4 World;
-    float4x4 TexTransform;
+    float4x4 World;    
     uint MaterialIndex;
-    //for alignment
-    uint Pad0;
-    uint Pad1;
-    uint Pad2;
 };
 
 struct MaterialData

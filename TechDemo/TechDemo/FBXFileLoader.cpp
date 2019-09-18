@@ -82,12 +82,14 @@ void FBXFileLoader::loadSceneFile(const string& fileName)
 		m_sdkManager->GetIOSettings()->SetBoolProp(IMP_FBX_GLOBAL_SETTINGS, true);
 	}
 
-	int pos1 = fileName.find_last_of('\\');
-	if (pos1 < 0) pos1 = 0;
+	size_t pos1 = fileName.find_last_of('\\');
+
+	if (pos1 == string::npos)
+		pos1 = 0;
 	else
 		pos1 += 1;
 	
-	int pos2 = fileName.find_last_of('.');
+	size_t pos2 = fileName.find_last_of('.');
 	string lSceneName = fileName.substr(pos1, pos2 - pos1);
 
 	m_scene = FbxScene::Create(m_sdkManager, lSceneName.c_str());
@@ -194,6 +196,10 @@ void FBXFileLoader::build_LODGroups()
 
 	for (; grp_it_begin != grp_it_end; grp_it_begin++)
 	{
+		assert(grp_it_begin->second[0] != NULL); /*if = NULL, so it can be that Instance "has been Instanced" in Blender (Alt + D), 
+		and then to this Instance was added "LODParentMesh" property, which was also linked to "Parent" LOD0 object. So when we built a mesh LOD0 for this LOD group, 
+		we thought that this is a Instance object and skipped a mesh building. Instance should be COPIED from parent LOD0 object */
+
 		string lRIName = grp_it_begin->second[0]->Name; // we use the first LOD0 mesh for naming of RenderItem for it
 
 		//Create RenderItem for these meshes	
@@ -285,7 +291,7 @@ void FBXFileLoader::build_GeoMeshesLOD(fbx_Mesh* iMesh, int LODLevel, std::strin
 #ifdef NORMALMODE
 	if (lToRemoveDoublicatedVertices)
 	{
-		int lVcount = meshVertices.size();
+		int lVcount = (int) meshVertices.size();
 		for (int i = 0; i < lVcount; i++)
 		{
 			XMVECTOR n = XMLoadFloat3(&meshVertices[i].Normal);
@@ -298,8 +304,8 @@ void FBXFileLoader::build_GeoMeshesLOD(fbx_Mesh* iMesh, int LODLevel, std::strin
 	lgeoMesh->IsSkinnedMesh = false; // LOD meshes are not skinned
 	
 	SubMesh submesh = {};
-	submesh.VertextCount= meshVertices.size();
-	submesh.IndexCount = meshIndices.size();
+	submesh.VertextCount= (UINT) meshVertices.size();
+	submesh.IndexCount = (UINT) meshIndices.size();
 	lgeoMesh->DrawArgs[lInnerRIName] = submesh;
 
 	RenderItem& lNewRI = *m_RenderItems[RIName].get();
@@ -333,19 +339,20 @@ inline void FBXFileLoader::build_GeoMeshesWithTypedVertex(fbx_Mesh* iMesh, bool 
 
 	auto lgeoMesh = std::make_unique<Mesh>();
 
-	fbx_Mesh* lMesh = iMesh;	
+	fbx_Mesh* lMesh = iMesh;
 
 	std::string lInnerRIName = lMesh->Name;
 	std::string lOuterRIName = m_sceneName + "_" + lInnerRIName;
 
-	lgeoMesh->Name = lInnerRIName;	
+	lgeoMesh->Name = lInnerRIName;
 	//ri_it->second-> |= nodeRIInstance.Materials[0]->DoesItHaveNormaleTexture;
 
 	bool lToRemoveDoublicatedVertices = //we should 'delete'/Not_doublicate vertices, if
-		iMesh->DoNotDublicateVertices // this is WaterV mesh 
+		iMesh->DoNotDublicateVertices // this is WaterV mesh 		
 		| !(iMesh->MaterailHasNormalTexture && (lMesh->Tangents.size() > 0)); // or if NOT (Material has Normal texture AND mesh has Tangent data)
 
-
+	lToRemoveDoublicatedVertices = lToRemoveDoublicatedVertices && !skinnedMesh;
+	
 	if (lToRemoveDoublicatedVertices)
 		meshVertices.resize(lMesh->Vertices.size());
 	else
@@ -423,7 +430,7 @@ inline void FBXFileLoader::build_GeoMeshesWithTypedVertex(fbx_Mesh* iMesh, bool 
 #ifdef NORMALMODE
 	if (lToRemoveDoublicatedVertices)
 	{
-		int lVcount = meshVertices.size();
+		int lVcount = (int) meshVertices.size();
 		for (int i = 0; i < lVcount; i++)
 		{
 			XMVECTOR n = XMLoadFloat3(&meshVertices[i].Normal);
@@ -436,8 +443,8 @@ inline void FBXFileLoader::build_GeoMeshesWithTypedVertex(fbx_Mesh* iMesh, bool 
 	lgeoMesh->IsSkinnedMesh = lIsSkinnedMesh; // Does this mesh use at leas one skinned vertex
 
 	SubMesh submesh = {};
-	submesh.VertextCount= meshVertices.size();
-	submesh.IndexCount = meshIndices.size();
+	submesh.VertextCount= (UINT) meshVertices.size();
+	submesh.IndexCount = (UINT) meshIndices.size();
 	lgeoMesh->DrawArgs[lInnerRIName] = submesh;
 
 	//Create RenderItem for this mesh		
@@ -554,8 +561,8 @@ bool  FBXFileLoader::add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData
 		char lTimeString[256];
 		string lsFirstValue = lFirstKeyTimeValue.GetTimeString(lTimeString, FbxUShort(256));
 		string lsLastValue = lLastKeyTimeValue.GetTimeString(lTimeString, FbxUShort(256));
-		float lfFirstTime = atof(lsFirstValue.c_str());
-		float lfLastTime = atof(lsLastValue.c_str());
+		float lfFirstTime = (float) atof(lsFirstValue.c_str());
+		float lfLastTime = (float) atof(lsLastValue.c_str());
 
 		FbxTime lFrameTime;
 		for (float i = lfFirstTime; i <= lfLastTime; i++)
@@ -734,6 +741,7 @@ void FBXFileLoader::build_Materials(string& pMaterialName)
 			std::unique_ptr<MaterialCPU> lMaterial = std::make_unique<MaterialCPU>();
 			lMaterial->Name = (*mat_it).second.Name;
 			lMaterial->DiffuseAlbedo = (*mat_it).second.DiffuseAlbedo;
+			lMaterial->DiffuseAlbedo.w = 1.0f - (*mat_it).second.TransparencyColor.w; // Transparent factor
 			lMaterial->Roughness =(*mat_it).second.Roughness;
 			lMaterial->FresnelR0 = XMFLOAT3((*mat_it).second.Specular.x, (*mat_it).second.Specular.y, (*mat_it).second.Specular.z);
 
@@ -770,8 +778,8 @@ void FBXFileLoader::build_Materials(string& pMaterialName)
 			if (mat_it->second.IsWaterV2)
 			{		
 				// Save object parameters for compute work on Compute Shader 
-				lMaterial->WaterV2_Width = (*mat_it).second.WaterV2_Width;
-				lMaterial->WaterV2_Height = (*mat_it).second.WaterV2_Height;
+				lMaterial->WaterV2_Width = (*mat_it).second.WaterV2_Width_inVertexCount;
+				lMaterial->WaterV2_Height = (*mat_it).second.WaterV2_Height_inVertexCount;
 				lMaterial->WaterV2_Velocity= (*mat_it).second.WaterV2_Velocity;
 				lMaterial->WaterV2_TimeInterval = (*mat_it).second.WaterV2_TimeInterval;
 				lMaterial->WaterV2_Viscosity= (*mat_it).second.WaterV2_Viscosity;	
@@ -902,7 +910,7 @@ void FBXFileLoader::convertFbxMatrixToFloat4x4(FbxAMatrix& fbxm, DirectX::XMFLOA
 void FBXFileLoader::convertFbxVector4ToFloat4(FbxVector4& fbxv, DirectX::XMFLOAT4& v)
 {
 	FbxDouble* lData = fbxv.Buffer();	
-	v = XMFLOAT4(lData[0], lData[1], lData[2], lData[3]);
+	v = XMFLOAT4((float)lData[0], (float)lData[1], (float)lData[2], (float)lData[3]);
 }
 
 // ---------------- FBX functions -----------------------------
@@ -1160,7 +1168,8 @@ void FBXFileLoader::process_node_getMaterial(const FbxNode* pNode, fbx_NodeInsta
 					{
 						lMaterial.IsWaterV2 = true;
 
-						float lValue = 0;
+						float lValue = 0.0f;
+						UINT luiValue = 0;
 
 						// WaterPlane_Width
 						lcustomProperty = lphongMaterial->FindProperty("WaterPlane_Width");
@@ -1168,7 +1177,7 @@ void FBXFileLoader::process_node_getMaterial(const FbxNode* pNode, fbx_NodeInsta
 							lValue = lcustomProperty.Get<float>();
 						else
 							lValue = 1.0f;
-						lMaterial.WaterV2_Width = lValue;
+						lMaterial.WaterV2_Width_inMeter = lValue;
 						
 						// WaterPlane_Height
 						lcustomProperty = lphongMaterial->FindProperty("WaterPlane_Height");
@@ -1176,15 +1185,15 @@ void FBXFileLoader::process_node_getMaterial(const FbxNode* pNode, fbx_NodeInsta
 							lValue = lcustomProperty.Get<float>();
 						else
 							lValue = 1.0f;
-						lMaterial.WaterV2_Height= lValue;
+						lMaterial.WaterV2_Height_inMeter= lValue;
 
 						// WaterPlane_BlocksCountX
 						lcustomProperty = lphongMaterial->FindProperty("WaterPlane_BlocksCountX");
 						if (lcustomProperty != NULL)
-							lValue = lcustomProperty.Get<float>();
+							luiValue = lcustomProperty.Get<UINT>();
 						else
-							lValue = 1.0f;
-						lMaterial.WaterV2_BlocksCountX= lValue;
+							luiValue = 1;
+						lMaterial.WaterV2_BlocksCountX= luiValue;
 
 						// WaterPlane_Velocity
 						lcustomProperty = lphongMaterial->FindProperty("WaterPlane_Velocity");
@@ -1245,10 +1254,10 @@ void FBXFileLoader::process_node_getMaterial(const FbxNode* pNode, fbx_NodeInsta
 				{
 					FbxDouble* lData = lphongMaterial->Specular.Get().Buffer();
 										
-					float f1 = lData[0];
-					float f2 = lData[1];
-					float f3 = lData[2];
-					float f4 = lphongMaterial->SpecularFactor;				
+					float f1 = (float)lData[0];
+					float f2 = (float)lData[1];
+					float f3 = (float)lData[2];
+					float f4 = (float)lphongMaterial->SpecularFactor;
 
 					lMaterial.Roughness = 1.0f - f4;
 					if (lMaterial.Roughness > 0.999f) lMaterial.Roughness = 0.999f;
@@ -1267,13 +1276,14 @@ void FBXFileLoader::process_node_getMaterial(const FbxNode* pNode, fbx_NodeInsta
 				{
 					/*WARNING we do not use Transparent factor now, only Transparency texture;*/
 					FbxDouble* lData = lphongMaterial->TransparentColor.Get().Buffer();
-					float f1 = lData[0];
-					float f2 = lData[1];
-					float f3 = lData[2];
-					float f4 = lphongMaterial->TransparencyFactor;
+					float f1 = (float)lData[0];
+					float f2 = (float)lData[1];
+					float f3 = (float)lData[2];
+					float f4 = (float)lphongMaterial->TransparencyFactor;
 
 					lMaterial.IsTransparent = (f4 != 1.0f);
-					lMaterial.IsTransparent = ((f1 == f2 == f3) != 1.0f);
+					lMaterial.IsTransparent = ((f1 == f2 == f3) != true);
+					
 					//lMaterial.IsTransparent = false;// we do not process Transparent factor now;
 
 					lMaterial.TransparencyColor = XMFLOAT4(f1, f2, f3, f4);
@@ -1598,11 +1608,11 @@ string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, const 
 					int lIndicesCount = lCluster->GetControlPointIndicesCount();
 					int* lpIndicesData = lCluster->GetControlPointIndices();
 					double* lpWeightsData = lCluster->GetControlPointWeights();
-					int lBoneID;
+					
 					for (int vi = 0; vi < lIndicesCount; vi++)
 					{
 						int vertexID = lpIndicesData[vi];
-						float boneWeight = lpWeightsData[vi];
+						float boneWeight = (float) lpWeightsData[vi];
 						auto lPair = std::make_pair(linkName, boneWeight);
 						lmesh->VertexWeightByBoneName[vertexID].push_back(lPair);
 					}
@@ -1638,10 +1648,10 @@ std::string FBXFileLoader::create_WaterV2Mesh(const FbxNodeAttribute* pNodeAtrib
 	lmesh->ExcludeFromCulling = false;
 	lmesh->DoNotDublicateVertices = true;
 
-	float lWidth = material->WaterV2_Width;	
-	float ldx = lWidth / material->WaterV2_BlocksCountX;
-	int lN = (int) material->WaterV2_BlocksCountX + 1; // count vertices in horizontal (X)
-	int lM = (int) material->WaterV2_Height / ldx + 1; // count vertices in vertical (Y)
+	float lWidth = material->WaterV2_Width_inMeter;	
+	float ldx = lWidth / (float) material->WaterV2_BlocksCountX;
+	int lN = material->WaterV2_BlocksCountX + 1; // count vertices in horizontal (X)
+	int lM =(int) (material->WaterV2_Height_inMeter / ldx) + 1; // count vertices in vertical (Y)
 	float lHeight = (lM-1) * ldx;
 	int lVerticesCount = lN * lM;
 	int lTrianglesCount = ((lN -1) * (lM - 1))*2;
@@ -1753,8 +1763,8 @@ std::string FBXFileLoader::create_WaterV2Mesh(const FbxNodeAttribute* pNodeAtrib
 	// add mesh
 	m_meshesByName[name] = std::move(lmesh);	
 
-	material->WaterV2_Width = lN; // we do not need a dimensions in meters anymore, we will work with dimensions in Vertex count
-	material->WaterV2_Height = lM;
+	material->WaterV2_Width_inVertexCount = lN; // we do not need a dimensions in meters anymore, we will work with dimensions in Vertex count
+	material->WaterV2_Height_inVertexCount = lM;
 
 	return name;
 }
@@ -1768,7 +1778,7 @@ void FBXFileLoader::process_camera(const FbxNodeAttribute* pNodeAtribute, FbxNod
 	
 	FbxDouble3 lCameraUpVector= lpcCamera->UpVector;
 	float lNearPlane = lpcCamera->NearPlane;
-	lNearPlane = 2.36f;
+	//lNearPlane = 2.36f; // TO_DO: Check this
 	float lFar= lpcCamera->FarPlane;
 	
 	std::unique_ptr<Camera> lCamera = std::make_unique<Camera>();
@@ -1806,7 +1816,7 @@ void FBXFileLoader::process_camera(const FbxNodeAttribute* pNodeAtribute, FbxNod
 
 void FBXFileLoader::process_light(const FbxNodeAttribute* pNodeAtribute, FbxNode* pNode)
 {
-	CPULight lnewLight = {};
+	LightCPU lnewLight = {};
 
 	const FbxLight* lLight = static_cast<const FbxLight*>(pNodeAtribute);
 	string lName = lLight->GetName();
@@ -1826,9 +1836,10 @@ void FBXFileLoader::process_light(const FbxNodeAttribute* pNodeAtribute, FbxNode
 	lLook = XMVector3Normalize(XMVector3TransformNormal(lLook, lLcTr));
 
 	lnewLight.Name = lName;
-	FbxDouble3 lColor = lLight->Color.Get();
-	float lIntensity = lLight->Intensity/100.0f;
-	lnewLight.Strength = XMFLOAT3(lColor[0] * lIntensity, lColor[1] * lIntensity, lColor[2] * lIntensity);
+	FbxDouble3 lColor = lLight->Color.Get();	
+	lnewLight.Intensity = lLight->Intensity / 100.0f;
+	lnewLight.Color = XMFLOAT3(lColor[0], lColor[1], lColor[2]);
+	lnewLight.bkColor = lnewLight.Color;
 	
 	float lOuterAngle = lLight->OuterAngle;
 	float lInnerAngle = lLight->InnerAngle;
@@ -1842,10 +1853,10 @@ void FBXFileLoader::process_light(const FbxNodeAttribute* pNodeAtribute, FbxNode
 
 	if (lLightType == FbxLight::ePoint) // a Lamp
 	{
-		FbxLight::EDecayType lType = lLight->DecayType;
-		float lFallofStart = lLight->DecayStart;
+		FbxLight::EDecayType lType = lLight->DecayType;		
+		float lFallofStart = lLight->DecayStart / 100.0f; // to meters
 		lnewLight.falloffStart = 0;
-		lnewLight.falloffEnd = lFallofStart * 2;
+		lnewLight.falloffEnd = lFallofStart ;
 		lnewLight.lightType = LightType::Point;
 	}
 	else if (lLightType == FbxLight::eSpot) // a Lamp
