@@ -1,6 +1,6 @@
 #include "FinalRender.h"
 
-FinalRender::FinalRender():m_swapChain(nullptr)
+FinalRender::FinalRender()
 {
 }
 
@@ -10,28 +10,30 @@ FinalRender::~FinalRender()
 
 void FinalRender::initialize(const RenderMessager& renderParams)
 {	
-	m_swapChain = renderParams.SwapChain;
-
 	RenderBase::initialize(renderParams);	
 }
 
 void FinalRender::build()
 {
 	assert(m_initialized == true);
+	m_DoesRenderUseMutliSampling = true;
 
 	// DepthStencil resources. This class own it.
 	{
 		create_DescriptorHeap_DSV();
-		create_Resource_DS(m_dsResourceFormat);	
+		create_Resource_DS(m_dsResourceFormat); // Final Render may use MultiSampling
 		create_DSV();
 	}
 
 	// Initialize PSO layer
-	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat);
+	DXGI_SAMPLE_DESC lSampleDesc;
+	lSampleDesc.Count = m_msaaRenderTargets->getSampleCount();
+	lSampleDesc.Quality = m_msaaRenderTargets->getSampleQuality();
+	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat, lSampleDesc);
 
 	// Initialize both DescriptorHandles: Tech_DescriptorHandle and Texture_DescriptorHandle	
 	m_techSRVHandle = m_descriptorHeap->GetGPUDescriptorHandleForHeapStart();
-		UINT lSrvSize =m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+		UINT lSrvSize = m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 		CD3DX12_GPU_DESCRIPTOR_HANDLE lhDescriptor(m_techSRVHandle);
 		lhDescriptor.Offset(TECHSRVCOUNT, lSrvSize); 	
 	m_textureSRVHandle = lhDescriptor;
@@ -90,11 +92,12 @@ void FinalRender::draw(int flags)
 	const UINT lcLayerWhichMayBeDrawn =
 		1 << SKY | 1 << OPAQUELAYER | 1 << NOTOPAQUELAYER | 1 << SKINNEDOPAQUELAYER | 1 << NOTOPAQUELAYERGH | 1 << NOTOPAQUELAYERCH;		
 
-	int lResourceIndex = m_swapChain->GetCurrentBackBufferIndex();
-	m_cmdList->ResourceBarrier(1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
-			D3D12_RESOURCE_STATE_PRESENT,
-			D3D12_RESOURCE_STATE_RENDER_TARGET));
+	int lResourceIndex = m_msaaRenderTargets->getCurrentBufferID();
+
+	//m_cmdList->ResourceBarrier(1,
+	//	&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
+	//		D3D12_RESOURCE_STATE_PRESENT,
+	//		D3D12_RESOURCE_STATE_RENDER_TARGET));
 
 	CD3DX12_CPU_DESCRIPTOR_HANDLE currentRTV(
 		m_rtvHeap->GetCPUDescriptorHandleForHeapStart(),
@@ -145,11 +148,11 @@ void FinalRender::draw(int flags)
 	for (int i = 0; i < m_scene->getLayersCount(); i++) // Draw all Layers	
 		draw_layer(i, lInstanceOffset, lcLayerWhichMayBeDrawn & (1 << i));
 		
-	//-----------------------
-	m_cmdList->ResourceBarrier(1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
-			D3D12_RESOURCE_STATE_RENDER_TARGET,
-			D3D12_RESOURCE_STATE_PRESENT));
+	////-----------------------
+	//m_cmdList->ResourceBarrier(1,
+	//	&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
+	//		D3D12_RESOURCE_STATE_RENDER_TARGET,
+	//		D3D12_RESOURCE_STATE_PRESENT));
 }
 
 
@@ -161,15 +164,17 @@ void FinalRender::draw_layer(int layerID, int& instanceOffset, bool doDraw)
 	{
 		for (int ri = 0; ri < lObjectLayer->getSceneObjectCount(); ri++) // One layer has several RenderItems
 		{
-			Scene::SceneLayer::SceneLayerObject* lSceneObject = lObjectLayer->getSceneObject(ri);
+			Scene::SceneLayer::SceneLayerObject* lSceneObject = lObjectLayer->getSceneObject(ri);						
+			const RenderItem* lRI = lSceneObject->getObjectMesh();
+			m_trianglesCountInScene += lRI->LODTrianglesCount[0] * lRI->Instances.size(); // How many triangles we would draw without using LOD and FrustumCulling 			
+			
 			int lInstancesCount = lSceneObject->getInstancesCountLOD(); // How much instances for this RenderItem we should draw
 			if (lInstancesCount == 0) continue;
 
 			if (doDraw)
 				m_cmdList->SetPipelineState(m_psoLayer.getPSO(layerID));
-
+			
 			UINT lInstancesForThisMesh = 0; // How much instances for this Mesh have been drawn (without LOD difference)
-			const RenderItem* lRI = lSceneObject->getObjectMesh();
 
 			for (int lod_id = 0; lod_id < LODCOUNT; lod_id++)
 			{
@@ -209,9 +214,7 @@ void FinalRender::draw_layer(int layerID, int& instanceOffset, bool doDraw)
 				instanceOffset += lInstanceCountByLODLevel;
 			}
 
-			m_trianglesCountIfWithoutLOD += lRI->LODTrianglesCount[0] * lInstancesForThisMesh; // how many triangle we would draw without using LOD
-			m_trianglesCountInScene += lRI->LODTrianglesCount[0] * lRI->Instances.size(); // How many triangles we would draw without using LOD and  //TO_DO: check this
-
+			m_trianglesCountIfWithoutLOD += lRI->LODTrianglesCount[0] * lInstancesForThisMesh; // how many triangle we would draw without LOD using
 		}
 	}
 }

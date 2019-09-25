@@ -261,3 +261,9 @@ __pycache__/
 *.pyc
 TechDemo/TechDemo/output
 TechDemo/TechDemo/LogFile
+
+TechDemo/TechDemo/TechDemo_RELEASE_v0.exe
+
+TechDemo/TechDemo/TechDemo_RELEASE.exe
+
+*.exe

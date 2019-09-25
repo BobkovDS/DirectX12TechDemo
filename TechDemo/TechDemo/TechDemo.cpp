@@ -10,9 +10,10 @@ TechDemo::TechDemo(HINSTANCE hInstance, const std::wstring& applName, int width,
 	m_init3D_done = false;
 	m_isTechFlag = false;
 	m_isCameraManualControl = true;
+
 	//Utilit3D::nullitizator();
 
-	m_drawInstancesIDs = new UINT[MaxInstancesCount];
+	m_drawInstancesIDs = new UINT[MaxInstancesCount];		
 }
 TechDemo::~TechDemo()
 {
@@ -23,7 +24,7 @@ TechDemo::~TechDemo()
 	if (m_defaultCamera)
 		delete m_camera;
 
-	delete[] m_drawInstancesIDs;
+	delete[] m_drawInstancesIDs;	
 }
 
 void TechDemo::onMouseDown(WPARAM btnState, int x, int y)
@@ -120,22 +121,59 @@ std::string TechDemo::addTextToWindow()
 	float lPercent1 = (float) lTrianglesCountIfWithoutLOD / (float) lTrianglesCountInScene * 100.0f;
 	float lPercent2 = (float) lTrianglesDrawnCount / (float) lTrianglesCountInScene * 100.0f;
 	
-	char lbP1[10];
-	_snprintf_s(lbP1, sizeof(lbP1), "%3.1f", lPercent1);
-	std::string lsP1 = lbP1;
-	lsP1 = " (" + lsP1 + "%)";
+	char lbP1[10];	
+	sprintf_s(lbP1, _TRUNCATE, "(%3.2f%%)", lPercent1);	
 
-	char lbP2[10];
-	_snprintf_s(lbP2, sizeof(lbP2), "%3.1f", lPercent2);
-	std::string lsP2 = lbP2;
-	lsP2 = " (" + lsP2 + "%)";
+	char lbP2[10];	
+	sprintf_s(lbP2, _TRUNCATE, "(%3.2f%%)", lPercent2);	
 
-	std::string text = "InstCount(Shadow): " + std::to_string(lInstanceCount)
-		+ "\rInstCount(Drawing): " + std::to_string(lDrawInstancesID)
-		+ "\rContains count: " + std::to_string(m_scene.ContainsCount)
-		+ "\rTriangles in Scene count: " + std::to_string(lTrianglesCountInScene) + " (100%)"
-		+ "\rTriangles would be w/t LOD count: " + std::to_string(lTrianglesCountIfWithoutLOD) + lsP1
-		+ "\rTriangles were drawn count: " + std::to_string(lTrianglesDrawnCount) + lsP2;
+	char lbFrameTime[10];
+	sprintf_s(lbFrameTime, _TRUNCATE, "(%.2fms)", m_framePreparationTime * 1000.0f);
+	
+	char lbBetweenFrameTime[50];
+	sprintf_s(lbBetweenFrameTime, _TRUNCATE, "%d (%.2fms)", (UINT)(1.0f / m_betweenFramesTime), m_betweenFramesTime * 1000.0f);	
+
+	// Common count of triangles in Scene
+	std::string lsTrianglesCountInScene = std::to_string(lTrianglesCountInScene);
+	auto lStrIterator = lsTrianglesCountInScene.end() ;
+	for (int i = 3; i < lsTrianglesCountInScene.length();)
+	{
+		lStrIterator = lStrIterator - 3;
+		lsTrianglesCountInScene.insert(lStrIterator, ' ');		
+		i += 4;
+	}
+
+	// Count of Triangles, if it would be drawn without LOD
+	std::string lsTrianglesCountIfWithoutLOD = std::to_string(lTrianglesCountIfWithoutLOD);
+	lStrIterator = lsTrianglesCountIfWithoutLOD.end();
+	for (int i = 3; i < lsTrianglesCountIfWithoutLOD.length();)
+	{
+		lStrIterator = lStrIterator - 3;
+		lsTrianglesCountIfWithoutLOD.insert(lStrIterator, ' ');
+		i += 4;
+	}
+
+	// Count of triangles which was drawn in fact
+	std::string lsTrianglesCountInFact = std::to_string(lTrianglesDrawnCount);
+	lStrIterator = lsTrianglesCountInFact.end();
+	for (int i = 3; i < lsTrianglesCountInFact.length();)
+	{
+		lStrIterator = lStrIterator - 3;
+		lsTrianglesCountInFact.insert(lStrIterator, ' ');
+		i += 4;
+	}
+
+	std::string lBetweenFrame = "FPS: ";
+	std::string lFrame = "\rTime to prepare a frame (CPU only work): ";
+	
+	std::string text = 
+		lBetweenFrame + lbBetweenFrameTime
+		+ lFrame + lbFrameTime
+		+ "\rInstances count: " + std::to_string(lInstanceCount)
+		+ "\rInstances count in View Frustum: " + std::to_string(lDrawInstancesID)		
+		+ "\rTriangles in Scene count: " + lsTrianglesCountInScene + " (100%)"
+		+ "\rTriangles would be w/t LOD count: " + lsTrianglesCountIfWithoutLOD + lbP1
+		+ "\rTriangles were drawn count: " + lsTrianglesCountInFact + lbP2;
 	
 	if (m_isTechFlag)
 		text += "\rTechFlag=1";
@@ -177,8 +215,7 @@ void TechDemo::init3D()
 		// to create logo render information (logo mesh), we use DirectX resources from main class.
 		RenderMessager lRenderMessager = {};		
 		lRenderMessager.Device = m_device.Get();
-		lRenderMessager.CmdList = m_cmdList.Get();
-		lRenderMessager.SwapChain = m_swapChain.Get();
+		lRenderMessager.CmdList = m_cmdList.Get();		
 		lRenderMessager.RTResourceFormat = backBufferFormat();
 		lRenderMessager.DSResourceFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		lRenderMessager.Width = width();
@@ -264,10 +301,9 @@ void TechDemo::init3D()
 
 	RenderManagerMessanger lRenderManagerParams;
 	lRenderManagerParams.RTVHeap = m_rtvHeap.Get();
-	lRenderManagerParams.RTResources = m_swapChainBuffers;
+	lRenderManagerParams.RTResources = nullptr;
 	lRenderManagerParams.commonRenderData.Device = m_device.Get();
-	lRenderManagerParams.commonRenderData.CmdList= m_cmdList.Get();
-	lRenderManagerParams.commonRenderData.SwapChain = m_swapChain.Get();	
+	lRenderManagerParams.commonRenderData.CmdList= m_cmdList.Get();	
 	lRenderManagerParams.commonRenderData.RTResourceFormat = backBufferFormat();
 	lRenderManagerParams.commonRenderData.DSResourceFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	lRenderManagerParams.commonRenderData.Width = width();
@@ -381,7 +417,7 @@ void TechDemo::init3D()
 	m_animationTimer.tt_RunStop();
 
 	lLogoRender.exit();	
-
+	m_betweenFramesTimer.begin();
 	ApplLogger::getLogger().log("TechDemo::init3D() is done", 0);
 }
 
@@ -704,17 +740,69 @@ void TechDemo::build_defaultCamera()
 
 void TechDemo::work()
 {	
+	
 	// here we begin new Graphic Frame
 	m_frameResourceManager.getFreeFR(); // so we need new Frame resource
 
 	// for graphic frame we use CommandAllocator from FR
 	m_frameResourceManager.changeCmdAllocator(m_cmdList.Get(), nullptr);
 	
+	// Count how much time went to prepare and draw previous frame (CPU + GPU work)
+	float lTempValue = m_betweenFramesTimer.end();
+	if (m_betweenFramesTimer.tick1Sec()) // we want to output this info only every 1 second
+		m_betweenFramesTime = lTempValue;
+	m_betweenFramesTimer.begin();
+	
+	// begin to count how much time we need to prepare data and fill command list for current Frame (only CPU work)
+	m_framePrepareAndDrawTimer.begin();
+
 	// update data
 	update();
-
+	UINT lSwapChainCurrentBufferIndex = m_swapChain->GetCurrentBackBufferIndex();
+	m_renderManager.setCurrentRTID(lSwapChainCurrentBufferIndex);
+	
 	// draw data
 	m_renderManager.draw();
+
+	// Copy Draw data from non-SwapChain Render Target to SwapChain Render Target
+	{
+
+		uint8_t lrtID = lSwapChainCurrentBufferIndex;
+		ID3D12Resource* lCurrentRTResource = m_renderManager.getCurrentRenderTargetResource();
+
+		D3D12_RESOURCE_DESC lDesc = lCurrentRTResource->GetDesc();
+
+		m_cmdList->ResourceBarrier(1,
+			&CD3DX12_RESOURCE_BARRIER::Transition(lCurrentRTResource,
+				D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_RESOLVE_SOURCE));
+
+		m_cmdList->ResourceBarrier(1,
+			&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainBuffers[lSwapChainCurrentBufferIndex].Get(),
+				D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RESOLVE_DEST));
+
+		m_cmdList->ResolveSubresource(
+			m_swapChainBuffers[lSwapChainCurrentBufferIndex].Get(), 0,
+			lCurrentRTResource, 0, backBufferFormat());
+
+		m_cmdList->ResourceBarrier(1,
+			&CD3DX12_RESOURCE_BARRIER::Transition(lCurrentRTResource,
+				D3D12_RESOURCE_STATE_RESOLVE_SOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET));
+
+#ifndef GUI_HUD
+		m_cmdList->ResourceBarrier(1,
+			&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainBuffers[lrtID].Get(),
+				D3D12_RESOURCE_STATE_RESOLVE_DEST, D3D12_RESOURCE_STATE_PRESENT));
+#else
+		m_cmdList->ResourceBarrier(1,
+			&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainBuffers[lrtID].Get(),
+				D3D12_RESOURCE_STATE_RESOLVE_DEST, D3D12_RESOURCE_STATE_RENDER_TARGET));
+#endif
+		
+	}
+	lTempValue = m_framePrepareAndDrawTimer.end();
+
+	if (m_framePrepareAndDrawTimer.tick1Sec()) // we want to output this info only every 1 second
+		m_framePreparationTime = lTempValue;
 
 	// excute command queue
 	m_cmdList->Close();
@@ -725,7 +813,8 @@ void TechDemo::work()
 #ifdef GUI_HUD
 	renderUI();
 #endif
-
+		
+	// Present SwapChain
 	m_swapChain->Present(0, 0);
 	m_frameResourceManager.currentFR()->setFenceValue(getFenceValue());
 	setFence(); //new frame is done
@@ -753,6 +842,7 @@ void TechDemo::renderUI()
 		m_HUDBrush.Get());
 
 	HRESULT res = m_HUDContext->EndDraw();
+	m_HUDContext->SetTarget(nullptr);
 	m_d3d11On12Device->ReleaseWrappedResources(m_wrappedBackBuffers[lResourceIndex].GetAddressOf(), 1);
 	m_d3d11Context->Flush();
 }

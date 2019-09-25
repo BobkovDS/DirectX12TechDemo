@@ -35,12 +35,14 @@ class TechDemo :
 	Scene m_scene;
 	ResourceManager m_resourceManager;
 	RenderManager m_renderManager;
-	SkeletonManager m_skeletonManager;
+	SkeletonManager m_skeletonManager;	
 	FrameResourcesManager<InstanceDataGPU, PassConstantsGPU, SSAO_GPU> m_frameResourceManager;	
 	Utilit3D m_utilit3D;
 	Camera* m_camera;
 	Camera m_camerasDCM[PASSCONSTBUF_COUNT_DCM]; // Cameras for DCM (Dynamic Cube Map buidling)
 	Timer m_animationTimer;
+	Timer m_framePrepareAndDrawTimer;
+	Timer m_betweenFramesTimer;
 	std::thread m_logoThread;
 	DirectX::XMFLOAT4 m_offsets[14];
 	UINT* m_drawInstancesIDs;
@@ -53,6 +55,9 @@ class TechDemo :
 	bool m_isCameraManualControl;
 	POINT m_mouseDownPoint;
 	float m_animTime;
+	float m_framePreparationTime;
+	float m_betweenFramesTime;
+
 	int m_tempVal;
 
 	void onMouseDown(WPARAM btnState, int x, int y);

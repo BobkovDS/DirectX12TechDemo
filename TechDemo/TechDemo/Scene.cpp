@@ -165,7 +165,7 @@ void Scene::update()
 		
 		// Looking at Octree's bounding boxes through ViewFrustum, mark required Instances are selected. Really copy will be in TechDemo::update_objectCB() function
 		m_octree->selector.LOD0_distance = 15; //30
-		m_octree->selector.LOD1_distance = 50; //80
+		m_octree->selector.LOD1_distance = 80; //80
 		m_octree->selector.SelectorPostition = m_camera->getPosition();
 		m_octree->update(m_camera->getFrustomBoundingCameraWorld(0));
 	}

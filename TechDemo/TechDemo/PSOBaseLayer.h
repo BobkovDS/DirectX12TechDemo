@@ -18,13 +18,13 @@ protected:
 
 	virtual void buildShadersBlob() = 0;
 	void buildRootSignature(ID3DBlob* ptrblob);
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC buildCommonPSODescription();
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC buildCommonPSODescription(DXGI_SAMPLE_DESC sampleDesc);
 public:
 	PSOBaseLayer();
 	virtual ~PSOBaseLayer();
 
 	//virtual void initialized()=0;
-	virtual void buildPSO(ID3D12Device* m_device, DXGI_FORMAT rtFormat, DXGI_FORMAT dsFormat) = 0;
+	virtual void buildPSO(ID3D12Device* m_device, DXGI_FORMAT rtFormat, DXGI_FORMAT dsFormat, DXGI_SAMPLE_DESC sampleDesc) = 0;
 	ID3D12PipelineState* getPSO(UINT layerID);
 	ID3D12RootSignature* getRootSignature();	
 };

@@ -8,6 +8,6 @@ public:
 	PSODebugLayer_Light();
 	~PSODebugLayer_Light();
 
-	void buildPSO(ID3D12Device* m_device, DXGI_FORMAT rtFormat, DXGI_FORMAT dsFormat);
+	void buildPSO(ID3D12Device* m_device, DXGI_FORMAT rtFormat, DXGI_FORMAT dsFormat, DXGI_SAMPLE_DESC sampleDesc);
 };
 

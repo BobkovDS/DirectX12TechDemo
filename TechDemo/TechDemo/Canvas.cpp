@@ -5,7 +5,8 @@ ApplLogger ApplLogger::m_logger("LogFile");
 
 using namespace std;// ::ostream;
 
-Canvas::Canvas(HINSTANCE hInstance, const std::wstring& applName, int width , int height): m_hInstance(hInstance), m_width(width), m_height(height)
+Canvas::Canvas(HINSTANCE hInstance, const std::wstring& applName, int width , int height): m_hInstance(hInstance), m_width(width), m_height(height), 
+m_windowWasCreated(false), m_isFullScreen(false)
 {
 	oLogFile.open("output");
 	
@@ -62,21 +63,29 @@ LRESULT Canvas::msgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	switch (msg)
 	{
+	case WM_SYSKEYDOWN:
 	case WM_KEYDOWN:
-		if (wParam == VK_ESCAPE)
+	{
+		bool lAlt = (GetAsyncKeyState(VK_MENU) & 0x8000) != 0;
+
+		switch (wParam)
 		{
-			//PostMessage(hwnd, WM_DESTROY, 0, 0);
+		case VK_ESCAPE:
 			PostQuitMessage(0);
-			return 0;
-		}
-		if (wParam == VK_SPACE)
-		{
+			break;
+		case VK_SPACE:
 			m_timer.tt_Pause();
 			onKeyDown(wParam);
-		}
-		else onKeyDown(wParam);
+			break;
+		case VK_RETURN:
+			if (lAlt)
+				toggleFullScreen();
+			break;
+		default:
+			onKeyDown(wParam);
+		}		
 		return 0;
-
+	}
 	case WM_KEYUP:
 		onKeyUp(wParam);
 		return 0;
@@ -101,9 +110,10 @@ LRESULT Canvas::msgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		return 0;
 
 	case WM_SIZE:
-
 		onReSize(LOWORD(lParam), HIWORD(lParam));		
-		return 0;		
+		return 0;
+	case WM_SYSCHAR:
+		return 0;
 	}
 
 	return DefWindowProc(hwnd, msg, wParam, lParam);
@@ -157,6 +167,45 @@ void Canvas::run() {
 void Canvas::onReSize(int newWidth, int newHeight) {
 	m_width = newWidth;
 	m_height = newHeight;
+}
+
+void Canvas::toggleFullScreen()
+{
+	m_isFullScreen = !m_isFullScreen;
+	if (m_isFullScreen)
+	{
+		GetWindowRect(m_hMainWind, &m_rectBeforeFullScreen);
+		UINT lWindowStyle = WS_OVERLAPPEDWINDOW & 
+			~(WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
+
+		SetWindowLong(m_hMainWind, GWL_STYLE, lWindowStyle);
+
+		HMONITOR lhMonitor = MonitorFromWindow(m_hMainWind, MONITOR_DEFAULTTONEAREST);
+		MONITORINFOEX lMonitorInfo = {};
+		lMonitorInfo.cbSize = sizeof(MONITORINFOEX);
+		GetMonitorInfo(lhMonitor, &lMonitorInfo);
+
+		SetWindowPos(m_hMainWind, HWND_TOP,
+			lMonitorInfo.rcMonitor.left,
+			lMonitorInfo.rcMonitor.top,
+			lMonitorInfo.rcMonitor.right - lMonitorInfo.rcMonitor.left,
+			lMonitorInfo.rcMonitor.bottom - lMonitorInfo.rcMonitor.top,
+			SWP_FRAMECHANGED | SWP_NOACTIVATE);
+
+		ShowWindow(m_hMainWind, SW_MAXIMIZE);
+	}
+	else
+	{
+		SetWindowLong(m_hMainWind, GWL_STYLE, WS_OVERLAPPEDWINDOW);
+		SetWindowPos(m_hMainWind, HWND_NOTOPMOST,
+			m_rectBeforeFullScreen.left,
+			m_rectBeforeFullScreen.top,
+			m_rectBeforeFullScreen.right - m_rectBeforeFullScreen.left,
+			m_rectBeforeFullScreen.bottom - m_rectBeforeFullScreen.top,
+			SWP_FRAMECHANGED | SWP_NOACTIVATE);
+
+		ShowWindow(m_hMainWind, SW_NORMAL);
+	}
 }
 
 Canvas* Canvas::getCanvas() {

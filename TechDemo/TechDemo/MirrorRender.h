@@ -4,8 +4,7 @@
 #include "Timer.h"
 class MirrorRender :
 	public RenderBase
-{
-	IDXGISwapChain3* m_swapChain;
+{	
 	ComPtr<ID3D12Resource>* m_swapChainResources;
 	PSOMirrorLayer m_psoLayer;	
 	Timer m_timer;

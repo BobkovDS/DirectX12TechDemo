@@ -34,7 +34,7 @@ void PSOComputeLayer::buildShadersBlob()
 	buildRootSignature(m_shaders["cs"].Get()); //Root signature was added to Vertex Shader only. It is enough for us.
 }
 
-void PSOComputeLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, DXGI_FORMAT dsFormat)
+void PSOComputeLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, DXGI_FORMAT dsFormat, DXGI_SAMPLE_DESC sampleDesc)
 {
 	m_device = device;
 	m_rtvFormat = rtFormat;

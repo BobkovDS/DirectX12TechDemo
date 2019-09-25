@@ -243,6 +243,4 @@ void FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::changeCm
 	//std::wstring errMsg = err.ErrorMessage();
 
 	assert(SUCCEEDED(res));
-
-
 }

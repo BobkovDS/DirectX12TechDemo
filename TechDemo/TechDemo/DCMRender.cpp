@@ -50,7 +50,10 @@ void DCMRender::build()
 	build_TechDescriptors();
 
 	// Initialize PSO layer
-	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat);	
+	DXGI_SAMPLE_DESC lSampleDesc;
+	lSampleDesc.Count = 1;
+	lSampleDesc.Quality= 0;
+	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat, lSampleDesc);
 
 	m_timer.setTickTime(0.0083f);	
 }

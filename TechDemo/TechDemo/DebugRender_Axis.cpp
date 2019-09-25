@@ -10,8 +10,7 @@ DebugRender_Axis::~DebugRender_Axis()
 }
 
 void DebugRender_Axis::initialize(const RenderMessager& renderParams)
-{
-	m_swapChain = renderParams.SwapChain;
+{	
 	RenderBase::initialize(renderParams);
 }
 
@@ -27,7 +26,10 @@ void DebugRender_Axis::build()
 	}
 
 	// Initialize PSO layer
-	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat);	
+	DXGI_SAMPLE_DESC lSampleDesc;
+	lSampleDesc.Count = m_msaaRenderTargets->getSampleCount();
+	lSampleDesc.Quality = m_msaaRenderTargets->getSampleQuality();
+	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat, lSampleDesc);
 
 	// Build Axis geometry
 	buildAxisGeometry();

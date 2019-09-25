@@ -47,8 +47,11 @@ void SSAORender::build()
 	}
 
 	// Initialize PSO layer
-	m_psoLayer1.buildPSO(m_device, m_viewNormalMapFormat, m_dsResourceFormat);
-	m_psoLayer2.buildPSO(m_device, AOMapFormat, m_dsResourceFormat);
+	DXGI_SAMPLE_DESC lSampleDesc;
+	lSampleDesc.Count = 1;
+	lSampleDesc.Quality = 0;
+	m_psoLayer1.buildPSO(m_device, m_viewNormalMapFormat, m_dsResourceFormat, lSampleDesc);
+	m_psoLayer2.buildPSO(m_device, AOMapFormat, m_dsResourceFormat, lSampleDesc);
 
 	// Initialize both DescriptorHandles: Tech_DescriptorHandle and Texture_DescriptorHandle	
 	m_techSRVHandle = m_descriptorHeap->GetGPUDescriptorHandleForHeapStart();

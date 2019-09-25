@@ -5,6 +5,8 @@
 #define MaxLights 10
 #include "stdafx.h"
 #include "MathHelper.h"
+
+
 struct SubMesh
 {
 	UINT IndexCount;

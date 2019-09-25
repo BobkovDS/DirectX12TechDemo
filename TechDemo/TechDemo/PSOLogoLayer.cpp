@@ -39,7 +39,7 @@ void PSOLogoLayer::buildShadersBlob()
 	buildRootSignature(m_shaders["vs"].Get()); //Root signature was added to Vertex Shader only. It is enough for us.
 }
 
-void PSOLogoLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, DXGI_FORMAT dsFormat)
+void PSOLogoLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, DXGI_FORMAT dsFormat, DXGI_SAMPLE_DESC sampleDesc)
 {
 	m_device = device;
 	m_rtvFormat = rtFormat;
@@ -49,7 +49,7 @@ void PSOLogoLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, DXGI_FOR
 	buildShadersBlob();
 
 	// PSO for Layer_0: Non-skinned Opaque objects: [OPAQUELAYER]
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer0 = buildCommonPSODescription();	
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer0 = buildCommonPSODescription(sampleDesc);
 	psoDescLayer0.InputLayout = { m_inputLayout[ILV1].data(), (UINT)m_inputLayout[ILV1].size() };
 	psoDescLayer0.VS = { reinterpret_cast<BYTE*>(m_shaders["vs"]->GetBufferPointer()), m_shaders["vs"]->GetBufferSize() };
 	psoDescLayer0.PS = { reinterpret_cast<BYTE*>(m_shaders["ps"]->GetBufferPointer()), m_shaders["ps"]->GetBufferSize() };

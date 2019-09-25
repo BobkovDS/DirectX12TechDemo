@@ -9,12 +9,23 @@ BasicDXGI::BasicDXGI(HINSTANCE hInstance, const std::wstring& applName, int widt
 	m_fullScreen = false;
 	m_backBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;	
 
+	m_rtSampleDesc.Count = 4;
+
 	LOG("BasicDXGI canvas was created");
 }
 
 BasicDXGI::~BasicDXGI()
 {
 	FlushCommandQueue();
+
+	{
+		ComPtr<IDXGIDebug1> dxgiDebug;
+		if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&dxgiDebug))))
+		{
+			dxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);			
+		}
+	}
+
 	LOG("BasicDXGI canvas was destroyed");
 }
 
@@ -81,7 +92,7 @@ void BasicDXGI::init3D()
 
 #if defined(_DEBUG)
 	{
-		ComPtr<ID3D12Debug> debugController;
+		ComPtr<ID3D12Debug1> debugController;
 		if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
 		{
 			debugController->EnableDebugLayer();
@@ -92,7 +103,6 @@ void BasicDXGI::init3D()
 
 	// Create Factory
 	{
-		UINT dxgiFactoryFlags = 0;
 		res = CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&m_factory));
 		assert(SUCCEEDED(res));
 	}
@@ -101,7 +111,7 @@ void BasicDXGI::init3D()
 	{
 		// Get required Adapter
 		ComPtr<IDXGIAdapter1> hardwareAdapter;
-		getHardwareAdapter(m_factory.Get(), hardwareAdapter);// hardwareAdapter.Get());	
+		getHardwareAdapter(m_factory.Get(), hardwareAdapter);
 
 #if defined (_LOGDEBUG)
 		logAdapters();
@@ -151,34 +161,88 @@ void BasicDXGI::init3D()
 		DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
 		swapChainDesc.Width = width() * m_dxKoef;
 		swapChainDesc.Height = height() * m_dyKoef;
-		swapChainDesc.BufferCount = m_swapChainsBufferCount;
+		swapChainDesc.BufferCount = g_swapChainsBufferCount;
 		swapChainDesc.Format = m_backBufferFormat;
 		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-		swapChainDesc.SampleDesc.Count = 1;
+		swapChainDesc.SampleDesc.Count = 1;// m_rtSampleDesc.Count;
+		swapChainDesc.SampleDesc.Quality = 0;// lmsQualityLevels.NumQualityLevels > 0 ? lmsQualityLevels.NumQualityLevels - 1 : 0;
 
-		ComPtr<IDXGISwapChain1> pSwapChain;
-
+		ComPtr<IDXGISwapChain1> pSwapChain;		
 		res = m_factory->CreateSwapChainForHwnd(m_cmdQueue.Get(), hMainWind(), &swapChainDesc,
 			nullptr, nullptr, &pSwapChain);
 		assert(SUCCEEDED(res));
 		pSwapChain.As(&m_swapChain);
 
+		// Disable the Alt+Enter fullscreen toggle feature.
+		res = m_factory->MakeWindowAssociation(hMainWind(), DXGI_MWA_NO_ALT_ENTER);
 		
 		// Create Descriptor heap for RenderTargetViews
 		D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc = {};		
 
 		rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-		rtvHeapDesc.NumDescriptors = m_swapChainsBufferCount;
+		rtvHeapDesc.NumDescriptors = g_swapChainsBufferCount;
 		rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 		res = m_device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&m_rtvHeap));
 		assert(SUCCEEDED(res));	
 
 		m_rtvDescriptorSize = m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+		
+#ifdef GUI_HUD
+		// Direct2D
+		{
+			{
+				// Create Direct2D Device - {Not sure about the place for this. It should be another way to clean it}
+				UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+				ComPtr<ID3D11Device> ld3d11Device;
+				res = D3D11On12CreateDevice(
+					m_device.Get(),
+					creationFlags,
+					nullptr,
+					0,
+					reinterpret_cast<IUnknown**> (m_cmdQueue.GetAddressOf()),
+					1,
+					0,
+					&ld3d11Device,
+					&m_d3d11Context,
+					nullptr);
+				res = ld3d11Device.As(&m_d3d11On12Device);
+			}
+
+			// Create a Direct2D Factory		
+			{
+				//if (m_HUDContext)	m_HUDContext->Release();
+
+				D2D1_DEVICE_CONTEXT_OPTIONS deviceOptions = D2D1_DEVICE_CONTEXT_OPTIONS_NONE;
+				res = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, m_HUDFactory.GetAddressOf());
+				ComPtr<IDXGIDevice> ldxgiDevice;
+				res = m_d3d11On12Device.As(&ldxgiDevice);
+				res = m_HUDFactory->CreateDevice(ldxgiDevice.Get(), &m_HUDDevice);
+				res = m_HUDDevice->CreateDeviceContext(deviceOptions, &m_HUDContext);
+				res = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), &m_writeFactory);
+			}
+
+			// Create D2D/DWrite objects for rendering text
+			{
+				res = m_HUDContext->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White), &m_HUDBrush);
+				m_writeFactory->CreateTextFormat(
+					L"Verdana",
+					NULL,
+					DWRITE_FONT_WEIGHT_NORMAL,
+					DWRITE_FONT_STYLE_NORMAL,
+					DWRITE_FONT_STRETCH_NORMAL,
+					18,
+					L"en-us",
+					&m_textFormat);
+				res = m_textFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
+				res = m_textFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+			}
+		}
+#endif	
 
 		create_RTV();
 		initDXGI_RTV_done = true;
-	}
+	}	
 
 	initDXGI_Full_done = true;
 }
@@ -197,73 +261,16 @@ void BasicDXGI::create_RTV()
 	assert(SUCCEEDED(res));
 
 	// Reset SwapChain buffers (Release the previous resources)
-	for (int i = 0; i < m_swapChainsBufferCount; i++)
+	for (int i = 0; i < g_swapChainsBufferCount; i++)
 	{
-		//if (m_swapChainBuffers[i])			m_swapChainBuffers[i].Get()->Release();
+		//if (m_swapChainBuffers[i])			m_swapChainBuffers[i].Get()->Release();		
+		m_swapChainBuffers[i].Reset();
 		m_HUDRenderTargets[i].Reset();
 		m_wrappedBackBuffers[i].Reset();
-		m_swapChainBuffers[i].Reset();
 	}
 
-#ifdef GUI_HUD
-	// Direct2D
-	{
-		{
-			// Create Direct2D Device - {Not sure about the place for this. It should be another way to clean it}
-			UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
-			ComPtr<ID3D11Device> ld3d11Device;
-			res = D3D11On12CreateDevice(
-				m_device.Get(),
-				creationFlags,
-				nullptr,
-				0,
-				reinterpret_cast<IUnknown**> (m_cmdQueue.GetAddressOf()),
-				1,
-				0,
-				&ld3d11Device,
-				&m_d3d11Context,
-				nullptr);
-			res = ld3d11Device.As(&m_d3d11On12Device);
-		}
-
-		// Create a Direct2D Factory		
-		{
-			//if (m_HUDContext)	m_HUDContext->Release();
-
-			D2D1_DEVICE_CONTEXT_OPTIONS deviceOptions = D2D1_DEVICE_CONTEXT_OPTIONS_NONE;
-			res = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, m_HUDFactory.GetAddressOf());
-			ComPtr<IDXGIDevice> ldxgiDevice;
-			res = m_d3d11On12Device.As(&ldxgiDevice);
-			res = m_HUDFactory->CreateDevice(ldxgiDevice.Get(), &m_HUDDevice);
-			res = m_HUDDevice->CreateDeviceContext(deviceOptions, &m_HUDContext);
-			res = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), &m_writeFactory);
-		}
-
-		// Create D2D/DWrite objects for rendering text
-		{
-			res = m_HUDContext->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::GreenYellow), &m_HUDBrush);
-			m_writeFactory->CreateTextFormat(
-				L"Verdana",
-				NULL,
-				DWRITE_FONT_WEIGHT_NORMAL,
-				DWRITE_FONT_STYLE_NORMAL,
-				DWRITE_FONT_STRETCH_NORMAL,
-				20,
-				L"en-us",
-				&m_textFormat);
-			res = m_textFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
-			res = m_textFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
-		}
-	}
-	
-	float ldpiX, ldpiY;
-	m_HUDFactory->GetDesktopDpi(&ldpiX, &ldpiY);
-	D2D1_BITMAP_PROPERTIES1 lBitmapProperties = D2D1::BitmapProperties1(
-		D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
-		D2D1::PixelFormat(m_backBufferFormat, D2D1_ALPHA_MODE_PREMULTIPLIED),
-		ldpiX, ldpiY);
-#endif	
-
+	if (m_d3d11Context)
+		m_d3d11Context->Flush();
 
 	// Resize SwapChain
 	/* MSDN:
@@ -272,22 +279,27 @@ void BasicDXGI::create_RTV()
 	the resources or views, and ensure that neither the resource nor a view is still bound to a device context.	.
 	*/	
 
-	res = m_swapChain->ResizeBuffers(m_swapChainsBufferCount, width() , height(),
+	res = m_swapChain->ResizeBuffers(g_swapChainsBufferCount, width() , height(),
 		m_backBufferFormat, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
-	assert(SUCCEEDED(res));
+	assert(SUCCEEDED(res));	
 
-	UINT rtvDescriptorSize = m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-
-	// Create SwapChain Views
+	// Extract SwapChain buffers to be able to change a status for this and create RTV for this
 	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHeapHandle(m_rtvHeap->GetCPUDescriptorHandleForHeapStart());
-	for (int i = 0; i < m_swapChainsBufferCount; i++)
-	{
-		// for Direct3D
-		m_swapChain->GetBuffer(i, IID_PPV_ARGS(&m_swapChainBuffers[i]));
-		m_device->CreateRenderTargetView(m_swapChainBuffers[i].Get(), nullptr, rtvHeapHandle);
-		
+	for (int i = 0; i < g_swapChainsBufferCount; i++)
+	{		
+		m_swapChain->GetBuffer(i, IID_PPV_ARGS(&m_swapChainBuffers[i]));	
+		m_device->CreateRenderTargetView(m_swapChainBuffers[i].Get(), nullptr, rtvHeapHandle);		
+		rtvHeapHandle.Offset(1, m_rtvDescriptorSize);
+
 #ifdef GUI_HUD
 		// for Direct2D
+		float ldpiX, ldpiY;
+		m_HUDFactory->GetDesktopDpi(&ldpiX, &ldpiY);
+		D2D1_BITMAP_PROPERTIES1 lBitmapProperties = D2D1::BitmapProperties1(
+			D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW,
+			D2D1::PixelFormat(m_backBufferFormat, D2D1_ALPHA_MODE_PREMULTIPLIED),
+			ldpiX, ldpiY);
+
 		D3D11_RESOURCE_FLAGS ld3d11Flags = { D3D11_BIND_RENDER_TARGET };
 		res = m_d3d11On12Device->CreateWrappedResource(m_swapChainBuffers[i].Get(),
 			&ld3d11Flags,
@@ -300,9 +312,8 @@ void BasicDXGI::create_RTV()
 		res = m_wrappedBackBuffers[i].As(&lSurface);
 		res = m_HUDContext->CreateBitmapFromDxgiSurface(lSurface.Get(), &lBitmapProperties, &m_HUDRenderTargets[i]);
 #endif
-		rtvHeapHandle.Offset(1, rtvDescriptorSize);
 	}
-	
+
 	// Execute the resize commands
 	res = m_cmdList->Close();
 	
@@ -379,7 +390,6 @@ void BasicDXGI::onKeyDown(WPARAM btnState) {
 	}
 		return;
 	}
-
 }
 
 void BasicDXGI::onReSize(int newWidth, int newHeight) {
@@ -389,8 +399,6 @@ void BasicDXGI::onReSize(int newWidth, int newHeight) {
 	if (!initDXGI_RTV_done) return; // onResize call it before how 3D part was init
 	create_RTV();	
 }
-
-
 //---------------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------

@@ -19,18 +19,34 @@ RenderManager::~RenderManager()
 {
 }
 
-void RenderManager::initialize(const RenderManagerMessanger& renderParams)
+void RenderManager::initialize(RenderManagerMessanger& renderParams)
 {
-	m_swapChainResources = renderParams.RTResources;
+	if (renderParams.RTResources != nullptr) // Do we use SwapChain RenderTarget Buffers directly or through MSAA RenderTargets
+		m_swapChainResources = renderParams.RTResources;
+	else
+		m_swapChainResources = m_msaaRenderTargets.RenderTargetBuffers;
+
 	m_applicationRTVHeap = renderParams.RTVHeap;
 	m_texturesDescriptorHeap = renderParams.SRVHeap;
 	m_device = renderParams.commonRenderData.Device;
 	m_cmdList= renderParams.commonRenderData.CmdList;
-	m_swapChain= renderParams.commonRenderData.SwapChain;	
 	m_width= renderParams.commonRenderData.Width;
 	m_height= renderParams.commonRenderData.Height;
 	m_rtResourceFormat= renderParams.commonRenderData.RTResourceFormat;		
 	m_frameResourceManager= renderParams.commonRenderData.FrameResourceMngr;	
+
+	FLOAT clearColor[4] = { 0.0f, 0.5f, 0.4f, 1.0f };
+	D3D12_CLEAR_VALUE optClear;
+	optClear.Format = m_rtResourceFormat;
+	optClear.DepthStencil.Depth = 1.0f;
+	optClear.DepthStencil.Stencil = 0;
+	std::copy(clearColor, clearColor + 4, optClear.Color);
+
+	m_msaaRenderTargets.initialize(m_device, m_width, m_height, m_rtResourceFormat, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET, &optClear);
+	m_msaaRenderTargets.resize(m_width, m_height);
+	m_msaaRenderTargets.createRTV(m_applicationRTVHeap);
+
+	renderParams.commonRenderData.MSAARenderTarget = &m_msaaRenderTargets;
 
 	m_finalRender.initialize(renderParams.commonRenderData);
 	m_mirrorRender.initialize(renderParams.commonRenderData);
@@ -76,7 +92,6 @@ void RenderManager::buildRenders()
 	m_mirrorRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
 	m_mirrorRender.setSwapChainResources(m_swapChainResources);
 	m_mirrorRender.build();	
-
 
 	// build Debug Axes Render
 	m_debugRenderAxes.set_DescriptorHeap_RTV(m_applicationRTVHeap);
@@ -124,9 +139,7 @@ void RenderManager::buildRenders()
 
 void RenderManager::draw()
 {
-	assert(m_initialized);
-
-	int lResourceIndex = m_swapChain->GetCurrentBackBufferIndex();
+	assert(m_initialized);	
 
 	int updatedFlags = 0;
 
@@ -183,14 +196,6 @@ void RenderManager::draw()
 			m_debugRenderNormals.draw(updatedFlags);		
 	}
 
-	// for using with GUI Render function. GUI_render function waits render target resource in D3D12_RESOURCE_STATE_RENDER_TARGET
-#ifdef GUI_HUD
-	m_cmdList->ResourceBarrier(1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
-			D3D12_RESOURCE_STATE_PRESENT,
-			D3D12_RESOURCE_STATE_RENDER_TARGET));
-#endif
-
 	if (m_isSSAOUsing)
 	{
 		m_blurRender.draw(0);			
@@ -198,6 +203,7 @@ void RenderManager::draw()
 
 	if (m_isComputeWork)
 		m_computeRender.draw(0);
+
 }
 
 void RenderManager::buildTechSRVs()
@@ -235,10 +241,26 @@ void RenderManager::buildTechSRVs()
 	}
 }
 
+void RenderManager::setCurrentRTID(UINT current_swapChainBufferID)
+{
+	m_msaaRenderTargets.setCurrentBufferID((uint8_t)current_swapChainBufferID);
+}
+
+ID3D12Resource* RenderManager::getCurrentRenderTargetResource()
+{
+	uint8_t lCurrentRTIndex = m_msaaRenderTargets.getCurrentBufferID();
+	return m_msaaRenderTargets.RenderTargetBuffers[lCurrentRTIndex].Get();
+}
+
 void RenderManager::resize(int iwidth, int iheight)
 {
 	if (m_initialized)
 	{
+		m_width = iwidth;
+		m_height = iheight;
+		m_msaaRenderTargets.resize(iwidth, iheight);
+		m_msaaRenderTargets.createRTV(m_applicationRTVHeap);
+
 		m_ssaoRender.resize(iwidth, iheight);
 
 		m_blurRender.setInputResource(m_ssaoRender.getAOResource());

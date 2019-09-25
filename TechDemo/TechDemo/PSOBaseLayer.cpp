@@ -66,7 +66,7 @@ void PSOBaseLayer::buildRootSignature(ID3DBlob* ptrblob)
 	}
 }
 
-D3D12_GRAPHICS_PIPELINE_STATE_DESC PSOBaseLayer::buildCommonPSODescription()
+D3D12_GRAPHICS_PIPELINE_STATE_DESC PSOBaseLayer::buildCommonPSODescription(DXGI_SAMPLE_DESC sampleDesc)
 {
 	/* return common PSO description:		
 		- Stencil test is turn off
@@ -102,8 +102,7 @@ D3D12_GRAPHICS_PIPELINE_STATE_DESC PSOBaseLayer::buildCommonPSODescription()
 	psoDesc.NumRenderTargets = 1;	
 	psoDesc.RTVFormats[0] = m_rtvFormat;
 	psoDesc.DSVFormat = m_dsvFormat;
-
-	psoDesc.SampleDesc.Count = 1;
+	psoDesc.SampleDesc = sampleDesc;	
 
 	return psoDesc;
 }

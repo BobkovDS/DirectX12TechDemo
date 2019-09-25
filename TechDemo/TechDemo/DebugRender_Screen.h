@@ -4,8 +4,7 @@
 
 class DebugRender_Screen :
 	public RenderBase
-{
-	IDXGISwapChain3* m_swapChain;
+{	
 	ComPtr<ID3D12Resource>* m_swapChainResources;
 
 	PSODebugLayer_Screen m_psoLayer;

@@ -16,8 +16,7 @@ LogoRender::~LogoRender()
 
 void LogoRender::initialize(const RenderMessager& renderParams, const RenderMessager11on12& guiParams, ID3D12CommandQueue* cmdQueue)
 {
-	m_cmdQueue = cmdQueue;
-	m_swapChain = renderParams.SwapChain;	
+	m_cmdQueue = cmdQueue;	
 	RenderBase::initialize(renderParams);
 
 	m_d3d11On12Device = guiParams.D3d11On12Device;
@@ -70,7 +69,10 @@ void LogoRender::build()
 	m_frameResourceManager.Initialize(m_device, m_fence.Get(), 1, 1, 0, 0, 0);
 
 	// Initialize PSO layer
-	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat);
+	DXGI_SAMPLE_DESC lSampleDesc;
+	lSampleDesc.Count = 1;// m_msaaRenderTargets->getSampleCount();
+	lSampleDesc.Quality = 0;// m_msaaRenderTargets->getSampleQuality();
+	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat, lSampleDesc);
 	
 	build_mesh();		
 

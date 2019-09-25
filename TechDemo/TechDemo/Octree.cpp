@@ -35,8 +35,7 @@ Octree* Octree::getNextChild(int iCharID)
 	DirectX::XMVECTOR childP2 = DirectX::XMLoadFloat4(&m_Cub_bb.Center);
 	
 	DirectX::BoundingBox childBB;
-	DirectX::BoundingBox::CreateFromPoints(childBB, childP1, childP2);
-		//DirectX::BoundingBox::CreateFromPoints(childBB, childP1, childP2);
+	DirectX::BoundingBox::CreateFromPoints(childBB, childP1, childP2);		
 
 	BoundingBox lChildBB(childBB);
 	return new Octree(lChildBB);
@@ -251,90 +250,6 @@ void Octree::update(BoundingFrustum& frustom, float r1, float r2, float r3, floa
 			m_childs[i]->update(frustom, r1, r2, r3, r4, r5 );
 	}
 }
-
-
-//void Octree::update()
-//{
-//	for (int i = 0; i < m_vectorContainedBB.size(); i++)
-//	{
-//		BoundingBoxEXT* lInstBB = m_vectorContainedBB[i];
-//		XMVECTOR lBBCenter = XMLoadFloat3(&lInstBB->Center);
-//		XMVECTOR lR = lBBCenter - selector.SelectorPostition;
-//		XMVECTOR lRLenght = XMVector3Length(lR);
-//		//XMVECTOR lR_check = XMVector3Normalize(lR); // ONLY TO CHECK NORMALIZATION
-//		lR = lR / lRLenght;
-//
-//		XMVECTOR lDot = XMVector3Dot(selector.SelectorDirection, lR);
-//
-//		float lAngle = XMVectorGetX(lDot);
-//
-//		if (lAngle >= selector.ConeCosA) // Now we use Cone Variant		
-//		{
-//			float lRDistance = XMVectorGetX(lRLenght);
-//
-//			std::pair<UINT, UINT> lID_LOD;
-//
-//			if (lInstBB->pRenderItem->Geometry != NULL) // If we do not use LOD for this RI, so lets draw all instances in LOD0
-//				lID_LOD.second = 0;
-//			else // ..but if we have LOD for this RI
-//			{
-//				if (lRDistance <= selector.LOD0_distance)
-//					lID_LOD.second = 0;
-//				else if (lRDistance > selector.LOD1_distance)
-//					lID_LOD.second = 2;
-//				else
-//					lID_LOD.second = 1;
-//			}
-//
-//			lID_LOD.first = m_vectorContainedBB[i]->Inst_ID;
-//			lInstBB->pRenderItem->InstancesID_LOD[lID_LOD.second][lInstBB->pRenderItem->InstancesID_LOD_size[lID_LOD.second]++]
-//				= lID_LOD.first; // add InstanceID and LOD
-//		}
-//
-//	}
-//
-//	for (int i = 0; i < m_childs.size(); i++)
-//	{
-//		BoundingBox& lChildNodeBB = m_childs[i]->m_Cub_bb;
-//		XMVECTOR lBBCenter = XMLoadFloat3(&lChildNodeBB.Center);
-//		XMVECTOR lR = lBBCenter - selector.SelectorPostition;
-//		XMVECTOR lRLenght = XMVector3Length(lR);		
-//		lR = lR / lRLenght;
-//
-//		XMVECTOR lDot = XMVector3Dot(selector.SelectorDirection, lR);
-//
-//		float lAngle = XMVectorGetX(lDot);
-//
-//		if (lAngle >= 0) // Now we use Cone Variant		
-//			m_childs[i]->update();
-//	}
-//}
-//
-//void Octree::getBBListForIntersection(std::vector<BoundingBox*>& bbList,
-//	DirectX::FXMVECTOR& rayOrigin, DirectX::FXMVECTOR& rayDir, float dist)
-//{
-//	// 1) Give all BB for current sub-Cub
-//	copy(m_listOfContainedBB.begin(), m_listOfContainedBB.end(), back_inserter(bbList));
-//
-//	// 2) Lets childs do the same if their BB intersect with ray
-//	for (int i = 0; i < m_childs.size(); i++)
-//	{
-//		if (m_childs[i]->m_Cub_bb.Intersects(rayOrigin, rayDir, dist))
-//			m_childs[i]->getBBListForIntersection(bbList, rayOrigin, rayDir, dist);
-//	}
-//}
-//
-//void Octree::getInstancesList()
-//{
-//	auto it_begin = m_listOfContainedBB.begin();
-//	auto it_end = m_listOfContainedBB.end();
-//
-//	for (; it_begin != it_end; it_begin++)
-//		(*it_begin)->pRenderItem->InstancesID.push_back((*it_begin)->Inst_ID);
-//	
-//	for (int i = 0; i < m_childs.size(); i++)
-//		m_childs[i]->getInstancesList();
-//}
 
 std::vector<BoundingBoxEXT*>& Octree::getContainedBBVector()
 {

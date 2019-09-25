@@ -52,7 +52,7 @@ void PSODCMLayer::buildShadersBlob()
 	buildRootSignature(m_shaders["vs"].Get()); //Root signature was added to Vertex Shader only. It is enough for us.
 }
 
-void PSODCMLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, DXGI_FORMAT dsFormat)
+void PSODCMLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, DXGI_FORMAT dsFormat, DXGI_SAMPLE_DESC sampleDesc)
 {
 	m_device = device;
 	m_rtvFormat = rtFormat;
@@ -62,7 +62,7 @@ void PSODCMLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, DXGI_FORM
 	buildShadersBlob();
 
 	// PSO for Layer_0: Non-skinned Opaque objects: [OPAQUELAYER]
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer0 = buildCommonPSODescription();
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer0 = buildCommonPSODescription(sampleDesc);
 	psoDescLayer0.InputLayout = { m_inputLayout[ILV1].data(), (UINT)m_inputLayout[ILV1].size() };
 	psoDescLayer0.VS = { reinterpret_cast<BYTE*>(m_shaders["vs"]->GetBufferPointer()), m_shaders["vs"]->GetBufferSize() };
 	psoDescLayer0.PS = { reinterpret_cast<BYTE*>(m_shaders["ps"]->GetBufferPointer()), m_shaders["ps"]->GetBufferSize() };
@@ -71,13 +71,13 @@ void PSODCMLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, DXGI_FORM
 		psoDescLayer0.GS = { reinterpret_cast<BYTE*>(m_shaders["gs"]->GetBufferPointer()), m_shaders["gs"]->GetBufferSize() };
 
 	// PSO for Layer_3: Skinned Not Opaque objects: [SKINNEDNOTOPAQUELAYER]
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer1 = buildCommonPSODescription();
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer1 = buildCommonPSODescription(sampleDesc);
 	psoDescLayer1.InputLayout = { m_inputLayout[ILV2].data(), (UINT)m_inputLayout[ILV2].size() };
 	psoDescLayer1.VS = { reinterpret_cast<BYTE*>(m_shaders["vs_skinned"]->GetBufferPointer()), m_shaders["vs_skinned"]->GetBufferSize() };
 	psoDescLayer1.PS = { reinterpret_cast<BYTE*>(m_shaders["ps_skinned"]->GetBufferPointer()), m_shaders["ps_skinned"]->GetBufferSize() };
 
 	// PSO for Layer_5: The Sky Cube map object: [SKY]
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer5 = buildCommonPSODescription();
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer5 = buildCommonPSODescription(sampleDesc);
 	psoDescLayer5.InputLayout = { m_inputLayout[ILV1].data(), (UINT)m_inputLayout[ILV1].size() };
 	psoDescLayer5.VS = { reinterpret_cast<BYTE*>(m_shaders["vs_sky"]->GetBufferPointer()), m_shaders["vs_sky"]->GetBufferSize() };
 	psoDescLayer5.PS = { reinterpret_cast<BYTE*>(m_shaders["ps_sky"]->GetBufferPointer()), m_shaders["ps_sky"]->GetBufferSize() };

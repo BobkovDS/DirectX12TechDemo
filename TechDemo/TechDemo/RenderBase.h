@@ -7,6 +7,8 @@
 #include "FrameResourcesManager.h"
 #include "ResourceManager.h"
 
+const int g_swapChainsBufferCount2 = 3;
+
 #define TECHSRVCOUNT 11
 
 #define TECHSLOT_SKY 0
@@ -23,7 +25,7 @@
 
 struct RenderResource {
 	void createResource(ID3D12Device* device, DXGI_FORMAT resourceFormat, D3D12_RESOURCE_FLAGS resourceFlags,
-		UINT width, UINT height, D3D12_CLEAR_VALUE* optClear = NULL, UINT16 texturesCount=1);
+		UINT width, UINT height, DXGI_SAMPLE_DESC* sampleDesc=NULL, D3D12_CLEAR_VALUE* optClear = NULL, UINT16 texturesCount=1);
 
 	void resize(UINT width, UINT height);	
 
@@ -44,13 +46,55 @@ private:
 	D3D12_RESOURCE_FLAGS m_resourceFlags;	
 	D3D12_CLEAR_VALUE* m_optClear;
 	UINT16 m_texturesCount;
+	DXGI_SAMPLE_DESC m_sampleDesc;
 	Microsoft::WRL::ComPtr<ID3D12Resource> m_resource;
 };
 
+//const int g_swapChainsBufferCount=3;
+
+struct MSAARenderTargets
+{
+private:
+	uint8_t m_currenBufferID;
+	ID3D12Device* m_device;
+	DXGI_FORMAT m_resourceFormat;
+	D3D12_RESOURCE_FLAGS m_resourceFlags;
+	D3D12_CLEAR_VALUE* m_optClear;
+	UINT m_rtvDescriptorSize;
+	bool m_msaaEnabled;
+	UINT m_msaaCount;
+	UINT m_msaaQuality;
+
+public:
+	ComPtr<ID3D12Resource> RenderTargetBuffers[g_swapChainsBufferCount2];
+
+	MSAARenderTargets()
+	{
+		m_device = nullptr;
+	};
+
+	~MSAARenderTargets();
+
+	void initialize(ID3D12Device* device, UINT width, UINT height,
+		DXGI_FORMAT resourceFormat = DXGI_FORMAT_R8G8B8A8_UNORM,
+		D3D12_RESOURCE_FLAGS resourceFlags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET,
+		D3D12_CLEAR_VALUE* optClear = NULL);
+
+	void resize(UINT width, UINT height);
+	void createRTV(ID3D12DescriptorHeap* RTVHeap);
+	void setCurrentBufferID(uint8_t currentBI) { m_currenBufferID = currentBI; }
+	uint8_t getCurrentBufferID() { return m_currenBufferID; }
+	void setMSAAEnabled(bool val) { m_msaaEnabled = val; }
+	bool getMSAAEnabled() { return m_msaaEnabled; }
+	UINT getSampleCount() { return m_msaaCount; }
+	UINT getSampleQuality() { return m_msaaQuality; }
+};
+
+
 struct RenderMessager {
 	ID3D12Device* Device;
-	ID3D12GraphicsCommandList* CmdList;
-	IDXGISwapChain3* SwapChain;		
+	ID3D12GraphicsCommandList* CmdList;	
+	MSAARenderTargets* MSAARenderTarget;
 	DXGI_FORMAT DSResourceFormat; //DXGI_FORMAT_D24_UNORM_S8_UINT
 	DXGI_FORMAT RTResourceFormat;
 	UINT Width;
@@ -79,6 +123,7 @@ protected:
 	Scene* m_scene;	
 	IFrameResourcesManager* m_frameResourceManager;
 	ResourceManager* m_resourceManager;
+	MSAARenderTargets* m_msaaRenderTargets;
 
 	UINT m_width;
 	UINT m_height;
@@ -87,6 +132,7 @@ protected:
 	bool m_rtResourceWasSetBefore;
 	bool m_dsvHeapWasSetBefore; // The heap(s) can be only created by Render or Set from another source. No combinated variants.
 	bool m_rtvHeapWasSetBefore;
+	bool m_DoesRenderUseMutliSampling;
 
 	DXGI_FORMAT m_dsResourceFormat;
 	DXGI_FORMAT m_rtResourceFormat;
@@ -114,11 +160,12 @@ protected:
 public:
 	RenderResource* create_Resource(DXGI_FORMAT resourceFormat, D3D12_RESOURCE_FLAGS resourceFlags,
 		UINT width = 0, UINT height = 0,
+		DXGI_SAMPLE_DESC* sampleDesc = NULL, 
 		D3D12_CLEAR_VALUE* optClear = NULL,
 		UINT16 texturesCount = 1);
 
 	void create_Resource_DS(DXGI_FORMAT resourceFormat);
-	void create_Resource_RT(DXGI_FORMAT resourceFormat, UINT width = 0, UINT height = 0, UINT16 resourcesCount =1);
+	void create_Resource_RT(DXGI_FORMAT resourceFormat, UINT width = 0, UINT height = 0, UINT16 resourcesCount =1, bool MultiSamplingEnabled = false);
 	void create_DescriptorHeap_DSV();
 	void create_DescriptorHeap_RTV(UINT descriptorsCount);
 	void create_DSV(DXGI_FORMAT viewFormat = DXGI_FORMAT_UNKNOWN);

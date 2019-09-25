@@ -34,7 +34,11 @@ void BlurRender::build(int blurCount)
 	}
 
 	// Initialize PSO layer
-	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat);
+	DXGI_SAMPLE_DESC lSampleDesc;
+	lSampleDesc.Count = 1;
+	lSampleDesc.Quality= 0;
+
+	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat, lSampleDesc);
 		
 	build_TechDescriptors();	
 	m_timer.setTickTime(0.0083f); // 60 fps

@@ -4,7 +4,7 @@ Timer::Timer()
 {
 	__int64 countPerSecond;
 	QueryPerformanceFrequency((LARGE_INTEGER*)&countPerSecond);
-	m_SecondsPerCount = 1.0 / (double)countPerSecond; // how our Computer fast is
+	m_SecondsPerCount = 1.0f / (double)countPerSecond; // how our Computer fast is
 
 	QueryPerformanceCounter((LARGE_INTEGER*)&m_CurrTime);
 	m_PrevTime = m_CurrTime;	

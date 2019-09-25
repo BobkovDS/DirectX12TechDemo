@@ -11,8 +11,7 @@ DebugRender_Screen::~DebugRender_Screen()
 }
 
 void DebugRender_Screen::initialize(const RenderMessager& renderParams)
-{
-	m_swapChain = renderParams.SwapChain;
+{	
 	RenderBase::initialize(renderParams);
 }
 
@@ -21,7 +20,10 @@ void DebugRender_Screen::build()
 	assert(m_initialized == true);
 		
 	// Initialize PSO layer
-	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat);
+	DXGI_SAMPLE_DESC lSampleDesc;
+	lSampleDesc.Count = m_msaaRenderTargets->getSampleCount();
+	lSampleDesc.Quality = m_msaaRenderTargets->getSampleQuality();
+	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat, lSampleDesc);
 
 	// Initialize DescriptorHandle: Tech_DescriptorHandle
 	m_techSRVHandle = m_descriptorHeap->GetGPUDescriptorHandleForHeapStart();
@@ -31,11 +33,12 @@ void DebugRender_Screen::build()
 
 void DebugRender_Screen::draw(UINT textureID)
 {
-	int lResourceIndex = m_swapChain->GetCurrentBackBufferIndex();
-	m_cmdList->ResourceBarrier(1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
-			D3D12_RESOURCE_STATE_PRESENT,
-			D3D12_RESOURCE_STATE_RENDER_TARGET));
+	int lResourceIndex = m_msaaRenderTargets->getCurrentBufferID();
+
+	//m_cmdList->ResourceBarrier(1,
+	//	&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
+	//		D3D12_RESOURCE_STATE_PRESENT,
+	//		D3D12_RESOURCE_STATE_RENDER_TARGET));
 
 	CD3DX12_CPU_DESCRIPTOR_HANDLE currentRTV(
 		m_rtvHeap->GetCPUDescriptorHandleForHeapStart(),
@@ -68,11 +71,11 @@ void DebugRender_Screen::draw(UINT textureID)
 	m_cmdList->DrawIndexedInstanced(drawArg.IndexCount, 1, drawArg.StartIndexLocation, 0, 0);
 
 	//-----------------------
-	m_cmdList->ResourceBarrier(1,
+	/*m_cmdList->ResourceBarrier(1,
 		&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
 			D3D12_RESOURCE_STATE_RENDER_TARGET,
 			D3D12_RESOURCE_STATE_PRESENT));
-
+*/
 }
 
 void DebugRender_Screen::resize(UINT iwidth, UINT iheight)

@@ -22,8 +22,9 @@ struct RenderManagerMessanger {
 class RenderManager
 {
 	ID3D12Device* m_device;
-	ID3D12GraphicsCommandList* m_cmdList;
-	IDXGISwapChain3* m_swapChain;		
+	ID3D12GraphicsCommandList* m_cmdList;	
+	MSAARenderTargets m_msaaRenderTargets;
+
 	ComPtr<ID3D12Resource>* m_swapChainResources;
 	ID3D12DescriptorHeap* m_applicationRTVHeap;
 	ID3D12DescriptorHeap* m_texturesDescriptorHeap;
@@ -62,12 +63,12 @@ public:
 	RenderManager();
 	~RenderManager();
 
-	void initialize(const RenderManagerMessanger& renderParams);
+	void initialize(RenderManagerMessanger& renderParams);
 	
 	void buildRenders();
 	void draw();
 	void resize(int newWidth, int newHeight);	
-
+	void setCurrentRTID(UINT current_swapChainBufferID);
 	void toggleDebugMode();
 	void toggleDebug_Normals_Vertex();
 	void toggleDebug_Axes();
@@ -84,6 +85,7 @@ public:
 	void setRenderMode_Shadow(UINT mapID=0); // Shadow Map
 	void test_drop();
 	bool isDebugMode() { return m_debugMode; }
+	ID3D12Resource* getCurrentRenderTargetResource();
 
 	UINT getTrianglesDrawnCount() { return m_finalRender.getTrianglesDrawnCount(); } // How much Triangles were sent for drawing in FinalRender
 	UINT getTrianglesCountIfWithoutLOD() { return m_finalRender.getTrianglesCountIfWithoutLOD(); } // How much triangles would be drawn without using LOD

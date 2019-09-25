@@ -19,9 +19,11 @@ private:
 	HWND m_hMainWind;
 	int m_width;
 	int m_height;
+	RECT m_rectBeforeFullScreen;
 	std::wstring m_ApplicationName;	
-	bool m_windowWasCreated = false;	
-
+	bool m_windowWasCreated;
+	bool m_isFullScreen;
+	
 	void init();	
 	
 	virtual LRESULT msgProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam); // func1
@@ -33,13 +35,14 @@ private:
 	void operator=(const Canvas&) {}; // to use operator= is prohibited
 protected:
 	std::wofstream oLogFile;
-	bool toLimitFPS;
+	bool toLimitFPS;	
+	void toggleFullScreen();
 	virtual void onMouseDown(WPARAM btnState, int x, int y) {}
 	virtual void onMouseUp(WPARAM btnState, int x, int y) {}
 	virtual void onMouseMove(WPARAM btnState, int x, int y) {}
 	virtual void onKeyDown(WPARAM btnState) {}
 	virtual void onKeyUp(WPARAM btnState) {}
-	virtual void onReSize(int newWidth, int newHeight);
+	virtual void onReSize(int newWidth, int newHeight);	
 
 	virtual void init3D() { } // give a chance for inherited class to call his Initialization indepedently
 	virtual void work() { } // will give a chance to other class to do usefull job in main circle of application, in "run" function

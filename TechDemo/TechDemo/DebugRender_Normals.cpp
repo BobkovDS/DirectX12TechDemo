@@ -10,8 +10,7 @@ DebugRender_Normals::~DebugRender_Normals()
 }
 
 void DebugRender_Normals::initialize(const RenderMessager& renderParams)
-{
-	m_swapChain = renderParams.SwapChain;
+{	
 	RenderBase::initialize(renderParams);
 }
 
@@ -22,7 +21,10 @@ void DebugRender_Normals::build()
 	//This class does not own it DepthStencil resources	
 
 	// Initialize PSO layer
-	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat);
+	DXGI_SAMPLE_DESC lSampleDesc;
+	lSampleDesc.Count = m_msaaRenderTargets->getSampleCount();
+	lSampleDesc.Quality = m_msaaRenderTargets->getSampleQuality();
+	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat, lSampleDesc);
 
 	// Build Axis geometry
 	buildGeometry();

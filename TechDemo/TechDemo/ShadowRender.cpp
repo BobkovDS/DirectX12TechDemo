@@ -18,6 +18,8 @@ void ShadowRender::build()
 {
 	assert(m_initialized == true);
 
+	m_DoesRenderUseMutliSampling = false;
+
 	m_own_resources.resize(1);
 	// DepthStencil resources. This class own it.
 	{
@@ -27,7 +29,11 @@ void ShadowRender::build()
 	}
 
 	// Initialize PSO layer
-	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat);	
+	DXGI_SAMPLE_DESC lSampleDesc;
+	lSampleDesc.Count = m_DoesRenderUseMutliSampling ? m_msaaRenderTargets->getSampleCount(): 1;
+	lSampleDesc.Quality = m_DoesRenderUseMutliSampling ? m_msaaRenderTargets->getSampleQuality(): 0;	
+	
+	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat, lSampleDesc);
 
 	// Initialize both DescriptorHandles: Tech_DescriptorHandle and Texture_DescriptorHandle	
 	m_techSRVHandle = m_descriptorHeap->GetGPUDescriptorHandleForHeapStart();
@@ -51,10 +57,12 @@ void ShadowRender::build_TechDescriptors()
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 
 	// SRV for Depth Map
+	bool lMutliSamplingEnabled = m_msaaRenderTargets != NULL && m_msaaRenderTargets->getMSAAEnabled() && m_DoesRenderUseMutliSampling ? true : false;
+		
 	lhDescriptorOffseting = lhDescriptor;
 	lhDescriptorOffseting.Offset(TECHSLOT_SHADOW, lSrvSize);
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.ViewDimension = lMutliSamplingEnabled ? D3D12_SRV_DIMENSION_TEXTURE2DMS : D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MipLevels = 1;
 	srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;// m_dsResource->getResource()->GetDesc().Format;	
 	m_device->CreateShaderResourceView(m_dsResource->getResource(), &srvDesc, lhDescriptorOffseting);

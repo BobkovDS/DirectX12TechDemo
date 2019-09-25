@@ -9,8 +9,7 @@ MirrorRender::~MirrorRender()
 }
 
 void MirrorRender::initialize(const RenderMessager& renderParams)
-{
-	m_swapChain = renderParams.SwapChain;
+{	
 	RenderBase::initialize(renderParams);
 }
 
@@ -19,7 +18,10 @@ void MirrorRender::build()
 	assert(m_initialized == true);
 
 	// Initialize PSO layer
-	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat);
+	DXGI_SAMPLE_DESC lSampleDesc;
+	lSampleDesc.Count = m_msaaRenderTargets->getSampleCount();
+	lSampleDesc.Quality = m_msaaRenderTargets->getSampleQuality();
+	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat, lSampleDesc);
 
 	// Initialize both DescriptorHandles: Tech_DescriptorHandle and Texture_DescriptorHandle	
 	m_techSRVHandle = m_descriptorHeap->GetGPUDescriptorHandleForHeapStart();
@@ -45,11 +47,12 @@ void MirrorRender::draw(int flags)
 		 1 << OPAQUELAYER | 1 << NOTOPAQUELAYER | 1 << SKINNEDOPAQUELAYER | 1 << NOTOPAQUELAYERCH;
 		
 
-	int lResourceIndex = m_swapChain->GetCurrentBackBufferIndex();
-	m_cmdList->ResourceBarrier(1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
-			D3D12_RESOURCE_STATE_PRESENT,
-			D3D12_RESOURCE_STATE_RENDER_TARGET));
+	int lResourceIndex = m_msaaRenderTargets->getCurrentBufferID();
+
+	//m_cmdList->ResourceBarrier(1,
+	//	&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
+	//		D3D12_RESOURCE_STATE_PRESENT,
+	//		D3D12_RESOURCE_STATE_RENDER_TARGET));
 
 	CD3DX12_CPU_DESCRIPTOR_HANDLE currentRTV(
 		m_rtvHeap->GetCPUDescriptorHandleForHeapStart(),
@@ -114,11 +117,11 @@ void MirrorRender::draw(int flags)
 	for (int i = 0; i < m_scene->getLayersCount(); i++) // Draw all Layers			
 		draw_layer(i, lInstanceOffset, lLayerToDraw & (1 << i));
 
-	//-----------------------
-	m_cmdList->ResourceBarrier(1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
-			D3D12_RESOURCE_STATE_RENDER_TARGET,
-			D3D12_RESOURCE_STATE_PRESENT));
+	////-----------------------
+	//m_cmdList->ResourceBarrier(1,
+	//	&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
+	//		D3D12_RESOURCE_STATE_RENDER_TARGET,
+	//		D3D12_RESOURCE_STATE_PRESENT));
 }
 
 
