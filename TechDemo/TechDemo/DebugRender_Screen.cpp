@@ -95,7 +95,7 @@ void DebugRender_Screen::build_screen()
 	//v0
 	vertex.Pos = XMFLOAT3(-1.0f, -1.0f, 0.0f);
 	vertex.Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	vertex.TangentU = XMFLOAT3(1.0f, 0.0f, 0.0f);
+	vertex.TangentU = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
 	vertex.UVText = XMFLOAT2(0.0f, 1.0f);
 	lVertices[0] = vertex;
 	//v1

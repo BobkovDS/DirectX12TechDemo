@@ -32,7 +32,7 @@ struct VertexIn
 {
     float3 PosL : POSITION;
     float3 Normal : NORMAL;
-	float3 TangentU : TANGENT;
+	float4 TangentU : TANGENT;
     float2 UVText : TEXCOORD;    
     uint4 BoneIndices0 : BONEINDEX;
     uint4 BoneIndices1 : BONEINDEX1;

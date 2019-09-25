@@ -78,13 +78,13 @@ void Scene::build(ObjectManager* objectManager, Camera* camera, SkeletonManager*
 	m_camera = camera;
 	m_skeletonManager = skeletonManager;
 
-	m_Layers[0].setVisibility(true); // Sky
-	m_Layers[1].setVisibility(true); // Simple Opaque
-	m_Layers[2].setVisibility(true); // Simple Not Opaque 
-	m_Layers[3].setVisibility(true); // Skinned Opaque
-	m_Layers[4].setVisibility(false); // Skinned Not Opaque
-	m_Layers[5].setVisibility(true); // Tesselated object (water)
-	m_Layers[6].setVisibility(true); // Object colclutated on Compute Shader(WaterV2)
+	m_Layers[SKY].setVisibility(true); // Sky
+	m_Layers[OPAQUELAYER].setVisibility(true); // Simple Opaque
+	m_Layers[NOTOPAQUELAYER].setVisibility(true); // Simple Not Opaque 
+	m_Layers[SKINNEDOPAQUELAYER].setVisibility(true); // Skinned Opaque
+	m_Layers[SKINNEDNOTOPAQUELAYER].setVisibility(false); // Skinned Not Opaque
+	m_Layers[NOTOPAQUELAYERGH].setVisibility(true); // Tesselated object (water)
+	m_Layers[NOTOPAQUELAYERCH].setVisibility(true); // Object colclutated on Compute Shader(WaterV2)
 
 
 	/* ObjectManager stores Lights in order in which FBXReader put it there (read order), but
@@ -121,13 +121,13 @@ void Scene::buildOctree()
 
 void Scene::InitLayers()
 {
-	m_Layers[0].init(m_objectManager->getSky());
-	m_Layers[1].init(m_objectManager->getOpaqueLayer());
-	m_Layers[2].init(m_objectManager->getNotOpaqueLayer());
-	m_Layers[3].init(m_objectManager->getSkinnedOpaqueLayer());
-	m_Layers[4].init(m_objectManager->getSkinnedNotOpaqueLayer());
-	m_Layers[5].init(m_objectManager->getNotOpaqueLayerGH());
-	m_Layers[6].init(m_objectManager->getNotOpaqueLayerCH());
+	m_Layers[SKY].init(m_objectManager->getSky());
+	m_Layers[OPAQUELAYER].init(m_objectManager->getOpaqueLayer());
+	m_Layers[NOTOPAQUELAYER].init(m_objectManager->getNotOpaqueLayer());
+	m_Layers[SKINNEDOPAQUELAYER].init(m_objectManager->getSkinnedOpaqueLayer());
+	m_Layers[SKINNEDNOTOPAQUELAYER].init(m_objectManager->getSkinnedNotOpaqueLayer());
+	m_Layers[NOTOPAQUELAYERGH].init(m_objectManager->getNotOpaqueLayerGH());
+	m_Layers[NOTOPAQUELAYERCH].init(m_objectManager->getNotOpaqueLayerCH());
 
 	UINT lAllInstancesCount = 0;
 	for (int i = 0; i < m_Layers.size(); i++)
@@ -135,13 +135,13 @@ void Scene::InitLayers()
 	m_tmp_Intances.resize(lAllInstancesCount);
 
 	// make a BoundingBoxExt list for Octree.
-	m_Layers[0].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, nullptr);
-	m_Layers[1].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, &m_sceneBB);
-	m_Layers[2].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, &m_sceneBB);
-	m_Layers[3].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, &m_sceneBB);
-	m_Layers[4].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, &m_sceneBB);
-	m_Layers[5].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, nullptr);
-	m_Layers[6].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, &m_sceneBB);
+	m_Layers[SKY].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, nullptr);
+	m_Layers[OPAQUELAYER].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, &m_sceneBB);
+	m_Layers[NOTOPAQUELAYER].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, &m_sceneBB);
+	m_Layers[SKINNEDOPAQUELAYER].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, &m_sceneBB);
+	m_Layers[SKINNEDNOTOPAQUELAYER].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, &m_sceneBB);
+	m_Layers[NOTOPAQUELAYERGH].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, nullptr);
+	m_Layers[NOTOPAQUELAYERCH].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, &m_sceneBB);
 	
 	DirectX::BoundingBox ltempBB(XMFLOAT3(m_sceneBB.Center.x, m_sceneBB.Center.y, m_sceneBB.Center.z), m_sceneBB.Extents);
 	BoundingSphere::CreateFromBoundingBox(m_sceneBSShadow, ltempBB);
@@ -337,10 +337,6 @@ void Scene::toggleCullingMode()
 }
 
 // ================================================================ [Scene::SceneLayer] =============================== 
-
-//Scene::SceneLayer::SceneLayerObject::SceneLayerObject():m_drawInstanceIDCount(0)
-//{	
-//}
 
 void Scene::SceneLayer::clearLayer()
 {

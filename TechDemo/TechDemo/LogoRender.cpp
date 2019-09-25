@@ -304,7 +304,7 @@ void LogoRender::build_mesh()
 
 			lVertex.Pos = XMFLOAT3(x, y, z);
 			//lVertex.TangentU = XMFLOAT3(0.5f - cos(lTheta)*0.5, 0.5f - sin(lTheta)*0.5, 0.0f);
-			lVertex.TangentU = XMFLOAT3(0.5f + x*0.5, 0, 0.5f + z * 0.5);
+			lVertex.TangentU = XMFLOAT4(0.5f + x*0.5, 0, 0.5f + z * 0.5, 0.0f);
 			lVertices.push_back(lVertex);
 			lIndices.push_back(k*lcpc + i);
 		}

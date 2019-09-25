@@ -61,15 +61,17 @@ void DebugRender_Normals::draw(int flags)
 	m_cmdList->SetGraphicsRootShaderResourceView(1, objectCB->GetGPUVirtualAddress()); // Instances constant buffer arrray data		
 	m_cmdList->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress()); // Pass constant buffer data
 
-	//--- draw calls	
-	UINT lLayerToDraw = 0b110; //OPAQUELAYER and NOTOPAQUELAYER
+	//--- draw calls		
+	const UINT lcLayerWhichMayBeDrawn =
+		1 << OPAQUELAYER | 1 << NOTOPAQUELAYER; //OPAQUELAYER and NOTOPAQUELAYER
+
 	//if (flags & (1 << DRN_VERTEX)) // Which Normals (Vertex, Face or Tangent) we can draw
 	{
 		// We draw only Vertex normals in this realization
 		int lInstanceOffset = 0;
 		m_cmdList->SetPipelineState(m_psoLayer.getPSO(DRN_VERTEX)); // Here we change shaders. As we have the one RootSignauture for Render, so Root areguments are not reset when we set new PSO	
 		for (int i = 0; i < m_scene->getLayersCount(); i++)
-			draw_layer(i, lInstanceOffset, (lLayerToDraw & (1<<i)), D3D_PRIMITIVE_TOPOLOGY_POINTLIST);		
+			draw_layer(i, lInstanceOffset, (lcLayerWhichMayBeDrawn & (1<<i)), D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 	}
 
 	//-----------------------

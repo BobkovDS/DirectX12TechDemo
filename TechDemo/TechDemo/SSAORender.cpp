@@ -133,8 +133,9 @@ void SSAORender::resize(UINT iwidth, UINT iheight)
 void SSAORender::draw(int flags)
 {	  
 	if (!m_timer.tick()) return;
-
-	const UINT lcLayerToDraw = 0b1010; // SSAO only for Opaque objects
+	
+	const UINT lcLayerWhichMayBeDrawn =
+		1 << OPAQUELAYER | 1 << SKINNEDOPAQUELAYER; // SSAO only for Opaque objects
 
 	m_cmdList->SetGraphicsRootSignature(m_psoLayer1.getRootSignature());
 
@@ -186,7 +187,7 @@ void SSAORender::draw(int flags)
 		int lInstanceOffset = 0;
 		for (int i = 0; i < m_scene->getLayersCount(); i++) // Draw all Layers
 		{			
-			draw_layer(i, lInstanceOffset, lcLayerToDraw & (1 << i));
+			draw_layer(i, lInstanceOffset, lcLayerWhichMayBeDrawn & (1 << i));
 		}
 	}
 
@@ -317,7 +318,7 @@ void SSAORender::build_screen()
 	//v0
 	vertex.Pos = XMFLOAT3(-1.0f, -1.0f, 0.0f);
 	vertex.Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	vertex.TangentU = XMFLOAT3(1.0f, 0.0f, 0.0f);
+	vertex.TangentU = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
 	vertex.UVText = XMFLOAT2(0.0f, 1.0f);
 	lVertices[0] = vertex;
 	//v1

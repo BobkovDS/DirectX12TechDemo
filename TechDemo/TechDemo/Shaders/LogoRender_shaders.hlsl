@@ -26,7 +26,7 @@ VertexOut VS(VertexIn vin)
     // Transform to homogeneous clip space.    
     vout.PosH = mul(posW, ViewProj);
     vout.NormalW = mul((float3x3) wordMatrix, vin.Normal);
-    vout.TangentW = float4(vin.TangentU, 1.0f);
+    vout.TangentW = vin.TangentU;
     vout.UVText = float2(0, 0);    
     return vout;
 }

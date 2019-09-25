@@ -281,7 +281,18 @@ void FBXFileLoader::build_GeoMeshesLOD(fbx_Mesh* iMesh, int LODLevel, std::strin
 				XMStoreFloat3(&vertex.Normal, n);
 			}
 			if (lDoesHaveUV) vertex.UVText = lMesh->UVs[vi];
-			if (lDoesHaveTangents) vertex.TangentU = lMesh->Tangents[vi];
+
+			if (lDoesHaveTangents)
+			{
+				XMVECTOR lNormal = XMLoadFloat3(&vertex.Normal);
+				XMVECTOR lTangent = XMLoadFloat3(&lMesh->Tangents[vi]);
+				XMVECTOR lBiTangent = XMLoadFloat3(&lMesh->BiTangents[vi]);
+
+				float w = XMVectorGetX(XMVector3Dot(XMVector3Cross(lTangent, lBiTangent), lNormal));
+				w = w > 0 ? 1.0f : -1.0f;				
+				XMStoreFloat4(&vertex.TangentU, lTangent);	
+				vertex.TangentU.w = w;
+			};
 
 			meshVertices[vi] = vertex;
 			meshIndices[vi] = vi;
@@ -413,7 +424,19 @@ inline void FBXFileLoader::build_GeoMeshesWithTypedVertex(fbx_Mesh* iMesh, bool 
 				XMStoreFloat3(&vertex.Normal, n);
 			}
 			if (lDoesHaveUV)	vertex.UVText = lMesh->UVs[vi];
-			if (lDoesHaveTangents) vertex.TangentU = lMesh->Tangents[vi];
+			if (lDoesHaveTangents)
+			{
+				XMVECTOR lNormal = XMLoadFloat3(&vertex.Normal);
+				XMVECTOR lTangent = XMLoadFloat3(&lMesh->Tangents[vi]);
+				XMVECTOR lBiTangent = XMLoadFloat3(&lMesh->BiTangents[vi]);
+
+				float w = XMVectorGetX(XMVector3Dot(XMVector3Cross(lTangent, lBiTangent), lNormal));
+				w = w > 0 ? 1.0f : -1.0f;	
+				XMStoreFloat4(&vertex.TangentU, lTangent);
+				vertex.TangentU.w = w;
+
+				//vertex.TangentU = lMesh->Tangents[vi];				
+			}		
 
 			// write vertex/bone weight information		
 			if (lIsSkinnedMesh)
@@ -1408,6 +1431,8 @@ string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, const 
 	}
 	
 	const FbxLayerElementTangent* tangentLayer = lpcMesh->GetElementTangent();
+	const FbxLayerElementBinormal* bitangentLayer = lpcMesh->GetElementBinormal();
+	
 	if (tangentLayer)
 	{
 		FbxGeometryElement::EMappingMode mappingMode = tangentLayer->GetMappingMode();
@@ -1488,13 +1513,25 @@ string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, const 
 				FbxVector4 tanV1 = tangentLayer->GetDirectArray().GetAt(lVertexID + 1);
 				FbxVector4 tanV2 = tangentLayer->GetDirectArray().GetAt(lVertexID + 2);
 
+				FbxVector4 bitanV0 = bitangentLayer->GetDirectArray().GetAt(lVertexID + 0);
+				FbxVector4 bitanV1 = bitangentLayer->GetDirectArray().GetAt(lVertexID + 1);
+				FbxVector4 bitanV2 = bitangentLayer->GetDirectArray().GetAt(lVertexID + 2);
+
 				XMFLOAT3 tangent0(tanV0.mData[0], tanV0.mData[1], tanV0.mData[2]);
 				XMFLOAT3 tangent1(tanV1.mData[0], tanV1.mData[1], tanV1.mData[2]);
 				XMFLOAT3 tangent2(tanV2.mData[0], tanV2.mData[1], tanV2.mData[2]);
+				
+				XMFLOAT3 bitangent0(bitanV0.mData[0], bitanV0.mData[1], bitanV0.mData[2]);
+				XMFLOAT3 bitangent1(bitanV1.mData[0], bitanV1.mData[1], bitanV1.mData[2]);
+				XMFLOAT3 bitangent2(bitanV2.mData[0], bitanV2.mData[1], bitanV2.mData[2]);	
 
 				lmesh->Tangents.push_back(tangent0);
 				lmesh->Tangents.push_back(tangent1);
 				lmesh->Tangents.push_back(tangent2);
+
+				lmesh->BiTangents.push_back(bitangent0);
+				lmesh->BiTangents.push_back(bitangent1);
+				lmesh->BiTangents.push_back(bitangent2);
 			}
 			
 			lVertexID += 3;
@@ -1564,8 +1601,19 @@ string FBXFileLoader::process_mesh(const FbxNodeAttribute* pNodeAtribute, const 
 				XMFLOAT3 tangent1(tanV1.mData[0], tanV1.mData[1], tanV1.mData[2]);
 				XMFLOAT3 tangent2(tanV2.mData[0], tanV2.mData[1], tanV2.mData[2]);
 				XMFLOAT3 tangent3(tanV3.mData[0], tanV3.mData[1], tanV3.mData[2]);
+				
+				FbxVector4 bitanV0 = bitangentLayer->GetDirectArray().GetAt(lVertexID + 0);		
+				FbxVector4 bitanV1 = bitangentLayer->GetDirectArray().GetAt(lVertexID + 1);		
+				FbxVector4 bitanV2 = bitangentLayer->GetDirectArray().GetAt(lVertexID + 2);		
+				FbxVector4 bitanV3 = bitangentLayer->GetDirectArray().GetAt(lVertexID + 3);		
+
+				XMFLOAT3 bitangent0(bitanV0.mData[0], bitanV0.mData[1], bitanV0.mData[2]);
+				XMFLOAT3 bitangent1(bitanV1.mData[0], bitanV1.mData[1], bitanV1.mData[2]);
+				XMFLOAT3 bitangent2(bitanV2.mData[0], bitanV2.mData[1], bitanV2.mData[2]);
+				XMFLOAT3 bitangent3(bitanV3.mData[0], bitanV3.mData[1], bitanV3.mData[2]);
 
 				add_quadInfo_to_mesh<XMFLOAT3>(lmesh->Tangents, tangent0, tangent1, tangent2, tangent3, !lSimpleMesh);
+				add_quadInfo_to_mesh<XMFLOAT3>(lmesh->BiTangents, bitangent0, bitangent1, bitangent2, bitangent3, !lSimpleMesh);
 			}
 
 			lVertexID += 4;
