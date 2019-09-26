@@ -182,6 +182,12 @@ void ResourceManager::loadTexture()
 	buildTextureSRVs();
 }
 
+void ResourceManager::releaseTexturesUploadHeaps()
+{
+	for (int i = 0; i < m_textures.size(); i++)
+		m_textures[i].ResourceInUploadHeap.Reset();	
+}
+
 void ResourceManager::buildTextureSRVs()
 {
 	// 1) Create SRV Descriptor Heap

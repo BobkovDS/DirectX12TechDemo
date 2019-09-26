@@ -116,7 +116,7 @@ void DCMRender::draw(int flags)
 	if (!m_timer.tick()) return;
 
 	const UINT lcLayerWhichMayBeDrawn =
-		1 << SKY | 1 << OPAQUELAYER | 1 << SKINNEDOPAQUELAYER; // render only Opaque objects //NOTE: If it is required to add new layer, PSO should be for this created in PSODCMLayer 
+		(1 << (SKY)) | (1 << (OPAQUELAYER)) | (1 << (SKINNEDOPAQUELAYER)); // render only Opaque objects //NOTE: If it is required to add new layer, PSO should be for this created in PSODCMLayer 
 
 	m_cmdList->SetGraphicsRootSignature(m_psoLayer.getRootSignature());
 

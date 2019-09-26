@@ -3,10 +3,6 @@
 #include "BoundingMath.h"
 
 struct OctreeSelector {	
-		//float VerticalAngle;
-		//float HorizontalAngle;
-		float ConeCosA;
-
 		// LOD distances
 		float LOD0_distance;
 		float LOD1_distance;
@@ -34,16 +30,8 @@ public:
 	static OctreeSelector selector;
 	void build();
 	void update(BoundingMath::BoundingFrustum& frustom);
-	void update(BoundingMath::BoundingFrustum& frustom, float r1, float r2, float r3, float r4, float r5 );
-	void update();	
+	void update(BoundingMath::BoundingFrustum& frustom, float r1, float r2, float r3, float r4, float r5 );	
 	bool isContainListBBEmpty() { return m_listOfContainedBB.size() == 0; }
-	void addBBList(std::vector<BoundingMath::BoundingBoxEXT*>& iBBlist);
-	
-	std::vector<BoundingMath::BoundingBoxEXT*>& getContainedBBVector();
-	void getBBListForIntersection(std::vector<DirectX::BoundingBox*>& bbList,
-		DirectX::FXMVECTOR& rayOrigin, DirectX::FXMVECTOR& rayDir, float dist);
-
-	void getInstancesList();
-	int getBBCount();
+	void addBBList(std::vector<BoundingMath::BoundingBoxEXT*>& iBBlist);	
 };
 

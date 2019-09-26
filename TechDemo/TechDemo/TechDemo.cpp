@@ -127,7 +127,7 @@ std::string TechDemo::addTextToWindow()
 	char lbP2[10];	
 	sprintf_s(lbP2, _TRUNCATE, "(%3.2f%%)", lPercent2);	
 
-	char lbFrameTime[10];
+	char lbFrameTime[15];
 	sprintf_s(lbFrameTime, _TRUNCATE, "(%.2fms)", m_framePreparationTime * 1000.0f);
 	
 	char lbBetweenFrameTime[50];
@@ -410,6 +410,8 @@ void TechDemo::init3D()
 
 	FlushCommandQueue();
 	ApplLogger::getLogger().log("TechDemo::init3D()::Flush commands is done.", 0);
+
+	m_resourceManager.releaseTexturesUploadHeaps();
 	m_init3D_done = true;
 	
 	build_OffsetVectors();

@@ -26,7 +26,9 @@ void PSOFinalRenderLayer::buildShadersBlob()
 	string fullFileNameSky = basedir + shaderNameSky;
 	string skinnedFullFileName = basedir + skinedShaderName;
 	
-	bool lGS = false;
+	D3D_SHADER_MACRO lShadersDefinitions[] = { "BLENDENB", "1" , NULL, NULL }; /*We will use it in FinalRender_shaders::PS, to avoid using of 
+	SSAO map by transparent objects. It is just because we do not draw Transparent objects to SSAO map */
+		
 	string shaderType = "none";
 	try
 	{
@@ -47,6 +49,9 @@ void PSOFinalRenderLayer::buildShadersBlob()
 
 		shaderType = "ps";
 		m_shaders[shaderType] = Utilit3D::compileShader(fullFileName, NULL, "PS", "ps_5_1");
+
+		shaderType = "ps_blend";
+		m_shaders[shaderType] = Utilit3D::compileShader(fullFileName, lShadersDefinitions, "PS", "ps_5_1");
 
 		shaderType = "ps_gs";
 		m_shaders[shaderType] = Utilit3D::compileShader(fullFileNameGH, NULL, "PS", "ps_5_1");
@@ -113,7 +118,8 @@ void PSOFinalRenderLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, D
 	blend_desc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 	psoDescLayer1.BlendState = CD3DX12_BLEND_DESC(blend_desc);
 	psoDescLayer1.RasterizerState.CullMode = D3D12_CULL_MODE_NONE; 
-
+	psoDescLayer1.PS = { reinterpret_cast<BYTE*>(m_shaders["ps_blend"]->GetBufferPointer()), m_shaders["ps_blend"]->GetBufferSize() };
+	
 	// PSO for Layer_2: Skinned Opaque objects: [SKINNEDOPAQUELAYER]
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDescLayer2 = buildCommonPSODescription(sampleDesc);
 	psoDescLayer2.InputLayout = { m_inputLayout[ILV2].data(),(UINT)m_inputLayout[ILV2].size() };

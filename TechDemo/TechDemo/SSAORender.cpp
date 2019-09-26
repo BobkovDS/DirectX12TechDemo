@@ -22,7 +22,6 @@ void SSAORender::initialize(const RenderMessager& renderParams)
 	m_viewPortHalf.MaxDepth = 1.0f;
 
 	m_scissorRectHalf = { 0,0, static_cast<LONG> (renderParams.Width / 2),static_cast<LONG> (renderParams.Height / 2) };
-
 }
 
 void SSAORender::build()
@@ -269,7 +268,7 @@ void SSAORender::draw_layer(int layerID, int& instanceOffset, bool doDraw)
 				UINT lInstanceCountByLODLevel = lSceneObject->getInstancesCountLOD_byLevel(lod_id);
 				if (lInstanceCountByLODLevel == 0) continue;
 
-				bool lLODDraw = (lod_id == 0);// SSAO works only for LOD0 meshes				
+				bool lLODDraw = (lod_id == 0 | lod_id == 0);// SSAO works only for LOD0 meshes				
 				if (doDraw && lLODDraw) // some layers we do not need to draw, but we need to count instances for it
 				{
 					Mesh* lMesh = lRI->LODGeometry[lod_id];

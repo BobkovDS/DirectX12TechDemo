@@ -53,7 +53,7 @@ void ComputeRender::build(int ObjectID)
 		UINT lVerticesCount = m_width * m_height;
 		std::vector<DirectX::XMFLOAT4> lVerticesData(lVerticesCount);
 
-		for (int i = 0; i < lVerticesCount; i++)			
+		for (uint32_t i = 0; i < lVerticesCount; i++)			
 			lVerticesData[i] = DirectX::XMFLOAT4(0.0f, 0.0f, 0, 0.0f);				
 
 		m_inputResource.ResourceInDefaultHeap = Utilit3D::createTextureWithData(m_device, m_cmdList,
@@ -176,11 +176,11 @@ void ComputeRender::draw(int flags)
 
 		if (m_drop)
 		{
-			lXPos = (double)rand() / (RAND_MAX + 1.0f) * m_width;
-			lYPos = (double)rand() / (RAND_MAX + 1.0f) * m_height;
+			lXPos = (double)((double)rand() / (RAND_MAX + 1.0f) * m_width);
+			lYPos = (double)((double)rand() / (RAND_MAX + 1.0f) * m_height);
 			//lXPos = (double)rand() / (RAND_MAX + 1) * 10 + m_width/2;
 			//lYPos = (double)rand() / (RAND_MAX + 1) * 10;
-			lMagnitude = (double) rand() / (RAND_MAX + 1) * 50 + 10;
+			lMagnitude = (double)((double) rand() / (RAND_MAX + 1) * 50 + 10);
 			//lXPos = m_width / 2;
 			//lYPos = 2;
 			m_drop = false;

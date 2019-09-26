@@ -223,6 +223,7 @@ void RenderManager::buildTechSRVs()
 		9 - BLUR: Resource_A_UAV
 		10 - Shadow Map
 	*/
+
 	assert(m_texturesDescriptorHeap);
 
 	UINT lSrvSize = m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);

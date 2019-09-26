@@ -159,8 +159,8 @@ void BasicDXGI::init3D()
 		//m_swapChain.Reset(); use if Swapchain need re-create
 
 		DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
-		swapChainDesc.Width = width() * m_dxKoef;
-		swapChainDesc.Height = height() * m_dyKoef;
+		swapChainDesc.Width = width();// *m_dxKoef;
+		swapChainDesc.Height = height();// *m_dyKoef;
 		swapChainDesc.BufferCount = g_swapChainsBufferCount;
 		swapChainDesc.Format = m_backBufferFormat;
 		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;

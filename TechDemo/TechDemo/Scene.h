@@ -10,7 +10,8 @@
 #define LODCOUNT 3
 class Scene
 {
-	class SceneLayer;
+public: class SceneLayer;
+private:
 	std::vector<SceneLayer> m_Layers;
 	std::vector<const InstanceDataGPU*> m_tmp_Intances;
 	std::vector<UINT> m_tmp_drawInstancesID;
@@ -42,9 +43,6 @@ public:
 	static UINT ContainsCount;
 	class SceneLayer
 	{
-		class SceneLayerObject;
-		std::vector<SceneLayerObject> m_objects;
-		bool m_visible;
 	public:
 		class SceneLayerObject
 		{			
@@ -96,6 +94,9 @@ public:
 		SceneLayerObject* getSceneObject(UINT sceneObjectIndex);
 		void getBoundingInformation(std::vector<BoundingMath::BoundingBoxEXT*>& lLayerBBList, std::vector<BoundingMath::BoundingBoxEXT*>& lLayerBBListExcludedFromCulling,
 			BoundingMath::BoundingBox* sceneBB);
+	private:
+		std::vector<SceneLayerObject> m_objects;
+		bool m_visible;
 	};
 	//----------------------------------------------------
 	Scene();

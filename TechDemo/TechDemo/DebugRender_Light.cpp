@@ -79,7 +79,7 @@ void DebugRender_Light::draw(int flags)
 	m_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 
 	auto drawArg = m_mesh->DrawArgs[m_mesh->Name];
-	int lInstancesCount = m_scene->getLights().size();
+	UINT lInstancesCount = (UINT) m_scene->getLights().size();
 	m_cmdList->DrawIndexedInstanced(drawArg.IndexCount, lInstancesCount, drawArg.StartIndexLocation, 0, 0);
 
 	//-----------------------
@@ -115,7 +115,7 @@ void DebugRender_Light::buildGeometry()
 	m_mesh = std::make_unique<Mesh>();
 	SubMesh submesh = {};
 	m_mesh->Name = "Light";
-	submesh.IndexCount = lIndices.size();
+	submesh.IndexCount = (UINT) lIndices.size();
 	m_mesh->DrawArgs[m_mesh->Name] = submesh;
 
 	Utilit3D::UploadMeshToDefaultBuffer<Mesh, VertexGPU, uint32_t>(m_mesh.get(), lVertices, lIndices);

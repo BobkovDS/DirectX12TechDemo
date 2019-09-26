@@ -43,8 +43,18 @@ void MirrorRender::resize(UINT iwidth, UINT iheight)
 
 void MirrorRender::draw(int flags)
 {
+	Scene::SceneLayer* lObjectLayer = nullptr;
+	lObjectLayer = m_scene->getLayer(NOTOPAQUELAYERCH);
+
+	for (int ri = 0; ri < 1; ri++) // Now we think that we have only one WaterV2 object
+	{
+		Scene::SceneLayer::SceneLayerObject* lSceneObject = lObjectLayer->getSceneObject(ri);
+		int lInstancesCount = lSceneObject->getInstancesCountLOD(); // How much instances for this RenderItem we should draw
+		if (lInstancesCount == 0) return; // If WaterV2 object is out or ViewFrustum, no need to draw other Reflections
+	}
+
 	const UINT lcLayerWhichMayBeDrawn =
-		 1 << OPAQUELAYER | 1 << NOTOPAQUELAYER | 1 << SKINNEDOPAQUELAYER | 1 << NOTOPAQUELAYERCH;
+		 ((1 << OPAQUELAYER) | (1 << NOTOPAQUELAYER) | (1 << SKINNEDOPAQUELAYER) | (1 << NOTOPAQUELAYERCH));
 		
 
 	int lResourceIndex = m_msaaRenderTargets->getCurrentBufferID();
@@ -148,14 +158,14 @@ void MirrorRender::draw_layer(int layerID, int& instanceOffset, bool doDraw)
 				UINT lInstanceCountByLODLevel = lSceneObject->getInstancesCountLOD_byLevel(lod_id);
 				if (lInstanceCountByLODLevel == 0) continue;
 				
-				bool lLODDraw = (lod_id == 0);// In Mirror Reflection we draw only Instances with level: LOD0...
+				bool lLODDraw = ((lod_id == 0) | (lod_id == 0));// In Mirror Reflection we draw only Instances with level: LOD0 and LOD1...
 
 				if (lRI->ExcludeFromReflection)
 					lLODDraw = false;
 
 				if (doDraw && lLODDraw) // some layers we do not need to draw, but we need to count instances for it
 				{
-					Mesh* lMesh = lRI->LODGeometry[1]; // ...but for drawing we use LOD1 mesh 
+					Mesh* lMesh = lRI->LODGeometry[lod_id +1]; // ...but for drawing we use LOD1 and LOD2 mesh 
 
 					if (lMesh == NULL)
 					{

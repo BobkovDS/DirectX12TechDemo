@@ -247,8 +247,8 @@ void BlurRender::build_screen()
 	int vertexByteStride = sizeof(VertexGPU);
 
 	
-	m_mesh->VertexBufferByteSize = (UINT) vertexByteStride * lVertices.size();
-	m_mesh->IndexBufferByteSize = (UINT) sizeof(uint32_t) * lIndices.size();
+	m_mesh->VertexBufferByteSize = vertexByteStride * (UINT) lVertices.size();
+	m_mesh->IndexBufferByteSize = sizeof(uint32_t) * (UINT) lIndices.size();
 	m_mesh->VertexByteStride = vertexByteStride;
 	m_mesh->IndexFormat = DXGI_FORMAT_R32_UINT;
 

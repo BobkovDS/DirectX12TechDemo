@@ -90,7 +90,12 @@ void FinalRender::resize(UINT iwidth, UINT iheight)
 void FinalRender::draw(int flags)
 {	
 	const UINT lcLayerWhichMayBeDrawn =
-		1 << SKY | 1 << OPAQUELAYER | 1 << NOTOPAQUELAYER | 1 << SKINNEDOPAQUELAYER | 1 << NOTOPAQUELAYERGH | 1 << NOTOPAQUELAYERCH;		
+		(1 << (SKY)) |
+		(1 << (OPAQUELAYER)) |
+		(1 << (NOTOPAQUELAYER)) |
+		(1 << (SKINNEDOPAQUELAYER)) |
+		(1 << (NOTOPAQUELAYERGH)) |
+		(1 << (NOTOPAQUELAYERCH));		
 
 	int lResourceIndex = m_msaaRenderTargets->getCurrentBufferID();
 
@@ -166,7 +171,7 @@ void FinalRender::draw_layer(int layerID, int& instanceOffset, bool doDraw)
 		{
 			Scene::SceneLayer::SceneLayerObject* lSceneObject = lObjectLayer->getSceneObject(ri);						
 			const RenderItem* lRI = lSceneObject->getObjectMesh();
-			m_trianglesCountInScene += lRI->LODTrianglesCount[0] * lRI->Instances.size(); // How many triangles we would draw without using LOD and FrustumCulling 			
+			m_trianglesCountInScene += lRI->LODTrianglesCount[0] * (UINT) lRI->Instances.size(); // How many triangles we would draw without using LOD and FrustumCulling 			
 			
 			int lInstancesCount = lSceneObject->getInstancesCountLOD(); // How much instances for this RenderItem we should draw
 			if (lInstancesCount == 0) continue;
@@ -183,7 +188,7 @@ void FinalRender::draw_layer(int layerID, int& instanceOffset, bool doDraw)
 
 				lInstancesForThisMesh += lInstanceCountByLODLevel;
 
-				bool lLODDraw = (lod_id == 0 | lod_id == 1 | lod_id == 2)  ;// SSAO works only for LOD0 meshes				
+				bool lLODDraw = ((lod_id == 0) | (lod_id == 1) | (lod_id == 2));
 				if (doDraw && lLODDraw) // some layers we do not need to draw, but we need to count instances for it
 				{
 					Mesh* lMesh = lRI->LODGeometry[lod_id];

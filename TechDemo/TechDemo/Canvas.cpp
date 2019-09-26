@@ -146,7 +146,7 @@ void Canvas::run() {
 				double howLongToWait = 0;
 				if (longTimeInSec < frameTimeForLimitFPS)
 					howLongToWait = (frameTimeForLimitFPS - longTimeInSec) * 1000;
-					Sleep(howLongToWait);
+					Sleep((DWORD)howLongToWait);
 			}
 
 			string test("FPS: ");

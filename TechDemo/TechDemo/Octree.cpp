@@ -77,7 +77,7 @@ void Octree::addBBList(std::vector<BoundingBoxEXT*>& iBBlist)
 
 void Octree::build()
 {
-	if (m_listOfContainedBB.size() <= 100)
+	if (m_listOfContainedBB.size() <= 10)
 	{
 		m_vectorContainedBB.resize(m_listOfContainedBB.size());
 		copy(m_listOfContainedBB.begin(), m_listOfContainedBB.end(), m_vectorContainedBB.begin());
@@ -89,9 +89,7 @@ void Octree::build()
 	Octree* child;
 	auto it = m_listOfContainedBB.begin();
 	auto it_end = m_listOfContainedBB.end();
-
-	//for each (BoundingBox* var in m_listOfContainedBB)
-
+	
 	while ( it!= it_end)
 	{
 		if (checkChildContainment(*it))
@@ -163,7 +161,7 @@ void Octree::update(BoundingFrustum& frustom)
 
 				float lRDistance = DirectX::XMVectorGetX(lRLenght);
 
-				std::pair<UINT, UINT> lID_LOD;
+				std::pair<UINT, UINT> lID_LOD; // <first=Instance_ID; second=LOD_ID>
 
 				if (lInstBB.pRenderItem->Geometry != NULL) // If we do not use LOD for this RI, so lets draw all instances in LOD0
 					lID_LOD.second = 0;
@@ -218,7 +216,7 @@ void Octree::update(BoundingFrustum& frustom, float r1, float r2, float r3, floa
 
 				float lRDistance = DirectX::XMVectorGetX(lRLenght);
 
-				std::pair<UINT, UINT> lID_LOD;
+				std::pair<UINT, UINT> lID_LOD; // <first=Instance_ID; second=LOD_ID>
 
 				if (lInstBB.pRenderItem->Geometry != NULL) // If we do not use LOD for this RI, so lets draw all instances in LOD0
 					lID_LOD.second = 0;
@@ -249,20 +247,4 @@ void Octree::update(BoundingFrustum& frustom, float r1, float r2, float r3, floa
 		for (int i = 0; i < m_childs.size(); i++)
 			m_childs[i]->update(frustom, r1, r2, r3, r4, r5 );
 	}
-}
-
-std::vector<BoundingBoxEXT*>& Octree::getContainedBBVector()
-{
-	return m_vectorContainedBB;
-}
-
-int Octree::getBBCount()
-{
-	int lBBcount = m_vectorContainedBB.size();
-	//int lBBcount = m_listOfContainedBB.size();
-
-	for (int i = 0; i < m_childs.size(); i++)
-		lBBcount += m_childs[i]->getBBCount();
-
-	return lBBcount;
 }

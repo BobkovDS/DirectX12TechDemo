@@ -28,6 +28,7 @@ public:
 	void buildTexturePathList();
 	void buildTextureSRVs();
 	void loadTexture();
+	void releaseTexturesUploadHeaps();
 	void loadMaterials();
 	int getTexturePathIDByName(const std::string& textureName);
 	int addDummyTexturePath();

@@ -65,7 +65,7 @@ void DebugRender_Normals::draw(int flags)
 
 	//--- draw calls		
 	const UINT lcLayerWhichMayBeDrawn =
-		1 << OPAQUELAYER | 1 << NOTOPAQUELAYER; //OPAQUELAYER and NOTOPAQUELAYER
+		(1 << (OPAQUELAYER)) | (1 << (NOTOPAQUELAYER)); //OPAQUELAYER and NOTOPAQUELAYER
 
 	//if (flags & (1 << DRN_VERTEX)) // Which Normals (Vertex, Face or Tangent) we can draw
 	{

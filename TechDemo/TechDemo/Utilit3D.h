@@ -91,8 +91,8 @@ void Utilit3D::UploadMeshToDefaultBuffer(
 
 	int vertexByteStride = sizeof(VertexGPU);
 
-	mesh->VertexBufferByteSize = (UINT) sizeof(VertexGPU) * vertexData.size();
-	mesh->IndexBufferByteSize = (UINT) sizeof(IndexGPU) * indexData.size();
+	mesh->VertexBufferByteSize =  sizeof(VertexGPU) * (UINT) vertexData.size();
+	mesh->IndexBufferByteSize =  sizeof(IndexGPU) * (UINT) indexData.size();
 	mesh->VertexByteStride = vertexByteStride;
 	mesh->IndexFormat = DXGI_FORMAT_R32_UINT;
 

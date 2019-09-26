@@ -489,6 +489,9 @@ inline void FBXFileLoader::build_GeoMeshesWithTypedVertex(fbx_Mesh* iMesh, bool 
 
 	Utilit3D::UploadMeshToDefaultBuffer<Mesh, T, uint32_t>(lgeoMesh.get(), meshVertices, meshIndices);
 
+	meshVertices.clear();
+	meshIndices.clear();
+
 	//move geoMeshUp		
 	m_objectManager->addMesh(lOuterRIName, lgeoMesh);
 	iMesh->WasUploaded = true;
@@ -1264,10 +1267,10 @@ void FBXFileLoader::process_node_getMaterial(const FbxNode* pNode, fbx_NodeInsta
 				// Get Diffuse data
 				{
 					FbxDouble* lData = lphongMaterial->Diffuse.Get().Buffer();
-					float f1 = lData[0];
-					float f2 = lData[1];
-					float f3 = lData[2];
-					float f4 = lphongMaterial->AmbientFactor;
+					float f1 = (float) lData[0];
+					float f2 = (float) lData[1];
+					float f3 = (float) lData[2];
+					float f4 = (float) lphongMaterial->AmbientFactor;
 
 					lMaterial.DiffuseAlbedo = XMFLOAT4(f1, f2, f3, f4);
 					read_texture_data(&lMaterial, &lphongMaterial->Diffuse, "diffuse");

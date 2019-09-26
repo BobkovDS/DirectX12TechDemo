@@ -49,8 +49,6 @@ std::vector<const InstanceDataGPU*>& Scene::getInstancesUpdate(UINT& instancesCo
 	for (int i = 0; i < m_Layers.size(); i++)	
 		if (m_Layers[i].isLayerVisible()) // Copy Intances data only for visible layers
 		{
-			//UINT lInstancesPerLayerCount = m_tmp_Intances.size();
-			//m_Layers[i].getInstances(m_tmp_Intances, m_tmp_drawInstancesID, lInstancesPerLayerCount);
 			m_Layers[i].getInstances(m_tmp_Intances, instancesCount);
 		}	
 	m_instancesDataReadTimes--;
@@ -164,7 +162,7 @@ void Scene::update()
 			m_Layers[i].update();
 		
 		// Looking at Octree's bounding boxes through ViewFrustum, mark required Instances are selected. Really copy will be in TechDemo::update_objectCB() function
-		m_octree->selector.LOD0_distance = 15; //30
+		m_octree->selector.LOD0_distance = 20; //30
 		m_octree->selector.LOD1_distance = 80; //80
 		m_octree->selector.SelectorPostition = m_camera->getPosition();
 		m_octree->update(m_camera->getFrustomBoundingCameraWorld(0));
