@@ -85,8 +85,8 @@ void Octree::build()
 		return;
 	}
 
-	bool anyBBWasAddedToAnyChild = false;
-	Octree* child;
+	bool anyBBWasAddedToAnyChild = false;	
+	
 	auto it = m_listOfContainedBB.begin();
 	auto it_end = m_listOfContainedBB.end();
 	

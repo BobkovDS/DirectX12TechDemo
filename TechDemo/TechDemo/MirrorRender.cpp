@@ -49,6 +49,7 @@ void MirrorRender::draw(int flags)
 	for (int ri = 0; ri < 1; ri++) // Now we think that we have only one WaterV2 object
 	{
 		Scene::SceneLayer::SceneLayerObject* lSceneObject = lObjectLayer->getSceneObject(ri);
+		if (lSceneObject == nullptr) return;
 		int lInstancesCount = lSceneObject->getInstancesCountLOD(); // How much instances for this RenderItem we should draw
 		if (lInstancesCount == 0) return; // If WaterV2 object is out or ViewFrustum, no need to draw other Reflections
 	}

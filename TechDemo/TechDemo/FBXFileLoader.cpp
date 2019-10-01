@@ -573,7 +573,7 @@ bool  FBXFileLoader::add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData
 	BoneData* lBoneData = skeleton->getBone(bone->Name);
 
 	FbxAnimCurve* lAnimCurve = NULL;		
-	// we think that all Curves for node have the same first and last Time values, so let's use Translation_X to get it
+	// we think that all Curves for node have the same first and last Time values, so let's find the first not Null Animation Curve
 	lAnimCurve = get_AnimationCurve(bone->Node, animationLayer);	
 
 	if (lAnimCurve != NULL)
@@ -593,23 +593,42 @@ bool  FBXFileLoader::add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData
 		FbxTime lFrameTime;
 		for (float i = lfFirstTime; i <= lfLastTime; i++)
 		{
-			float lTime = 1.0f / 30.0f * i;
+			double lTime = 1.0f / 30.0f * i; // 30 fps animation
 			lFrameTime.SetSecondDouble(lTime);
 
 			//FbxAMatrix lTrasformation = bone->Node->EvaluateLocalTransform(lFrameTime);
 			FbxVector4 lTranslation = bone->Node->EvaluateLocalTranslation(lFrameTime);
 			FbxVector4 lScaling = bone->Node->EvaluateLocalScaling(lFrameTime);
 			FbxVector4 lRotation = bone->Node->EvaluateLocalRotation(lFrameTime);
+			//FbxVector4 lRotationG = bone->Node->EvaluateGlobal(lFrameTime);
+			
 
 			KeyFrame lKeyFrame = {};
 			//convertFbxMatrixToFloat4x4(lTrasformation, lKeyFrame.Transform);
 			convertFbxVector4ToFloat4(lTranslation, lKeyFrame.Translation);
 			convertFbxVector4ToFloat4(lScaling, lKeyFrame.Scale);
-			convertFbxVector4ToFloat4(lRotation, lKeyFrame.Rotation);
-			lKeyFrame.Rotation.x *= XM_PI / 180;
-			lKeyFrame.Rotation.y *= XM_PI / 180;
-			lKeyFrame.Rotation.z *= XM_PI / 180;
+			/*convertFbxVector4ToFloat4(lRotation, lKeyFrame.Rotation);		
+			lKeyFrame.Rotation.x *= XM_PI / 180.0f;
+			lKeyFrame.Rotation.y *= XM_PI / 180.0f;
+			lKeyFrame.Rotation.z *= XM_PI / 180.0f;*/
+
+
+			XMMATRIX R1xm = XMMatrixRotationX(lRotation.mData[0] * XM_PI / 180.0f);
+			XMMATRIX R1ym = XMMatrixRotationY(lRotation.mData[1] * XM_PI / 180.0f);
+			XMMATRIX R1zm = XMMatrixRotationZ(lRotation.mData[2] * XM_PI / 180.0f);
+			XMMATRIX R1m = R1xm * R1ym * R1zm;
+			XMVECTOR q01 = XMQuaternionRotationMatrix(R1m);
+			XMStoreFloat4(&lKeyFrame.Quaternion, q01);
+
+			/*FbxQuaternion ltmpQuaternion;
+			ltmpQuaternion.ComposeSphericalXYZ(lRotation);			
+			FbxVector4 lvQuaternion = ltmpQuaternion.mData;
+			convertFbxVector4ToFloat4(lvQuaternion, lKeyFrame.Quaternion);	*/
+		
+			//lKeyFrame.Quaternion
 			lKeyFrame.TimePos = lTime;
+
+		
 			lBoneAnimation.addKeyFrame(lKeyFrame);
 		}
 		lBoneData->addAnimation(animationName, lBoneAnimation);

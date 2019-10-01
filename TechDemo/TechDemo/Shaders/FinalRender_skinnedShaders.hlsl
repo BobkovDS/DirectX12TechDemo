@@ -82,13 +82,7 @@ float4 PS(VertexOut pin) : SV_Target
         diffuseAlbedo = gDiffuseMap[material.DiffuseMapIndex[0]].Sample(gsamPointWrap, pin.UVText);
     
     if ((material.textureFlags & 0x10))            
-        diffuseTranspFactor = gDiffuseMap[material.DiffuseMapIndex[4]].Sample(gsamPointWrap, pin.UVText).x;
-    
-    //if ((material.textureFlags & 0x02) && gShadowUsed && 0) //&& gShadowUsed
-    //{
-    //   float4 readNormal = gDiffuseMap[material.DiffuseMapIndex[1]].Sample(gsamPointWrap, pin.UVText);
-    //   Normal = NormalSampleToWorldSpace(readNormal.xyz, Normal, pin.TangentW);
-    //}      
+        diffuseTranspFactor = gDiffuseMap[material.DiffuseMapIndex[4]].Sample(gsamPointWrap, pin.UVText).x;    
     
     // Get SSAO factor
     float ssao_factor = 1.0f;
@@ -105,11 +99,11 @@ float4 PS(VertexOut pin) : SV_Target
     MaterialLight matLight = { diffuseAlbedo, material.FresnelR0, shiness };
     
     float shadow_depth = 1.0f;
-    if ((gTechFlags & (1 << RTB_SHADOWMAPPING)) > 0)  // if we use Shadow mapping
-    {
-        float4 lShadowPosH = mul(float4(pin.PosW, 1.0f), cbPass.Lights[0].ViewProjT);
-        shadow_depth = CalcShadowFactor(lShadowPosH, gShadowMap0, gsamShadow);
-    }
+    //if ((gTechFlags & (1 << RTB_SHADOWMAPPING)) > 0)  // if we use Shadow mapping
+    //{
+    //    float4 lShadowPosH = mul(float4(pin.PosW, 1.0f), cbPass.Lights[0].ViewProjT);
+    //    shadow_depth = CalcShadowFactor(lShadowPosH, gShadowMap0, gsamShadow);
+    //}
     
     float4 directLight = ComputeLighting(cbPass.Lights, matLight, pin.PosW, Normal, toEyeW, shadow_depth);
         
@@ -122,7 +116,7 @@ float4 PS(VertexOut pin) : SV_Target
         litColor = lerp(litColor, cbPass.FogColor, fogAmount);
     }
      
-    litColor.a = diffuseTranspFactor; //   diffuseAlbedo.a;   
+    litColor.a = diffuseTranspFactor;
 
 #ifdef MIRBLEND // in a mirror reflection we use some Aplha const value
     litColor.a = MIRBLEND;

@@ -46,8 +46,16 @@ VertexOut VS(VertexIn vin)
 
 float4 PS(VertexOut pin) : SV_Target
 {
+    float3 lValue;
+
     if (gTextureID <=7)
-        return float4(gTechTextures[gTextureID - 2].Sample(gSampler, pin.UVText).xyz, 1.0f); // -2 because we have also gSkyCubeTexture and gDCMCubeTexture
+        lValue = gTechTextures[gTextureID - 2].Sample(gSampler, pin.UVText).xyz; // -2 because we have also gSkyCubeTexture and gDCMCubeTexture
     else
-        return float4(gTechTextures10.Sample(gSampler, pin.UVText).xyz, 1.0f); 
+        lValue = gTechTextures10.Sample(gSampler, pin.UVText).xyz;
+
+    if (gTextureID==3) 
+        return float4(lValue, 1.0f); // only ViewNormal map in color
+    else
+        return float4(lValue.xxx, 1.0f); // other maps in gray
+
 }

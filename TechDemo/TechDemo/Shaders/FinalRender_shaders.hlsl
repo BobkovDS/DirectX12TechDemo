@@ -55,8 +55,26 @@ float4 PS(VertexOut pin) : SV_Target
     if ((material.textureFlags & 0x01))
         diffuseAlbedo = gDiffuseMap[material.DiffuseMapIndex[0]].Sample(gsamPointWrap, pin.UVText);        
 
-    float diffuseTranspFactor = diffuseAlbedo.a;
-       
+    float diffuseTranspFactor = diffuseAlbedo.a;      
+   
+        // Get Alpha value
+    if ((material.textureFlags & 0x10))        
+        diffuseTranspFactor = gDiffuseMap[material.DiffuseMapIndex[4]].Sample(gsamPointWrap, pin.UVText).x;
+    
+    // Get SSAO factor
+    float ssao_factor = 1.0f;
+
+#if !defined(BLENDENB)// set in PSOFinalRenderLayer::buildShadersBlob(). Do not use SSAO for transparent objects, just because we do not draw Transparent objects to SSAO map 
+
+    if ((gTechFlags & (1 << RTB_SSAO)) > 0) // if we use SSAO information
+    {
+        float2 lUV = pin.SSAOPosH.xy / pin.SSAOPosH.w;
+        ssao_factor = gSSAOBlurMap.Sample(gsamPointWrap, lUV).r;
+    }
+#else
+       clip(diffuseTranspFactor - 0.1f);
+#endif 
+
     // Get Normal
     if ((gTechFlags & (1 << RTB_NORMALMAPPING)) > 0)    
     {
@@ -67,22 +85,6 @@ float4 PS(VertexOut pin) : SV_Target
             //return float4(Normal, 1.0f);
         }
     }  
-
-    // Get Alpha value
-    if ((material.textureFlags & 0x10))        
-        diffuseTranspFactor = gDiffuseMap[material.DiffuseMapIndex[4]].Sample(gsamPointWrap, pin.UVText).x;        
-    
-    // Get SSAO factor
-    float ssao_factor = 1.0f;
-
-#if !defined(BLENDENB)// set in PSOFinalRenderLayer::buildShadersBlob(). Do not use SSAO for transparent objects, just because we do not draw Transparent objects to SSAO map
-
-    if ((gTechFlags & (1 << RTB_SSAO)) > 0 ) // if we use SSAO information
-    {
-        float2 lUV = pin.SSAOPosH.xy / pin.SSAOPosH.w;        
-        ssao_factor = gSSAOBlurMap.Sample(gsamPointWrap, lUV).r;
-    }       
-#endif 
 
     //return float4(ssao_factor, ssao_factor, ssao_factor, 1.0f);
     float4 ambient = ssao_factor * cbPass.AmbientLight * diffuseAlbedo;    

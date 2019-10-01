@@ -10,6 +10,8 @@ struct KeyFrame {
 	DirectX::XMFLOAT4 Translation;
 	DirectX::XMFLOAT4 Scale;
 	DirectX::XMFLOAT4 Rotation;
+	DirectX::XMFLOAT4 Quaternion;
+
 };
 
 class BoneAnimation
