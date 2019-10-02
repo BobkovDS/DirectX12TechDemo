@@ -134,7 +134,7 @@ void SSAORender::resize(UINT iwidth, UINT iheight)
 
 void SSAORender::draw(int flags)
 {	  
-	if (!m_timer.tick()) return;
+	//if (!m_timer.tick()) return; // TO_DO: delete
 	
 	const UINT lcLayerWhichMayBeDrawn =
 		1 << OPAQUELAYER | 1 << SKINNEDOPAQUELAYER; // SSAO only for Opaque objects

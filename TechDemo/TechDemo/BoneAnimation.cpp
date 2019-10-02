@@ -54,49 +54,28 @@ void BoneAnimation::interpolate(float time, XMFLOAT4X4& interpolatedValue) const
 					XMVECTOR s1 = XMLoadFloat4(&m_keyFrames[i+1].Scale);
 
 					XMVECTOR t0 = XMLoadFloat4(&m_keyFrames[i].Translation);
-					XMVECTOR t1 = XMLoadFloat4(&m_keyFrames[i+1].Translation);
-
-					XMVECTOR r0 = XMLoadFloat4(&m_keyFrames[i].Rotation);
-					XMVECTOR r1 = XMLoadFloat4(&m_keyFrames[i + 1].Rotation);
-
+					XMVECTOR t1 = XMLoadFloat4(&m_keyFrames[i+1].Translation);														
+					
 					XMVECTOR q0 = XMLoadFloat4(&m_keyFrames[i].Quaternion);
-					XMVECTOR q1 = XMLoadFloat4(&m_keyFrames[i + 1].Quaternion);
-										
+					XMVECTOR q1 = XMLoadFloat4(&m_keyFrames[i + 1].Quaternion);					
+					//q0 = XMQuaternionNormalize(q0); //TO_DO: delete
+					//q1 = XMQuaternionNormalize(q1);
 
 					XMVECTOR s = XMVectorLerp(s0, s1, lLerpPercent);
 					XMVECTOR t = XMVectorLerp(t0, t1, lLerpPercent);
-					//XMVECTOR r = XMVectorLerp(r0, r1, lLerpPercent);
 					XMVECTOR q = XMQuaternionSlerp(q0, q1, lLerpPercent);
-					
 					XMVECTOR lZero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-					
-					//XMMATRIX Sm = XMMatrixScalingFromVector(s);
-					//XMMATRIX Tm = XMMatrixTranslationFromVector(t);					
-					//XMMATRIX Rxm = XMMatrixRotationX(XMVectorGetX(r));
-					//XMMATRIX Rym = XMMatrixRotationY(XMVectorGetY(r));
-					//XMMATRIX Rzm = XMMatrixRotationZ(XMVectorGetZ(r));
-					//XMMATRIX Rm = Rxm * Rym * Rzm;				
+										
+					/*
+					// old version:
+					XMMATRIX Sm = XMMatrixScalingFromVector(s);
+					XMMATRIX Tm = XMMatrixTranslationFromVector(t);					
+					XMMATRIX Rxm = XMMatrixRotationX(XMVectorGetX(r));
+					XMMATRIX Rym = XMMatrixRotationY(XMVectorGetY(r));
+					XMMATRIX Rzm = XMMatrixRotationZ(XMVectorGetZ(r));
+					XMMATRIX Rm = Rxm * Rym * Rzm;								
 
-					//// to get quaternions
-					//XMMATRIX R1xm = XMMatrixRotationX(XMVectorGetX(r0));
-					//XMMATRIX R1ym = XMMatrixRotationY(XMVectorGetY(r0));
-					//XMMATRIX R1zm = XMMatrixRotationZ(XMVectorGetZ(r0));
-					//XMMATRIX R1m = R1xm * R1ym * R1zm;
-
-					//XMMATRIX R2xm = XMMatrixRotationX(XMVectorGetX(r1));
-					//XMMATRIX R2ym = XMMatrixRotationY(XMVectorGetY(r1));
-					//XMMATRIX R2zm = XMMatrixRotationZ(XMVectorGetZ(r1));
-					//XMMATRIX R2m = R2xm * R2ym * R2zm;
-
-					//XMVECTOR q01 = XMQuaternionRotationMatrix(R1m);
-					//XMVECTOR q11 = XMQuaternionRotationMatrix(R2m);
-					//XMVECTOR q02 = XMQuaternionRotationRollPitchYawFromVector(r0);
-					//XMVECTOR q12 = XMQuaternionRotationRollPitchYawFromVector(r1);	
-					//
-
-					//XMVECTOR q_1 = XMQuaternionSlerp(q01, q11, lLerpPercent);
-
-					//XMMATRIX C = Sm * Rm *Tm;
+					XMMATRIX C = Sm * Rm *Tm;*/
 					
 					XMMATRIX C = XMMatrixAffineTransformation(s, lZero, q, t);
 					

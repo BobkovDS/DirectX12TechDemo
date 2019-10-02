@@ -117,7 +117,7 @@ void BlurRender::resize(UINT iwidth, UINT iheight)
 
 void BlurRender::draw(int flags)
 {
-	if (!m_timer.tick()) return;
+	//if (!m_timer.tick()) return; // TO_DO: delete
 
 	// Copy SSAO AO Map Input Resource to "our" A resource
 	{

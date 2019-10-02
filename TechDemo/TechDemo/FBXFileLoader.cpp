@@ -1115,6 +1115,8 @@ void FBXFileLoader::process_node_LOD(const FbxNode* pNode)
 	
 	const FbxNode* pChild = nullptr;
 
+	fbx_Material* lMaterial = nullptr;
+
 	// The first child - LOD0
 	{
 		pChild = pNode->GetChild(0);
@@ -1128,6 +1130,16 @@ void FBXFileLoader::process_node_LOD(const FbxNode* pNode)
 
 		//Collect materials for the first child
 		process_node_getMaterial(pChild, newNodeInstance);
+				
+		{
+			int mCount = pChild->GetMaterialCount();
+			if (mCount) {
+
+				std::string lMaterialName = pChild->GetMaterial(0)->GetName();
+				if (m_materials.find(lMaterialName) != m_materials.end())
+					lMaterial = &m_materials[lMaterialName];				
+			}
+		}
 
 		if (pNodeAtrib != NULL)
 		{
@@ -1135,7 +1147,7 @@ void FBXFileLoader::process_node_LOD(const FbxNode* pNode)
 			
 			assert(type == fbxsdk::FbxNodeAttribute::eMesh);
 			
-				newNodeInstance.MeshName  = process_mesh(pNodeAtrib, nullptr, 0, &nodeName); // Name of the first Mesh = LOD group name
+				newNodeInstance.MeshName  = process_mesh(pNodeAtrib, lMaterial, 0, &nodeName); // Name of the first Mesh = LOD group name
 				
 				FbxNode* lNode2 = const_cast<FbxNode*>(pNode);
 
@@ -1159,7 +1171,7 @@ void FBXFileLoader::process_node_LOD(const FbxNode* pNode)
 
 			assert(type == fbxsdk::FbxNodeAttribute::eMesh);
 
-			process_mesh(pNodeAtrib, nullptr, 1, &nodeName); // LOD1			
+			process_mesh(pNodeAtrib, lMaterial, 1, &nodeName); // LOD1			
 		}		
 	}
 
@@ -1174,7 +1186,7 @@ void FBXFileLoader::process_node_LOD(const FbxNode* pNode)
 
 			assert(type == fbxsdk::FbxNodeAttribute::eMesh);
 
-			process_mesh(pNodeAtrib, nullptr, 2, &nodeName); // LOD2			
+			process_mesh(pNodeAtrib, lMaterial, 2, &nodeName); // LOD2			
 		}
 	}	
 }

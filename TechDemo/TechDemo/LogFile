@@ -1,6 +1,10 @@
 Application begin to work
 Loading of Models\input.fbx
 	Creating scene [input]
+		[NODE]: flower.001
+			[MATERIAL]: grass
+			Texture(diffuse): Map #1[g:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Russian_hause\texture\grass_05.tga]
+			[MESH]: Untitled.001
 		[NODE]: Aset_wood_root_M_rkswd_LOD0.001
 			[MATERIAL]: WoodRootMaterial
 			Texture(diffuse): Texture.024[g:\Programs\Quixel Bridge Library\Downloaded\3d\wood_root_rkswd\Aset_wood_root_M_rkswd_4K_Albedo.jpg]
@@ -511,7 +515,6 @@ Loading of Models\input.fbx
 			[MESH]: Untitled.009
 		[NODE]: flower
 			[MATERIAL]: grass
-			Texture(diffuse): Map #1[g:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Russian_hause\texture\grass_05.tga]
 			[MESH]: Untitled.008
 		[NODE]: Object001
 			[MATERIAL]: brench

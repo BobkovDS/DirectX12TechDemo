@@ -469,7 +469,7 @@ void TechDemo::update_camera()
 		int lSkeletonCount = m_skeletonManager.getSkeletonNodeAnimatedCount();
 		if (lSkeletonCount)
 		{
-			float lTickTime = m_animationTimer.deltaTime()/10.0f;
+			float lTickTime = m_animationTimer.deltaTime()/15.0f;
 
 			SkinnedData& lSkeleton = m_skeletonManager.getSkeletonNodeAnimated(0); /*TO_DO: now we use the first Skeleton. fix to get Skeleton by ID from Camera object*/
 			XMFLOAT4X4 &lFinalMatrices = lSkeleton.getNodeTransform(lTickTime, 0);			
@@ -548,7 +548,7 @@ void TechDemo::update_passCB()
 
 	const std::vector<LightCPU>& lights = m_scene.getLights();
 
-	// -- Find shadow box position and sise	
+	// -- Find shadow box position and size	
 	float lLenght = 38.0f;
 
 	XMFLOAT3 lcameraPos = m_camera->getPosition3f();
