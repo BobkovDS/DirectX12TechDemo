@@ -16,6 +16,8 @@ class SSAORender :
 	D3D12_GPU_DESCRIPTOR_HANDLE m_RNDVectorMapHandle;
 	D3D12_VIEWPORT m_viewPortHalf;
 	D3D12_RECT m_scissorRectHalf;
+	UINT m_ViewNormalMapScaleFactor; // default value is 1- no scale for ViewNormalMap
+	UINT m_AOMapScaleFactor; // default value is 2 - AO map in twice time less then screen size
 	ResourceWithUploader m_randomVectorsTexture;
 	Timer m_timer;
 

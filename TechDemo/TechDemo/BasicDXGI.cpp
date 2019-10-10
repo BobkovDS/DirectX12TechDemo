@@ -224,9 +224,9 @@ void BasicDXGI::init3D()
 
 			// Create D2D/DWrite objects for rendering text
 			{
-				res = m_HUDContext->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White), &m_HUDBrush);
+				res = m_HUDContext->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::GreenYellow), &m_HUDBrush);
 				m_writeFactory->CreateTextFormat(
-					L"Verdana",
+					L"Consolas",
 					NULL,
 					DWRITE_FONT_WEIGHT_NORMAL,
 					DWRITE_FONT_STYLE_NORMAL,
@@ -236,6 +236,19 @@ void BasicDXGI::init3D()
 					&m_textFormat);
 				res = m_textFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
 				res = m_textFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+
+				m_writeFactory->CreateTextFormat(
+					L"Consolas",
+					NULL,
+					DWRITE_FONT_WEIGHT_NORMAL,
+					DWRITE_FONT_STYLE_NORMAL,
+					DWRITE_FONT_STRETCH_NORMAL,
+					30,
+					L"en-us",
+					&m_textFormatBig);
+				res = m_textFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
+				res = m_textFormat->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+
 			}
 		}
 #endif	

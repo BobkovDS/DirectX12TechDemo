@@ -9,7 +9,7 @@
 
 const int g_swapChainsBufferCount2 = 3;
 
-#define TECHSRVCOUNT 11
+#define TECHSRVCOUNT 12
 
 #define TECHSLOT_SKY 0
 #define TECHSLOT_DCM 1
@@ -22,6 +22,7 @@ const int g_swapChainsBufferCount2 = 3;
 #define TECHSLOT_BLUR_B_SRV 8// Blur Resource B: SRV
 #define TECHSLOT_BLUR_A_UAV 9// Blur Resource A: UAV
 #define TECHSLOT_SHADOW 10// Shadow Map 
+#define TECHSLOT_SSAO_AO_MS 11 // Blured AO Map, drawn to multisampling texture
 
 struct RenderResource {
 	void createResource(ID3D12Device* device, DXGI_FORMAT resourceFormat, D3D12_RESOURCE_FLAGS resourceFlags,

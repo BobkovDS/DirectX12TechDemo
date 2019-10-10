@@ -166,6 +166,7 @@
     <ClCompile Include="PSOShadowLayer.cpp" />
     <ClCompile Include="PSOSSAOLayer1.cpp" />
     <ClCompile Include="PSOSSAOLayer2.cpp" />
+    <ClCompile Include="PSOSSAOLayer3.cpp" />
     <ClCompile Include="RenderBase.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
@@ -174,6 +175,7 @@
     <ClCompile Include="SkeletonManager.cpp" />
     <ClCompile Include="SkinnedData.cpp" />
     <ClCompile Include="SSAORender.cpp" />
+    <ClCompile Include="SSAOToMultiSamplingRender.cpp" />
     <ClCompile Include="TechDemo.cpp" />
     <ClCompile Include="TextureLoader\DDSTextureLoader.cpp" />
     <ClCompile Include="TextureLoader\DirectXHelpers.cpp" />
@@ -224,6 +226,7 @@
     <ClInclude Include="PSOShadowLayer.h" />
     <ClInclude Include="PSOSSAOLayer1.h" />
     <ClInclude Include="PSOSSAOLayer2.h" />
+    <ClInclude Include="PSOSSAOLayer3.h" />
     <ClInclude Include="RenderBase.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="ResourceManager.h" />
@@ -232,6 +235,7 @@
     <ClInclude Include="SkeletonManager.h" />
     <ClInclude Include="SkinnedData.h" />
     <ClInclude Include="SSAORender.h" />
+    <ClInclude Include="SSAOToMultiSamplingRender.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TechDemo.h" />
     <ClInclude Include="TextureLoader\DDSTextureLoader.h" />
@@ -343,6 +347,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Shaders\SSAORender_shaders2.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Shaders\SSAORender_shaders3.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>

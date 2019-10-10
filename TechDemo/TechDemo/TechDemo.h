@@ -53,6 +53,7 @@ class TechDemo :
 	bool m_isFog;
 	bool m_isTechFlag;
 	bool m_isCameraManualControl;
+	bool m_bigHUD;
 	POINT m_mouseDownPoint;
 	float m_animTime;
 	float m_framePreparationTime;

@@ -49,8 +49,8 @@ void RenderManager::initialize(RenderManagerMessanger& renderParams)
 	renderParams.commonRenderData.MSAARenderTarget = &m_msaaRenderTargets;
 
 	m_finalRender.initialize(renderParams.commonRenderData);
-	m_mirrorRender.initialize(renderParams.commonRenderData);
-	m_ssaoRender.initialize(renderParams.commonRenderData);	
+	m_mirrorRender.initialize(renderParams.commonRenderData);	
+	m_ssaoMSRender.initialize(renderParams.commonRenderData);
 	m_debugRenderAxes.initialize(renderParams.commonRenderData);
 	m_debugRenderLights.initialize(renderParams.commonRenderData);
 	m_debugRenderNormals.initialize(renderParams.commonRenderData);
@@ -63,8 +63,12 @@ void RenderManager::initialize(RenderManagerMessanger& renderParams)
 	m_shadowRender.initialize(lRenderParams);
 
 	lRenderParams = renderParams.commonRenderData;
-	lRenderParams.Width /= 2; // We think that SSAO gives us Map twice size less
-	lRenderParams.Height/= 2;
+	//lRenderParams.Width /= 2; 
+	//lRenderParams.Height /= 2;	
+	m_ssaoRender.initialize(lRenderParams);
+		
+	lRenderParams.Width /= 2; 
+	lRenderParams.Height /= 2;	
 	lRenderParams.RTResourceFormat = SSAORender::AOMapFormat;
 	m_blurRender.initialize(lRenderParams);
 
@@ -84,40 +88,44 @@ void RenderManager::buildRenders()
 	m_finalRender.set_DescriptorHeap_RTV(m_applicationRTVHeap);	
 	m_finalRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
 	m_finalRender.build();
-	m_finalRender.setSwapChainResources(m_swapChainResources);	
+	//m_finalRender.setSwapChainResources(m_swapChainResources); // TO_DO: delete Swapchain from renders
 
 	//build Mirror Render	
 	m_mirrorRender.set_DescriptorHeap_RTV(m_applicationRTVHeap);
 	m_mirrorRender.set_DescriptorHeap_DSV(m_finalRender.get_dsvHeapPointer());
 	m_mirrorRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
-	m_mirrorRender.setSwapChainResources(m_swapChainResources);
+	//m_mirrorRender.setSwapChainResources(m_swapChainResources);
 	m_mirrorRender.build();	
 
 	// build Debug Axes Render
 	m_debugRenderAxes.set_DescriptorHeap_RTV(m_applicationRTVHeap);
 	m_debugRenderAxes.build();
-	m_debugRenderAxes.setSwapChainResources(m_swapChainResources);
+	//m_debugRenderAxes.setSwapChainResources(m_swapChainResources);
 
 	// build Debug Light Render
 	m_debugRenderLights.set_DescriptorHeap_RTV(m_applicationRTVHeap);
 	m_debugRenderLights.build();
-	m_debugRenderLights.setSwapChainResources(m_swapChainResources);
+	//m_debugRenderLights.setSwapChainResources(m_swapChainResources);
 
 	// build Debug Normals Render
 	m_debugRenderNormals.set_DescriptorHeap_RTV(m_applicationRTVHeap);
 	m_debugRenderNormals.set_DescriptorHeap_DSV(m_finalRender.get_dsvHeapPointer());
 	m_debugRenderNormals.build();
-	m_debugRenderNormals.setSwapChainResources(m_swapChainResources);
+	//m_debugRenderNormals.setSwapChainResources(m_swapChainResources);
 
 	// build Debug Screen Render
 	m_debugRenderScreen.set_DescriptorHeap_RTV(m_applicationRTVHeap);
 	m_debugRenderScreen.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
 	m_debugRenderScreen.build();
-	m_debugRenderScreen.setSwapChainResources(m_swapChainResources);
+	//m_debugRenderScreen.setSwapChainResources(m_swapChainResources);
 
 	// build SSAO Render
 	m_ssaoRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
 	m_ssaoRender.build();
+
+	// build SSAO Render
+	m_ssaoMSRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
+	m_ssaoMSRender.build();
 
 	// build Blur Render	
 	m_blurRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
@@ -154,7 +162,8 @@ void RenderManager::draw()
 	if (m_isSSAOUsing)
 	{		
 		m_ssaoRender.draw(updatedFlags);			
-		
+		//m_ssaoMSRender.draw(TECHSLOT_BLUR_A_SRV);
+
 		if (m_renderMode & (1 << RM_SSAO_MAP1))
 		{
 			/* we do not copy in this because dest_resource_format and source_resource_format are not equal	*/
@@ -203,7 +212,6 @@ void RenderManager::draw()
 
 	if (m_isComputeWork)
 		m_computeRender.draw(0);
-
 }
 
 void RenderManager::buildTechSRVs()
@@ -263,6 +271,7 @@ void RenderManager::resize(int iwidth, int iheight)
 		m_msaaRenderTargets.createRTV(m_applicationRTVHeap);
 
 		m_ssaoRender.resize(iwidth, iheight);
+		m_ssaoMSRender.resize(iwidth, iheight);
 
 		m_blurRender.setInputResource(m_ssaoRender.getAOResource());
 		m_blurRender.resize(iwidth, iheight);		

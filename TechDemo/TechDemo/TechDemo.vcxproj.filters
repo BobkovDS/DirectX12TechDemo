@@ -189,6 +189,12 @@
     <ClCompile Include="PSOLogoLayer.cpp">
       <Filter>Source Files\PSO</Filter>
     </ClCompile>
+    <ClCompile Include="SSAOToMultiSamplingRender.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PSOSSAOLayer3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PSOBaseLayer.h">
@@ -365,6 +371,12 @@
     <ClInclude Include="PSOLogoLayer.h">
       <Filter>Header Files\PSO</Filter>
     </ClInclude>
+    <ClInclude Include="SSAOToMultiSamplingRender.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PSOSSAOLayer3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\commonPart.hlsl">
@@ -440,6 +452,9 @@
       <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\LogoRender_shaders.hlsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\SSAORender_shaders3.hlsl">
       <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
   </ItemGroup>

@@ -3,7 +3,7 @@
 
 using namespace DirectX;
 
-SSAORender::SSAORender()
+SSAORender::SSAORender():m_ViewNormalMapScaleFactor(1), m_AOMapScaleFactor(2)
 {
 }
 
@@ -16,12 +16,12 @@ void SSAORender::initialize(const RenderMessager& renderParams)
 	RenderBase::initialize(renderParams);
 	
 	m_viewPortHalf = {};
-	m_viewPortHalf.Width = static_cast<float> (renderParams.Width / 2);
-	m_viewPortHalf.Height = static_cast<float> (renderParams.Height / 2);
+	m_viewPortHalf.Width = static_cast<float> (renderParams.Width/2 );
+	m_viewPortHalf.Height = static_cast<float> (renderParams.Height/2);
 	m_viewPortHalf.MinDepth = 0.0f;
 	m_viewPortHalf.MaxDepth = 1.0f;
 
-	m_scissorRectHalf = { 0,0, static_cast<LONG> (renderParams.Width / 2),static_cast<LONG> (renderParams.Height / 2) };
+	m_scissorRectHalf = { 0,0, static_cast<LONG> (m_viewPortHalf.Width),static_cast<LONG> (m_viewPortHalf.Height) };
 }
 
 void SSAORender::build()
@@ -38,7 +38,7 @@ void SSAORender::build()
 
 	// Render Target Resource. This class own it
 	{
-		create_Resource_RT(m_viewNormalMapFormat); // for ViewNormal Map
+		create_Resource_RT(m_viewNormalMapFormat); // for ViewNormal Map		
 		create_Resource_RT(AOMapFormat, m_width/2, m_height/2); // for AO Map
 		create_DescriptorHeap_RTV(m_rtResources.size());
 		
@@ -99,7 +99,7 @@ void SSAORender::build_TechDescriptors()
 	lhDescriptorOffseting = lhDescriptor;
 	lhDescriptorOffseting.Offset(TECHSLOT_SSAO_AO, lSrvSize);
 	srvDesc.Format = m_rtResources[RESOURCEID_AO]->getResource()->GetDesc().Format;	
-	m_device->CreateShaderResourceView(m_rtResources[RESOURCEID_AO]->getResource(), &srvDesc, lhDescriptorOffseting);
+	m_device->CreateShaderResourceView(m_rtResources[RESOURCEID_AO]->getResource(), NULL, lhDescriptorOffseting);
 
 	// SRV for RandomVector Map
 	lhDescriptorOffseting = lhDescriptor;

@@ -1,149 +1,220 @@
 Application begin to work
 Loading of Models\input.fbx
 	Creating scene [input]
+		[NODE]: MRL_RockMediumB.003
+			[MATERIAL]: Material.025
+			Texture(diffuse): Texture.004[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\MRLRockMediumB_Diffuse.dds]
+			Texture(normal): Texture.071[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\MRLRockMediumB_Normal.dds]
+			[MESH]: MRL_RockMediumB
+		[NODE]: MRL_RockMediumB.002
+			[MATERIAL]: Material.025
+		[NODE]: MRL_RockMediumB.001
+			[MATERIAL]: Material.025
+		[NODE]: MRL_RockMediumC.004
+			[MATERIAL]: Material.024
+			Texture(diffuse): Texture.070[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFRockMediumC_Diffuse.dds]
+			Texture(normal): Texture.069[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFRockMediumC_Normalx.dds]
+			[MESH]: MRL_RockMediumC
+		[NODE]: MRL_RockMediumC.003
+			[MATERIAL]: Material.024
+		[NODE]: MRL_RockMediumC.002
+			[MATERIAL]: Material.024
+		[NODE]: MRL_RockMediumC.001
+			[MATERIAL]: Material.024
+		[NODE]: gras_long_LOD0.028
+			[MATERIAL]: gras-long
+			Texture(diffuse): Texture.026[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\gras-long-diff.dds]
+		[NODE]: gras_long_LOD0.027
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.026
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.025
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.024
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.023
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.022
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.021
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.020
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.019
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.018
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.017
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.016
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.015
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.014
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.013
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.012
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.011
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.010
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.009
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.008
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.007
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.006
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.005
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.004
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.003
+			[MATERIAL]: gras-long
+		[NODE]: gras_long_LOD0.002
+			[MATERIAL]: gras-long
 		[NODE]: flower.001
 			[MATERIAL]: grass
-			Texture(diffuse): Map #1[g:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Russian_hause\texture\grass_05.tga]
+			Texture(diffuse): Map #1[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\RussianHause\grass_05.dds]
 			[MESH]: Untitled.001
-		[NODE]: Aset_wood_root_M_rkswd_LOD0.001
-			[MATERIAL]: WoodRootMaterial
-			Texture(diffuse): Texture.024[g:\Programs\Quixel Bridge Library\Downloaded\3d\wood_root_rkswd\Aset_wood_root_M_rkswd_4K_Albedo.jpg]
-			Texture(normal): Texture.023[g:\Programs\Quixel Bridge Library\Downloaded\3d\wood_root_rkswd\Aset_wood_root_M_rkswd_4K_Normal_LOD0.jpg]
-			[MESH]: Aset_wood_root_M_rkswd_LOD0
 		[NODE]: LowPolyTree_part1_LOD0.025
-			[MATERIAL]: Bark.000
-			Texture(diffuse): Bark_Diffuse.000[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\forest\Low poly tree\textures\BroadleafBark.tga]
+			[MATERIAL]: BroadleafBark
+			Texture(diffuse): Bark_Diffuse[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\BroadleafBark.dds]
+			Texture(normal): Bark_Normal[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\BroadleafBark_Normal.dds]
 		[NODE]: LowPolyTree_part2_LOD0.025
-			[MATERIAL]: Material.004
-			Texture(diffuse): Texture.022[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\forest\Low poly tree\textures\BroadleafLeaves.dds]
-			Texture(normal): Texture.021[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\forest\Low poly tree\textures\BroadleafLeaves_Normal.dds]
+			[MATERIAL]: BroadleafLeaves
+			Texture(diffuse): Texture.020[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\BroadleafLeaves.dds]
+			Texture(normal): Texture.019[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\BroadleafLeaves_Normal.dds]
 		[NODE]: LowPolyTree_part2_LOD0.024
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part1_LOD0.024
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part1_LOD0.023
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part2_LOD0.023
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part2_LOD0.022
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part1_LOD0.022
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part1_LOD0.021
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part2_LOD0.021
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part2_LOD0.020
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part1_LOD0.020
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part1_LOD0.019
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part2_LOD0.019
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part2_LOD0.018
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part1_LOD0.018
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part1_LOD0.017
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part2_LOD0.017
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part2_LOD0.016
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part1_LOD0.016
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part1_LOD0.015
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part2_LOD0.015
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part2_LOD0.014
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part1_LOD0.014
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part1_LOD0.013
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part2_LOD0.013
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part2_LOD0.012
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part1_LOD0.012
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part1_LOD0.011
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part2_LOD0.011
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part2_LOD0.010
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part1_LOD0.010
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part1_LOD0.009
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part2_LOD0.009
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part2_LOD0.008
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part1_LOD0.008
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part1_LOD0.007
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part2_LOD0.007
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part2_LOD0.006
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part1_LOD0.006
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part1_LOD0.005
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part2_LOD0.005
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part2_LOD0.004
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part1_LOD0.004
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part1_LOD0.003
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part2_LOD0.003
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part2_LOD0.002
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part1_LOD0.002
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: Cube.009
-			[MATERIAL]: test_02.001
-			Texture(diffuse): test_02_Base_Color.png.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\wagon\textures\set_02\test_02_Base_Color.png]
-			Texture(normal): test_02_Normal_DirectX.png.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\wagon\textures\set_02\test_02_Normal_DirectX.png]
+			[MATERIAL]: WagonSet02
+			Texture(diffuse): test_02_Base_Color[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Wagon\set_02\set02_Base_Color.dds]
+			Texture(normal): test_02_Normal_DirectX[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Wagon\set_02\set02_Normal_DirectX.dds]
 			[MESH]: Cube.059
 		[NODE]: Cube.008
-			[MATERIAL]: test_02.001
+			[MATERIAL]: WagonSet02
 			[MESH]: Cube.060
 		[NODE]: Torus.011
-			[MATERIAL]: test_04.001
-			Texture(diffuse): test_04_Base_Color.png.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\wagon\textures\set_04\test_04_Base_Color.png]
-			Texture(normal): test_04_Normal_DirectX.png.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\wagon\textures\set_04\test_04_Normal_DirectX.png]
+			[MATERIAL]: WagonSet04
+			Texture(diffuse): Texture.114[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Wagon\set_04\set04_Base_Color.dds]
+			Texture(normal): Texture.115[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Wagon\set_04\set04_Normal_DirectX.dds]
 			[MESH]: Torus.016
 		[NODE]: Torus.010
-			[MATERIAL]: test_04.001
+			[MATERIAL]: WagonSet04
 			[MESH]: Torus.009
 		[NODE]: Torus.009
-			[MATERIAL]: test_04.001
+			[MATERIAL]: WagonSet04
 			[MESH]: Torus.008
 		[NODE]: Torus.008
-			[MATERIAL]: test_04.001
+			[MATERIAL]: WagonSet04
 		[NODE]: Torus.007
-			[MATERIAL]: test_04.001
+			[MATERIAL]: WagonSet04
 		[NODE]: Torus.004
-			[MATERIAL]: test_04.001
+			[MATERIAL]: WagonSet04
 		[NODE]: Torus.002
-			[MATERIAL]: test_04.001
+			[MATERIAL]: WagonSet04
 		[NODE]: Torus.001
-			[MATERIAL]: test_04.001
+			[MATERIAL]: WagonSet04
 		[NODE]: Torus.000
-			[MATERIAL]: test_04.001
+			[MATERIAL]: WagonSet04
 		[NODE]: Rock.004
 			[MATERIAL]: Rock
-			Texture(diffuse): Texture.076[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Rock\IceKazim\Rock\Rock\Rock_Tex\Rock_d.jpg]
-			Texture(normal): Texture.075[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Rock\IceKazim\Rock\Rock\Rock_Tex\Rock_n.jpg]
+			Texture(diffuse): Texture.057[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\IceKazim\Rock_d.dds]
+			Texture(normal): Texture.075[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\IceKazim\Rock_n.dds]
 			[MESH]: Rock
 		[NODE]: Rock.003
 			[MATERIAL]: Rock
@@ -151,13 +222,13 @@ Loading of Models\input.fbx
 			[MATERIAL]: Rock
 		[NODE]: Street lamp01.007
 			[MATERIAL]: Material #185.001
-			Texture(diffuse): Map #5.002[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\packs\Medivial Vilage\textures\Street lamp_01.png]
-			Texture(normal): Texture.097[g:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\packs\Medivial Vilage\textures\Street lamp_01_NRM.png]
+			Texture(diffuse): LampDiffuse[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Street lamp_01.dds]
+			Texture(normal): LampNormal[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Street lamp_01_NRM.dds]
 			[MESH]: Untitled.011
 		[NODE]: Street lamp01.006
 			[MATERIAL]: Material.030
-			Texture(diffuse): Texture.096[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\packs\Medivial Vilage\textures\Street lamp_01.png]
-			Texture(normal): Texture.095[g:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\packs\Medivial Vilage\textures\Street lamp_01_NRM.png]
+			Texture(diffuse): LampDiffuse[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Street lamp_01.dds]
+			Texture(normal): LampNormal[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Street lamp_01_NRM.dds]
 			[MESH]: Untitled.000
 		[NODE]: Street lamp01.005
 			[MATERIAL]: Material.030
@@ -169,18 +240,18 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.030
 		[NODE]: House 2.000
 			[MATERIAL]: Material #66
-			Texture(diffuse): Map #2[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\packs\Medivial Vilage\textures\House_02.png]
-			Texture(normal): Texture.033[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\packs\Medivial Vilage\textures\House_02_NRM.png]
+			Texture(diffuse): Map #2[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\House_02.dds]
+			Texture(normal): Texture.033[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\House_02_NRM.dds]
 			[MESH]: Untitled.022
 		[NODE]: House 3.001
 			[MATERIAL]: Material #107
-			Texture(diffuse): Map #3.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\packs\Medivial Vilage\textures\House_03.png]
-			Texture(normal): Texture.032[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\packs\Medivial Vilage\textures\House_03_NRM.png]
+			Texture(diffuse): Map #3.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\House_03.dds]
+			Texture(normal): Texture.032[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\House_03_NRM.dds]
 			[MESH]: Untitled.021
 		[NODE]: Box138.067
 			[MATERIAL]: Material__36.002
-			Texture(diffuse): Texture.081[g:\SSDLaba\Modeling\Blender\TechDemo\Models\Rock\Rocks\Textures\Rock (4).jpg]
-			Texture(normal): Texture.054[g:\SSDLaba\Modeling\Blender\TechDemo\Models\Rock\Rocks\Textures\Rock_4_NRM.jpg]
+			Texture(diffuse): Texture.081[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rock_4.dds]
+			Texture(normal): Texture.054[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rock_4_NRM.dds]
 			[MESH]: Box138.002
 		[NODE]: Box138.066
 			[MATERIAL]: Material__36.002
@@ -316,8 +387,8 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material__36.002
 		[NODE]: Grass_20.031
 			[MATERIAL]: Material.003
-			Texture(diffuse): Texture.079[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Packs\Assure_Nature\__\__\textures\GrassBlades002_COL_1K.png]
-			Texture(normal): Texture.080[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Packs\Assure_Nature\__\__\textures\GrassBlades002_NRM_1K.jpg]
+			Texture(diffuse): Texture.079[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\GrassBlades002_COL_1K.dds]
+			Texture(normal): Texture.080[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\GrassBlades002_NRM_1K.dds]
 			[MESH]: Untitled
 		[NODE]: Grass_20.030
 			[MATERIAL]: Material.003
@@ -381,86 +452,59 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.003
 		[NODE]: Rock_10.002
 			[MATERIAL]: Rock_10
-			Texture(diffuse): Texture.018[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Rock\IceKazim\Rock_10\Rock_10_Tex\Rock_10_d.tga]
-			Texture(normal): Texture.017[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Rock\IceKazim\Rock_10\Rock_10_Tex\Rock_10_n.tga]
+			Texture(diffuse): Texture.018[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\IceKazim\Rock_10_d.dds]
+			Texture(normal): Texture.017[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\IceKazim\Rock_10_n.dds]
 			[MESH]: Rock_10
 		[NODE]: Rock.001
 			[MATERIAL]: Rock
 		[NODE]: Rock_10.001
 			[MATERIAL]: Rock_10
-		[NODE]: MRL_RockMediumC.004
-			[MATERIAL]: Material.024
-			Texture(diffuse): Texture.070[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Packs\Rocky Hills Environment\Rocky Hills Environment - Light Pack\Textures\RHEFRockMediumC_Diffuse.png]
-			Texture(normal): Texture.069[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Packs\Rocky Hills Environment\Rocky Hills Environment - Light Pack\Normals\RHEFRockMediumC_Normalx.png]
-			[MESH]: MRL_RockMediumC.001
 		[NODE]: RHEF_RockDetailsB.006
-			[MATERIAL]: Material.020
-			Texture(diffuse): Texture.062[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Packs\Rocky Hills Environment\Rocky Hills Environment - Light Pack\Textures\RHEFRockDetails_Diffuse.png]
-			Texture(normal): Texture.061[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Packs\Rocky Hills Environment\Rocky Hills Environment - Light Pack\Normals\RHEFRockDetails_Normal.png]
+			[MATERIAL]: RHEFRockDetails
+			Texture(diffuse): Texture.064[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFRockDetails_Diffuse.dds]
+			Texture(normal): Texture.063[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFRockDetails_Normal.dds]
 			[MESH]: RHEF_RockDetailsB.001
 		[NODE]: RHEF_RockDetailsB.005
-			[MATERIAL]: Material.020
+			[MATERIAL]: RHEFRockDetails
 		[NODE]: RHEF_RockDetailsA.005
-			[MATERIAL]: Material.021
-			Texture(diffuse): Texture.064[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Packs\Rocky Hills Environment\Rocky Hills Environment - Light Pack\Textures\RHEFRockDetails_Diffuse.png]
-			Texture(normal): Texture.063[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Packs\Rocky Hills Environment\Rocky Hills Environment - Light Pack\Normals\RHEFRockDetails_Normal.png]
+			[MATERIAL]: RHEFRockDetails
 			[MESH]: RHEF_RockDetailsA
-		[NODE]: MRL_RockMediumB.003
-			[MATERIAL]: Material.025
-			Texture(diffuse): Texture.072[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Packs\Rocky Hills Environment\Rocky Hills Environment - Light Pack\Textures\MRLRockMediumB_Diffuse.png]
-			Texture(normal): Texture.071[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Packs\Rocky Hills Environment\Rocky Hills Environment - Light Pack\Normals\MRLRockMediumB_Normal.png]
-			[MESH]: MRL_RockMediumB.001
-		[NODE]: MRL_RockMediumB.002
-			[MATERIAL]: Material.025
-			[MESH]: MRL_RockMediumB.002
 		[NODE]: MRL_RockMediumA.001
 			[MATERIAL]: Material.026
-			Texture(diffuse): Texture.074[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Packs\Rocky Hills Environment\Rocky Hills Environment - Light Pack\Textures\MRLRockMediumA_Diffuse.png]
-			Texture(normal): Texture.073[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Packs\Rocky Hills Environment\Rocky Hills Environment - Light Pack\Normals\MRLRockMediumA_Normal.png]
+			Texture(diffuse): Texture.074[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\MRLRockMediumA_Diffuse.dds]
+			Texture(normal): Texture.073[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\MRLRockMediumA_Normal.dds]
 			[MESH]: MRL_RockMediumA
-		[NODE]: MRL_RockMediumC.003
-			[MATERIAL]: Material.024
-			[MESH]: MRL_RockMediumC.002
-		[NODE]: MRL_RockMediumC.002
-			[MATERIAL]: Material.024
-			[MESH]: MRL_RockMediumC.003
 		[NODE]: RHEF_RockDetailsB.004
-			[MATERIAL]: Material.020
+			[MATERIAL]: RHEFRockDetails
 		[NODE]: RHEF_RockDetailsA.004
-			[MATERIAL]: Material.021
+			[MATERIAL]: RHEFRockDetails
 		[NODE]: RHEF_RockDetailsB.003
-			[MATERIAL]: Material.020
+			[MATERIAL]: RHEFRockDetails
 		[NODE]: RHEF_RockDetailsA.003
-			[MATERIAL]: Material.021
-		[NODE]: MRL_RockMediumB.001
-			[MATERIAL]: Material.025
-			[MESH]: MRL_RockMediumB
-		[NODE]: MRL_RockMediumC.001
-			[MATERIAL]: Material.024
-			[MESH]: MRL_RockMediumC
+			[MATERIAL]: RHEFRockDetails
 		[NODE]: RHEF_RockDetailsB.002
-			[MATERIAL]: Material.020
+			[MATERIAL]: RHEFRockDetails
 		[NODE]: RHEF_RockDetailsB.001
-			[MATERIAL]: Material.020
+			[MATERIAL]: RHEFRockDetails
 		[NODE]: RHEF_RockDetailsA.002
-			[MATERIAL]: Material.021
+			[MATERIAL]: RHEFRockDetails
 		[NODE]: RHEF_RockDetailsA.001
-			[MATERIAL]: Material.021
+			[MATERIAL]: RHEFRockDetails
 		[NODE]: House 2.001
 			[MATERIAL]: Material #66
 		[NODE]: Cube.458
 			[MATERIAL]: Material.006
-			Texture(diffuse): Texture.037[g:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\MedievalHause\diff.png]
-			Texture(normal): Texture.036[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\MedievalHause\diff_NRM.jpg]
+			Texture(diffuse): Texture.037[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\MedievalHause_diff.dds]
+			Texture(normal): Texture.036[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\MedievalHause_diff_NRM.dds]
 			[MESH]: Cube.001
 		[NODE]: Cube.443
 			[MATERIAL]: Material.014
-			Texture(diffuse): Texture.044[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Ruins\textures\WoodPlanksBare0051_3_M.jpg]
+			Texture(diffuse): Texture.044[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksBare0051_3_M.dds]
 			[MESH]: Cube.074
 		[NODE]: Cube.442
 			[MATERIAL]: Material.015
-			Texture(diffuse): Texture.046[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Ruins\textures\Medieval_Brick_Texture_by_goodtextures.jpg]
-			Texture(normal): Texture.045[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Ruins\textures\Medieval_Brick_Texture_by_goodtextures_NRM_v1.png]
+			Texture(diffuse): Texture.046[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\Medieval_Brick_Texture_by_goodtextures.dds]
+			Texture(normal): Texture.045[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\Medieval_Brick_Texture_by_goodtextures_NRM.dds]
 			[MESH]: Cube.075
 		[NODE]: Cube.441
 			[MATERIAL]: Material.015
@@ -468,17 +512,13 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.014
 		[NODE]: Tower.001
 			[MATERIAL]: Material #128
-			Texture(diffuse): Map #4.002[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\packs\Medivial Vilage\textures\Tower.png]
-			Texture(normal): Texture.025[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\packs\Medivial Vilage\textures\Tower_NRM.png]
+			Texture(diffuse): Map #4.002[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower.dds]
+			Texture(normal): Texture.025[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower_NRM.dds]
 			[MESH]: Untitled.012
 		[NODE]: Sphere001_frag_138_7.001
 			[MATERIAL]: Material.005
-			Texture(diffuse): Texture.002[g:\SSDLaba\Programming\Modeling\LightWave\WorkDirTextures\CliffJagged004_COL_VAR1_3K.jpg]
+			Texture(diffuse): Texture.002[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\CliffJagged004_COL_VAR1_3K.DDS]
 			[MESH]: Sphere001_frag_138_7.001
-		[NODE]: Plane_004.001
-			[MATERIAL]: grass_2
-			Texture(diffuse): tinyworld_grassTexture1[G:\SSDLaba\Modeling\Blender\TechDemo\Models\tinyworld\textures\Gras2 - Kopie.jpg]
-			[MESH]: Plane.002
 		[NODE]: Grass_20
 			[MATERIAL]: Material.003
 		[NODE]: Sphere001_frag_138_7
@@ -488,27 +528,25 @@ Loading of Models\input.fbx
 			[MESH]: Cylinder.008
 		[NODE]: gras_long
 			[MATERIAL]: gras-long
-			Texture(diffuse): Texture.006[g:\SSDLaba\Modeling\Blender\TechDemo\Models\Grass\grass_and_dryGrass\gras-long-diff.dds]
 			[MESH]: gras_long
 		[NODE]: RHE_Cave
 			[MATERIAL]: Material.000
-			Texture(diffuse): Texture.014[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Packs\Rocky Hills Environment\Rocky Hills Environment - Light Pack\Textures\RHEFCave_Diffuse.png]
-			Texture(normal): Texture.013[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Packs\Rocky Hills Environment\Rocky Hills Environment - Light Pack\Normals\RHEFCave_Normal.png]
+			Texture(diffuse): Texture.014[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFCave_Diffuse.dds]
+			Texture(normal): Texture.013[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFCave_Normal.dds]
 			[MESH]: RHE_Cave
 		[NODE]: RHE_CaveTop
 			[MATERIAL]: Material.001
-			Texture(diffuse): Texture.012[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Packs\Rocky Hills Environment\Rocky Hills Environment - Light Pack\Textures\RHEFCaveTop_Diffuse.png]
-			Texture(normal): Texture.011[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Packs\Rocky Hills Environment\Rocky Hills Environment - Light Pack\Normals\RHEFCaveTop_Normal.png]
+			Texture(diffuse): Texture.012[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFCaveTop_Diffuse.dds]
 			[MESH]: RHE_CaveTop
 		[NODE]: RHEF_LowRockMedium
 			[MATERIAL]: Material
-			Texture(diffuse): Texture.016[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Packs\Rocky Hills Environment\Rocky Hills Environment - Light Pack\Textures\RHEFLowRockMedium_Diffuse.png]
-			Texture(normal): Texture.015[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Packs\Rocky Hills Environment\Rocky Hills Environment - Light Pack\Normals\RHEFLowRockMedium_Normal.png]
+			Texture(diffuse): Texture.016[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFLowRockMedium_Diffuse.dds]
+			Texture(normal): Texture.015[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFLowRockMedium_Normal.dds]
 			[MESH]: RHEF_LowRockMedium
 		[NODE]: fence
 			[MATERIAL]: home
-			Texture(diffuse): Map #4.001[g:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Russian_hause\texture\home_hatka_Base_Color.png]
-			Texture(normal): Texture.029[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Russian_hause\texture\home_hatka_Normal_OpenGL.png]
+			Texture(diffuse): Map #4.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\RussianHause\home_hatka_Base_Color.dds]
+			Texture(normal): Texture.029[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\RussianHause\home_hatka_Normal_OpenGL.dds]
 			[MESH]: Untitled.010
 		[NODE]: step
 			[MATERIAL]: home
@@ -518,13 +556,13 @@ Loading of Models\input.fbx
 			[MESH]: Untitled.008
 		[NODE]: Object001
 			[MATERIAL]: brench
-			Texture(diffuse): Map #3[g:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Russian_hause\texture\branch_Base_Color.png]
-			Texture(normal): Texture.010[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Russian_hause\texture\branch_Normal_OpenGL.png]
+			Texture(diffuse): Map #3[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\RussianHause\branch_Base_Color.dds]
+			Texture(normal): Texture.010[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\RussianHause\branch_Normal_OpenGL.dds]
 			[MESH]: Untitled.007
 		[NODE]: grount
 			[MATERIAL]: grunt
-			Texture(diffuse): Texture.098[G:\SSDLaba\Modeling\Blender\TechDemo\_Textures\textures\GroundForestRoots001\REGULAR\3K\GroundForestRoots001_COL_3K.dds]
-			Texture(normal): Texture.099[G:\SSDLaba\Modeling\Blender\TechDemo\_Textures\textures\GroundForestRoots001\REGULAR\3K\GroundForestRoots001_NRM_3K.dds]
+			Texture(diffuse): Texture.098[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\GroundForestRoots001_COL_3K.dds]
+			Texture(normal): Texture.099[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\GroundForestRoots001_NRM_3K.dds]
 			[MESH]: Untitled.006
 		[NODE]: Hause
 			[MATERIAL]: home
@@ -533,13 +571,13 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material #107
 		[NODE]: House1
 			[MATERIAL]: Material #45
-			Texture(diffuse): Map #1.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\packs\Medivial Vilage\textures\House_01.png]
-			Texture(normal): Texture.031[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\packs\Medivial Vilage\textures\House_01_NRM.png]
+			Texture(diffuse): Map #1.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\House_01.dds]
+			Texture(normal): Texture.031[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\House_01_NRM.dds]
 			[MESH]: Untitled.020
 		[NODE]: Rock01
 			[MATERIAL]: Material #206
-			Texture(diffuse): Map #6[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\packs\Medivial Vilage\textures\Rock_01.png]
-			Texture(normal): Texture.030[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\packs\Medivial Vilage\textures\Rock_01_NRM.png]
+			Texture(diffuse): Map #6[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rock_01.dds]
+			Texture(normal): Texture.030[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rock_01_NRM.dds]
 			[MESH]: Untitled.019
 		[NODE]: Rock02
 			[MATERIAL]: Material #206
@@ -554,15 +592,15 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material #128
 		[NODE]: rock
 			[MATERIAL]: rock
-			Texture(diffuse): Diffuse[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\rock\MainRock\rock_albedo.tga]
-			Texture(normal): Normal[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\rock\MainRock\rock_normal_unity.tga]
+			Texture(diffuse): Diffuse[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\rock_albedo.dds]
+			Texture(normal): Normal[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\rock_normal_unity.dds]
 			[MESH]: rock.001
 		[NODE]: Cube.002
 			[MATERIAL]: Material.006
 		[NODE]: Cube.437
 			[MATERIAL]: Material.013
-			Texture(diffuse): None[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Tower\blend\textures\WoodPlanksBeamed0042_4_L.jpg]
-			Texture(normal): Texture.043[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Tower\blend\textures\WoodPlanksBeamed0042_4_L_NRM.png]
+			Texture(diffuse): None[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksBeamed0042_4_L.dds]
+			Texture(normal): Texture.043[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksBeamed0042_4_L_NRM.dds]
 			[MESH]: Cube.047
 		[NODE]: Cube.436
 			[MATERIAL]: Material.013
@@ -590,20 +628,20 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.013
 		[NODE]: Cube.425
 			[MATERIAL]: Material.012
-			Texture(diffuse): Tex.006[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Tower\blend\textures\WoodPlanksBeamed0023_2_S.jpg]
-			Texture(normal): Texture.042[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Tower\blend\textures\WoodPlanksBeamed0023_2_S_NRM.png]
+			Texture(diffuse): Tex.006[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksBeamed0023_2_S.dds]
+			Texture(normal): Texture.042[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksBeamed0023_2_S_NRM.dds]
 			[MESH]: Cube.044
 		[NODE]: Cube.424
 			[MATERIAL]: Material.011
-			Texture(diffuse): Tex.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Tower\blend\textures\RooftilesWood0047_1_M.jpg]
-			Texture(normal): Texture.041[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Tower\blend\textures\RooftilesWood0047_1_M_NRM.png]
+			Texture(diffuse): Tex.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\RooftilesWood0047_1_M.dds]
+			Texture(normal): Texture.041[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\RooftilesWood0047_1_M_NRM.dds]
 			[MESH]: Cube.043
 		[NODE]: Cube.423
 			[MATERIAL]: Material.013
 			[MESH]: Cube.042
 		[NODE]: Plane.161
 			[MATERIAL]: Material.010
-			Texture(diffuse): Texture.040[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Tower\blend\textures\BuildingsDerelict0132_M.jpg]
+			Texture(diffuse): Texture.040[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\BuildingsDerelict0132_M.dds]
 			[MESH]: Plane
 		[NODE]: Cube.422
 			[MATERIAL]: Material.013
@@ -900,8 +938,8 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.013
 		[NODE]: Cube.296
 			[MATERIAL]: Material.009
-			Texture(diffuse): Tex[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Tower\blend\textures\BrickGroutless0025_3_S.jpg]
-			Texture(normal): Texture.039[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Tower\blend\textures\BrickGroutless0025_3_S_NRM.png]
+			Texture(diffuse): Tex[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WallMedieval003_COL_VAR1_3K.dds]
+			Texture(normal): Texture.039[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WallMedieval003_NRM_3K.dds]
 			[MESH]: Cube.034
 		[NODE]: Cube.295
 			[MATERIAL]: Material.009
@@ -974,8 +1012,8 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.013
 		[NODE]: Cube.265
 			[MATERIAL]: Material.008
-			Texture(diffuse): Tex.003[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Tower\blend\textures\WoodPlanksDirty0008_L.jpg]
-			Texture(normal): Texture.038[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Tower\blend\textures\WoodPlanksDirty0008_L_NRM.png]
+			Texture(diffuse): Tex.003[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksDirty0008_L.dds]
+			Texture(normal): Texture.038[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksDirty0008_L_NRM.dds]
 			[MESH]: Cube.023
 		[NODE]: Cube.264
 			[MATERIAL]: Material.008
@@ -984,7 +1022,7 @@ Loading of Models\input.fbx
 			[MESH]: Cube.021
 		[NODE]: Cube.262
 			[MATERIAL]: Material.007
-			Texture(diffuse): Tex.004[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Tower\blend\textures\10744-v1.jpg]
+			Texture(diffuse): Tex.004[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\10744-v1.dds]
 			[MESH]: Cube.020
 		[NODE]: Cube.261
 			[MATERIAL]: Material.007
@@ -1503,133 +1541,133 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.009
 			[MESH]: Cube.003
 		[NODE]: Torus.003
-			[MATERIAL]: test_04.001
+			[MATERIAL]: WagonSet04
 		[NODE]: Torus.005
-			[MATERIAL]: test_04.001
+			[MATERIAL]: WagonSet04
 		[NODE]: Torus.006
-			[MATERIAL]: test_04.001
+			[MATERIAL]: WagonSet04
 		[NODE]: cubuk.000
-			[MATERIAL]: test_04.001
+			[MATERIAL]: WagonSet04
 			[MESH]: Cube.069
 		[NODE]: oi
-			[MATERIAL]: test_03.001
-			Texture(diffuse): test_03_Base_Color.png.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\wagon\textures\set_03\test_03_Base_Color.png]
-			Texture(normal): test_03_Normal_DirectX.png.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\wagon\textures\set_03\test_03_Normal_DirectX.png]
+			[MATERIAL]: WagonSet03
+			Texture(diffuse): test_03_Base_Color[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Wagon\set_03\set03_Base_Color.dds]
+			Texture(normal): test_03_Normal_DirectX[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Wagon\set_03\set03_Normal_DirectX.dds]
 			[MESH]: cube006.001
 		[NODE]: opor_01.001
-			[MATERIAL]: test_03.001
+			[MATERIAL]: WagonSet03
 			[MESH]: Cube.068
 		[NODE]: Cube.005
-			[MATERIAL]: test_03.001
+			[MATERIAL]: WagonSet03
 			[MESH]: Cube.067
 		[NODE]: oporu_Bol.001
-			[MATERIAL]: test.001
-			Texture(diffuse): test_Base_Color.png.000[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\wagon\textures\set_01\test_Base_Color.png]
-			Texture(normal): test_Normal_DirectX.png.000[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\wagon\textures\set_01\test_Normal_DirectX.png]
+			[MATERIAL]: WagonSet01
+			Texture(diffuse): Texture.116[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Wagon\set_01\set01_Base_Color.dds]
+			Texture(normal): Texture.117[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Wagon\set_01\set01_Normal_DirectX.dds]
 			[MESH]: cube005.001
 		[NODE]: prav_bok.001
-			[MATERIAL]: test.001
+			[MATERIAL]: WagonSet01
 			[MESH]: cube004.001
 		[NODE]: Cube.014
-			[MATERIAL]: test_04.001
+			[MATERIAL]: WagonSet04
 			[MESH]: Cube.066
 		[NODE]: cubuk.001
-			[MATERIAL]: test_04.001
+			[MATERIAL]: WagonSet04
 			[MESH]: Cube.065
 		[NODE]: Cube.013
-			[MATERIAL]: test_04.001
+			[MATERIAL]: WagonSet04
 			[MESH]: Cube.064
 		[NODE]: Cylinder.003
-			[MATERIAL]: test.001
+			[MATERIAL]: WagonSet01
 			[MESH]: Cylinder.000
 		[NODE]: Cube.007
-			[MATERIAL]: test_02.001
+			[MATERIAL]: WagonSet02
 		[NODE]: Cube.006
-			[MATERIAL]: test_02.001
+			[MATERIAL]: WagonSet02
 		[NODE]: Cube.001
-			[MATERIAL]: test.001
+			[MATERIAL]: WagonSet01
 			[MESH]: Cube.058
 		[NODE]: oporu_snarug.003
-			[MATERIAL]: test_02.001
+			[MATERIAL]: WagonSet02
 			[MESH]: cube003.003
 		[NODE]: oporu_snarug.002
-			[MATERIAL]: test_02.001
+			[MATERIAL]: WagonSet02
 			[MESH]: cube000.001
 		[NODE]: planki.001
-			[MATERIAL]: test_03.001
+			[MATERIAL]: WagonSet03
 			[MESH]: Cube.057
 		[NODE]: Cube.004
-			[MATERIAL]: test_02.001
+			[MATERIAL]: WagonSet02
 			[MESH]: Cube.056
 		[NODE]: oporu_snarug.001
-			[MATERIAL]: test_02.001
+			[MATERIAL]: WagonSet02
 			[MESH]: cube072.001
 		[NODE]: oporu_sred.001
-			[MATERIAL]: test_02.001
+			[MATERIAL]: WagonSet02
 			[MESH]: cube071.001
 		[NODE]: opor
-			[MATERIAL]: test_02.001
+			[MATERIAL]: WagonSet02
 			[MESH]: Cube.055
 		[NODE]: Cube
-			[MATERIAL]: test_04.001
+			[MATERIAL]: WagonSet04
 			[MESH]: Cube.054
 		[NODE]: Cube.000
-			[MATERIAL]: test_03.001
+			[MATERIAL]: WagonSet03
 			[MESH]: Cube.053
 		[NODE]: pres_02
-			[MATERIAL]: test_03.001
+			[MATERIAL]: WagonSet03
 			[MESH]: Cube.052
 		[NODE]: pres_01
-			[MATERIAL]: test_03.001
+			[MATERIAL]: WagonSet03
 			[MESH]: Cube.051
 		[NODE]: planki
-			[MATERIAL]: test_03.001
+			[MATERIAL]: WagonSet03
 			[MESH]: Cube.050
 		[NODE]: opor_01
-			[MATERIAL]: test_03.001
+			[MATERIAL]: WagonSet03
 			[MESH]: Cube.049
 		[NODE]: oporu_snarug
-			[MATERIAL]: test_02.001
+			[MATERIAL]: WagonSet02
 			[MESH]: cube003.002
 		[NODE]: oporu_Bol
-			[MATERIAL]: test.001
+			[MATERIAL]: WagonSet01
 			[MESH]: cube062.001
 		[NODE]: oporu_sred
-			[MATERIAL]: test_02.001
+			[MATERIAL]: WagonSet02
 			[MESH]: cube054.001
 		[NODE]: uio
-			[MATERIAL]: test_03.001
+			[MATERIAL]: WagonSet03
 			[MESH]: iofg.001
 		[NODE]: podstav_02
-			[MATERIAL]: test_03.001
+			[MATERIAL]: WagonSet03
 			[MESH]: cube042.001
 		[NODE]: podstav_01
-			[MATERIAL]: test_03.001
+			[MATERIAL]: WagonSet03
 			[MESH]: cube033.001
 		[NODE]: dno_02
-			[MATERIAL]: test.001
+			[MATERIAL]: WagonSet01
 			[MESH]: cube027.001
 		[NODE]: karkas
-			[MATERIAL]: test_03.001
+			[MATERIAL]: WagonSet03
 			[MESH]: Cube.048
 		[NODE]: dno_01
-			[MATERIAL]: test_02.001
+			[MATERIAL]: WagonSet02
 			[MESH]: cube025.001
 		[NODE]: oporu_bok
-			[MATERIAL]: test_02.001
+			[MATERIAL]: WagonSet02
 			[MESH]: cube022.001
 		[NODE]: zad
-			[MATERIAL]: test.001
+			[MATERIAL]: WagonSet01
 			[MESH]: cube020.001
 		[NODE]: pered
-			[MATERIAL]: test.001
+			[MATERIAL]: WagonSet01
 			[MESH]: cube007.001
 		[NODE]: Lev_bok
-			[MATERIAL]: test_02.001
+			[MATERIAL]: WagonSet02
 			[MESH]: cube001.001
 		[NODE]: SkyObject
 			[MATERIAL]: MaterialSky.001
-			Texture(diffuse): sky_texture.002[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Textures\Sky\Sky.tif]
+			Texture(diffuse): sky_texture.002[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Sky.DDS]
 			[MESH]: SkyMesh
 		[NODE]: WaterV2_object
 			[MATERIAL]: WaterV2_material
@@ -1644,17 +1682,17 @@ Loading of Models\input.fbx
 			[MESH]: Cube.007
 		[NODE]: Wolf_obj_body.003
 			[MATERIAL]: Wolf_Eyes.001
-			Texture(diffuse): Wolf_Eyes_1.jpg.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Wolf\textures\Wolf_Eyes_1.jpg]
-			Texture(diffuse): Wolf_Eyes_2.jpg.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Wolf\textures\Wolf_Eyes_2.jpg]
+			Texture(diffuse): Wolf_Eyes_1[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Animals\Wolf_Eyes_1.dds]
+			Texture(diffuse): Wolf_Eyes_2[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Animals\Wolf_Eyes_2.dds]
 			[MESH]: Cube.008
 		[NODE]: Wolf_obj_body.004
 			[MATERIAL]: Wolf_Body.001
-			Texture(diffuse): Wolf_Body.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Wolf\textures\Wolf_Body.jpg]
+			Texture(diffuse): Wolf_Body[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Animals\Wolf_Body.dds]
 			[MESH]: Cube.009
 		[NODE]: Wolf_obj_body
 			[MATERIAL]: Wolf_Fur.001
-			Texture(diffuse): Wolf_Body.jpg.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Wolf\textures\Wolf_Body.jpg]
-			Texture(transparencyF): Wolf_Fur.jpg.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Wolf\textures\Wolf_Fur.jpg]
+			Texture(diffuse): Wolf_Body[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Animals\Wolf_Body.dds]
+			Texture(transparencyF): Wolf_Fur[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Animals\Wolf_Fur.dds]
 			[MESH]: Cube.010
 		[NODE]: Cube.438
 			[MATERIAL]: Material.014
@@ -1662,8 +1700,8 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.015
 		[NODE]: Plane.167
 			[MATERIAL]: Material.018
-			Texture(diffuse): Texture.052[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Hause88\blend\textures\windows_0279_01_preview.jpg]
-			Texture(normal): Texture.051[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Hause88\blend\textures\windows_0279_01_preview_NRM.png]
+			Texture(diffuse): Texture.052[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\windows_0279_01_preview.dds]
+			Texture(normal): Texture.051[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\windows_0279_01_preview_NRM.dds]
 			[MESH]: Plane.010
 		[NODE]: Plane.166
 			[MATERIAL]: Material.018
@@ -1675,8 +1713,8 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.018
 		[NODE]: Cube.457
 			[MATERIAL]: Material.017
-			Texture(diffuse): Texture.050[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Hause88\blend\textures\WoodPlanksBare0051_3_M.jpg]
-			Texture(normal): Texture.049[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Hause88\blend\textures\WoodPlanksBare0051_3_M_NRM.png]
+			Texture(diffuse): Texture.050[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksBare0051_3_M.dds]
+			Texture(normal): Texture.049[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksBare0051_3_M_NRM.dds]
 			[MESH]: Cube.078
 		[NODE]: Cube.456
 			[MATERIAL]: Material.017
@@ -1705,8 +1743,8 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.017
 		[NODE]: Cube.444
 			[MATERIAL]: Material.016
-			Texture(diffuse): Texture.048[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Hause88\blend\textures\Medieval_Brick_Texture_by_goodtextures.jpg]
-			Texture(normal): Texture.047[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Hause88\blend\textures\Medieval_Brick_Texture_by_goodtextures_NRM.png]
+			Texture(diffuse): Texture.048[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\Medieval_Brick_Texture_by_goodtextures.dds]
+			Texture(normal): Texture.047[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\Medieval_Brick_Texture_by_goodtextures_NRM.dds]
 			[MESH]: Cube.076
 		[NODE]: Plane.162
 			[MATERIAL]: Material.017
@@ -1715,23 +1753,21 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.026
 		[NODE]: MRL_RockMediumB
 			[MATERIAL]: Material.025
-			[MESH]: MRL_RockMediumB.003
 		[NODE]: MRL_RockMediumC
 			[MATERIAL]: Material.024
-			[MESH]: MRL_RockMediumC.004
 		[NODE]: RHEF_GenericCliffA
 			[MATERIAL]: Material.023
-			Texture(diffuse): Texture.068[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Packs\Rocky Hills Environment\Rocky Hills Environment - Light Pack\Textures\RHEFGenericCliffA_Diffuse.png]
-			Texture(normal): Texture.067[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Packs\Rocky Hills Environment\Rocky Hills Environment - Light Pack\Normals\RHEFGenericCliffA_Normal.png]
+			Texture(diffuse): Texture.068[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFGenericCliffA_Diffuse.dds]
+			Texture(normal): Texture.067[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFGenericCliffA_Normal.dds]
 			[MESH]: RHEF_GenericCliffA
 		[NODE]: RHEF_RockDetailsA
-			[MATERIAL]: Material.021
+			[MATERIAL]: RHEFRockDetails
 		[NODE]: RHEF_RockDetailsB
-			[MATERIAL]: Material.020
+			[MATERIAL]: RHEFRockDetails
 		[NODE]: RHEFGenericCliffB
 			[MATERIAL]: Material.019
-			Texture(diffuse): Texture.060[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Packs\Rocky Hills Environment\Rocky Hills Environment - Light Pack\Textures\RHEFGenericCliffB_Diffuse.png]
-			Texture(normal): Texture.059[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Packs\Rocky Hills Environment\Rocky Hills Environment - Light Pack\Normals\RHEFGenericCliffB_Normal2.png]
+			Texture(diffuse): Texture.060[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFGenericCliffB_Diffuse.dds]
+			Texture(normal): Texture.059[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFGenericCliffB_Normal2.dds]
 			[MESH]: RHEFGenericCliffB.001
 		[NODE]: Rock_10
 			[MATERIAL]: Rock_10
@@ -1739,15 +1775,15 @@ Loading of Models\input.fbx
 			[MATERIAL]: Rock
 		[NODE]: Rock_6
 			[MATERIAL]: Rock_6
-			Texture(diffuse): Texture.078[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Rock\IceKazim\Rock_6\Rock_6\Rock_6_Tex\Rock_6_d.png]
-			Texture(normal): Texture.077[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Rock\IceKazim\Rock_6\Rock_6\Rock_6_Tex\Rock_6_n.png]
+			Texture(diffuse): Texture.078[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\IceKazim\Rock_6_d.dds]
+			Texture(normal): Texture.077[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\IceKazim\Rock_6_n.dds]
 			[MESH]: Rock_6
 		[NODE]: Box138.000
 			[MATERIAL]: Material__36.002
 		[NODE]: Box111.015
 			[MATERIAL]: Material__42.001
-			Texture(diffuse): Ka.009[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Tower\blend\textures\WoodPlanksDirty0008_L.jpg]
-			Texture(normal): Texture.087[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Tower\blend\textures\WoodPlanksDirty0008_L_NRM.png]
+			Texture(diffuse): Ka.009[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksDirty0008_L.dds]
+			Texture(normal): Texture.087[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksDirty0008_L_NRM.dds]
 			[MESH]: Box111.001
 		[NODE]: Box111.014
 			[MATERIAL]: Material__42.001
@@ -1779,8 +1815,8 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material__42.001
 		[NODE]: Box166.031
 			[MATERIAL]: Material__36.001
-			Texture(diffuse): Texture.086[g:\SSDLaba\Modeling\Blender\TechDemo\Models\Rock\Rocks\Textures\Rock (4).jpg]
-			Texture(normal): Texture.085[g:\SSDLaba\Modeling\Blender\TechDemo\Models\Rock\Rocks\Textures\Rock_4_NRM.jpg]
+			Texture(diffuse): Texture.086[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rock_4.dds]
+			Texture(normal): Texture.085[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rock_4_NRM.dds]
 			[MESH]: Box166.001
 		[NODE]: Box166.030
 			[MATERIAL]: Material__36.001
@@ -1844,27 +1880,27 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material__36.001
 		[NODE]: Box002
 			[MATERIAL]: Material__29.001
-			Texture(diffuse): Ka.008[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Tower\blend\textures\WoodPlanksDirty0008_L.jpg]
-			Texture(normal): Texture.084[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Tower\blend\textures\WoodPlanksDirty0008_L_NRM.png]
+			Texture(diffuse): Ka.008[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksDirty0008_L.dds]
+			Texture(normal): Texture.084[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksDirty0008_L_NRM.dds]
 			[MESH]: Box002.001
 		[NODE]: Box001
 			[MATERIAL]: Material__34.001
-			Texture(diffuse): Ka.007[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Tower\blend\textures\BrickGroutless0025_3_S.jpg]
-			Texture(normal): Texture.083[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Tower\blend\textures\BrickGroutless0025_3_S_NRM.png]
+			Texture(diffuse): Texture.024[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\BrickGroutless0025_3_S.dds]
+			Texture(normal): Texture.083[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\BrickGroutless0025_3_S_NRM.dds]
 			[MESH]: Box001.001
 		[NODE]: Box166
 			[MATERIAL]: Material__36.001
 		[NODE]: Box080
 			[MATERIAL]: Material__35.001
-			Texture(diffuse): Ka.006[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Tower\blend\textures\RooftilesWood0047_1_M.jpg]
-			Texture(normal): Texture.082[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Tower\blend\textures\RooftilesWood0047_1_M_NRM.png]
+			Texture(diffuse): Ka.006[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\RooftilesWood0047_1_M.dds]
+			Texture(normal): Texture.055[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\RooftilesWood0047_1_M_NRM.dds]
 			[MESH]: Box080.001
 		[NODE]: Cylinder001
 			[MATERIAL]: Material__35.001
 			[MESH]: Cylinder001.001
 		[NODE]: Box003
 			[MATERIAL]: Material__40.001
-			Texture(diffuse): Ka.004[g:\SSDLaba\Modeling\Blender\TechDemo\Models\Hauses\Tower\blend\textures\BuildingsDerelict0132_M.jpg]
+			Texture(diffuse): Ka.004[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\BuildingsDerelict0132_M.dds]
 			[MESH]: Box003.001
 		[NODE]: Box079
 			[MATERIAL]: Material__35.001
@@ -1873,12 +1909,12 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material__42.001
 		[NODE]: ground.002
 			[MATERIAL]: StoneLandMaterial
-			Texture(diffuse): Texture.058[G:\SSDLaba\Modeling\Blender\TechDemo\_Textures\textures\CobblestoneArches002\REGULAR\3K\CobblestoneArches002_COL_VAR1_3K.jpg]
-			Texture(normal): Texture.094[G:\SSDLaba\Modeling\Blender\TechDemo\_Textures\textures\CobblestoneArches002\REGULAR\3K\CobblestoneArches002_NRM_3K.jpg]
+			Texture(diffuse): Texture.056[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\CobblestoneArches002_COL_VAR1_3K.dds]
+			Texture(normal): Texture.094[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\CobblestoneArches002_NRM_3K.dds]
 			[MESH]: GroundPlane.002
 		[NODE]: Box138.068
 			[MATERIAL]: Material__36.000
-			Texture(diffuse): Texture.007[g:\SSDLaba\Modeling\Blender\TechDemo\Models\Rock\Rocks\Textures\Rock (4).jpg]
+			Texture(diffuse): Texture.081[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rock_4.dds]
 			[MESH]: Box138.000
 		[NODE]: Street lamp01.002
 			[MATERIAL]: Material.030
@@ -1886,1859 +1922,2280 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material #185.001
 		[NODE]: ground.001
 			[MATERIAL]: Material.029
-			Texture(diffuse): Texture.107[G:\SSDLaba\Modeling\Blender\TechDemo\_Textures\textures\GroundForestMulch001\REGULAR\3K\GroundForestMulch001_COL_3K.dds]
-			Texture(normal): Texture.108[G:\SSDLaba\Modeling\Blender\TechDemo\_Textures\textures\GroundForestMulch001\REGULAR\3K\GroundForestMulch001_NRM_3K.dds]
+			Texture(diffuse): Texture.107[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\GroundForestMulch001_COL_3K.dds]
+			Texture(normal): Texture.108[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\GroundForestMulch001_NRM_3K.dds]
 			[MESH]: GroundPlane.003
 		[NODE]: Deer
 			[MATERIAL]: Deer
-			Texture(diffuse): Texture.003[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\animals\Deer\textures\Diffuse.jpg]
-			Texture(normal): Texture.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\animals\Deer\textures\Normal.jpg]
+			Texture(diffuse): Texture.003[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Animals\Deer_Diffuse.dds]
+			Texture(normal): Texture.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Animals\Deer_Normal.dds]
 			[MESH]: mesh_id37
 		[NODE]: LOD_LowPolyTree_part1
 			[NODE LOD GROUP]: LOD_LowPolyTree_part1
-				[MATERIAL]: Bark.003
-				Texture(diffuse): Bark_Diffuse.004[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\forest\Low poly tree\textures\BroadleafBark.tga]
+				[MATERIAL]: BroadleafBark
 				[MESH]: LOD_LowPolyTree_part1
 				[MESH]: tree1_3d.006
 				[MESH]: tree1_3d.003
 		[NODE]: LOD_LowPolyTree_part2
 			[NODE LOD GROUP]: LOD_LowPolyTree_part2
-				[MATERIAL]: Material.028
-				Texture(diffuse): Texture.020[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\forest\Low poly tree\textures\BroadleafLeaves.dds]
-				Texture(normal): Texture.019[G:\SSDLaba\Modeling\Blender\TechDemo\Models\14.09\forest\Low poly tree\textures\BroadleafLeaves_Normal.dds]
+				[MATERIAL]: BroadleafLeaves
 				[MESH]: LOD_LowPolyTree_part2
 				[MESH]: tree1_3d.004
 				[MESH]: tree1_3d.005
 		[NODE]: LowPolyTree_part1_LOD0.001
-			[MATERIAL]: Bark.000
+			[MATERIAL]: BroadleafBark
 		[NODE]: LowPolyTree_part2_LOD0.001
-			[MATERIAL]: Material.004
+			[MATERIAL]: BroadleafLeaves
 		[NODE]: LOD_HighPolyTree_part1
 			[NODE LOD GROUP]: LOD_HighPolyTree_part1
-				[MATERIAL]: white_wood.002
-				Texture(diffuse): tinyworld_woodTexture1.002[g:\SSDLaba\Modeling\Blender\TechDemo\Models\tinyworld\textures\wood3.jpg]
+				[MATERIAL]: white_wood
+				Texture(diffuse): tinyworld_woodTexture1.003[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\wood3.dds]
 				[MESH]: LOD_HighPolyTree_part1
 				[MESH]: tree.000
 				[MESH]: tree.003
 		[NODE]: LOD_HighPolyTree_part2
 			[NODE LOD GROUP]: LOD_HighPolyTree_part2
-				[MATERIAL]: leaves.002
-				Texture(diffuse): tinyworld_treeTexture1.002[G:\SSDLaba\Modeling\Blender\TechDemo\Models\tinyworld\textures\Leaves0135_1_S.png]
+				[MATERIAL]: WhiteTreeLeaves
+				Texture(diffuse): tinyworld_treeTexture1.002[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Leaves0135_1_S.dds]
 				[MESH]: LOD_HighPolyTree_part2
 				[MESH]: leaves.005
 				[MESH]: leaves.002
 		[NODE]: white_tree_LOD0.001
-			[MATERIAL]: white_wood.000
-			Texture(diffuse): tinyworld_woodTexture1.000[g:\SSDLaba\Modeling\Blender\TechDemo\Models\tinyworld\textures\wood3.jpg]
+			[MATERIAL]: white_wood
 		[NODE]: white_tree_leaves_LOD0.001
-			[MATERIAL]: leaves.000
-			Texture(diffuse): tinyworld_treeTexture1.000[G:\SSDLaba\Modeling\Blender\TechDemo\Models\tinyworld\textures\Leaves0135_1_S.png]
+			[MATERIAL]: WhiteTreeLeaves
 		[NODE]: ground
 			[MATERIAL]: ground_grass
-			Texture(diffuse): tinyworld_landTexture[G:\SSDLaba\Programming\Modeling\LightWave\WorkDirTextures\GroundForest003_COL_VAR1_3K.DDS]
-			Texture(normal): Texture[g:\SSDLaba\Programming\Modeling\LightWave\WorkDirTextures\GroundForest003_NRM_3K.jpg]
+			Texture(diffuse): tinyworld_landTexture[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\GroundForest003_COL_VAR1_3K.DDS]
+			Texture(normal): Texture[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\GroundForest003_NRM_3K.dds]
 			[MESH]: GroundPlane.001
 			[NODE]: ground|white_tree_LOD0.001|Dupli|0.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|0.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|1.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|1.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|2.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|2.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|3.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|3.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|4.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|4.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|5.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|5.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|6.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|6.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|7.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|7.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|8.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|8.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|9.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|9.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|10.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|10.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|11.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|11.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|12.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|12.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|13.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|13.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|14.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|14.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|15.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|15.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|16.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|16.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|17.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|17.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|18.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|18.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|19.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|19.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|20.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|20.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|21.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|21.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|22.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|22.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|23.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|23.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|24.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|24.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|25.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|25.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|26.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|26.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|27.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|27.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|28.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|28.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|29.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|29.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|30.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|30.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|31.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|31.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|32.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|32.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|33.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|33.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|34.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|34.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|35.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|35.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|36.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|36.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|37.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|37.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|38.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|38.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|39.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|39.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|40.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|40.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|41.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|41.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|42.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|42.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|43.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|43.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|44.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|44.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|45.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|45.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|46.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|46.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|47.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|47.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|48.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|48.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|49.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|49.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|50.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|50.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|51.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|51.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|52.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|52.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|53.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|53.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|54.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|54.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|55.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|55.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|56.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|56.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|57.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|57.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|58.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|58.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|59.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|59.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|60.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|60.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|61.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|61.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|62.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|62.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|63.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|63.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|64.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|64.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|65.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|65.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|66.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|66.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|67.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|67.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|68.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|68.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|69.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|69.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|70.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|70.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|71.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|71.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|72.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|72.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|73.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|73.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|74.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|74.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|75.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|75.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|76.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|76.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|77.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|77.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|78.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|78.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|79.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|79.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|80.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|80.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|81.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|81.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|82.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|82.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|83.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|83.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|84.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|84.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|85.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|85.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|86.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|86.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|87.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|87.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|88.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|88.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|89.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|89.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|90.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|90.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|91.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|91.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|92.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|92.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|93.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|93.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|94.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|94.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|95.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|95.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|96.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|96.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|97.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|97.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|98.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|98.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|99.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|99.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|100.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|100.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|101.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|101.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|102.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|102.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|103.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|103.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|104.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|104.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|105.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|105.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|106.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|106.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|107.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|107.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|108.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|108.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|109.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|109.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|110.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|110.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|111.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|111.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|112.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|112.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|113.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|113.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|114.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|114.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|115.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|115.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|116.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|116.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|117.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|117.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|118.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|118.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|119.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|119.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|120.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|120.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|121.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|121.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|122.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|122.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|123.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|123.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|124.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|124.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|125.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|125.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|126.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|126.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|127.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|127.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|128.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|128.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|129.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|129.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|130.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|130.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|131.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|131.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|132.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|132.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|133.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|133.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|134.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|134.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|135.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|135.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|136.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|136.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|137.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|137.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|138.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|138.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|139.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|139.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|140.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|140.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|141.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|141.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|142.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|142.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|143.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|143.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|144.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|144.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|145.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|145.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|146.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|146.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|147.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|147.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|148.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|148.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|149.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|149.0.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|0.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|0.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|1.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|1.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|2.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|2.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|3.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|3.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|4.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|4.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|5.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|5.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|6.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|6.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|7.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|7.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|8.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|8.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|9.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|9.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|10.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|10.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|11.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|11.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|12.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|12.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|13.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|13.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|14.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|14.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|15.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|15.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|16.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|16.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|17.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|17.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|18.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|18.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|19.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|19.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|20.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|20.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|21.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|21.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|22.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|22.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|23.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|23.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|24.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|24.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|25.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|25.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|26.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|26.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|27.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|27.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|28.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|28.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|29.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|29.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|30.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|30.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|31.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|31.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|32.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|32.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|33.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|33.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|34.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|34.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|35.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|35.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|36.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|36.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|37.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|37.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|38.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|38.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|39.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|39.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|40.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|40.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|41.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|41.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|42.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|42.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|43.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|43.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|44.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|44.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|45.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|45.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|46.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|46.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|47.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|47.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|48.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|48.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|49.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|49.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|50.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|50.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|51.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|51.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|52.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|52.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|53.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|53.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|54.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|54.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|55.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|55.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|56.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|56.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|57.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|57.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|58.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|58.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|59.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|59.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|60.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|60.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|61.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|61.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|62.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|62.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|63.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|63.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|64.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|64.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|65.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|65.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|66.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|66.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|67.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|67.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|68.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|68.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|69.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|69.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|70.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|70.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|71.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|71.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|72.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|72.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|73.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|73.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|74.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|74.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|75.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|75.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|76.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|76.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|77.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|77.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|78.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|78.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|79.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|79.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|80.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|80.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|81.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|81.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|82.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|82.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|83.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|83.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|84.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|84.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|85.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|85.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|86.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|86.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|87.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|87.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|88.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|88.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|89.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|89.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|90.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|90.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|91.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|91.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|92.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|92.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|93.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|93.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|94.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|94.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|95.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|95.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|96.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|96.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|97.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|97.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|98.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|98.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|99.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|99.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|100.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|100.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|101.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|101.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|102.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|102.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|103.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|103.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|104.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|104.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|105.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|105.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|106.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|106.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|107.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|107.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|108.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|108.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|109.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|109.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|110.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|110.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|111.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|111.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|112.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|112.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|113.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|113.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|114.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|114.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|115.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|115.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|116.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|116.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|117.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|117.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|118.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|118.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|119.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|119.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|120.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|120.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|121.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|121.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|122.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|122.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|123.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|123.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|124.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|124.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|125.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|125.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|126.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|126.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|127.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|127.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|128.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|128.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|129.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|129.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|130.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|130.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|131.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|131.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|132.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|132.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|133.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|133.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|134.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|134.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|135.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|135.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|136.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|136.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|137.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|137.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|138.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|138.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|139.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|139.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|140.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|140.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|141.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|141.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|142.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|142.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|143.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|143.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|144.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|144.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|145.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|145.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|146.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|146.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|147.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|147.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|148.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|148.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|LowPolyTree_part1_LOD0.001|Dupli|149.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Bark.000
+				[MATERIAL]: BroadleafBark
 			[NODE]: ground|LowPolyTree_part2_LOD0.001|Dupli|149.1.0.0.0.0.0.0.0.0
-				[MATERIAL]: Material.004
+				[MATERIAL]: BroadleafLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|0.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|0.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|1.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|1.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|2.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|2.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|3.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|3.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|4.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|4.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|5.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|5.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|6.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|6.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|7.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|7.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|8.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|8.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|9.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|9.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|10.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|10.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|11.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|11.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|12.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|12.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|13.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|13.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|14.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|14.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|15.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|15.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|16.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|16.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|17.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|17.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|18.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|18.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|19.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|19.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|20.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|20.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|21.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|21.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|22.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|22.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|23.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|23.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|24.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|24.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|25.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|25.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|26.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|26.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|27.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|27.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|28.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|28.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|29.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|29.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|30.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|30.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|31.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|31.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|32.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|32.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|33.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|33.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|34.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|34.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|35.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|35.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|36.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|36.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|37.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|37.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|38.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|38.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|39.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|39.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|40.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|40.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|41.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|41.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|42.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|42.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|43.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|43.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|44.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|44.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|45.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|45.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|46.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|46.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|47.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|47.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|48.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|48.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|49.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|49.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|50.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|50.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|51.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|51.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|52.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|52.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|53.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|53.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|54.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|54.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|55.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|55.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|56.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|56.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|57.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|57.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|58.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|58.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|59.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|59.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|60.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|60.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|61.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|61.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|62.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|62.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|63.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|63.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|64.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|64.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|65.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|65.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|66.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|66.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|67.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|67.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|68.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|68.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|69.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|69.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|70.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|70.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|71.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|71.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|72.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|72.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|73.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|73.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|74.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|74.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|75.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|75.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|76.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|76.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|77.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|77.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|78.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|78.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|79.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|79.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|80.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|80.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|81.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|81.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|82.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|82.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|83.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|83.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|84.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|84.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|85.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|85.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|86.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|86.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|87.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|87.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|88.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|88.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|89.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|89.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|90.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|90.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|91.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|91.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|92.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|92.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|93.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|93.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|94.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|94.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|95.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|95.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|96.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|96.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|97.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|97.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|98.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|98.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|99.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|99.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|100.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|100.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|101.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|101.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|102.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|102.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|103.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|103.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|104.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|104.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|105.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|105.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|106.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|106.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|107.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|107.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|108.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|108.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|109.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|109.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|110.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|110.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|111.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|111.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|112.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|112.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|113.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|113.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|114.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|114.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|115.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|115.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|116.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|116.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|117.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|117.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|118.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|118.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|119.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|119.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|120.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|120.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|121.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|121.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|122.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|122.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|123.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|123.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|124.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|124.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|125.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|125.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|126.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|126.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|127.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|127.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|128.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|128.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|129.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|129.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|130.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|130.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|131.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|131.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|132.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|132.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|133.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|133.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|134.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|134.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|135.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|135.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|136.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|136.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|137.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|137.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|138.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|138.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|139.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|139.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|140.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|140.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|141.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|141.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|142.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|142.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|143.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|143.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|144.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|144.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|145.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|145.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|146.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|146.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|147.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|147.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|148.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|148.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
+				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|white_tree_LOD0.001|Dupli|149.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: white_wood.000
+				[MATERIAL]: white_wood
 			[NODE]: ground|white_tree_leaves_LOD0.001|Dupli|149.2.0.0.0.0.0.0.0.0
-				[MATERIAL]: leaves.000
-		[NODE]: Aset_wood_root_M_rkswd_LOD0
+				[MATERIAL]: WhiteTreeLeaves
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|0.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+				Texture(diffuse): Texture.034[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\smencbp_2K_Albedo.dds]
+				Texture(normal): Texture.028[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\smencbp_2K_Normal.dds]
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|1.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|2.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|3.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|4.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|5.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|6.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|7.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|8.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|9.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|10.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|11.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|12.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|13.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|14.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|15.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|16.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|17.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|18.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|19.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|20.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|21.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|22.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|23.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|24.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|25.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|26.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|27.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|28.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|29.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|30.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|31.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|32.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|33.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|34.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|35.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|36.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|37.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|38.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|39.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|40.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|41.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|42.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|43.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|44.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|45.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|46.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|47.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|48.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|49.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|50.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|51.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|52.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|53.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|54.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|55.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|56.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|57.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|58.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|59.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|60.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|61.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|62.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|63.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|64.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|65.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|66.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|67.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|68.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|69.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|70.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|71.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|72.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|73.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|74.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|75.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|76.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|77.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|78.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|79.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|80.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|81.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|82.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|83.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|84.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|85.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|86.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|87.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|88.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|89.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|90.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|91.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|92.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|93.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|94.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|95.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|96.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|97.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|98.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|99.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|100.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|101.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|102.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|103.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|104.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|105.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|106.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|107.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|108.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|109.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|110.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|111.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|112.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|113.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|114.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|115.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|116.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|117.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|118.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|119.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|120.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|121.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|122.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|123.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|124.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|125.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|126.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|127.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|128.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|129.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|130.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|131.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|132.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|133.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|134.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|135.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|136.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|137.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|138.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|139.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|140.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|141.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|142.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|143.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|144.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|145.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|146.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|147.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|148.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|149.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|150.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|151.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|152.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|153.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|154.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|155.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|156.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|157.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|158.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|159.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|160.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|161.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|162.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|163.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|164.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|165.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|166.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|167.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|168.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|169.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|170.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|171.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|172.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|173.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|174.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|175.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|176.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|177.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|178.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|179.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|180.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|181.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|182.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|183.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|184.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|185.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|186.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|187.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|188.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|189.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|190.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|191.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|192.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|193.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|194.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|195.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|196.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|197.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|198.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|199.3.0.0.0.0.0.0.0.0
+				[MATERIAL]: SmencbpGrass
+		[NODE]: QuixelGrass_LOD
+			[NODE LOD GROUP]: QuixelGrass_LOD
+				[MATERIAL]: SmencbpGrass
+				[MESH]: QuixelGrass_LOD
+				[MESH]: Untitled.002
+				[MESH]: Untitled.004
+		[NODE]: QuixelGrass_LOD0.001
+			[MATERIAL]: SmencbpGrass
+		[NODE]: LongGrass_LOD
+			[NODE LOD GROUP]: LongGrass_LOD
+				[MATERIAL]: gras-long
+				[MESH]: LongGrass_LOD
+				[MESH]: gras_long_
+				[MESH]: gras_long0
+		[NODE]: gras_long_LOD0.001
+			[MATERIAL]: gras-long
+		[NODE]: WoodRoot_LOD
+			[NODE LOD GROUP]: WoodRoot_LOD
+				[MATERIAL]: WoodRootMaterial
+				Texture(diffuse): Texture.111[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Aset_wood_root_M_rkswd_4K_Albedo.dds]
+				Texture(normal): Texture.110[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Aset_wood_root_M_rkswd_4K_Normal_LOD0.dds]
+				[MESH]: WoodRoot_LOD
+				[MESH]: Aset_wood_root_M_rkswd_LOD3.001
+				[MESH]: Aset_wood_root_M_rkswd_LOD5.001
+		[NODE]: WoodRoot_LOD0.001
 			[MATERIAL]: WoodRootMaterial
 Loading of Models\input.fbx is done
 Loading of Models\Lights.fbx

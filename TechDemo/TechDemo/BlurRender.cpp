@@ -48,11 +48,11 @@ void BlurRender::build(int blurCount)
 void BlurRender::create_ResrourcesUAV(DXGI_FORMAT resourceFormat)
 {
 	m_own_resources.resize(2);
-
+	
 	// "A" Resource
-	m_uavResources.push_back(create_Resource(resourceFormat, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS));	
+	m_uavResources.push_back(create_Resource(resourceFormat, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS));
 	// "B" Resource
-	m_uavResources.push_back(create_Resource(resourceFormat, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS));	
+	m_uavResources.push_back(create_Resource(resourceFormat, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS));
 }
 
 void BlurRender::build_TechDescriptors()

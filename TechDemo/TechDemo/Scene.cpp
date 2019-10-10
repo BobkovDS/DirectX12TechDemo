@@ -176,6 +176,9 @@ void Scene::updateLight(float time)
 {
 	if (!m_lightAnimation) return;
 
+	/*
+		Here is some day/evening animation, but it is "turn off" for TechDemo video - //***
+	*/
 	bool lIsNight = false;
 	for (int i = 0; i < m_lights.size(); i++)
 	{
@@ -204,7 +207,7 @@ void Scene::updateLight(float time)
 
 				float lSaturateVal = min(max(cosA, 0.0f), 1.0f);
 				float lLightIntensity = lSaturateVal;
-				m_lights[i].Intensity = lLightIntensity;
+				//m_lights[i].Intensity = lLightIntensity; //***
 
 				float lRed = m_lights[i].bkColor.x;
 				float lGreen = m_lights[i].bkColor.y;
@@ -212,8 +215,7 @@ void Scene::updateLight(float time)
 
 				if (m_isAfternoon)
 				{
-					XMFLOAT3 lDeclineColor = XMFLOAT3(1.0f, 0.4f, 0.6f);
-					//XMFLOAT3 lDeclineColor = XMFLOAT3(1.0f, 0.0f, 0.0f);
+					XMFLOAT3 lDeclineColor = XMFLOAT3(1.0f, 0.4f, 0.6f);				
 
 					float lRedDiff = m_lights[i].bkColor.x - lDeclineColor.x;
 					float lGreenDiff = m_lights[i].bkColor.y - lDeclineColor.y;
@@ -224,9 +226,9 @@ void Scene::updateLight(float time)
 					lBlue -= lBlueDiff * (1 - cosA) * (1 - cosA);
 				}				
 
-				//m_lights[i].Color = XMFLOAT3(lRed, lGreen, lBlue);
+				//m_lights[i].Color = XMFLOAT3(lRed, lGreen, lBlue); //***
 
-				if (cosA < 0.25f) // >75 grad
+				if (cosA < 0.25f) 
 				{
 					lIsNight = true;						
 				}
@@ -260,7 +262,7 @@ void Scene::updateLight(float time)
 			if (lIsNight)
 			{
 				m_lights[i].Intensity = 0.5f + 0.2f * (float)rand() / (float)RAND_MAX;
-				m_lights[i].turnOn = true;
+				//m_lights[i].turnOn = true; //***
 			}
 			else
 				m_lights[i].turnOn = false;

@@ -10,7 +10,7 @@ TechDemo::TechDemo(HINSTANCE hInstance, const std::wstring& applName, int width,
 	m_init3D_done = false;
 	m_isTechFlag = false;
 	m_isCameraManualControl = true;
-
+	m_bigHUD = false;
 	//Utilit3D::nullitizator();
 
 	m_drawInstancesIDs = new UINT[MaxInstancesCount];		
@@ -87,6 +87,7 @@ void TechDemo::onKeyDown(WPARAM btnState)
 	break;
 	case 'L': m_isCameraManualControl = !m_isCameraManualControl; break;
 	case 'C': m_scene.toggleCullingMode(); break;
+	case 'Z': m_bigHUD = !m_bigHUD;  break;
 	case VK_NUMPAD0: m_renderManager.toggleDebugMode(); break;
 	case VK_NUMPAD1: m_renderManager.toggleDebug_Axes(); break;
 	case VK_NUMPAD2: m_renderManager.toggleDebug_Lights(); break;
@@ -164,31 +165,31 @@ std::string TechDemo::addTextToWindow()
 	}
 
 	std::string lBetweenFrame = "FPS: ";
-	std::string lFrame = "\rTime to prepare a frame (CPU only work): ";
+	std::string lFrame = "\rTime to prepare a frame (CPU work only): ";
 	
 	std::string text = 
 		lBetweenFrame + lbBetweenFrameTime
 		+ lFrame + lbFrameTime
-		+ "\rInstances count: " + std::to_string(lInstanceCount)
-		+ "\rInstances count in View Frustum: " + std::to_string(lDrawInstancesID)		
-		+ "\rTriangles in Scene count: " + lsTrianglesCountInScene + " (100%)"
-		+ "\rTriangles would be w/t LOD count: " + lsTrianglesCountIfWithoutLOD + lbP1
-		+ "\rTriangles were drawn count: " + lsTrianglesCountInFact + lbP2;
+		+ "\rInstances in Scene: " + std::to_string(lInstanceCount)
+		+ "\rInstances in View Frustum: " + std::to_string(lDrawInstancesID)		
+		+ "\rTriangles in Scene: " + lsTrianglesCountInScene + " (100%)"
+		+ "\rTriangles w/t LOD: " + lsTrianglesCountIfWithoutLOD + lbP1
+		+ "\rTriangles were drawn: " + lsTrianglesCountInFact + lbP2;
 	
-	if (m_isTechFlag)
-		text += "\rTechFlag=1";
-	else
-		text += "\rTechFlag=0";
+	//if (m_isTechFlag)
+	//	text += "\rTechFlag=1";
+	//else
+	//	text += "\rTechFlag=0";
 
-	if (m_isCameraManualControl)
-		text += "\rCameraMC=1";
-	else
-		text += "\rCameraMC=0";
+	//if (m_isCameraManualControl)
+	//	text += "\rCameraMC=1";
+	//else
+	//	text += "\rCameraMC=0";
 
-	if (lOctreCullingMode)
-		text += "\rOctreeMode=1";
-	else
-		text += "\rOctreeMode=0";
+	//if (lOctreCullingMode)
+	//	text += "\rOctreeMode=1";
+	//else
+	//	text += "\rOctreeMode=0";
 
 	if (m_renderManager.isDebugMode())
 		text += "\rDEBUG ";
@@ -549,7 +550,7 @@ void TechDemo::update_passCB()
 	const std::vector<LightCPU>& lights = m_scene.getLights();
 
 	// -- Find shadow box position and size	
-	float lLenght = 38.0f;
+	float lLenght = 50.0f; //38
 
 	XMFLOAT3 lcameraPos = m_camera->getPosition3f();
 	XMFLOAT4 lsceneCenter = m_scene.getSceneBB().Center;
@@ -564,7 +565,7 @@ void TechDemo::update_passCB()
 	lcameraPos.y -= lCameraHigh;
 	XMVECTOR lCameraPosv = XMLoadFloat3(&lcameraPos);
 	lCameraPosv = lCameraPosv + lCameraDirectionInXZPlane * lLenght; /* we draw Shadow in front of camera half-plane. 
-	It works good when we look mainly forward, not down from high distance*/
+	It works good when we look mainly forward, but not down from high distance*/
 
 	XMStoreFloat3(&lcameraPos, lCameraPosv);	
 
@@ -698,9 +699,9 @@ void TechDemo::update_passSSAOCB()
 
 	float c = 4.0f;
 	float t = 0.029f;
-	float dx = 0.043f;
+	float dx = 0.043f; // TO_DO: Check here
 	float mu = 0.2f;
-	//check limit values 
+	//check the limit values 
 	float c_max = dx * sqrtf(mu*t + 2) / (2 * t);
 	if (c >= c_max) c = c_max - 0.01f;
 
@@ -836,10 +837,15 @@ void TechDemo::renderUI()
 	m_HUDContext->SetTarget(m_HUDRenderTargets[lResourceIndex].Get());
 	m_HUDContext->BeginDraw();
 	m_HUDContext->SetTransform(D2D1::Matrix3x2F::Identity());
+
+	IDWriteTextFormat* lTextParam = m_textFormat.Get();
+	if (m_bigHUD)
+		lTextParam = m_textFormatBig.Get();
+	
 	m_HUDContext->DrawTextW(
 		wtest.c_str(),
 		wtest.length(),
-		m_textFormat.Get(),
+		lTextParam,
 		ltextRect,
 		m_HUDBrush.Get());
 

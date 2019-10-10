@@ -14,7 +14,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 
 	try
 	{
-		TechDemo my3DAppl(hInstance, L"my 3D application", 1000, 1000);
+		TechDemo my3DAppl(hInstance, L"my 3D application", 1920, 1080);
 		
 		//BasicDXGI my3DAppl(hInstance );
 		my3DAppl.run();

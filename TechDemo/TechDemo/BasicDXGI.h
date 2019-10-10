@@ -59,6 +59,7 @@ protected:
 	ComPtr<ID2D1Bitmap1> m_HUDRenderTargets[g_swapChainsBufferCount];
 	ComPtr<ID2D1SolidColorBrush> m_HUDBrush;
 	ComPtr<IDWriteTextFormat> m_textFormat;
+	ComPtr<IDWriteTextFormat> m_textFormatBig;
 	ComPtr<ID3D11On12Device> m_d3d11On12Device;	
 	ComPtr<ID3D11DeviceContext> m_d3d11Context;
 	ComPtr<IDWriteFactory> m_writeFactory;			

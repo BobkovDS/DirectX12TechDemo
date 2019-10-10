@@ -335,7 +335,7 @@ void RenderBase::create_DSV(DXGI_FORMAT viewFormat)
 	dsvDesc.Format = lViewFormat;
 	dsvDesc.Texture2D.MipSlice = 0;
 	m_device->CreateDepthStencilView(m_dsResource->getResource(), &dsvDesc, m_dsvHeap->GetCPUDescriptorHandleForHeapStart());
-
+		
 	// Transition the resource from its initial state to be used as a depth buffer.
 	m_cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_dsResource->getResource(),
 		D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_DEPTH_WRITE));
