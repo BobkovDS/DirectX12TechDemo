@@ -10,8 +10,7 @@ TechDemo::TechDemo(HINSTANCE hInstance, const std::wstring& applName, int width,
 	m_init3D_done = false;
 	m_isTechFlag = false;
 	m_isCameraManualControl = true;
-	m_bigHUD = false;
-	//Utilit3D::nullitizator();
+	m_bigHUD = false;	
 
 	m_drawInstancesIDs = new UINT[MaxInstancesCount];		
 }
@@ -43,27 +42,27 @@ void TechDemo::onMouseMove(WPARAM btnState, int x, int y)
 {
 	if (m_mouseDown)
 	{
-		//if CTRL
-		if (btnState == (MK_LBUTTON | MK_CONTROL))
-		{
-			//if (y != m_MouseDownPoint.y) mTheta += (y - m_MouseDownPoint.y)/abs(y - m_MouseDownPoint.y) *0.5f;
 
-			//if (x != m_MouseDownPoint.x) mPhi += (m_MouseDownPoint.x - x)/abs(m_MouseDownPoint.x - x)* 0.5f;
-
-		}
-		else if (btnState == (MK_RBUTTON | MK_CONTROL))
-		{
-			//if (x != m_MouseDownPoint.x) mRadius += (m_MouseDownPoint.x - x)/abs(m_MouseDownPoint.x - x)* 1.0f;
-		}
-
-		else if (btnState == MK_LBUTTON)
+		if (btnState == MK_LBUTTON)
 		{
 			float dx = XMConvertToRadians(0.25f*static_cast<float>(x - m_mouseDownPoint.x));
 			float dy = XMConvertToRadians(0.25f*static_cast<float>(y - m_mouseDownPoint.y));
 
-			m_camera->pitch(dy);
-			m_camera->rotateY(dx);
+			if (m_isCameraManualControl)
+			{
+				m_camera->pitch(dy);
+				m_camera->rotateY(dx);
+			}
 		}
+		else
+			//if CTRL
+			if (btnState == (MK_LBUTTON | MK_CONTROL))
+			{
+			}
+			else if (btnState == (MK_RBUTTON | MK_CONTROL))
+			{
+			}
+
 		m_mouseDownPoint.x = x;
 		m_mouseDownPoint.y = y;
 	}
@@ -73,129 +72,39 @@ void TechDemo::onKeyDown(WPARAM btnState)
 {
 	// other keyspressing
 
-	if (GetAsyncKeyState('0') & 0x8000)
+	if (GetAsyncKeyState('0') & 0x8000) // To limit FPS to <120
 		toLimitFPS = !toLimitFPS;	
 
 	switch (btnState)
 	{
 	case VK_SPACE:
-	{
-		//m_isTechFlag = !m_isTechFlag;
-		m_animationTimer.tt_Pause();
-		m_scene.toggleLightAnimation();
+	{		
+		m_animationTimer.tt_Pause();		
 	}
 	break;
-	case 'L': m_isCameraManualControl = !m_isCameraManualControl; break;
-	case 'C': m_scene.toggleCullingMode(); break;
-	case 'Z': m_bigHUD = !m_bigHUD;  break;
-	case VK_NUMPAD0: m_renderManager.toggleDebugMode(); break;
-	case VK_NUMPAD1: m_renderManager.toggleDebug_Axes(); break;
-	case VK_NUMPAD2: m_renderManager.toggleDebug_Lights(); break;
-	case VK_NUMPAD3: m_renderManager.toggleDebug_Normals_Vertex(); break;	
-	case VK_NUMPAD5: m_renderManager.test_drop(); break;
-	case VK_NUMPAD7: m_renderManager.toggleTechnik_SSAO(); break;
-	case VK_NUMPAD8: m_renderManager.toggleTechnik_Shadow(); break;
-	case VK_NUMPAD9: m_renderManager.toggleTechnik_ComputeWork(); break;
-	case VK_NUMPAD4: m_renderManager.toggleTechnik_Reflection(); break;
-	case VK_NUMPAD6: m_renderManager.toggleTechnik_Normal(); break;
+	case 'L': m_scene.toggleLightAnimation(); break;						// Turn on/off Light animation
+	case 'C': m_isCameraManualControl = !m_isCameraManualControl;  break;	// Turn on/off Camera animation
+	case 'Z': m_bigHUD = !m_bigHUD;  break;									// Change the size for HUG (Normal/Big)
+	case VK_NUMPAD0: m_renderManager.toggleDebugMode(); break;				// Turn on/off Debug Mode (some debug visualization)
+	case VK_NUMPAD1: m_renderManager.toggleDebug_Axes(); break;						// Turn on/off Axes drawing in Debug mode
+	case VK_NUMPAD2: m_renderManager.toggleDebug_Lights(); break;					// Turn on/off Ligh direction drawing in Debug mode
+	case VK_NUMPAD3: m_renderManager.toggleDebug_Normals_Vertex(); break;			// Turn on/off Normal drawing in Debug mode	for some objects layers
+	case VK_NUMPAD5: m_renderManager.test_drop(); break;					// Add drop to Water
+	case VK_NUMPAD7: m_renderManager.toggleTechnik_SSAO(); break;			// Turn on/off SSAO technique using
+	case VK_NUMPAD8: m_renderManager.toggleTechnik_Shadow(); break;			// Turn on/off Dynamic Shadows technique using
+	case VK_NUMPAD9: m_renderManager.toggleTechnik_ComputeWork(); break;	// Turn on/off Compute work for the water simulation
+	case VK_NUMPAD4: m_renderManager.toggleTechnik_Reflection(); break;		// Turn on/off water reflection
+	case VK_NUMPAD6: m_renderManager.toggleTechnik_Normal(); break;			// Turn on/off Normal Mapping technique
 
-	case '1': m_renderManager.setRenderMode_Final(); break;
-	case '2': m_renderManager.setRenderMode_SSAO_Map1(); break;
-	case '3': m_renderManager.setRenderMode_SSAO_Map2(); break;
-	case '4': m_renderManager.setRenderMode_SSAO_Map3(); break;
-	case '5': m_renderManager.setRenderMode_Shadow(); break;
+	// Which Image to show:
+	case '1': m_renderManager.setRenderMode_Final(); break;			// Image from Final Render
+	case '2': m_renderManager.setRenderMode_SSAO_Map1(); break;		// Image from SSAO Render: View-space normal map
+	case '3': m_renderManager.setRenderMode_SSAO_Map2(); break;		// Image from SSAO Render: AO map
+	case '4': m_renderManager.setRenderMode_SSAO_Map3(); break;		// Image from Blur Render: AO blured map
+	case '5': m_renderManager.setRenderMode_Shadow(); break;		// Image from Shadow Render: Dynamic shadows depth map
 	default:
 		break;
 	}
-}
-
-std::string TechDemo::addTextToWindow()
-{
-	int lInstanceCount = m_scene.getInstances().size();
-	int lDrawInstancesID = m_scene.getSelectedInstancesCount();
-	bool lOctreCullingMode = m_scene.getCullingModeOctree();
-
-	UINT lTrianglesDrawnCount = m_renderManager.getTrianglesDrawnCount();
-	UINT lTrianglesCountIfWithoutLOD = m_renderManager.getTrianglesCountIfWithoutLOD();
-	UINT lTrianglesCountInScene = m_renderManager.getTrianglesCountInScene();
-
-	float lPercent1 = (float) lTrianglesCountIfWithoutLOD / (float) lTrianglesCountInScene * 100.0f;
-	float lPercent2 = (float) lTrianglesDrawnCount / (float) lTrianglesCountInScene * 100.0f;
-	
-	char lbP1[10];	
-	sprintf_s(lbP1, _TRUNCATE, "(%3.2f%%)", lPercent1);	
-
-	char lbP2[10];	
-	sprintf_s(lbP2, _TRUNCATE, "(%3.2f%%)", lPercent2);	
-
-	char lbFrameTime[15];
-	sprintf_s(lbFrameTime, _TRUNCATE, "(%.2fms)", m_framePreparationTime * 1000.0f);
-	
-	char lbBetweenFrameTime[50];
-	sprintf_s(lbBetweenFrameTime, _TRUNCATE, "%d (%.2fms)", (UINT)(1.0f / m_betweenFramesTime), m_betweenFramesTime * 1000.0f);	
-
-	// Common count of triangles in Scene
-	std::string lsTrianglesCountInScene = std::to_string(lTrianglesCountInScene);
-	auto lStrIterator = lsTrianglesCountInScene.end() ;
-	for (int i = 3; i < lsTrianglesCountInScene.length();)
-	{
-		lStrIterator = lStrIterator - 3;
-		lsTrianglesCountInScene.insert(lStrIterator, ' ');		
-		i += 4;
-	}
-
-	// Count of Triangles, if it would be drawn without LOD
-	std::string lsTrianglesCountIfWithoutLOD = std::to_string(lTrianglesCountIfWithoutLOD);
-	lStrIterator = lsTrianglesCountIfWithoutLOD.end();
-	for (int i = 3; i < lsTrianglesCountIfWithoutLOD.length();)
-	{
-		lStrIterator = lStrIterator - 3;
-		lsTrianglesCountIfWithoutLOD.insert(lStrIterator, ' ');
-		i += 4;
-	}
-
-	// Count of triangles which was drawn in fact
-	std::string lsTrianglesCountInFact = std::to_string(lTrianglesDrawnCount);
-	lStrIterator = lsTrianglesCountInFact.end();
-	for (int i = 3; i < lsTrianglesCountInFact.length();)
-	{
-		lStrIterator = lStrIterator - 3;
-		lsTrianglesCountInFact.insert(lStrIterator, ' ');
-		i += 4;
-	}
-
-	std::string lBetweenFrame = "FPS: ";
-	std::string lFrame = "\rTime to prepare a frame (CPU work only): ";
-	
-	std::string text = 
-		lBetweenFrame + lbBetweenFrameTime
-		+ lFrame + lbFrameTime
-		+ "\rInstances in Scene: " + std::to_string(lInstanceCount)
-		+ "\rInstances in View Frustum: " + std::to_string(lDrawInstancesID)		
-		+ "\rTriangles in Scene: " + lsTrianglesCountInScene + " (100%)"
-		+ "\rTriangles w/t LOD: " + lsTrianglesCountIfWithoutLOD + lbP1
-		+ "\rTriangles were drawn: " + lsTrianglesCountInFact + lbP2;
-	
-	//if (m_isTechFlag)
-	//	text += "\rTechFlag=1";
-	//else
-	//	text += "\rTechFlag=0";
-
-	//if (m_isCameraManualControl)
-	//	text += "\rCameraMC=1";
-	//else
-	//	text += "\rCameraMC=0";
-
-	//if (lOctreCullingMode)
-	//	text += "\rOctreeMode=1";
-	//else
-	//	text += "\rOctreeMode=0";
-
-	if (m_renderManager.isDebugMode())
-		text += "\rDEBUG ";
-
-	
-	return text;
 }
 
 void TechDemo::init3D()
@@ -249,31 +158,14 @@ void TechDemo::init3D()
 	// Initialization of LogoRender has closed m_cmdList, lets open it again
 	res = m_cmdList->Reset(m_cmdAllocator.Get(), nullptr);
 	assert(SUCCEEDED(res));	   	 	
-
-
-	// Load a house
+		
+	// Load Landscape
 	{
-		lLogoRender.addLine(L"Loading FBX file: Scene part 1");
+		lLogoRender.addLine(L"Loading FBX file: Scene part 2");
 		FBXFileLoader m_fbx_loader;
 		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
-		m_fbx_loader.loadSceneFile("Models\\input.fbx");
+		m_fbx_loader.loadSceneFile("Models\\Landscape.fbx");
 	}
-
-	////// Load a house
-	//{
-	//	lLogoRender.addLine(L"Loading FBX file: Scene part 1");
-	//	FBXFileLoader m_fbx_loader;
-	//	m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
-	//	m_fbx_loader.loadSceneFile("Models\\The Scene.fbx");		
-	//}	
-
-	////// Load Landscape
-	//{
-	//	lLogoRender.addLine(L"Loading FBX file: Scene part 2");
-	//	FBXFileLoader m_fbx_loader;
-	//	m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
-	//	m_fbx_loader.loadSceneFile("Models\\Landscape.fbx");
-	//}
 	
 	// Load lights
 	{
@@ -592,8 +484,7 @@ void TechDemo::update_passCB()
 			MathHelper::buildSunOrthoLightProjection(lLightGPU.Direction, lLightGPU.ViewProj, lLightGPU.ViewProjT,
 				lcameraPos, lLenght);
 
-			float lAmbientColor = 0.2f + 0.3f * lLightCPU.Intensity;
-			//mMainPassCB.AmbientLight = { lAmbientColor, lAmbientColor, lAmbientColor, 1.0f };
+			float lAmbientColor = 0.2f + 0.3f * lLightCPU.Intensity;			
 		}
 	}
 	
@@ -723,10 +614,9 @@ void TechDemo::update_passSSAOCB()
 
 void TechDemo::build_defaultCamera()
 {
-	m_camera = new Camera();
-	//DirectX::XMVECTOR pos = DirectX::XMVectorSet(-1.0, 3.0f, -13.0f, 1.0f);
+	m_camera = new Camera();	
 	DirectX::XMVECTOR pos = DirectX::XMVectorSet(4.0, 5.0f, 0.0f, 1.0f);
-	DirectX::XMVECTOR target = DirectX::XMVectorSet(0.0, 0.0f, 0.0f, 1.0f);// DirectX::XMVectorZero();
+	DirectX::XMVECTOR target = DirectX::XMVectorSet(0.0, 0.0f, 0.0f, 1.0f);
 	DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 	m_camera->lookAt(pos, target, up);
@@ -769,7 +659,6 @@ void TechDemo::work()
 
 	// Copy Draw data from non-SwapChain Render Target to SwapChain Render Target
 	{
-
 		uint8_t lrtID = lSwapChainCurrentBufferIndex;
 		ID3D12Resource* lCurrentRTResource = m_renderManager.getCurrentRenderTargetResource();
 
@@ -821,6 +710,80 @@ void TechDemo::work()
 	m_swapChain->Present(0, 0);
 	m_frameResourceManager.currentFR()->setFenceValue(getFenceValue());
 	setFence(); //new frame is done
+}
+
+std::string TechDemo::addTextToWindow()
+{
+	int lInstanceCount = m_scene.getInstances().size();
+	int lDrawInstancesID = m_scene.getSelectedInstancesCount();
+	bool lOctreCullingMode = m_scene.getCullingModeOctree();
+
+	UINT lTrianglesDrawnCount = m_renderManager.getTrianglesDrawnCount();
+	UINT lTrianglesCountIfWithoutLOD = m_renderManager.getTrianglesCountIfWithoutLOD();
+	UINT lTrianglesCountInScene = m_renderManager.getTrianglesCountInScene();
+
+	float lPercent1 = (float)lTrianglesCountIfWithoutLOD / (float)lTrianglesCountInScene * 100.0f;
+	float lPercent2 = (float)lTrianglesDrawnCount / (float)lTrianglesCountInScene * 100.0f;
+
+	char lbP1[10];
+	sprintf_s(lbP1, _TRUNCATE, "(%3.2f%%)", lPercent1);
+
+	char lbP2[10];
+	sprintf_s(lbP2, _TRUNCATE, "(%3.2f%%)", lPercent2);
+
+	char lbFrameTime[15];
+	sprintf_s(lbFrameTime, _TRUNCATE, "(%.2fms)", m_framePreparationTime * 1000.0f);
+
+	char lbBetweenFrameTime[50];
+	sprintf_s(lbBetweenFrameTime, _TRUNCATE, "%d (%.2fms)", (UINT)(1.0f / m_betweenFramesTime), m_betweenFramesTime * 1000.0f);
+
+	// Common count of triangles in Scene
+	std::string lsTrianglesCountInScene = std::to_string(lTrianglesCountInScene);
+	auto lStrIterator = lsTrianglesCountInScene.end();
+	for (int i = 3; i < lsTrianglesCountInScene.length();)
+	{
+		lStrIterator = lStrIterator - 3;
+		lsTrianglesCountInScene.insert(lStrIterator, ' ');
+		i += 4;
+	}
+
+	// Count of Triangles, if it would be drawn without LOD
+	std::string lsTrianglesCountIfWithoutLOD = std::to_string(lTrianglesCountIfWithoutLOD);
+	lStrIterator = lsTrianglesCountIfWithoutLOD.end();
+	for (int i = 3; i < lsTrianglesCountIfWithoutLOD.length();)
+	{
+		lStrIterator = lStrIterator - 3;
+		lsTrianglesCountIfWithoutLOD.insert(lStrIterator, ' ');
+		i += 4;
+	}
+
+	// Count of triangles which was drawn in fact
+	std::string lsTrianglesCountInFact = std::to_string(lTrianglesDrawnCount);
+	lStrIterator = lsTrianglesCountInFact.end();
+	for (int i = 3; i < lsTrianglesCountInFact.length();)
+	{
+		lStrIterator = lStrIterator - 3;
+		lsTrianglesCountInFact.insert(lStrIterator, ' ');
+		i += 4;
+	}
+
+	std::string lBetweenFrame = "FPS: ";
+	std::string lFrame = "\rTime to prepare a frame (CPU work only): ";
+
+	std::string text =
+		lBetweenFrame + lbBetweenFrameTime
+		+ lFrame + lbFrameTime
+		+ "\rInstances in Scene: " + std::to_string(lInstanceCount)
+		+ "\rInstances in View Frustum: " + std::to_string(lDrawInstancesID)
+		+ "\rTriangles in Scene: " + lsTrianglesCountInScene + " (100%)"
+		+ "\rTriangles w/t LOD: " + lsTrianglesCountIfWithoutLOD + lbP1
+		+ "\rTriangles were drawn: " + lsTrianglesCountInFact + lbP2;
+
+	if (m_renderManager.isDebugMode())
+		text += "\rDEBUG ";
+
+
+	return text;
 }
 
 void TechDemo::renderUI()

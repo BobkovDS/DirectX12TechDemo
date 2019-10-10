@@ -220,8 +220,10 @@ void LogoRender::nextLine()
 
 void LogoRender::addLine(const std::wstring& newLine)
 {
+#if !defined(_DEBUG)
 	m_guiLines.push_back(newLine);
 	m_currentLine = m_guiLines.size()-1;
+#endif
 }
 
 void LogoRender::update()

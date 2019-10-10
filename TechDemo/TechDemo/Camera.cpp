@@ -56,9 +56,7 @@ void Camera::updateViewMatrix()
 	// Keep camera's axes orthogonal to each other and of unit lenght
 	L = XMVector3Normalize(L);
 	U = XMVector3Normalize(XMVector3Cross(L,R));
-	R = XMVector3Cross(U, L);
-
-	//XMMATRIX lviewM = XMMatrixLookAtRH(P, L, U);
+	R = XMVector3Cross(U, L);	
 
 	XMStoreFloat3(&m_right, R);
 	XMStoreFloat3(&m_up, U);
@@ -87,8 +85,7 @@ void Camera::updateViewMatrix()
 	m_viewMatrix(1, 3) = 0.0f;
 	m_viewMatrix(2, 3) = 0.0f;
 	m_viewMatrix(3, 3) = 1.0f;	
-
-	//XMStoreFloat4x4(&m_viewMatrix, lviewM);
+	
 	updateObservers();
 	m_frustumBoundingWorldToUpdate = true;
 }
@@ -144,8 +141,6 @@ const DirectX::XMFLOAT4X4& Camera::getProj4x4f()
 
 void Camera::strafe(float d)
 {
-	// m_position += d * m_right;
-
 	XMVECTOR S = XMVectorReplicate(d);
 	XMVECTOR P = XMLoadFloat3(&m_position);
 	XMVECTOR R = XMLoadFloat3(&m_right);	
@@ -155,9 +150,7 @@ void Camera::strafe(float d)
 }
 
 void Camera::walk(float d)
-{
-	// m_position += d * m_look;
-
+{	
 	XMVECTOR S = XMVectorReplicate(d);
 	XMVECTOR P = XMLoadFloat3(&m_position);
 	XMVECTOR L = XMLoadFloat3(&m_look);
@@ -193,9 +186,7 @@ void Camera::transform(XMFLOAT4X4& transformM)
 {
 	XMMATRIX lAnimTransform = XMLoadFloat4x4(&transformM);
 	
-	if (XMMatrixIsIdentity(lAnimTransform)) return;
-	
-	//transformM = XMMatrixTranspose(transformM);	
+	if (XMMatrixIsIdentity(lAnimTransform)) return;	
 
 	XMVECTOR lPos = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
 	XMVECTOR lLook = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);	
@@ -258,8 +249,7 @@ XMFLOAT3 Camera::getTarget3f()
 
 void Camera::setLocalTransformation(XMFLOAT4X4& lcTransformation)
 {
-	XMMATRIX lLcTransformationM = XMLoadFloat4x4(&lcTransformation);
-	//lLcTransformationM = XMMatrixTranspose(lLcTransformationM);
+	XMMATRIX lLcTransformationM = XMLoadFloat4x4(&lcTransformation);	
 	XMStoreFloat4x4(&m_localTransformation, lLcTransformationM);
 }
 
@@ -287,13 +277,6 @@ void Camera::buildFrustumBounding()
 	m_frustumBoundingShadow.TopSlope*= s;
 
 	m_frustumBoundingWorldToUpdate = true;
-
-	// Another way to find Frustum Plane vectors // TO_DO: Delete it?
-	XMMATRIX lProjMatrix = lens->getProj();
-	//lProjMatrix = XMMatrixTranspose(lProjMatrix);
-	XMVECTOR lNear = lProjMatrix.r[3] + lProjMatrix.r[2];
-	XMVECTOR lFar = lProjMatrix.r[3] - lProjMatrix.r[2];
-	int a = 1;
 }
 
 DirectX::BoundingFrustum& Camera::getFrustomBoundingCamera()
@@ -328,11 +311,9 @@ BoundingMath::BoundingFrustum& Camera::getFrustomBoundingCameraWorld(bool)
 		DirectX::XMMATRIX view = XMLoadFloat4x4(&m_viewMatrix);
 		DirectX::XMMATRIX proj = lens->getProj();
 		DirectX::XMMATRIX cb = XMMatrixMultiply(view, proj);
-		DirectX::XMMATRIX veiwInv = XMMatrixInverse(&XMMatrixDeterminant(view), view);
-		//cb = XMMatrixTranspose(cb);
+		DirectX::XMMATRIX veiwInv = XMMatrixInverse(&XMMatrixDeterminant(view), view);		
 		veiwInv = XMMatrixTranspose(veiwInv);
-
-		//lViewFrustumInViewSpace->transform(m_bm_frustumBoundingCameraWorld, veiwInv);
+		
 		lViewFrustumInViewSpace->getPlanesFromMatrix(m_bm_frustumBoundingCameraWorld, cb);
 
 		getFrustomBoundingCameraWorld(); //to update DirectX BoundingFrustum

@@ -7,11 +7,11 @@ RenderManager::RenderManager(): m_initialized(false)
 	m_debug_Axes = true;
 	m_debug_Lights = false;
 	m_debug_Normals_Vertex = false;	
-	m_isSSAOUsing = false;
-	m_isShadowUsing = false;
-	m_isNormalMappingUsing = false;
-	m_isComputeWork = false;
-	m_isReflection = false;
+	m_isSSAOUsing = true;
+	m_isShadowUsing = true;
+	m_isNormalMappingUsing = true;
+	m_isComputeWork = true;
+	m_isReflection = true;
 	m_renderMode = (1 << RM_FINAL);		
 }
 

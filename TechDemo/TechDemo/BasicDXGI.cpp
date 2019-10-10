@@ -159,14 +159,14 @@ void BasicDXGI::init3D()
 		//m_swapChain.Reset(); use if Swapchain need re-create
 
 		DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
-		swapChainDesc.Width = width();// *m_dxKoef;
-		swapChainDesc.Height = height();// *m_dyKoef;
+		swapChainDesc.Width = width();
+		swapChainDesc.Height = height();
 		swapChainDesc.BufferCount = g_swapChainsBufferCount;
 		swapChainDesc.Format = m_backBufferFormat;
 		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-		swapChainDesc.SampleDesc.Count = 1;// m_rtSampleDesc.Count;
-		swapChainDesc.SampleDesc.Quality = 0;// lmsQualityLevels.NumQualityLevels > 0 ? lmsQualityLevels.NumQualityLevels - 1 : 0;
+		swapChainDesc.SampleDesc.Count = 1;
+		swapChainDesc.SampleDesc.Quality = 0;
 
 		ComPtr<IDXGISwapChain1> pSwapChain;		
 		res = m_factory->CreateSwapChainForHwnd(m_cmdQueue.Get(), hMainWind(), &swapChainDesc,
@@ -275,8 +275,7 @@ void BasicDXGI::create_RTV()
 
 	// Reset SwapChain buffers (Release the previous resources)
 	for (int i = 0; i < g_swapChainsBufferCount; i++)
-	{
-		//if (m_swapChainBuffers[i])			m_swapChainBuffers[i].Get()->Release();		
+	{		
 		m_swapChainBuffers[i].Reset();
 		m_HUDRenderTargets[i].Reset();
 		m_wrappedBackBuffers[i].Reset();
@@ -409,7 +408,7 @@ void BasicDXGI::onReSize(int newWidth, int newHeight) {
 
 	Canvas::onReSize(newWidth, newHeight); // save new width and height
 	
-	if (!initDXGI_RTV_done) return; // onResize call it before how 3D part was init
+	if (!initDXGI_RTV_done) return; // onResize has called it before how 3D part was init
 	create_RTV();	
 }
 //---------------------------------------------------------------------------------------------------------------

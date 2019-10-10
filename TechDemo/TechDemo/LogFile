@@ -1,10 +1,10 @@
 Application begin to work
-Loading of Models\input.fbx
-	Creating scene [input]
+Loading of Models\Landscape.fbx
+	Creating scene [Landscape]
 		[NODE]: MRL_RockMediumB.003
 			[MATERIAL]: Material.025
-			Texture(diffuse): Texture.004[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\MRLRockMediumB_Diffuse.dds]
-			Texture(normal): Texture.071[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\MRLRockMediumB_Normal.dds]
+			Texture(diffuse): Texture.004[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\MRLRockMediumB_Diffuse.dds]
+			Texture(normal): Texture.071[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\MRLRockMediumB_Normal.dds]
 			[MESH]: MRL_RockMediumB
 		[NODE]: MRL_RockMediumB.002
 			[MATERIAL]: Material.025
@@ -12,8 +12,8 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.025
 		[NODE]: MRL_RockMediumC.004
 			[MATERIAL]: Material.024
-			Texture(diffuse): Texture.070[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFRockMediumC_Diffuse.dds]
-			Texture(normal): Texture.069[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFRockMediumC_Normalx.dds]
+			Texture(diffuse): Texture.070[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\RHEFRockMediumC_Diffuse.dds]
+			Texture(normal): Texture.069[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\RHEFRockMediumC_Normalx.dds]
 			[MESH]: MRL_RockMediumC
 		[NODE]: MRL_RockMediumC.003
 			[MATERIAL]: Material.024
@@ -23,7 +23,7 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.024
 		[NODE]: gras_long_LOD0.028
 			[MATERIAL]: gras-long
-			Texture(diffuse): Texture.026[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\gras-long-diff.dds]
+			Texture(diffuse): Texture.026[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\gras-long-diff.dds]
 		[NODE]: gras_long_LOD0.027
 			[MATERIAL]: gras-long
 		[NODE]: gras_long_LOD0.026
@@ -78,16 +78,16 @@ Loading of Models\input.fbx
 			[MATERIAL]: gras-long
 		[NODE]: flower.001
 			[MATERIAL]: grass
-			Texture(diffuse): Map #1[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\RussianHause\grass_05.dds]
+			Texture(diffuse): Map #1[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\grass_05.dds]
 			[MESH]: Untitled.001
 		[NODE]: LowPolyTree_part1_LOD0.025
 			[MATERIAL]: BroadleafBark
-			Texture(diffuse): Bark_Diffuse[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\BroadleafBark.dds]
-			Texture(normal): Bark_Normal[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\BroadleafBark_Normal.dds]
+			Texture(diffuse): Bark_Diffuse[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\BroadleafBark.dds]
+			Texture(normal): Bark_Normal[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\BroadleafBark_Normal.dds]
 		[NODE]: LowPolyTree_part2_LOD0.025
 			[MATERIAL]: BroadleafLeaves
-			Texture(diffuse): Texture.020[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\BroadleafLeaves.dds]
-			Texture(normal): Texture.019[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\BroadleafLeaves_Normal.dds]
+			Texture(diffuse): Texture.020[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\BroadleafLeaves.dds]
+			Texture(normal): Texture.019[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\BroadleafLeaves_Normal.dds]
 		[NODE]: LowPolyTree_part2_LOD0.024
 			[MATERIAL]: BroadleafLeaves
 		[NODE]: LowPolyTree_part1_LOD0.024
@@ -182,16 +182,16 @@ Loading of Models\input.fbx
 			[MATERIAL]: BroadleafBark
 		[NODE]: Cube.009
 			[MATERIAL]: WagonSet02
-			Texture(diffuse): test_02_Base_Color[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Wagon\set_02\set02_Base_Color.dds]
-			Texture(normal): test_02_Normal_DirectX[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Wagon\set_02\set02_Normal_DirectX.dds]
+			Texture(diffuse): test_02_Base_Color[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\set02_Base_Color.dds]
+			Texture(normal): test_02_Normal_DirectX[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\set02_Normal_DirectX.dds]
 			[MESH]: Cube.059
 		[NODE]: Cube.008
 			[MATERIAL]: WagonSet02
 			[MESH]: Cube.060
 		[NODE]: Torus.011
 			[MATERIAL]: WagonSet04
-			Texture(diffuse): Texture.114[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Wagon\set_04\set04_Base_Color.dds]
-			Texture(normal): Texture.115[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Wagon\set_04\set04_Normal_DirectX.dds]
+			Texture(diffuse): Texture.114[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\set04_Base_Color.dds]
+			Texture(normal): Texture.115[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\set04_Normal_DirectX.dds]
 			[MESH]: Torus.016
 		[NODE]: Torus.010
 			[MATERIAL]: WagonSet04
@@ -213,8 +213,8 @@ Loading of Models\input.fbx
 			[MATERIAL]: WagonSet04
 		[NODE]: Rock.004
 			[MATERIAL]: Rock
-			Texture(diffuse): Texture.057[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\IceKazim\Rock_d.dds]
-			Texture(normal): Texture.075[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\IceKazim\Rock_n.dds]
+			Texture(diffuse): Texture.057[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Rock_d.dds]
+			Texture(normal): Texture.075[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Rock_n.dds]
 			[MESH]: Rock
 		[NODE]: Rock.003
 			[MATERIAL]: Rock
@@ -222,13 +222,13 @@ Loading of Models\input.fbx
 			[MATERIAL]: Rock
 		[NODE]: Street lamp01.007
 			[MATERIAL]: Material #185.001
-			Texture(diffuse): LampDiffuse[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Street lamp_01.dds]
-			Texture(normal): LampNormal[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Street lamp_01_NRM.dds]
+			Texture(diffuse): LampDiffuse[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Street lamp_01.dds]
+			Texture(normal): LampNormal[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Street lamp_01_NRM.dds]
 			[MESH]: Untitled.011
 		[NODE]: Street lamp01.006
 			[MATERIAL]: Material.030
-			Texture(diffuse): LampDiffuse[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Street lamp_01.dds]
-			Texture(normal): LampNormal[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Street lamp_01_NRM.dds]
+			Texture(diffuse): LampDiffuse[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Street lamp_01.dds]
+			Texture(normal): LampNormal[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Street lamp_01_NRM.dds]
 			[MESH]: Untitled.000
 		[NODE]: Street lamp01.005
 			[MATERIAL]: Material.030
@@ -240,18 +240,18 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.030
 		[NODE]: House 2.000
 			[MATERIAL]: Material #66
-			Texture(diffuse): Map #2[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\House_02.dds]
-			Texture(normal): Texture.033[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\House_02_NRM.dds]
+			Texture(diffuse): Map #2[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\House_02.dds]
+			Texture(normal): Texture.033[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\House_02_NRM.dds]
 			[MESH]: Untitled.022
 		[NODE]: House 3.001
 			[MATERIAL]: Material #107
-			Texture(diffuse): Map #3.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\House_03.dds]
-			Texture(normal): Texture.032[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\House_03_NRM.dds]
+			Texture(diffuse): Map #3.001[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\House_03.dds]
+			Texture(normal): Texture.032[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\House_03_NRM.dds]
 			[MESH]: Untitled.021
 		[NODE]: Box138.067
 			[MATERIAL]: Material__36.002
-			Texture(diffuse): Texture.081[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rock_4.dds]
-			Texture(normal): Texture.054[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rock_4_NRM.dds]
+			Texture(diffuse): Texture.081[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Rock_4.dds]
+			Texture(normal): Texture.054[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Rock_4_NRM.dds]
 			[MESH]: Box138.002
 		[NODE]: Box138.066
 			[MATERIAL]: Material__36.002
@@ -387,8 +387,8 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material__36.002
 		[NODE]: Grass_20.031
 			[MATERIAL]: Material.003
-			Texture(diffuse): Texture.079[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\GrassBlades002_COL_1K.dds]
-			Texture(normal): Texture.080[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\GrassBlades002_NRM_1K.dds]
+			Texture(diffuse): Texture.079[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\GrassBlades002_COL_1K.dds]
+			Texture(normal): Texture.080[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\GrassBlades002_NRM_1K.dds]
 			[MESH]: Untitled
 		[NODE]: Grass_20.030
 			[MATERIAL]: Material.003
@@ -452,8 +452,8 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.003
 		[NODE]: Rock_10.002
 			[MATERIAL]: Rock_10
-			Texture(diffuse): Texture.018[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\IceKazim\Rock_10_d.dds]
-			Texture(normal): Texture.017[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\IceKazim\Rock_10_n.dds]
+			Texture(diffuse): Texture.018[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Rock_10_d.dds]
+			Texture(normal): Texture.017[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Rock_10_n.dds]
 			[MESH]: Rock_10
 		[NODE]: Rock.001
 			[MATERIAL]: Rock
@@ -461,8 +461,8 @@ Loading of Models\input.fbx
 			[MATERIAL]: Rock_10
 		[NODE]: RHEF_RockDetailsB.006
 			[MATERIAL]: RHEFRockDetails
-			Texture(diffuse): Texture.064[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFRockDetails_Diffuse.dds]
-			Texture(normal): Texture.063[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFRockDetails_Normal.dds]
+			Texture(diffuse): Texture.064[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\RHEFRockDetails_Diffuse.dds]
+			Texture(normal): Texture.063[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\RHEFRockDetails_Normal.dds]
 			[MESH]: RHEF_RockDetailsB.001
 		[NODE]: RHEF_RockDetailsB.005
 			[MATERIAL]: RHEFRockDetails
@@ -471,8 +471,8 @@ Loading of Models\input.fbx
 			[MESH]: RHEF_RockDetailsA
 		[NODE]: MRL_RockMediumA.001
 			[MATERIAL]: Material.026
-			Texture(diffuse): Texture.074[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\MRLRockMediumA_Diffuse.dds]
-			Texture(normal): Texture.073[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\MRLRockMediumA_Normal.dds]
+			Texture(diffuse): Texture.074[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\MRLRockMediumA_Diffuse.dds]
+			Texture(normal): Texture.073[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\MRLRockMediumA_Normal.dds]
 			[MESH]: MRL_RockMediumA
 		[NODE]: RHEF_RockDetailsB.004
 			[MATERIAL]: RHEFRockDetails
@@ -494,17 +494,17 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material #66
 		[NODE]: Cube.458
 			[MATERIAL]: Material.006
-			Texture(diffuse): Texture.037[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\MedievalHause_diff.dds]
-			Texture(normal): Texture.036[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\MedievalHause_diff_NRM.dds]
+			Texture(diffuse): Texture.037[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\MedievalHause_diff.dds]
+			Texture(normal): Texture.036[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\MedievalHause_diff_NRM.dds]
 			[MESH]: Cube.001
 		[NODE]: Cube.443
 			[MATERIAL]: Material.014
-			Texture(diffuse): Texture.044[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksBare0051_3_M.dds]
+			Texture(diffuse): Texture.044[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\WoodPlanksBare0051_3_M.dds]
 			[MESH]: Cube.074
 		[NODE]: Cube.442
 			[MATERIAL]: Material.015
-			Texture(diffuse): Texture.046[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\Medieval_Brick_Texture_by_goodtextures.dds]
-			Texture(normal): Texture.045[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\Medieval_Brick_Texture_by_goodtextures_NRM.dds]
+			Texture(diffuse): Texture.046[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Medieval_Brick_Texture_by_goodtextures.dds]
+			Texture(normal): Texture.045[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Medieval_Brick_Texture_by_goodtextures_NRM.dds]
 			[MESH]: Cube.075
 		[NODE]: Cube.441
 			[MATERIAL]: Material.015
@@ -512,12 +512,12 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.014
 		[NODE]: Tower.001
 			[MATERIAL]: Material #128
-			Texture(diffuse): Map #4.002[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower.dds]
-			Texture(normal): Texture.025[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower_NRM.dds]
+			Texture(diffuse): Map #4.002[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Tower.dds]
+			Texture(normal): Texture.025[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Tower_NRM.dds]
 			[MESH]: Untitled.012
 		[NODE]: Sphere001_frag_138_7.001
 			[MATERIAL]: Material.005
-			Texture(diffuse): Texture.002[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\CliffJagged004_COL_VAR1_3K.DDS]
+			Texture(diffuse): Texture.002[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\CliffJagged004_COL_VAR1_3K.DDS]
 			[MESH]: Sphere001_frag_138_7.001
 		[NODE]: Grass_20
 			[MATERIAL]: Material.003
@@ -531,22 +531,22 @@ Loading of Models\input.fbx
 			[MESH]: gras_long
 		[NODE]: RHE_Cave
 			[MATERIAL]: Material.000
-			Texture(diffuse): Texture.014[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFCave_Diffuse.dds]
-			Texture(normal): Texture.013[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFCave_Normal.dds]
+			Texture(diffuse): Texture.014[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\RHEFCave_Diffuse.dds]
+			Texture(normal): Texture.013[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\RHEFCave_Normal.dds]
 			[MESH]: RHE_Cave
 		[NODE]: RHE_CaveTop
 			[MATERIAL]: Material.001
-			Texture(diffuse): Texture.012[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFCaveTop_Diffuse.dds]
+			Texture(diffuse): Texture.012[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\RHEFCaveTop_Diffuse.dds]
 			[MESH]: RHE_CaveTop
 		[NODE]: RHEF_LowRockMedium
 			[MATERIAL]: Material
-			Texture(diffuse): Texture.016[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFLowRockMedium_Diffuse.dds]
-			Texture(normal): Texture.015[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFLowRockMedium_Normal.dds]
+			Texture(diffuse): Texture.016[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\RHEFLowRockMedium_Diffuse.dds]
+			Texture(normal): Texture.015[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\RHEFLowRockMedium_Normal.dds]
 			[MESH]: RHEF_LowRockMedium
 		[NODE]: fence
 			[MATERIAL]: home
-			Texture(diffuse): Map #4.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\RussianHause\home_hatka_Base_Color.dds]
-			Texture(normal): Texture.029[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\RussianHause\home_hatka_Normal_OpenGL.dds]
+			Texture(diffuse): Map #4.001[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\home_hatka_Base_Color.dds]
+			Texture(normal): Texture.029[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\home_hatka_Normal_OpenGL.dds]
 			[MESH]: Untitled.010
 		[NODE]: step
 			[MATERIAL]: home
@@ -556,13 +556,13 @@ Loading of Models\input.fbx
 			[MESH]: Untitled.008
 		[NODE]: Object001
 			[MATERIAL]: brench
-			Texture(diffuse): Map #3[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\RussianHause\branch_Base_Color.dds]
-			Texture(normal): Texture.010[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\RussianHause\branch_Normal_OpenGL.dds]
+			Texture(diffuse): Map #3[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\branch_Base_Color.dds]
+			Texture(normal): Texture.010[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\branch_Normal_OpenGL.dds]
 			[MESH]: Untitled.007
 		[NODE]: grount
 			[MATERIAL]: grunt
-			Texture(diffuse): Texture.098[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\GroundForestRoots001_COL_3K.dds]
-			Texture(normal): Texture.099[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\GroundForestRoots001_NRM_3K.dds]
+			Texture(diffuse): Texture.098[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\GroundForestRoots001_COL_3K.dds]
+			Texture(normal): Texture.099[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\GroundForestRoots001_NRM_3K.dds]
 			[MESH]: Untitled.006
 		[NODE]: Hause
 			[MATERIAL]: home
@@ -571,13 +571,13 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material #107
 		[NODE]: House1
 			[MATERIAL]: Material #45
-			Texture(diffuse): Map #1.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\House_01.dds]
-			Texture(normal): Texture.031[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\House_01_NRM.dds]
+			Texture(diffuse): Map #1.001[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\House_01.dds]
+			Texture(normal): Texture.031[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\House_01_NRM.dds]
 			[MESH]: Untitled.020
 		[NODE]: Rock01
 			[MATERIAL]: Material #206
-			Texture(diffuse): Map #6[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rock_01.dds]
-			Texture(normal): Texture.030[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rock_01_NRM.dds]
+			Texture(diffuse): Map #6[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Rock_01.dds]
+			Texture(normal): Texture.030[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Rock_01_NRM.dds]
 			[MESH]: Untitled.019
 		[NODE]: Rock02
 			[MATERIAL]: Material #206
@@ -592,15 +592,15 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material #128
 		[NODE]: rock
 			[MATERIAL]: rock
-			Texture(diffuse): Diffuse[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\rock_albedo.dds]
-			Texture(normal): Normal[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\rock_normal_unity.dds]
+			Texture(diffuse): Diffuse[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\rock_albedo.dds]
+			Texture(normal): Normal[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\rock_normal_unity.dds]
 			[MESH]: rock.001
 		[NODE]: Cube.002
 			[MATERIAL]: Material.006
 		[NODE]: Cube.437
 			[MATERIAL]: Material.013
-			Texture(diffuse): None[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksBeamed0042_4_L.dds]
-			Texture(normal): Texture.043[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksBeamed0042_4_L_NRM.dds]
+			Texture(diffuse): None[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\WoodPlanksBeamed0042_4_L.dds]
+			Texture(normal): Texture.043[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\WoodPlanksBeamed0042_4_L_NRM.dds]
 			[MESH]: Cube.047
 		[NODE]: Cube.436
 			[MATERIAL]: Material.013
@@ -628,20 +628,20 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.013
 		[NODE]: Cube.425
 			[MATERIAL]: Material.012
-			Texture(diffuse): Tex.006[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksBeamed0023_2_S.dds]
-			Texture(normal): Texture.042[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksBeamed0023_2_S_NRM.dds]
+			Texture(diffuse): Tex.006[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\WoodPlanksBeamed0023_2_S.dds]
+			Texture(normal): Texture.042[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\WoodPlanksBeamed0023_2_S_NRM.dds]
 			[MESH]: Cube.044
 		[NODE]: Cube.424
 			[MATERIAL]: Material.011
-			Texture(diffuse): Tex.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\RooftilesWood0047_1_M.dds]
-			Texture(normal): Texture.041[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\RooftilesWood0047_1_M_NRM.dds]
+			Texture(diffuse): Tex.001[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\RooftilesWood0047_1_M.dds]
+			Texture(normal): Texture.041[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\RooftilesWood0047_1_M_NRM.dds]
 			[MESH]: Cube.043
 		[NODE]: Cube.423
 			[MATERIAL]: Material.013
 			[MESH]: Cube.042
 		[NODE]: Plane.161
 			[MATERIAL]: Material.010
-			Texture(diffuse): Texture.040[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\BuildingsDerelict0132_M.dds]
+			Texture(diffuse): Texture.040[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\BuildingsDerelict0132_M.dds]
 			[MESH]: Plane
 		[NODE]: Cube.422
 			[MATERIAL]: Material.013
@@ -938,8 +938,8 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.013
 		[NODE]: Cube.296
 			[MATERIAL]: Material.009
-			Texture(diffuse): Tex[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WallMedieval003_COL_VAR1_3K.dds]
-			Texture(normal): Texture.039[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WallMedieval003_NRM_3K.dds]
+			Texture(diffuse): Tex[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\WallMedieval003_COL_VAR1_3K.dds]
+			Texture(normal): Texture.039[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\WallMedieval003_NRM_3K.dds]
 			[MESH]: Cube.034
 		[NODE]: Cube.295
 			[MATERIAL]: Material.009
@@ -1012,8 +1012,8 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.013
 		[NODE]: Cube.265
 			[MATERIAL]: Material.008
-			Texture(diffuse): Tex.003[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksDirty0008_L.dds]
-			Texture(normal): Texture.038[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksDirty0008_L_NRM.dds]
+			Texture(diffuse): Tex.003[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\WoodPlanksDirty0008_L.dds]
+			Texture(normal): Texture.038[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\WoodPlanksDirty0008_L_NRM.dds]
 			[MESH]: Cube.023
 		[NODE]: Cube.264
 			[MATERIAL]: Material.008
@@ -1022,7 +1022,7 @@ Loading of Models\input.fbx
 			[MESH]: Cube.021
 		[NODE]: Cube.262
 			[MATERIAL]: Material.007
-			Texture(diffuse): Tex.004[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\10744-v1.dds]
+			Texture(diffuse): Tex.004[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\10744-v1.dds]
 			[MESH]: Cube.020
 		[NODE]: Cube.261
 			[MATERIAL]: Material.007
@@ -1551,8 +1551,8 @@ Loading of Models\input.fbx
 			[MESH]: Cube.069
 		[NODE]: oi
 			[MATERIAL]: WagonSet03
-			Texture(diffuse): test_03_Base_Color[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Wagon\set_03\set03_Base_Color.dds]
-			Texture(normal): test_03_Normal_DirectX[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Wagon\set_03\set03_Normal_DirectX.dds]
+			Texture(diffuse): test_03_Base_Color[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\set03_Base_Color.dds]
+			Texture(normal): test_03_Normal_DirectX[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\set03_Normal_DirectX.dds]
 			[MESH]: cube006.001
 		[NODE]: opor_01.001
 			[MATERIAL]: WagonSet03
@@ -1562,8 +1562,8 @@ Loading of Models\input.fbx
 			[MESH]: Cube.067
 		[NODE]: oporu_Bol.001
 			[MATERIAL]: WagonSet01
-			Texture(diffuse): Texture.116[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Wagon\set_01\set01_Base_Color.dds]
-			Texture(normal): Texture.117[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Wagon\set_01\set01_Normal_DirectX.dds]
+			Texture(diffuse): Texture.116[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\set01_Base_Color.dds]
+			Texture(normal): Texture.117[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\set01_Normal_DirectX.dds]
 			[MESH]: cube005.001
 		[NODE]: prav_bok.001
 			[MATERIAL]: WagonSet01
@@ -1667,7 +1667,7 @@ Loading of Models\input.fbx
 			[MESH]: cube001.001
 		[NODE]: SkyObject
 			[MATERIAL]: MaterialSky.001
-			Texture(diffuse): sky_texture.002[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Sky.DDS]
+			Texture(diffuse): sky_texture.002[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Sky.DDS]
 			[MESH]: SkyMesh
 		[NODE]: WaterV2_object
 			[MATERIAL]: WaterV2_material
@@ -1682,17 +1682,17 @@ Loading of Models\input.fbx
 			[MESH]: Cube.007
 		[NODE]: Wolf_obj_body.003
 			[MATERIAL]: Wolf_Eyes.001
-			Texture(diffuse): Wolf_Eyes_1[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Animals\Wolf_Eyes_1.dds]
-			Texture(diffuse): Wolf_Eyes_2[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Animals\Wolf_Eyes_2.dds]
+			Texture(diffuse): Wolf_Eyes_1[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Wolf_Eyes_1.dds]
+			Texture(diffuse): Wolf_Eyes_2[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Wolf_Eyes_2.dds]
 			[MESH]: Cube.008
 		[NODE]: Wolf_obj_body.004
 			[MATERIAL]: Wolf_Body.001
-			Texture(diffuse): Wolf_Body[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Animals\Wolf_Body.dds]
+			Texture(diffuse): Wolf_Body[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Wolf_Body.dds]
 			[MESH]: Cube.009
 		[NODE]: Wolf_obj_body
 			[MATERIAL]: Wolf_Fur.001
-			Texture(diffuse): Wolf_Body[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Animals\Wolf_Body.dds]
-			Texture(transparencyF): Wolf_Fur[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Animals\Wolf_Fur.dds]
+			Texture(diffuse): Wolf_Body[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Wolf_Body.dds]
+			Texture(transparencyF): Wolf_Fur[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Wolf_Fur.dds]
 			[MESH]: Cube.010
 		[NODE]: Cube.438
 			[MATERIAL]: Material.014
@@ -1700,8 +1700,8 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.015
 		[NODE]: Plane.167
 			[MATERIAL]: Material.018
-			Texture(diffuse): Texture.052[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\windows_0279_01_preview.dds]
-			Texture(normal): Texture.051[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\windows_0279_01_preview_NRM.dds]
+			Texture(diffuse): Texture.052[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\windows_0279_01_preview.dds]
+			Texture(normal): Texture.051[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\windows_0279_01_preview_NRM.dds]
 			[MESH]: Plane.010
 		[NODE]: Plane.166
 			[MATERIAL]: Material.018
@@ -1713,8 +1713,8 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.018
 		[NODE]: Cube.457
 			[MATERIAL]: Material.017
-			Texture(diffuse): Texture.050[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksBare0051_3_M.dds]
-			Texture(normal): Texture.049[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksBare0051_3_M_NRM.dds]
+			Texture(diffuse): Texture.050[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\WoodPlanksBare0051_3_M.dds]
+			Texture(normal): Texture.049[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\WoodPlanksBare0051_3_M_NRM.dds]
 			[MESH]: Cube.078
 		[NODE]: Cube.456
 			[MATERIAL]: Material.017
@@ -1743,8 +1743,8 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.017
 		[NODE]: Cube.444
 			[MATERIAL]: Material.016
-			Texture(diffuse): Texture.048[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\Medieval_Brick_Texture_by_goodtextures.dds]
-			Texture(normal): Texture.047[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\Medieval_Brick_Texture_by_goodtextures_NRM.dds]
+			Texture(diffuse): Texture.048[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Medieval_Brick_Texture_by_goodtextures.dds]
+			Texture(normal): Texture.047[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Medieval_Brick_Texture_by_goodtextures_NRM.dds]
 			[MESH]: Cube.076
 		[NODE]: Plane.162
 			[MATERIAL]: Material.017
@@ -1757,8 +1757,8 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material.024
 		[NODE]: RHEF_GenericCliffA
 			[MATERIAL]: Material.023
-			Texture(diffuse): Texture.068[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFGenericCliffA_Diffuse.dds]
-			Texture(normal): Texture.067[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFGenericCliffA_Normal.dds]
+			Texture(diffuse): Texture.068[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\RHEFGenericCliffA_Diffuse.dds]
+			Texture(normal): Texture.067[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\RHEFGenericCliffA_Normal.dds]
 			[MESH]: RHEF_GenericCliffA
 		[NODE]: RHEF_RockDetailsA
 			[MATERIAL]: RHEFRockDetails
@@ -1766,8 +1766,8 @@ Loading of Models\input.fbx
 			[MATERIAL]: RHEFRockDetails
 		[NODE]: RHEFGenericCliffB
 			[MATERIAL]: Material.019
-			Texture(diffuse): Texture.060[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFGenericCliffB_Diffuse.dds]
-			Texture(normal): Texture.059[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rockes\RHEFGenericCliffB_Normal2.dds]
+			Texture(diffuse): Texture.060[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\RHEFGenericCliffB_Diffuse.dds]
+			Texture(normal): Texture.059[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\RHEFGenericCliffB_Normal2.dds]
 			[MESH]: RHEFGenericCliffB.001
 		[NODE]: Rock_10
 			[MATERIAL]: Rock_10
@@ -1775,15 +1775,15 @@ Loading of Models\input.fbx
 			[MATERIAL]: Rock
 		[NODE]: Rock_6
 			[MATERIAL]: Rock_6
-			Texture(diffuse): Texture.078[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\IceKazim\Rock_6_d.dds]
-			Texture(normal): Texture.077[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\IceKazim\Rock_6_n.dds]
+			Texture(diffuse): Texture.078[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Rock_6_d.dds]
+			Texture(normal): Texture.077[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Rock_6_n.dds]
 			[MESH]: Rock_6
 		[NODE]: Box138.000
 			[MATERIAL]: Material__36.002
 		[NODE]: Box111.015
 			[MATERIAL]: Material__42.001
-			Texture(diffuse): Ka.009[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksDirty0008_L.dds]
-			Texture(normal): Texture.087[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksDirty0008_L_NRM.dds]
+			Texture(diffuse): Ka.009[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\WoodPlanksDirty0008_L.dds]
+			Texture(normal): Texture.087[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\WoodPlanksDirty0008_L_NRM.dds]
 			[MESH]: Box111.001
 		[NODE]: Box111.014
 			[MATERIAL]: Material__42.001
@@ -1815,8 +1815,8 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material__42.001
 		[NODE]: Box166.031
 			[MATERIAL]: Material__36.001
-			Texture(diffuse): Texture.086[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rock_4.dds]
-			Texture(normal): Texture.085[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rock_4_NRM.dds]
+			Texture(diffuse): Texture.086[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Rock_4.dds]
+			Texture(normal): Texture.085[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Rock_4_NRM.dds]
 			[MESH]: Box166.001
 		[NODE]: Box166.030
 			[MATERIAL]: Material__36.001
@@ -1880,27 +1880,27 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material__36.001
 		[NODE]: Box002
 			[MATERIAL]: Material__29.001
-			Texture(diffuse): Ka.008[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksDirty0008_L.dds]
-			Texture(normal): Texture.084[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\WoodPlanksDirty0008_L_NRM.dds]
+			Texture(diffuse): Ka.008[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\WoodPlanksDirty0008_L.dds]
+			Texture(normal): Texture.084[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\WoodPlanksDirty0008_L_NRM.dds]
 			[MESH]: Box002.001
 		[NODE]: Box001
 			[MATERIAL]: Material__34.001
-			Texture(diffuse): Texture.024[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\BrickGroutless0025_3_S.dds]
-			Texture(normal): Texture.083[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\BrickGroutless0025_3_S_NRM.dds]
+			Texture(diffuse): Texture.024[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\BrickGroutless0025_3_S.dds]
+			Texture(normal): Texture.083[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\BrickGroutless0025_3_S_NRM.dds]
 			[MESH]: Box001.001
 		[NODE]: Box166
 			[MATERIAL]: Material__36.001
 		[NODE]: Box080
 			[MATERIAL]: Material__35.001
-			Texture(diffuse): Ka.006[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\RooftilesWood0047_1_M.dds]
-			Texture(normal): Texture.055[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\RooftilesWood0047_1_M_NRM.dds]
+			Texture(diffuse): Ka.006[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\RooftilesWood0047_1_M.dds]
+			Texture(normal): Texture.055[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\RooftilesWood0047_1_M_NRM.dds]
 			[MESH]: Box080.001
 		[NODE]: Cylinder001
 			[MATERIAL]: Material__35.001
 			[MESH]: Cylinder001.001
 		[NODE]: Box003
 			[MATERIAL]: Material__40.001
-			Texture(diffuse): Ka.004[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\Tower\BuildingsDerelict0132_M.dds]
+			Texture(diffuse): Ka.004[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\BuildingsDerelict0132_M.dds]
 			[MESH]: Box003.001
 		[NODE]: Box079
 			[MATERIAL]: Material__35.001
@@ -1909,12 +1909,12 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material__42.001
 		[NODE]: ground.002
 			[MATERIAL]: StoneLandMaterial
-			Texture(diffuse): Texture.056[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\CobblestoneArches002_COL_VAR1_3K.dds]
-			Texture(normal): Texture.094[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Buildings\CobblestoneArches002_NRM_3K.dds]
+			Texture(diffuse): Texture.056[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\CobblestoneArches002_COL_VAR1_3K.dds]
+			Texture(normal): Texture.094[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\CobblestoneArches002_NRM_3K.dds]
 			[MESH]: GroundPlane.002
 		[NODE]: Box138.068
 			[MATERIAL]: Material__36.000
-			Texture(diffuse): Texture.081[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Rock_4.dds]
+			Texture(diffuse): Texture.081[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Rock_4.dds]
 			[MESH]: Box138.000
 		[NODE]: Street lamp01.002
 			[MATERIAL]: Material.030
@@ -1922,13 +1922,13 @@ Loading of Models\input.fbx
 			[MATERIAL]: Material #185.001
 		[NODE]: ground.001
 			[MATERIAL]: Material.029
-			Texture(diffuse): Texture.107[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\GroundForestMulch001_COL_3K.dds]
-			Texture(normal): Texture.108[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\GroundForestMulch001_NRM_3K.dds]
+			Texture(diffuse): Texture.107[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\GroundForestMulch001_COL_3K.dds]
+			Texture(normal): Texture.108[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\GroundForestMulch001_NRM_3K.dds]
 			[MESH]: GroundPlane.003
 		[NODE]: Deer
 			[MATERIAL]: Deer
-			Texture(diffuse): Texture.003[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Animals\Deer_Diffuse.dds]
-			Texture(normal): Texture.001[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Animals\Deer_Normal.dds]
+			Texture(diffuse): Texture.003[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Deer_Diffuse.dds]
+			Texture(normal): Texture.001[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Deer_Normal.dds]
 			[MESH]: mesh_id37
 		[NODE]: LOD_LowPolyTree_part1
 			[NODE LOD GROUP]: LOD_LowPolyTree_part1
@@ -1949,14 +1949,14 @@ Loading of Models\input.fbx
 		[NODE]: LOD_HighPolyTree_part1
 			[NODE LOD GROUP]: LOD_HighPolyTree_part1
 				[MATERIAL]: white_wood
-				Texture(diffuse): tinyworld_woodTexture1.003[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\wood3.dds]
+				Texture(diffuse): tinyworld_woodTexture1.003[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\wood3.dds]
 				[MESH]: LOD_HighPolyTree_part1
 				[MESH]: tree.000
 				[MESH]: tree.003
 		[NODE]: LOD_HighPolyTree_part2
 			[NODE LOD GROUP]: LOD_HighPolyTree_part2
 				[MATERIAL]: WhiteTreeLeaves
-				Texture(diffuse): tinyworld_treeTexture1.002[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Leaves0135_1_S.dds]
+				Texture(diffuse): tinyworld_treeTexture1.002[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Leaves0135_1_S.dds]
 				[MESH]: LOD_HighPolyTree_part2
 				[MESH]: leaves.005
 				[MESH]: leaves.002
@@ -1966,8 +1966,8 @@ Loading of Models\input.fbx
 			[MATERIAL]: WhiteTreeLeaves
 		[NODE]: ground
 			[MATERIAL]: ground_grass
-			Texture(diffuse): tinyworld_landTexture[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\GroundForest003_COL_VAR1_3K.DDS]
-			Texture(normal): Texture[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\GroundForest003_NRM_3K.dds]
+			Texture(diffuse): tinyworld_landTexture[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\GroundForest003_COL_VAR1_3K.DDS]
+			Texture(normal): Texture[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\GroundForest003_NRM_3K.dds]
 			[MESH]: GroundPlane.001
 			[NODE]: ground|white_tree_LOD0.001|Dupli|0.0.0.0.0.0.0.0.0.0
 				[MATERIAL]: white_wood
@@ -3771,8 +3771,8 @@ Loading of Models\input.fbx
 				[MATERIAL]: WhiteTreeLeaves
 			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|0.3.0.0.0.0.0.0.0.0
 				[MATERIAL]: SmencbpGrass
-				Texture(diffuse): Texture.034[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\smencbp_2K_Albedo.dds]
-				Texture(normal): Texture.028[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\smencbp_2K_Normal.dds]
+				Texture(diffuse): Texture.034[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\smencbp_2K_Albedo.dds]
+				Texture(normal): Texture.028[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\smencbp_2K_Normal.dds]
 			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|1.3.0.0.0.0.0.0.0.0
 				[MATERIAL]: SmencbpGrass
 			[NODE]: ground|QuixelGrass_LOD0.001|Dupli|2.3.0.0.0.0.0.0.0.0
@@ -4190,14 +4190,14 @@ Loading of Models\input.fbx
 		[NODE]: WoodRoot_LOD
 			[NODE LOD GROUP]: WoodRoot_LOD
 				[MATERIAL]: WoodRootMaterial
-				Texture(diffuse): Texture.111[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Aset_wood_root_M_rkswd_4K_Albedo.dds]
-				Texture(normal): Texture.110[G:\SSDLaba\Modeling\Blender\TechDemo\Models\Landscape\Textures\Landscape\Aset_wood_root_M_rkswd_4K_Normal_LOD0.dds]
+				Texture(diffuse): Texture.111[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Aset_wood_root_M_rkswd_4K_Albedo.dds]
+				Texture(normal): Texture.110[g:\SSDLaba\Programming\DirectX\TechDemo\TechDemo\TechDemo\Models\Landscape.fbm\Aset_wood_root_M_rkswd_4K_Normal_LOD0.dds]
 				[MESH]: WoodRoot_LOD
 				[MESH]: Aset_wood_root_M_rkswd_LOD3.001
 				[MESH]: Aset_wood_root_M_rkswd_LOD5.001
 		[NODE]: WoodRoot_LOD0.001
 			[MATERIAL]: WoodRootMaterial
-Loading of Models\input.fbx is done
+Loading of Models\Landscape.fbx is done
 Loading of Models\Lights.fbx
 	Creating scene [Lights]
 		[NODE]: Sun

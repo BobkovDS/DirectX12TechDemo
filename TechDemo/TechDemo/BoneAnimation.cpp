@@ -58,24 +58,11 @@ void BoneAnimation::interpolate(float time, XMFLOAT4X4& interpolatedValue) const
 					
 					XMVECTOR q0 = XMLoadFloat4(&m_keyFrames[i].Quaternion);
 					XMVECTOR q1 = XMLoadFloat4(&m_keyFrames[i + 1].Quaternion);					
-					//q0 = XMQuaternionNormalize(q0); //TO_DO: delete
-					//q1 = XMQuaternionNormalize(q1);
 
 					XMVECTOR s = XMVectorLerp(s0, s1, lLerpPercent);
 					XMVECTOR t = XMVectorLerp(t0, t1, lLerpPercent);
 					XMVECTOR q = XMQuaternionSlerp(q0, q1, lLerpPercent);
 					XMVECTOR lZero = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-										
-					/*
-					// old version:
-					XMMATRIX Sm = XMMatrixScalingFromVector(s);
-					XMMATRIX Tm = XMMatrixTranslationFromVector(t);					
-					XMMATRIX Rxm = XMMatrixRotationX(XMVectorGetX(r));
-					XMMATRIX Rym = XMMatrixRotationY(XMVectorGetY(r));
-					XMMATRIX Rzm = XMMatrixRotationZ(XMVectorGetZ(r));
-					XMMATRIX Rm = Rxm * Rym * Rzm;								
-
-					XMMATRIX C = Sm * Rm *Tm;*/
 					
 					XMMATRIX C = XMMatrixAffineTransformation(s, lZero, q, t);
 					
@@ -88,16 +75,8 @@ void BoneAnimation::interpolate(float time, XMFLOAT4X4& interpolatedValue) const
 	// interpolation job here for bound-keys
 	XMVECTOR s = XMLoadFloat4(&lKeyFrame.Scale);
 	XMVECTOR t = XMLoadFloat4(&lKeyFrame.Translation);
-	XMVECTOR r = XMLoadFloat4(&lKeyFrame.Rotation);
+	XMVECTOR q = XMLoadFloat4(&lKeyFrame.Rotation);
 
-	XMMATRIX Sm = XMMatrixScalingFromVector(s);
-	XMMATRIX Tm = XMMatrixTranslationFromVector(t);
-	XMMATRIX Rxm = XMMatrixRotationX(XMVectorGetX(r));
-	XMMATRIX Rym = XMMatrixRotationY(XMVectorGetY(r));
-	XMMATRIX Rzm = XMMatrixRotationZ(XMVectorGetZ(r));
-	XMMATRIX Rm = Rxm * Rym * Rzm;
-
-	XMMATRIX C = Sm * Rm *Tm;	
-	XMStoreFloat4x4(&interpolatedValue, C);
-	
+	XMMATRIX C = XMMatrixAffineTransformation(s, XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f), q, t);
+	XMStoreFloat4x4(&interpolatedValue, C);	
 }

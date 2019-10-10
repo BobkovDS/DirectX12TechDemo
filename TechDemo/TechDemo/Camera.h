@@ -151,6 +151,7 @@ inline DirectX::XMVECTOR Camera::getLook() const
 {
 	return DirectX::XMLoadFloat3(&m_look);
 }
+
 inline const DirectX::XMFLOAT4X4& Camera::getView4x4f()
 {
 	return m_viewMatrix;
