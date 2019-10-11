@@ -1,3 +1,12 @@
+/*
+	***************************************************************************************************
+	Description:
+		FBX file reader fill it with scene objects, separated by Layers (Opaque object, Transparent objects, Opaque skinned object etc.
+
+		It also stores Mesh data for this objects.
+	***************************************************************************************************
+*/
+
 #pragma once
 #include "ApplDataStructures.h"
 #include "Camera.h"

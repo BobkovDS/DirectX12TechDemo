@@ -51,6 +51,12 @@ void FBXFileLoader::initLoader()
 
 void FBXFileLoader::loadSceneFile(const string& fileName)
 {	
+	/*******************
+		- Import FBX file to fbxScene object.
+		- Set name for this fbxScene object equal to short name of this FBX file. The same name is used in ResourceManager, 
+		to identify resources for this FBX file.
+	********************/
+
 	AutoIncrementer lOutShifter;
 	
 	ApplLogger::getLogger().log("Loading of " + fileName, lOutShifter.Shift-1);
@@ -106,6 +112,11 @@ void FBXFileLoader::loadSceneFile(const string& fileName)
 
 void FBXFileLoader::createScene()
 {
+	/*******************
+		Parses given fbxScene to different kind of data and move it up to our different Managers
+		(ResourceManager, ObjectManager, SkeletonManager).
+	********************/
+
 	if (m_scene == nullptr) return;
 
 	m_sceneName = m_scene->GetName();
@@ -151,15 +162,15 @@ void FBXFileLoader::build_GeoMeshes()
 		We build one MeshGeometry (Mesh), one RenderItem with this geoMesh for each unique Mesh.
 		Mesh.Instances are used for instancing this mesh.
 
-		It contains:
+		It does:
 			1) Build all unique geoMeshes and upload it on GPU (build_GeoMeshes())
 			2) Build all materials with through numbering for all unique meshes and upload it on GPU. Here (process_NodeInstances/build_Materials())
 			3) Update all renderItems with required instances data and move it up (process_NodeInstances()/build_RenderItems)
 	*/
-
-	//TO_DO: Check all .end()
+		
 	auto mesh_it_begin = m_meshesByName.begin();
-	for (; mesh_it_begin != m_meshesByName.end(); mesh_it_begin++)
+	auto mesh_it_end = m_meshesByName.end();
+	for (; mesh_it_begin != mesh_it_end; mesh_it_begin++)
 	{
 		bool lIsSkinnedMesh = false;		
 
@@ -198,7 +209,7 @@ void FBXFileLoader::build_LODGroups()
 	{
 		assert(grp_it_begin->second[0] != NULL); /*if = NULL, so it can be that Instance "has been Instanced" in Blender (Alt + D), 
 		and then to this Instance was added "LODParentMesh" property, which was also linked to "Parent" LOD0 object. So when we built a mesh LOD0 for this LOD group, 
-		we thought that this is a Instance object and skipped a mesh building. Instance should be COPIED from parent LOD0 object */
+		we thought that this is a Instance object and skipped a mesh building. Instance should be COPIED from parent LOD0 object in Blender*/
 
 		string lRIName = grp_it_begin->second[0]->Name; // we use the first LOD0 mesh for naming of RenderItem for it
 
@@ -280,6 +291,7 @@ void FBXFileLoader::build_GeoMeshesLOD(fbx_Mesh* iMesh, int LODLevel, std::strin
 				XMVECTOR n = XMLoadFloat3(&lMesh->Normals[vi]);			
 				XMStoreFloat3(&vertex.Normal, n);
 			}
+
 			if (lDoesHaveUV) vertex.UVText = lMesh->UVs[vi];
 
 			if (lDoesHaveTangents)
@@ -342,6 +354,9 @@ void FBXFileLoader::build_GeoMeshesLOD(fbx_Mesh* iMesh, int LODLevel, std::strin
 template<class T>
 inline void FBXFileLoader::build_GeoMeshesWithTypedVertex(fbx_Mesh* iMesh, bool skinnedMesh)
 {
+	/*
+		This is tamplate method to use it with different types of Vertex (Non-skinned mesh or Skinned mesh)
+	*/
 	bool lIsSkinnedMesh = skinnedMesh;
 
 	std::vector<T> meshVertices;
@@ -355,8 +370,7 @@ inline void FBXFileLoader::build_GeoMeshesWithTypedVertex(fbx_Mesh* iMesh, bool 
 	std::string lInnerRIName = lMesh->Name;
 	std::string lOuterRIName = m_sceneName + "_" + lInnerRIName;
 
-	lgeoMesh->Name = lInnerRIName;
-	//ri_it->second-> |= nodeRIInstance.Materials[0]->DoesItHaveNormaleTexture;
+	lgeoMesh->Name = lInnerRIName;	
 
 	bool lToRemoveDoublicatedVertices = //we should 'delete'/Not_doublicate vertices, if
 		iMesh->DoNotDublicateVertices // this is WaterV mesh 		
@@ -419,8 +433,7 @@ inline void FBXFileLoader::build_GeoMeshesWithTypedVertex(fbx_Mesh* iMesh, bool 
 			if (lDoesHaveNormals)
 			{
 
-				XMVECTOR n = XMLoadFloat3(&lMesh->Normals[vi]);
-				//n = XMVector3Normalize(n);
+				XMVECTOR n = XMLoadFloat3(&lMesh->Normals[vi]);				
 				XMStoreFloat3(&vertex.Normal, n);
 			}
 			if (lDoesHaveUV)	vertex.UVText = lMesh->UVs[vi];
@@ -433,9 +446,7 @@ inline void FBXFileLoader::build_GeoMeshesWithTypedVertex(fbx_Mesh* iMesh, bool 
 				float w = XMVectorGetX(XMVector3Dot(XMVector3Cross(lTangent, lBiTangent), lNormal));
 				w = w > 0 ? 1.0f : -1.0f;	
 				XMStoreFloat4(&vertex.TangentU, lTangent);
-				vertex.TangentU.w = w;
-
-				//vertex.TangentU = lMesh->Tangents[vi];				
+				vertex.TangentU.w = w;					
 			}		
 
 			// write vertex/bone weight information		
@@ -520,11 +531,10 @@ void FBXFileLoader::build_Animation()
 	int lAnimationStackCount = m_scene->GetSrcObjectCount<FbxAnimStack>();
 
 	if (lAnimationStackCount == 0) return; 
-
-	//for (int i = lAnimationStackCount-1; i < lAnimationStackCount; i++)
+	
 	for (int i = 0; i < lAnimationStackCount; i++)
 	{		
-		FbxAnimStack* lpAnimStack = FbxCast<FbxAnimStack>(m_scene->GetSrcObject<FbxAnimStack>(i)); //run 3
+		FbxAnimStack* lpAnimStack = FbxCast<FbxAnimStack>(m_scene->GetSrcObject<FbxAnimStack>(i));
 		add_AnimationStack(lpAnimStack);
 	}
 }
@@ -568,6 +578,17 @@ void FBXFileLoader::add_AnimationStack(FbxAnimStack* animationStack)
 
 bool  FBXFileLoader::add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData* skeleton, fbx_TreeBoneNode* bone, string& animationName)
 {
+	/**********
+		Important to note: We dot not parse AnimationCurve manaully. We just:
+			- Take the first not NULL AnimationCurve
+			- Get Frames count from this Curve. We make the assumption, that all AnimationCurve for this AnimationLayer can have different
+			Keys count, but the same Frames count.
+			- Calculate Animation data for each frame using SDK function like EvaluateLocalTranslation(). We think that animation in 30 FPS.
+
+			This way to get animation data looks not so optimal. But it gives us simplecity of calculation and we do not parse each animation
+			curve manually and match it together.
+	***********/
+
 	bool lHasAnimation = false;
 	BoneAnimation lBoneAnimation = {};	
 	BoneData* lBoneData = skeleton->getBone(bone->Name);
@@ -595,23 +616,14 @@ bool  FBXFileLoader::add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData
 		{
 			double lTime = 1.0f / 30.0f * i; // 30 fps animation
 			lFrameTime.SetSecondDouble(lTime);
-
-			//FbxAMatrix lTrasformation = bone->Node->EvaluateLocalTransform(lFrameTime);
+						
+			KeyFrame lKeyFrame = {};
 			FbxVector4 lTranslation = bone->Node->EvaluateLocalTranslation(lFrameTime);
 			FbxVector4 lScaling = bone->Node->EvaluateLocalScaling(lFrameTime);
-			FbxVector4 lRotation = bone->Node->EvaluateLocalRotation(lFrameTime);
-			//FbxVector4 lRotationG = bone->Node->EvaluateGlobal(lFrameTime);
-			
-
-			KeyFrame lKeyFrame = {};
-			//convertFbxMatrixToFloat4x4(lTrasformation, lKeyFrame.Transform);
+			FbxVector4 lRotation = bone->Node->EvaluateLocalRotation(lFrameTime);	
+					
 			convertFbxVector4ToFloat4(lTranslation, lKeyFrame.Translation);
 			convertFbxVector4ToFloat4(lScaling, lKeyFrame.Scale);
-			/*convertFbxVector4ToFloat4(lRotation, lKeyFrame.Rotation);		
-			lKeyFrame.Rotation.x *= XM_PI / 180.0f;
-			lKeyFrame.Rotation.y *= XM_PI / 180.0f;
-			lKeyFrame.Rotation.z *= XM_PI / 180.0f;*/
-
 
 			XMMATRIX R1xm = XMMatrixRotationX(lRotation.mData[0] * XM_PI / 180.0f);
 			XMMATRIX R1ym = XMMatrixRotationY(lRotation.mData[1] * XM_PI / 180.0f);
@@ -619,15 +631,8 @@ bool  FBXFileLoader::add_AnimationInfo(FbxAnimLayer* animationLayer, SkinnedData
 			XMMATRIX R1m = R1xm * R1ym * R1zm;
 			XMVECTOR q01 = XMQuaternionRotationMatrix(R1m);
 			XMStoreFloat4(&lKeyFrame.Quaternion, q01);
-
-			/*FbxQuaternion ltmpQuaternion;
-			ltmpQuaternion.ComposeSphericalXYZ(lRotation);			
-			FbxVector4 lvQuaternion = ltmpQuaternion.mData;
-			convertFbxVector4ToFloat4(lvQuaternion, lKeyFrame.Quaternion);	*/
-		
-			//lKeyFrame.Quaternion
+			
 			lKeyFrame.TimePos = lTime;
-
 		
 			lBoneAnimation.addKeyFrame(lKeyFrame);
 		}
@@ -778,7 +783,8 @@ void FBXFileLoader::process_NodeInstances()
 void FBXFileLoader::build_Materials(string& pMaterialName)
 {
 	auto mat_it = m_materials.find(pMaterialName);
-	if (mat_it != m_materials.end())
+	auto mat_it_end = m_materials.end();
+	if (mat_it != mat_it_end)
 	{
 		if (mat_it->second.MatCBIndex == -1) // this material was not moved up yet
 		{
@@ -853,7 +859,8 @@ void FBXFileLoader::build_Materials(string& pMaterialName)
 void FBXFileLoader::add_InstanceToRenderItem(const fbx_NodeInstance& nodeRIInstance)
 {
 	auto ri_it = m_RenderItems.find(nodeRIInstance.MeshName);
-	if (ri_it != m_RenderItems.end()) // we should have a RenderItem already, we just should add new Instance to it
+	auto ri_it_end = m_RenderItems.end();
+	if (ri_it != ri_it_end) // we should have a RenderItem already, we just should add new Instance to it
 	{
 		InstanceDataGPU lBaseInstance = {};		
 		lBaseInstance.World = nodeRIInstance.GlobalTransformation;
@@ -889,7 +896,9 @@ void FBXFileLoader::move_RenderItems()
 {
 	// move RenderItems up	
 	auto begin_it = m_RenderItems.begin();
-	for (; begin_it != m_RenderItems.end(); begin_it++)
+	auto end_it = m_RenderItems.end();
+
+	for (; begin_it != end_it; begin_it++)
 	{
 		if (begin_it->second->Type == RenderItemType::RIT_Opaque)
 		{
@@ -947,8 +956,6 @@ void FBXFileLoader::convertFbxMatrixToFloat4x4(FbxAMatrix& fbxm, DirectX::XMFLOA
 		r2.mData[0], r2.mData[1], r2.mData[2], r2.mData[3],
 		r3.mData[0], r3.mData[1], r3.mData[2], r3.mData[3]);
 
-	//m = XMMatrixTranspose(m);
-	//m = XMMatrixIdentity();
 	XMStoreFloat4x4(&m4x4, m);
 }
 
@@ -959,7 +966,7 @@ void FBXFileLoader::convertFbxVector4ToFloat4(FbxVector4& fbxv, DirectX::XMFLOAT
 }
 
 // ---------------- FBX functions -----------------------------
-void FBXFileLoader::process_node(const FbxNode* pNode)// , bool isLODMesh = false
+void FBXFileLoader::process_node(const FbxNode* pNode)
 {
 	AutoIncrementer lOutShifter;
 	string nodeName = pNode->GetName();
@@ -1109,8 +1116,7 @@ void FBXFileLoader::process_node_LOD(const FbxNode* pNode)
 	
 	bool lDoesGroupExist = (m_LODGroupByName.find(nodeName) != m_LODGroupByName.end());
 	assert(!lDoesGroupExist);
-
-	//vector<fbx_Mesh*> lLODGroup= m_LODGroupByName[nodeName]; // create new LOD Group
+		
 	m_LODGroupByName[nodeName].resize(3);; // create new LOD Group with three child	
 	
 	const FbxNode* pChild = nullptr;
@@ -1859,8 +1865,7 @@ void FBXFileLoader::process_camera(const FbxNodeAttribute* pNodeAtribute, FbxNod
 	FbxDouble3 lCameraInterestPosition = lpcCamera->InterestPosition;
 	
 	FbxDouble3 lCameraUpVector= lpcCamera->UpVector;
-	float lNearPlane = lpcCamera->NearPlane;
-	//lNearPlane = 2.36f; // TO_DO: Check this
+	float lNearPlane = lpcCamera->NearPlane;	
 	float lFar= lpcCamera->FarPlane;
 	
 	std::unique_ptr<Camera> lCamera = std::make_unique<Camera>();
@@ -1868,30 +1873,17 @@ void FBXFileLoader::process_camera(const FbxNodeAttribute* pNodeAtribute, FbxNod
 	FbxAMatrix lLocalTransform = pNode->EvaluateLocalTransform();
 	DirectX::XMFLOAT4X4 lLocalTransformation;
 	convertFbxMatrixToFloat4x4(lLocalTransform, lLocalTransformation);
-	lCamera->setLocalTransformation(lLocalTransformation);
-
-	DirectX::XMVECTOR lPos = DirectX::XMVectorSet(lCameraPosition.mData[0], lCameraPosition.mData[1], lCameraPosition.mData[2], 1.0f);	
-	DirectX::XMVECTOR lTarget = DirectX::XMVectorSet(lCameraInterestPosition.mData[0], lCameraInterestPosition.mData[1], lCameraInterestPosition.mData[2], 1.0f);
-
-	DirectX::XMVECTOR lLook = lTarget - lPos;	
-	DirectX::XMVECTOR lUpVector = DirectX::XMVectorSet(lCameraUpVector.mData[0], lCameraUpVector.mData[1], lCameraUpVector.mData[2], 0.0f);
 	
 	DirectX::XMVECTOR lWordUpVector = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-	DirectX::XMVECTOR lRight = XMVector3Normalize(XMVector3Cross(lWordUpVector, lLook));
-	DirectX::XMVECTOR lNewLook = XMVector3Cross(lUpVector, lRight);
-	DirectX::XMVECTOR lNewLook2 = XMVector3Cross(lRight, lUpVector);
-
-	lPos = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);	
-	lLook = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+	DirectX::XMVECTOR lPos = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	DirectX::XMVECTOR lLook = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 	
-	XMMATRIX lCameraLcTr = lCamera->getLocalTransformationMatrix();
-	lPos = XMVector3Transform(lPos, lCamera->getLocalTransformationMatrix());	
-	lLook = XMVector3Normalize(XMVector3TransformNormal(lLook, lCamera->getLocalTransformationMatrix()));
+	XMMATRIX lCameraLcTr = DirectX::XMLoadFloat4x4(&lLocalTransformation);
+	lPos = XMVector3Transform(lPos, lCameraLcTr);
+	lLook = XMVector3Normalize(XMVector3TransformNormal(lLook, lCameraLcTr));
 		
 	lCamera->lookTo(lPos, lLook, lWordUpVector);
-
-	lCamera->lens->setLens(0.25f*XM_PI, 1.0f, lNearPlane, lFar);	
+	lCamera->lens->setLens(0.25f*XM_PI, 1.0f, lNearPlane, lFar); // Application later will set correct Aspect ratio
 
 	m_objectManager->addCamera(lCamera);	
 }
@@ -1913,8 +1905,7 @@ void FBXFileLoader::process_light(const FbxNodeAttribute* pNodeAtribute, FbxNode
 	DirectX::XMVECTOR lLook = XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f);
 
 	XMMATRIX lLcTr = DirectX::XMLoadFloat4x4(&lLocalTransformation);
-	lPos = XMVector3Transform(lPos, lLcTr);	
-	//lLook = XMVector3TransformNormal(lLook, lLcTr);
+	lPos = XMVector3Transform(lPos, lLcTr);		
 	lLook = XMVector3Normalize(XMVector3TransformNormal(lLook, lLcTr));
 
 	lnewLight.Name = lName;
@@ -2007,6 +1998,9 @@ void FBXFileLoader::process_Skeleton(const FbxNode* pNode, fbx_TreeBoneNode* par
 template<class T>
 inline void FBXFileLoader::add_quadInfo_to_mesh(std::vector<T>& m, T t0, T t1, T t2, T t3, bool isTesselated)
 {
+	/*
+		if this Quad face for Tesselated mesh, so no need to subdevide it now. In other case, devide it to two triangles.
+	*/
 	if (isTesselated)
 	{
 		m.push_back(t0);

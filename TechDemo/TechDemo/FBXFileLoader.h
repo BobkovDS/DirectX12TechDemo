@@ -1,3 +1,19 @@
+/*
+	***************************************************************************************************
+	Description:
+		Class to read scene data from FBX file. Uses FBX SDK to read data from binary FBX file.
+	
+	It reads:
+		- Mesh data
+		- LOD mesh data
+		- Material and Instancing data
+		- Skeleton data
+		- Skeleton Animation data
+		- Camera data
+		- Light data
+	***************************************************************************************************
+*/
+
 #pragma once
 #include <fbxsdk.h>
 #include "ObjectManager.h"
@@ -108,11 +124,9 @@ private:
 	std::vector<fbx_TreeBoneNode*> m_rootBones; // We can have some amount of Skeleton
 	std::vector<fbx_TreeBoneNode*> m_cameraNodes; // "Bones" for Camera, we need it to fill Camera Animation to Skeleton object
 	std::vector<fbx_TreeBoneNode*> m_lightsNodes; // "Bones" for Lights, we need it to fill Lights Animation to Skeleton object
-
-	//std::unique_ptr<FbxSkinnedData> m_fbxSkinnedData;
+		
 	UINT m_materialLastAddedID;
-	int m_BoneGlobalID;
-	//std::unique_ptr<MeshGeometry> m_geoMesh; is not used in this variant meshes storing
+	int m_BoneGlobalID;	
 
 	void createScene();
 	void build_GeoMeshes();

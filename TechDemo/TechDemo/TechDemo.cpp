@@ -10,9 +10,7 @@ TechDemo::TechDemo(HINSTANCE hInstance, const std::wstring& applName, int width,
 	m_init3D_done = false;
 	m_isTechFlag = false;
 	m_isCameraManualControl = true;
-	m_bigHUD = false;	
-
-	m_drawInstancesIDs = new UINT[MaxInstancesCount];		
+	m_bigHUD = false;		
 }
 TechDemo::~TechDemo()
 {
@@ -22,8 +20,6 @@ TechDemo::~TechDemo()
 	FlushCommandQueue();
 	if (m_defaultCamera)
 		delete m_camera;
-
-	delete[] m_drawInstancesIDs;	
 }
 
 void TechDemo::onMouseDown(WPARAM btnState, int x, int y)
@@ -114,6 +110,7 @@ void TechDemo::init3D()
 	HRESULT res;
 
 	LogoRender lLogoRender;
+	
 	// create_DSV has closed m_cmdList, lets open it again
 	res = m_cmdList->Reset(m_cmdAllocator.Get(), nullptr);
 	assert(SUCCEEDED(res));
@@ -209,7 +206,7 @@ void TechDemo::init3D()
 	lLogoRender.addLine(L"Frames resources building");
 	int lBonesCount = 100;
 	m_frameResourceManager.Initialize(m_device.Get(), m_fence.Get(), m_objectManager.getCommonInstancesCount(),
-		PASSCONSTBUFCOUNT, SSAOCONSTBUFCOUNT, lBonesCount, MaxInstancesCount);
+		PASSCONSTBUFCOUNT, SSAOCONSTBUFCOUNT, lBonesCount);
 	
 	// Camera
 	if (m_objectManager.getCameras().size() == 0)
@@ -223,8 +220,7 @@ void TechDemo::init3D()
 		float h = static_cast<float>(height());
 		float aspect = w / h;
 
-		lPerspectiveLens->setAspectRatio(aspect);		
-		m_camera->buildFrustumBounding();		
+		lPerspectiveLens->setAspectRatio(aspect);				
 	}
 
 	// When camera has beed updated we let a Scene to know about this (Scene is updated only when camera has been updated)
@@ -374,23 +370,18 @@ void TechDemo::update_camera()
 
 void TechDemo::update_objectCB()
 {	
-	if (!m_scene.isInstancesDataUpdateRequred()) return;
-	
-	UINT lInstancesCount = 0;
-	auto lInstances = m_scene.getInstancesUpdate(lInstancesCount);
-	std::vector<UINT>& lDrawInstancesID = m_scene.getDrawInstancesID(); //TO_DO: Delete DrawInstancesID technique
-
+	if (!m_scene.isInstancesDataUpdateRequred()) return;	
+		
+	UINT lInstancesCount = m_scene.getSelectedInstancesCount();	
 	if (lInstancesCount == 0) return;
+	auto lInstances = m_scene.getInstances();
 
-	auto currCBObject = m_frameResourceManager.currentFR()->getObjectCB();
-	auto currDrawCBObject = m_frameResourceManager.currentFR()->getDrawInstancesCB();
+	auto currCBObject = m_frameResourceManager.currentFR()->getObjectCB();	
 
 	for (int i=0; i< lInstancesCount; i++)
 		currCBObject->CopyData(i, *lInstances[i]);		
 
-	currDrawCBObject->CopyData(0, lDrawInstancesID.size(), lDrawInstancesID.data());
-
-	m_tempVal++;
+	m_scene.decrementInstancesReadCounter();	
 }
 
 void TechDemo::update_BoneData()
@@ -458,10 +449,8 @@ void TechDemo::update_passCB()
 	XMVECTOR lCameraPosv = XMLoadFloat3(&lcameraPos);
 	lCameraPosv = lCameraPosv + lCameraDirectionInXZPlane * lLenght; /* we draw Shadow in front of camera half-plane. 
 	It works good when we look mainly forward, but not down from high distance*/
-
 	XMStoreFloat3(&lcameraPos, lCameraPosv);	
-
-	
+		
 	for (size_t i = 0; i < lights.size(); i++)
 	{
 		LightGPU& lLightGPU = mMainPassCB.Lights[i];
@@ -586,12 +575,13 @@ void TechDemo::update_passSSAOCB()
 	mSSAOPassCB.BlurWeight[2] = XMFLOAT4(&blurWeights[8]);
 
 	mSSAOPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / width(), 1.0f / height());
-	// Calculate koeffs for ComputeRender
-
+	
+	// Calculate Coefficients for ComputeRender (WaterV2 object)	
 	float c = 4.0f;
 	float t = 0.029f;
 	float dx = 0.043f; // TO_DO: Check here
 	float mu = 0.2f;
+
 	//check the limit values 
 	float c_max = dx * sqrtf(mu*t + 2) / (2 * t);
 	if (c >= c_max) c = c_max - 0.01f;
@@ -612,28 +602,8 @@ void TechDemo::update_passSSAOCB()
 	currSsaoCB->CopyData(0, mSSAOPassCB);
 }
 
-void TechDemo::build_defaultCamera()
-{
-	m_camera = new Camera();	
-	DirectX::XMVECTOR pos = DirectX::XMVectorSet(4.0, 5.0f, 0.0f, 1.0f);
-	DirectX::XMVECTOR target = DirectX::XMVectorSet(0.0, 0.0f, 0.0f, 1.0f);
-	DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-	m_camera->lookAt(pos, target, up);
-
-	float w = static_cast<float>(width());
-	float h = static_cast<float>(height());
-	float aspect = w / h;
-	m_camera->lens->setLens(0.25f*XM_PI, aspect, 1.0f, 100.0f);
-
-	m_camera->buildFrustumBounding();
-
-	m_defaultCamera = true;
-}
-
 void TechDemo::work()
-{	
-	
+{		
 	// here we begin new Graphic Frame
 	m_frameResourceManager.getFreeFR(); // so we need new Frame resource
 
@@ -712,11 +682,27 @@ void TechDemo::work()
 	setFence(); //new frame is done
 }
 
+void TechDemo::build_defaultCamera()
+{
+	m_camera = new Camera();
+	DirectX::XMVECTOR pos = DirectX::XMVectorSet(4.0, 5.0f, 0.0f, 1.0f);
+	DirectX::XMVECTOR target = DirectX::XMVectorSet(0.0, 0.0f, 0.0f, 1.0f);
+	DirectX::XMVECTOR up = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+	m_camera->lookAt(pos, target, up);
+
+	float w = static_cast<float>(width());
+	float h = static_cast<float>(height());
+	float aspect = w / h;
+	m_camera->lens->setLens(0.25f*XM_PI, aspect, 1.0f, 100.0f);
+
+	m_defaultCamera = true;
+}
+
 std::string TechDemo::addTextToWindow()
 {
 	int lInstanceCount = m_scene.getInstances().size();
-	int lDrawInstancesID = m_scene.getSelectedInstancesCount();
-	bool lOctreCullingMode = m_scene.getCullingModeOctree();
+	int lDrawInstancesID = m_scene.getSelectedInstancesCount();	
 
 	UINT lTrianglesDrawnCount = m_renderManager.getTrianglesDrawnCount();
 	UINT lTrianglesCountIfWithoutLOD = m_renderManager.getTrianglesCountIfWithoutLOD();
@@ -831,8 +817,7 @@ void TechDemo::onReSize(int newWidth, int newHeight)
 		float aspect = w / h;		
 
 		PerspectiveCameraLens* lPerspectiveLens = dynamic_cast<PerspectiveCameraLens*> (m_camera->lens);
-		lPerspectiveLens->setAspectRatio(aspect);		
-		m_camera->buildFrustumBounding();
+		lPerspectiveLens->setAspectRatio(aspect);				
 	}	
 
 	if (!m_init3D_done) return; // onResize call it before how 3D part was init

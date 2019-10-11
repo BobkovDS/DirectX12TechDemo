@@ -22,16 +22,20 @@ ApplLogger& ApplLogger::getLogger()
 
 void ApplLogger::log(const string& msg, int shiftCount)
 {	
+#if defined(_DEBUG)
 	wstring lwStr(msg.begin(), msg.end());
 	for (int i = 0; i < shiftCount; i++)
 		m_oLogFile << "\t";
 
 	m_oLogFile << lwStr.c_str() << endl <<flush; 
+#endif 
 }
 
 void ApplLogger::log(wstring& msg, int shiftCount)
 {
+#if defined(_DEBUG)
 	m_oLogFile << msg.c_str() << endl << flush;
+#endif
 }
 
 ApplLogger::~ApplLogger()

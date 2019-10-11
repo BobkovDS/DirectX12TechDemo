@@ -102,7 +102,6 @@ DirectX::XMFLOAT4X4& BoneData::getFinalMatrix()
 	return m_finalTransform;	
 }
 
-
 void BoneData::get_begin_end_animationTime(std::string& animationName, float& beginT, float& endT)
 {
 	BoneAnimation* ltAnimation = getAnimation(animationName);

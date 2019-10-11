@@ -1,3 +1,12 @@
+/*
+	***************************************************************************************************
+	Description:
+		Camera class with two Camera Lens classes. Provides general methods to Set and Transform a camera. Also provides View matrix 
+		with BoundingFrustum object in World space for Frustum Culling. Camera lens class provides Projection matrix. 
+		
+	***************************************************************************************************
+*/
+
 #pragma once
 
 #include <vector>
@@ -10,24 +19,12 @@ class Camera{
 	DirectX::XMFLOAT3 m_position;	
 	DirectX::XMFLOAT3 m_right;
 	DirectX::XMFLOAT3 m_up;
-	DirectX::XMFLOAT3 m_look;
-	DirectX::XMFLOAT4X4 m_localTransformation;
-	//bool m_viewDirty; // We updated a View matrix, need to say to all about it
+	DirectX::XMFLOAT3 m_look;		
 	
 	bool m_viewToUpdate; //Need to rebuild a view matrix
-	bool m_frustumBoundingWorldToUpdate;	
-	bool m_boundingBoxWorldToUpdate;	
-	DirectX::XMFLOAT4X4 m_viewMatrix;
-	DirectX::BoundingFrustum m_frustumBoundingCamera; // Frustum for Camera
-	DirectX::BoundingFrustum m_frustumBoundingShadow; // Frustum for Shadow Projector
-	DirectX::BoundingFrustum m_frustumBoundingCameraWorld; //Frustum for Camera in World space	
-	BoundingMath::BoundingFrustum m_bm_frustumBoundingCameraWorld; //Frustum for Camera in World space	
-	DirectX::BoundingFrustum m_frustumBoundingShadowWorld; //Frustum for Shadow Projector in World space	
-	DirectX::BoundingBox m_BoundingBoxCamera; // BB for Camera
-	DirectX::BoundingBox m_BoundingBoxShadow; // BB for Shadow Projector
-	DirectX::BoundingBox m_BoundingBoxCameraWorld; //BB for Camera in World space
-	DirectX::BoundingBox m_BoundingBoxShadowWorld; //BB for Shadow Projector in World space
-
+	bool m_boundingFrustumWorldToUpdate;		
+	DirectX::XMFLOAT4X4 m_viewMatrix;	
+	BoundingMath::BoundingFrustum m_boundingFrustumCameraWorld; //Frustum for Camera in World space			
 	std::vector<ExecuterBase*> m_observers;	
 	void updateObservers();
 	Camera(Camera& a) {};
@@ -54,10 +51,6 @@ public:
 	const DirectX::XMFLOAT3& getLook3f();
 	DirectX::XMFLOAT3 getTarget3f();
 
-	void setLocalTransformation(DirectX::XMFLOAT4X4& lcTransformation);
-	const DirectX::XMFLOAT4X4& getLocalTransformation();
-	DirectX::XMMATRIX getLocalTransformationMatrix();
-
 	void addObserver(ExecuterBase* newObserver) { m_observers.push_back(newObserver); }
 
 	//Define camera space via LookAt parametrs
@@ -69,8 +62,7 @@ public:
 	void updateViewMatrix();
 	const DirectX::XMFLOAT4X4& getView4x4f();
 
-	//Get Projection matrix
-	//DirectX::XMMATRIX getProj();	
+	//Get Projection matrix	
 	const DirectX::XMFLOAT4X4& getProj4x4f();
 
 	// Camera moving functions
@@ -80,15 +72,8 @@ public:
 	void rotateY(float angle);
 	void transform(DirectX::XMFLOAT4X4& transformM);
 
-	//Frustum Bounding
-	DirectX::BoundingFrustum& getFrustomBoundingCamera();
-	DirectX::BoundingFrustum& getFrustomBoundingCameraWorld();
-	BoundingMath::BoundingFrustum& getFrustomBoundingCameraWorld(bool);
-	DirectX::BoundingFrustum& getFrustomBoundingShadowWorld();
-	DirectX::BoundingBox& getBoundingBoxCameraWorld();
-	DirectX::BoundingBox& getBoundingBoxShadowWorld();
-	void buildFrustumBounding();
-	
+	// Bounding	Frustum
+	BoundingMath::BoundingFrustum& getBoundingFrustomCameraWorld();	
 
 	//Internal base Lens class 
 	class CameraLens {		
@@ -100,7 +85,7 @@ public:
 	public:
 		CameraLens():m_lensWasSet(false) { m_projectionMatrix = {};};
 		DirectX::XMMATRIX getProj() const;
-		const DirectX::XMFLOAT4X4& getProj4x4f(); // const here is be cause we use reference, we do not want to change proj matrix outside
+		const DirectX::XMFLOAT4X4& getProj4x4f(); // const here it is be cause we use reference, we do not want to change proj matrix outside
 
 		void operator=(const CameraLens& c) 
 		{ 
@@ -119,8 +104,7 @@ class PerspectiveCameraLens : public Camera::CameraLens {
 	float m_aspect;
 	float m_fovY;
 	float m_nearWindowHeight;
-	float m_farWindowHeight;
-	BoundingMath::BoundingFrustum m_cameraFrustum;
+	float m_farWindowHeight;	
 	PerspectiveCameraLens& operator=(const PerspectiveCameraLens& c) = delete;
 public:
 	PerspectiveCameraLens();
@@ -128,8 +112,7 @@ public:
 	void _copy(const CameraLens* _in, CameraLens* _out) ;
 	void setLens(float fovY, float aspect, float zn, float zf);	
 	void setLens(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 extents) {};
-	void setAspectRatio(float aspectRatio);
-	BoundingMath::BoundingFrustum* get_cameraFrustum() { return &m_cameraFrustum; }
+	void setAspectRatio(float aspectRatio);	
 };
 
 class OrthographicCameraLesn : public Camera::CameraLens {

@@ -16,8 +16,7 @@ public:
 	virtual ID3D12Resource* getCurrentObjectCBResource()=0;
 	virtual ID3D12Resource* getCurrentPassCBResource() = 0;	
 	virtual ID3D12Resource* getCurrentBoneCBResource() = 0;
-	virtual ID3D12Resource* getCurrentSSAOCBResource() = 0;
-	virtual ID3D12Resource* getCurrentDrawIDCBResource() = 0;
+	virtual ID3D12Resource* getCurrentSSAOCBResource() = 0;	
 	virtual UINT getPassCBsize() = 0;
 };
 
@@ -50,8 +49,7 @@ public:
 		std::unique_ptr<UploadBuffer<constObjType>> m_objectCB = nullptr; //constant buffer for every object
 		std::unique_ptr<UploadBuffer<passConsts>> m_passCB = nullptr;// constant buffer for frame (pass)			
 		std::unique_ptr<UploadBuffer<ssaoType>> m_SSAOCB = nullptr;
-		std::unique_ptr<UploadBuffer<DirectX::XMFLOAT4X4>> m_bonesTransform = nullptr;
-		std::unique_ptr<UploadBuffer<UINT>> m_drawInstancesID = nullptr;
+		std::unique_ptr<UploadBuffer<DirectX::XMFLOAT4X4>> m_bonesTransform = nullptr;		
 
 		//closed
 		FrameResource(const FrameResource&) = delete;
@@ -60,15 +58,13 @@ public:
 		friend FrameResourcesManager<constObjType, passConsts,  ssaoType>;
 		UINT64 m_fenceValue = 0;
 	public:		
-		FrameResource(ID3D12Device* device, UINT constObjCount, UINT passCount, UINT SSAOCount, 
-			UINT BoneTransformCount, UINT DrawIntancesCount);
+		FrameResource(ID3D12Device* device, UINT constObjCount, UINT passCount, UINT SSAOCount, UINT BoneTransformCount);
 		void setFenceValue(UINT64 newFenceValue) { m_fenceValue = newFenceValue; } 
 		Microsoft::WRL::ComPtr<ID3D12CommandAllocator>& getCommandAllocator() { return m_commandAllocator; }	
 		UploadBuffer<constObjType>* getObjectCB() { return m_objectCB.get(); }
 		UploadBuffer<passConsts>* getPassCB() { return m_passCB.get(); }		
 		UploadBuffer<ssaoType>* getSSAOCB() { return m_SSAOCB.get(); }
-		UploadBuffer<DirectX::XMFLOAT4X4>* getBoneCB() {	return m_bonesTransform.get();}
-		UploadBuffer<UINT>* getDrawInstancesCB() {	return m_drawInstancesID.get();}
+		UploadBuffer<DirectX::XMFLOAT4X4>* getBoneCB() { return m_bonesTransform.get();}		
 	};
 
 	// device and fence will come from basic class BasicDXGI for Basic3D, 
@@ -79,14 +75,13 @@ public:
 
 	int count() const { return m_frameResources.size(); }
 	void Initialize(ID3D12Device* device, ID3D12Fence* fence,
-		UINT constObjCount, UINT passCount, UINT SSAOCount, UINT BoneCount, UINT DrawIntancesCount);
+		UINT constObjCount, UINT passCount, UINT SSAOCount, UINT BoneCount);
 	void getFreeFR(); // move a pointer to next FR and wait for when it becomes "clean"
 	FrameResource* currentFR() const; // get current "clean" FR
 	ID3D12Resource* getCurrentObjectCBResource();
 	ID3D12Resource* getCurrentPassCBResource();	
 	ID3D12Resource* getCurrentBoneCBResource();
-	ID3D12Resource* getCurrentSSAOCBResource();
-	ID3D12Resource* getCurrentDrawIDCBResource();
+	ID3D12Resource* getCurrentSSAOCBResource();	
 	UINT getPassCBsize();
 
 	void changeCmdAllocator(ID3D12GraphicsCommandList* cmdList, ID3D12PipelineState* pInitialState);
@@ -116,8 +111,7 @@ FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::~FrameResourc
 
 template<class ConstObjectType, class PassConstsType,   class SSAOType>
 void FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>
-::Initialize(ID3D12Device* device, ID3D12Fence* fence, UINT constObjCount, UINT passCount, UINT SSAOCount, 
-	UINT BoneCount, UINT DrawIntancesCount)
+::Initialize(ID3D12Device* device, ID3D12Fence* fence, UINT constObjCount, UINT passCount, UINT SSAOCount, UINT BoneCount)
 {
 	if (m_initialized) return;
 
@@ -128,7 +122,7 @@ void FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>
 
 	for (int i = 0; i < MAX_FRAMERESOURCE_COUNT; i++)
 	{
-		m_frameResources.push_back(new FrameResource(device, constObjCount, passCount, SSAOCount, BoneCount, DrawIntancesCount));
+		m_frameResources.push_back(new FrameResource(device, constObjCount, passCount, SSAOCount, BoneCount));
 	}
 
 	m_initialized = true;
@@ -192,12 +186,6 @@ ID3D12Resource* FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType
 }
 
 template<class ConstObjectType, class PassConstsType, class SSAOType>
-ID3D12Resource* FrameResourcesManager<ConstObjectType, PassConstsType, SSAOType>::getCurrentDrawIDCBResource()
-{
-	return currentFR()->getDrawInstancesCB()->Resource();
-}
-
-template<class ConstObjectType, class PassConstsType, class SSAOType>
 UINT FrameResourcesManager<ConstObjectType, PassConstsType, SSAOType>::getPassCBsize()
 {
 	return Utilit3D::CalcConstantBufferByteSize(sizeof passConsts);
@@ -205,8 +193,7 @@ UINT FrameResourcesManager<ConstObjectType, PassConstsType, SSAOType>::getPassCB
 
 template<class ConstObjectType, class PassConstsType,   class SSAOType>
 FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::FrameResource
-::FrameResource(ID3D12Device* device, UINT constObjCount, UINT passCount, UINT SSAOCount, UINT BoneTransformCount, 
-	UINT DrawIntancesCount)
+::FrameResource(ID3D12Device* device, UINT constObjCount, UINT passCount, UINT SSAOCount, UINT BoneTransformCount)
 {
 	HRESULT res;
 
@@ -223,8 +210,6 @@ FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::FrameResource
 	
 	m_SSAOCB = std::make_unique<UploadBuffer<ssaoType>>(device, SSAOCount, true);
 	m_bonesTransform= std::make_unique<UploadBuffer<DirectX::XMFLOAT4X4>>(device, BoneTransformCount, false);
-	m_drawInstancesID= std::make_unique<UploadBuffer<UINT>>(device, DrawIntancesCount, false); // TO_DO: Delete this
-
 }
 
 template<class ConstObjectType, class PassConstsType,   class SSAOType>
@@ -239,8 +224,6 @@ void FrameResourcesManager<ConstObjectType, PassConstsType,  SSAOType>::changeCm
 	assert(SUCCEEDED(res));
 
 	res = cmdList->Reset(currentCmdAllocator.Get(), pInitialState);
-	//_com_error err(res);
-	//std::wstring errMsg = err.ErrorMessage();
 
 	assert(SUCCEEDED(res));
 }

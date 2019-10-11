@@ -3,7 +3,7 @@
 
 ApplLogger ApplLogger::m_logger("LogFile");
 
-using namespace std;// ::ostream;
+using namespace std;
 
 Canvas::Canvas(HINSTANCE hInstance, const std::wstring& applName, int width , int height): m_hInstance(hInstance), m_width(width), m_height(height), 
 m_windowWasCreated(false), m_isFullScreen(false)
@@ -11,7 +11,7 @@ m_windowWasCreated(false), m_isFullScreen(false)
 	oLogFile.open("output");
 	
 	if (!oLogFile)
-		throw CanvasException("Canvas constructor: error of creating lof file");
+		throw CanvasException("Canvas constructor: error of creating log file");
 	
 	oLogFile.setf(ios::unitbuf); // does not work ..hm
 	

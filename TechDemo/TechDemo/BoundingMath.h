@@ -67,7 +67,7 @@ namespace BoundingMath
 		void buildPlanes();		
 		void setPlanes(DirectX::XMVECTOR& np, DirectX::XMVECTOR& fp, DirectX::XMVECTOR& lp, DirectX::XMVECTOR& rp,
 			DirectX::XMVECTOR& bp, DirectX::XMVECTOR& tp);
-		void getPlanesFromMatrix(BoundingFrustum& fr, DirectX::XMMATRIX& m);
+		static void getPlanesFromMatrix(BoundingFrustum& fr, DirectX::XMMATRIX& m);
 		void transform(BoundingFrustum& fr, DirectX::XMMATRIX& m);
 		
 	};

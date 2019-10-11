@@ -180,9 +180,6 @@
     <ClCompile Include="PSOMirrorLayer.cpp">
       <Filter>Source Files\PSO</Filter>
     </ClCompile>
-    <ClCompile Include="LogoAwaiter.cpp">
-      <Filter>Source Files\Other</Filter>
-    </ClCompile>
     <ClCompile Include="LogoRender.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
@@ -361,9 +358,6 @@
     </ClInclude>
     <ClInclude Include="PSOMirrorLayer.h">
       <Filter>Header Files\PSO</Filter>
-    </ClInclude>
-    <ClInclude Include="LogoAwaiter.h">
-      <Filter>Header Files\Other</Filter>
     </ClInclude>
     <ClInclude Include="LogoRender.h">
       <Filter>Header Files\Render</Filter>

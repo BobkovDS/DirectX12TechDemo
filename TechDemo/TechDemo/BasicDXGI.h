@@ -1,3 +1,19 @@
+/*
+	***************************************************************************************************
+	Description:
+		Class to create basic DXGI Application - the base for 3D DirectX 12 application.
+		This class extends Canvas class by inhereting, to have a chance fill 'work()' with usefull work
+		and go with it in main loop of Canvas class.
+
+		Creates and initializes DXGI part of 3D application: DXGIAdapter, DXGIFactory, DXGIDevice, DXGISwapChain and other, like
+		main for application Command Queue. Also gives a methods for CPU/GPU synhronization with Fence object.
+
+		Important to note: This class creates RenderTargets with SwapChain object and Views (Descriptors) for it in Descriptor Heap.
+		But it cannot use MultiSampling, that is why RenderBase class has a MSAARenderTargets structure, which creates its own RenderTargets
+		resources with MultiSampling support and overrides Views in BasicDXGI::m_rtvHeap with new Views for this.
+	***************************************************************************************************
+*/
+
 #pragma once
 #include "Canvas.h"
 #include <comdef.h>
@@ -33,8 +49,6 @@ class BasicDXGI :	public Canvas
 	UINT m_rtvDescriptorSize = 0;
 	HANDLE m_fenceEvent;
 	UINT64 m_fenceValue;	
-	float m_dxKoef = 0.8f;
-	float m_dyKoef = 0.8f;
 
 	// methods
 	void getHardwareAdapter(IDXGIFactory2* pFactory, ComPtr<IDXGIAdapter1>& ppAdapter);

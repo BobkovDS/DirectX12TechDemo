@@ -1,3 +1,10 @@
+/*
+	***************************************************************************************************
+	Description:
+		Class to create basic Window Application. Is used like a canvas for 3D application.
+	***************************************************************************************************
+*/
+
 #pragma once
 #include <windows.h>
 #include <windowsx.h>

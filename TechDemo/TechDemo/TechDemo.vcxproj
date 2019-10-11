@@ -143,10 +143,6 @@
     <ClCompile Include="DebugRender_Screen.cpp" />
     <ClCompile Include="FBXFileLoader.cpp" />
     <ClCompile Include="FinalRender.cpp" />
-    <ClCompile Include="LogoAwaiter.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="LogoRender.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MirrorRender.cpp" />
@@ -206,7 +202,6 @@
     <ClInclude Include="FBXFileLoader.h" />
     <ClInclude Include="FinalRender.h" />
     <ClInclude Include="GraphicDataStructures.h" />
-    <ClInclude Include="LogoAwaiter.h" />
     <ClInclude Include="LogoRender.h" />
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="MirrorRender.h" />

@@ -98,7 +98,7 @@ inline bool BoundingMath::BoundingFrustum::intersects(const BoundingBox& bb)
 
 	using namespace DirectX;	
 
-	//TO_DO: maybe do in this way this?
+	//TO_DO: maybe do in this way?
 	/*XMVECTOR vNear = XMLoadFloat4(&NearPlane);
 	XMVECTOR vFar = XMLoadFloat4(&FarPlane);
 	XMVECTOR vLeft= XMLoadFloat4(&LeftPlane);

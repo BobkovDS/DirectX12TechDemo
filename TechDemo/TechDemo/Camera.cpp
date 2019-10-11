@@ -8,7 +8,7 @@ Camera::Camera(): m_viewToUpdate(false)
 	m_up = { 0.0f, 1.0f, 0.0f };
 	m_look = { 0.0f, 0.0f, 1.0f };	
 
-	lens = new PerspectiveCameraLens(); // to drop this default "new"
+	lens = new PerspectiveCameraLens();
 }
 
 //copy constructor
@@ -19,10 +19,8 @@ Camera& Camera::operator=(Camera& a)
 	m_up = a.m_up;
 	m_look = a.m_look;
 	m_viewToUpdate = a.m_viewToUpdate;
-	m_frustumBoundingWorldToUpdate = a.m_frustumBoundingWorldToUpdate;
-	m_viewMatrix = a.m_viewMatrix;
-	m_frustumBoundingCamera = a.m_frustumBoundingCamera;
-	m_frustumBoundingCameraWorld = a.m_frustumBoundingCameraWorld;
+	m_boundingFrustumWorldToUpdate = a.m_boundingFrustumWorldToUpdate;
+	m_viewMatrix = a.m_viewMatrix;	
 	m_observers = a.m_observers;
 	*lens = *a.lens;
 
@@ -45,7 +43,7 @@ void Camera::updateViewMatrix()
 		for this we need to know Camera position, Up vector and targent point
 	*/
 
-	if (!m_viewToUpdate) return; //nothin to update
+	if (!m_viewToUpdate) return; //nothing to update
 	m_viewToUpdate = false;
 	
 	XMVECTOR R = XMLoadFloat3(&m_right);
@@ -87,7 +85,7 @@ void Camera::updateViewMatrix()
 	m_viewMatrix(3, 3) = 1.0f;	
 	
 	updateObservers();
-	m_frustumBoundingWorldToUpdate = true;
+	m_boundingFrustumWorldToUpdate = true;
 }
 
 void Camera::lookTo(DirectX::FXMVECTOR pos, DirectX::FXMVECTOR lookDir, DirectX::FXMVECTOR worldUp)
@@ -182,6 +180,7 @@ void Camera::rotateY(float angle)
 	m_viewToUpdate = true;
 }
 
+/*Transform camera with animation transform matrix*/
 void Camera::transform(XMFLOAT4X4& transformM)
 {
 	XMMATRIX lAnimTransform = XMLoadFloat4x4(&transformM);
@@ -247,112 +246,22 @@ XMFLOAT3 Camera::getTarget3f()
 	return target;
 }
 
-void Camera::setLocalTransformation(XMFLOAT4X4& lcTransformation)
-{
-	XMMATRIX lLcTransformationM = XMLoadFloat4x4(&lcTransformation);	
-	XMStoreFloat4x4(&m_localTransformation, lLcTransformationM);
-}
-
-const XMFLOAT4X4& Camera::getLocalTransformation()
-{
-	return m_localTransformation;
-}
-
-DirectX::XMMATRIX Camera::getLocalTransformationMatrix()
-{
-	XMMATRIX lM = XMLoadFloat4x4(&m_localTransformation);
-	return lM;
-}
-
-void Camera::buildFrustumBounding()
-{
-	// One way to get Frustum Plane Vector	
-	BoundingFrustum::CreateFromMatrix(m_frustumBoundingCamera, lens->getProj());
-	
-	float s = 1.0f;
-	m_frustumBoundingShadow = m_frustumBoundingCamera;
-	m_frustumBoundingShadow.LeftSlope *= s;
-	m_frustumBoundingShadow.RightSlope*= s;
-	m_frustumBoundingShadow.BottomSlope*= s;
-	m_frustumBoundingShadow.TopSlope*= s;
-
-	m_frustumBoundingWorldToUpdate = true;
-}
-
-DirectX::BoundingFrustum& Camera::getFrustomBoundingCamera()
-{
-	return m_frustumBoundingCamera;
-}
-
-DirectX::BoundingFrustum& Camera::getFrustomBoundingCameraWorld()
+/*Get BoundingFrustum for Frustum culling calculation. */
+BoundingMath::BoundingFrustum& Camera::getBoundingFrustomCameraWorld()
 {
 	updateViewMatrix();
-	if (m_frustumBoundingWorldToUpdate) // here View matrix should be updated
-	{
-		DirectX::XMMATRIX view = XMLoadFloat4x4(&m_viewMatrix);
-		DirectX::XMMATRIX veiwInv = XMMatrixInverse(&XMMatrixDeterminant(view), view);
 
-		m_frustumBoundingCamera.Transform(m_frustumBoundingCameraWorld, veiwInv);
-		m_frustumBoundingShadow.Transform(m_frustumBoundingShadowWorld, veiwInv);		
-
-		m_frustumBoundingWorldToUpdate = false;
-	}
-	return m_frustumBoundingCameraWorld;
-}
-
-BoundingMath::BoundingFrustum& Camera::getFrustomBoundingCameraWorld(bool)
-{
-	updateViewMatrix();
-	BoundingMath::BoundingFrustum* lViewFrustumInViewSpace =
-		static_cast<PerspectiveCameraLens*>(lens)->get_cameraFrustum();
-
-	if (m_frustumBoundingWorldToUpdate) // here View matrix should be updated
+	if (m_boundingFrustumWorldToUpdate) // it means ViewMatrix was updated, so lets update BoundingFrustum too
 	{
 		DirectX::XMMATRIX view = XMLoadFloat4x4(&m_viewMatrix);
 		DirectX::XMMATRIX proj = lens->getProj();
-		DirectX::XMMATRIX cb = XMMatrixMultiply(view, proj);
-		DirectX::XMMATRIX veiwInv = XMMatrixInverse(&XMMatrixDeterminant(view), view);		
-		veiwInv = XMMatrixTranspose(veiwInv);
+		DirectX::XMMATRIX cb = XMMatrixMultiply(view, proj);		
 		
-		lViewFrustumInViewSpace->getPlanesFromMatrix(m_bm_frustumBoundingCameraWorld, cb);
+		BoundingMath::BoundingFrustum::getPlanesFromMatrix(m_boundingFrustumCameraWorld, cb);
 
-		getFrustomBoundingCameraWorld(); //to update DirectX BoundingFrustum
-
-		m_frustumBoundingWorldToUpdate = false;
+		m_boundingFrustumWorldToUpdate = false;
 	}
-	return m_bm_frustumBoundingCameraWorld;
-}
-
-DirectX::BoundingFrustum& Camera::getFrustomBoundingShadowWorld()
-{		
-	if (m_frustumBoundingWorldToUpdate) // here View matrix should be updated
-		getFrustomBoundingCameraWorld();
-	
-	return m_frustumBoundingShadowWorld;
-}
-
-DirectX::BoundingBox& Camera::getBoundingBoxCameraWorld()
-{
-	updateViewMatrix();
-	if (m_boundingBoxWorldToUpdate) // here View matrix should be updated
-	{
-		DirectX::XMMATRIX view = XMLoadFloat4x4(&m_viewMatrix);
-		DirectX::XMMATRIX veiwInv = XMMatrixInverse(&XMMatrixDeterminant(view), view);
-
-		m_BoundingBoxCamera.Transform(m_BoundingBoxCameraWorld, veiwInv);
-		m_BoundingBoxShadow.Transform(m_BoundingBoxShadowWorld, veiwInv);
-
-		m_boundingBoxWorldToUpdate= false;
-	}
-	return m_BoundingBoxCameraWorld;
-}
-
-DirectX::BoundingBox& Camera::getBoundingBoxShadowWorld()
-{
-	if (m_boundingBoxWorldToUpdate) // here View matrix should be updated
-		getBoundingBoxCameraWorld();
-
-	return m_BoundingBoxShadowWorld;
+	return m_boundingFrustumCameraWorld;
 }
 
 inline void Camera::updateObservers()
@@ -364,7 +273,6 @@ inline void Camera::updateObservers()
 // --------------------------------------------						----------------------------------
 // -------------------------------------------- CAMERA LENS CLASSES ----------------------------------
 // --------------------------------------------						----------------------------------
-
 
 
 inline DirectX::XMMATRIX Camera::CameraLens::getProj() const
@@ -414,8 +322,7 @@ void PerspectiveCameraLens::setLens(float fovY, float aspect, float zn, float zf
 
 	XMMATRIX P = XMMatrixPerspectiveFovLH(m_fovY, m_aspect, m_nearZ, m_farZ);
 	XMStoreFloat4x4(&m_projectionMatrix, P);
-
-	m_cameraFrustum.build(m_fovY, m_aspect, m_nearZ, m_farZ);
+		
 	m_lensWasSet = true;
 }
 

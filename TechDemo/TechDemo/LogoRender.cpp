@@ -66,7 +66,7 @@ void LogoRender::build()
 	}
 
 	// Frame resources
-	m_frameResourceManager.Initialize(m_device, m_fence.Get(), 1, 1, 0, 0, 0);
+	m_frameResourceManager.Initialize(m_device, m_fence.Get(), 1, 1, 0, 0);
 
 	// Initialize PSO layer
 	DXGI_SAMPLE_DESC lSampleDesc;
@@ -85,8 +85,7 @@ void LogoRender::build()
 	float w = static_cast<float>(900);
 	float h = static_cast<float>(900);
 	float aspect = w / h;
-	m_camera.lens->setLens(0.25f*XM_PI, aspect, 1.0f, 100.0f);	
-	m_camera.buildFrustumBounding();
+	m_camera.lens->setLens(0.25f*XM_PI, aspect, 1.0f, 100.0f);		
 	
 	m_animationTimer.setTickTime(0.016f);
 	m_testTimer.setTickTime(1.0f);
@@ -220,10 +219,8 @@ void LogoRender::nextLine()
 
 void LogoRender::addLine(const std::wstring& newLine)
 {
-#if !defined(_DEBUG)
 	m_guiLines.push_back(newLine);
 	m_currentLine = m_guiLines.size()-1;
-#endif
 }
 
 void LogoRender::update()

@@ -154,9 +154,7 @@ void BasicDXGI::init3D()
 
 	// Create SwapChain (SwapChain, Resourses for it and RenderTargetViews for last one in DescriptorHeap)
 	{ 
-		// Create SwapChain itself
-
-		//m_swapChain.Reset(); use if Swapchain need re-create
+		// Create SwapChain itself		
 
 		DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
 		swapChainDesc.Width = width();
@@ -192,7 +190,7 @@ void BasicDXGI::init3D()
 		// Direct2D
 		{
 			{
-				// Create Direct2D Device - {Not sure about the place for this. It should be another way to clean it}
+				// Create Direct2D Device
 				UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 				ComPtr<ID3D11Device> ld3d11Device;
 				res = D3D11On12CreateDevice(
@@ -211,8 +209,6 @@ void BasicDXGI::init3D()
 
 			// Create a Direct2D Factory		
 			{
-				//if (m_HUDContext)	m_HUDContext->Release();
-
 				D2D1_DEVICE_CONTEXT_OPTIONS deviceOptions = D2D1_DEVICE_CONTEXT_OPTIONS_NONE;
 				res = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, m_HUDFactory.GetAddressOf());
 				ComPtr<IDXGIDevice> ldxgiDevice;

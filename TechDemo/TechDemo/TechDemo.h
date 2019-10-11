@@ -1,3 +1,14 @@
+/*
+	***************************************************************************************************
+	Description:
+		Main Application class. This class extends BasicDXGI class by inhereting, to have a chance fill 'work()' with usefull work
+		and go with it in main loop of Canvas class.
+
+		Uses other classes to read a scene from FBX file, prepare it, update it and draw.
+
+	***************************************************************************************************
+*/
+
 #pragma once
 #include "Utilit3D.h"
 #include "BasicDXGI.h"
@@ -28,8 +39,7 @@
 class TechDemo :
 	public BasicDXGI
 {
-	static const int MaxBlurRadius = 5;
-	static const int MaxInstancesCount = 1000000;
+	static const int MaxBlurRadius = 5;	
 	
 	ObjectManager m_objectManager;
 	Scene m_scene;
@@ -44,8 +54,7 @@ class TechDemo :
 	Timer m_framePrepareAndDrawTimer;
 	Timer m_betweenFramesTimer;
 	std::thread m_logoThread;
-	DirectX::XMFLOAT4 m_offsets[14];
-	UINT* m_drawInstancesIDs;
+	DirectX::XMFLOAT4 m_offsets[14];	
 
 	bool m_init3D_done;
 	bool m_defaultCamera;
@@ -57,9 +66,7 @@ class TechDemo :
 	POINT m_mouseDownPoint;
 	float m_animTime;
 	float m_framePreparationTime;
-	float m_betweenFramesTime;
-
-	int m_tempVal;
+	float m_betweenFramesTime;	
 
 	void onMouseDown(WPARAM btnState, int x, int y);
 	void onMouseUp(WPARAM btnState, int x, int y);
@@ -70,8 +77,7 @@ protected:
 	void init3D();
 	void update();
 	void update_BoneData();
-	void update_camera();
-	void update_light();
+	void update_camera();	
 	void update_passCB();
 	void update_passMirror(PassConstantsGPU& passCB);
 	void update_passSSAOCB();

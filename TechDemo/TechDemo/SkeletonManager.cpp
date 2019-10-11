@@ -1,22 +1,12 @@
 #include "SkeletonManager.h"
 
-
-
 SkeletonManager::SkeletonManager(): m_animationTimeWasEvaluated(false)
 {
 }
 
-
 SkeletonManager::~SkeletonManager()
 {
 }
-
-//SkinnedData* SkeletonManager::addSkeleton(std::string skeletonName)
-//{
-//	//we do not need it maybe
-//	return nullptr;
-//}
-
 
 SkinnedData& SkeletonManager::getSkeletonSkinnedAnimated(std::string& skeletonName)
 {
@@ -80,13 +70,4 @@ void SkeletonManager::evaluateAnimationsTime()
 			begin_it->second.evaluateBeginEndTime();
 	}
 	m_animationTimeWasEvaluated = false;
-}
-
-void SkeletonManager::getAnimationsTime(float& beginT, float& endT)
-{
-	assert(m_animationTimeWasEvaluated);
-
-	//auto begin_it = m_skeletons.begin();
-	//for (; begin_it != m_skeletons.end(); begin_it++)
-	//	begin_it->second.
 }

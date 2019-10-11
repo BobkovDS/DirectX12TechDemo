@@ -22,8 +22,7 @@ Octree::~Octree()
 }
 
 Octree* Octree::getNextChild(int iCharID)
-{
-	//int child_id = m_childs.size();
+{	
 	int child_id = iCharID;
 	
 	assert(child_id < 8);
@@ -132,8 +131,10 @@ void Octree::deleteChilds()
 	m_childs.clear();
 }
 
+// For root level of Octree. Below the same but for child level nodes
 void Octree::update(BoundingFrustum& frustom)
 {	
+		
 	// 1) If BB intersects Shadow Frustom
 	
 	if (frustom.intersects(m_Cub_bb))
@@ -161,7 +162,7 @@ void Octree::update(BoundingFrustum& frustom)
 
 				float lRDistance = DirectX::XMVectorGetX(lRLenght);
 
-				std::pair<UINT, UINT> lID_LOD; // <first=Instance_ID; second=LOD_ID>
+				std::pair<UINT, UINT> lID_LOD; //**** <first=Instance_ID; second=LOD_ID>
 
 				if (lInstBB.pRenderItem->Geometry != NULL) // If we do not use LOD for this RI, so lets draw all instances in LOD0
 					lID_LOD.second = 0;
@@ -188,6 +189,7 @@ void Octree::update(BoundingFrustum& frustom)
 	}	
 }
 
+// For child level nodes of Octree
 void Octree::update(BoundingFrustum& frustom, float r1, float r2, float r3, float r4, float r5)
 {
 	// 1) If BB intersects Shadow Frustom

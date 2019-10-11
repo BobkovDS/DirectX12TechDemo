@@ -1,3 +1,18 @@
+/*
+	***************************************************************************************************
+	Description:
+		Presents a Scene with objects. Gives some kind of abstraction under data from ObjectManager.
+		It also has Layers(SceneLayer), Objects (SceneLayerObject). Connect together Octree, Frustum Culling, Objects.
+		This class is data source for Renders;
+
+		- With given Objects from ObjectManager, we fill Scene layers how we need, some Scene Layer, can be Turned Off
+		- Prepare a list of Objects/Instances for Octree and build Octree
+		
+		- Update Scene: Using Octree, create a Instances list, which should be copied to GPU
+		- Update Light
+	***************************************************************************************************
+*/
+
 #pragma once
 #include "ApplDataStructures.h"
 #include "Defines.h"
@@ -13,81 +28,55 @@ class Scene
 public: class SceneLayer;
 private:
 	std::vector<SceneLayer> m_Layers;
-	std::vector<const InstanceDataGPU*> m_tmp_Intances;
-	std::vector<UINT> m_tmp_drawInstancesID;
+	std::vector<const InstanceDataGPU*> m_tmp_Intances;	
 	ObjectManager* m_objectManager;
 	SkeletonManager* m_skeletonManager;
 	Camera* m_camera;
 	Octree* m_octree;	
 
-	std::vector<LightCPU> m_lights; //lights in the scene
-	DirectX::BoundingSphere m_sceneBS; // scene bounding sphere  TO_DO: Delete
-	DirectX::BoundingSphere m_sceneBSShadow; // scene bounding sphere for creation Sun-light Ortho Frustom 
+	std::vector<LightCPU> m_lights; //lights in the scene	
 	BoundingMath::BoundingBox m_sceneBB;
 	std::vector<BoundingMath::BoundingBoxEXT*> m_layerBBList;
 	std::vector<BoundingMath::BoundingBoxEXT*> m_layerBBListExcludedFromCulling;
 
-	bool m_doesItNeedUpdate;
-	bool m_firstBB;
-	bool m_lightAnimation;
-	bool m_octreeCullingMode;
+	bool m_doesItNeedUpdate;	
+	bool m_lightAnimation;	
 	int m_instancesDataReadTimes; // How many times we need provide Instances Data for FrameResource Manager;
-	int m_instancesToDraw; // How many Instances are "visible" in this Scene		
+	UINT m_instancesToDraw; // How many Instances are "visible" in this Scene		
 	
 	void buildOctree();
 	
 	//some for visualization drawing logic 
 	bool m_isAfternoon;
 	float m_prevCosA;
-public:
-	static UINT ContainsCount;
+public:	
 	class SceneLayer
 	{
 	public:
 		class SceneLayerObject
 		{			
-			RenderItem* m_mesh;
-			std::vector<const InstanceDataGPU*> m_instances; // all Instances: for Shadowing and for Drawing
-			std::vector<const InstanceDataGPU*> m_instancesLOD[LODCOUNT];
-			UINT m_instancesLODArraySize[LODCOUNT];
-
-			std::vector<UINT> m_drawInstancesID; // Instances ID in m_instances for drawing // TO_DO: delete
-			UINT m_drawInstanceIDCount;
+			RenderItem* m_mesh;						
 		public:
 			//SceneLayerObject();
-			inline const RenderItem* getObjectMesh();
-			void getInstances(std::vector<const InstanceDataGPU*>& out_Instances, 
-				std::vector<UINT>& out_DrawInstancesID, UINT InstancesPerPrevLayer);			
+			inline const RenderItem* getObjectMesh();			
 			void getInstances(std::vector<const InstanceDataGPU*>& out_Instances, UINT& instancesCount);
 			UINT getInstancesCount() { return (UINT) m_mesh->Instances.size(); }
 			inline UINT getInstancesCountLOD();
-			inline UINT getInstancesCountLOD_byLevel(UINT levelID);
-			UINT getDrawInstancesIDCount() { return (UINT) m_drawInstancesID.size(); }
-			void clearInstances();
+			inline UINT getInstancesCountLOD_byLevel(UINT levelID);			
 			void clearInstancesLODSize();
-			void init(RenderItem* RI);
-			void addInstance(const InstanceDataGPU*);
-			void addInstance(const InstanceDataGPU*, UINT LodID);
+			void init(RenderItem* RI);						
 			void copyInstancesWithoutFC(); 
-			void setObjectMesh(RenderItem* mesh);
-			void setMaxSizeForDrawingIntancesArray(UINT maxSize) { m_drawInstancesID.resize(maxSize); }
-			void setMinSizeForDrawingIntancesArray() { m_drawInstancesID.resize(m_drawInstanceIDCount); }
-			void setDrawInstanceID(UINT id) { m_drawInstancesID[m_drawInstanceIDCount++] = id; };			
-			const std::vector<UINT>& getDrawIntancesID() { return m_drawInstancesID; }
+			void setObjectMesh(RenderItem* mesh);			
 			void getBoundingInformation(std::vector<BoundingMath::BoundingBoxEXT*>& lLayerBBList, std::vector<BoundingMath::BoundingBoxEXT*>& lLayerBBListExcludedFromCulling,
 				BoundingMath::BoundingBox* sceneBB);
 		};
 		//-------------------------------------------------------
 		void clearLayer();	
-		void init(const std::vector<std::unique_ptr<RenderItem>>& RI);
-		void update(const std::vector<std::unique_ptr<RenderItem>>& RI);
-		void update(const std::vector<std::unique_ptr<RenderItem>>& RI, bool LODUsing);
+		void init(const std::vector<std::unique_ptr<RenderItem>>& RI);				
 		void update();
 		bool isLayerVisible();
 		void setVisibility(bool b);
-		UINT getLayerInstancesCount();
-		void getInstances(std::vector<const InstanceDataGPU*>& out_Instances, std::vector<UINT>& out_DrawInstancesID, 
-			UINT InstancesPerPrevLayer);
+		UINT getLayerInstancesCount();		
 		void getInstances(std::vector<const InstanceDataGPU*>& out_Instances, UINT& intancesCount);
 		int getSceneObjectCount();		
 		void addSceneObject(SceneLayerObject sceneObject);
@@ -103,29 +92,25 @@ public:
 	~Scene();
 
 	int getLayersCount();
-	SceneLayer* getLayer(UINT layerIndex);
-	int getLayerInstanceOffset(UINT layerIndex);
-	std::vector<const InstanceDataGPU*>& getInstancesUpdate(UINT& instancesCount);	
-	std::vector<const InstanceDataGPU*>& getInstances();	
-	std::vector<UINT>& getDrawInstancesID();
-	
+	SceneLayer* getLayer(UINT layerIndex);	
+	void UpdateInstances();	
+	std::vector<const InstanceDataGPU*>& getInstances();		
 
 	const std::vector<LightCPU>& getLights();
-	const BoundingMath::BoundingBox& getSceneBB() { return m_sceneBB; }	
-	const DirectX::BoundingSphere& getSceneBS() { return m_sceneBS; } // TO_DO: Delete
-	const DirectX::BoundingSphere& getSceneBSShadow() { return m_sceneBSShadow; }
-	bool getCullingModeOctree() { return m_octreeCullingMode; }
+	const BoundingMath::BoundingBox& getSceneBB() { return m_sceneBB; }		
 	void build(ObjectManager* objectManager, Camera* camera, SkeletonManager* skeletonManagers);
 	void InitLayers();
 	void update();
 	void updateLight(float time);
 	bool isInstancesDataUpdateRequred();
 	void cameraListener();
-	void toggleLightAnimation();
-	void toggleCullingMode();
-	int getSelectedInstancesCount() { return m_instancesToDraw; }
-	UINT getTrianglesCount();
+	void toggleLightAnimation();	
+	UINT getSelectedInstancesCount() { return m_instancesToDraw; }	
+	void decrementInstancesReadCounter() { m_instancesDataReadTimes--; }
 };
+
+
+// ********* Inline methods *****************
 
 inline const RenderItem* Scene::SceneLayer::SceneLayerObject::getObjectMesh()
 {

@@ -4,8 +4,6 @@
 
 using namespace std;
 
-
-
 string ResourceManager::m_dummyPath = "Dummy_path";
 
 ResourceManager::ResourceManager(): m_DummyTexturePathCount(0)
@@ -30,7 +28,7 @@ void ResourceManager::loadMaterials()
 {
 	assert(m_materials.size() != 0);
 	vector<MaterialConstantsGPU> materialsGPU;
-	MaterialCPU df;
+	
 	for (size_t i = 0; i < m_materials.size(); i++)
 	{
 		MaterialConstantsGPU tmpMat = {};
@@ -81,10 +79,11 @@ void ResourceManager::addTexturePathByName(const string& textureName, const stri
 
 int ResourceManager::getTexturePathIDByName(const string& textureName)
 {
-	/*
+	/************
 		What we do:
 			TextureName->|[m_texturePathsByNames]|->TexturePath->|[m_texturePathID]|->TextureID
-	*/
+	*************/
+
 	std::string lFullTextureName = m_prefixName + textureName;
 
 	auto it1 = m_texturePathsByNames.find(lFullTextureName);
@@ -99,13 +98,12 @@ int ResourceManager::getTexturePathIDByName(const string& textureName)
 
 void ResourceManager::buildTexturePathList()
 {
-	/*
+	/*************
 		Create a list of [TexturePath->TextureID]. 
 		Texture's paths are unique for all textures. So later we will upload on GPU each texture only once.
 		Materials will use this list to map their Texture_name with Texture_ID (see getTexturePathIDByName() method),
-		where Texture_ID is position of this 
-		texture in Texture array on GPU.
-	*/
+		where Texture_ID is position of this texture in Texture array on GPU.
+	*************/
 
 	// Build unique texture names list and set ID for it
 	{
@@ -126,7 +124,7 @@ int ResourceManager::addDummyTexturePath()
 		a file and this texture will be created in application, but we need make a reservation for texture in Application SRV Heap.
 	*/
 		
-	int lTries = 10; 
+	int lTries = 10; // We think that we do not need more than 10 Dummy Textures
 	string lNewDummyPath;
 	
 	int ltextureID = m_texturePathID.size();
@@ -141,7 +139,6 @@ int ResourceManager::addDummyTexturePath()
 		}
 		else
 			lTries--;
-
 	}
 
 	return m_texturePathID[lNewDummyPath]; // if adding was failed because not anough tries, return the last DummyPath ID value
@@ -220,7 +217,7 @@ void ResourceManager::buildTextureSRVs()
 	if (m_textures.size()==0) 
 	{ 
 		/*
-			If we do not have no one Texture, let's create one dummy SRV fot no resource
+			If we do not have no one Texture, let's create one dummy SRV for no resource
 		*/
 		srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		srvDesc.Texture2D.MipLevels = 1;

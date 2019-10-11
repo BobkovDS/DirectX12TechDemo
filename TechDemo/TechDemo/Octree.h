@@ -1,3 +1,12 @@
+/*
+	***************************************************************************************************
+	Description:
+		Octree realization.
+		 - It uses custum Bounding Objects to have Intersection checking more effective.
+		 - For internal objects for specific BoundingBox it calculates LODs level for these objects. 
+	***************************************************************************************************
+*/
+
 #pragma once
 #include "ApplDataStructures.h"
 #include "BoundingMath.h"

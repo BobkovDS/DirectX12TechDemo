@@ -11,8 +11,7 @@ bool Utilit3D::m_initialized = false;
 std::mutex Utilit3D::cdb_mutex;
 
 Utilit3D::Utilit3D()
-{
-	
+{	
 }
 
 Utilit3D::~Utilit3D()

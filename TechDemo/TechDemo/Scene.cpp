@@ -3,14 +3,10 @@
 using namespace std;
 using namespace DirectX;
 
-UINT Scene::ContainsCount = 0;
-
 Scene::Scene()
 {
 	m_Layers.resize(7);
-	m_doesItNeedUpdate = true;
-	m_firstBB = true;
-	m_octreeCullingMode = false;	
+	m_doesItNeedUpdate = true;		
 	m_instancesToDraw = 0;
 
 	m_isAfternoon = true; 
@@ -33,38 +29,26 @@ Scene::SceneLayer* Scene::getLayer(UINT layerIndex)
 		nullptr;
 }
 
-int Scene::getLayerInstanceOffset(UINT layerCount)
+void Scene::UpdateInstances()
 {
-	if (layerCount >= m_Layers.size()) return -1;
+	/**********
+		Octree, using pointer to RenderItem object, filled RenderItem::InstancesID, RenderItem::InstancesID_LOD, 
+		RenderItem::InstancesID_LOD_size. So we have marked Instances which should be drawn and it is ordered by LODs.
+		So now time is to put these Instances together and provide it to application for copying to GPU
 
-	int offset = 0;
-	for (int i = 0; i < layerCount; i++)
-		if (m_Layers[i].isLayerVisible())
-		offset += m_Layers[i].getLayerInstancesCount();
-	return offset;
-}
+	***********/
 
-std::vector<const InstanceDataGPU*>& Scene::getInstancesUpdate(UINT& instancesCount)
-{
-	for (int i = 0; i < m_Layers.size(); i++)	
+	m_instancesToDraw = 0;
+	for (int i = 0; i < m_Layers.size(); i++)
 		if (m_Layers[i].isLayerVisible()) // Copy Intances data only for visible layers
 		{
-			m_Layers[i].getInstances(m_tmp_Intances, instancesCount);
+			m_Layers[i].getInstances(m_tmp_Intances, m_instancesToDraw);
 		}	
-	m_instancesDataReadTimes--;
-
-	m_instancesToDraw = instancesCount;
-	return m_tmp_Intances;
 }
 
 std::vector<const InstanceDataGPU*>& Scene::getInstances()
 {
 	return m_tmp_Intances;
-}
-
-std::vector<UINT>& Scene::getDrawInstancesID()
-{
-	return m_tmp_drawInstancesID;
 }
 
 void Scene::build(ObjectManager* objectManager, Camera* camera, SkeletonManager* skeletonManager)
@@ -83,12 +67,12 @@ void Scene::build(ObjectManager* objectManager, Camera* camera, SkeletonManager*
 	m_Layers[SKINNEDNOTOPAQUELAYER].setVisibility(false); // Skinned Not Opaque
 	m_Layers[NOTOPAQUELAYERGH].setVisibility(true); // Tesselated object (water)
 	m_Layers[NOTOPAQUELAYERCH].setVisibility(true); // Object colclutated on Compute Shader(WaterV2)
-
-
+	
 	/* ObjectManager stores Lights in order in which FBXReader put it there (read order), but
 	for some application logic we need specific order of Light type, e.g. Directional at first. It because some some Renders
 	like SSAO and Shadow renders assume that Directional light in 0-slot. Scene builder takes care about this order.
 	*/
+
 	std::vector<LightCPU>& lObjectManagersLigths = m_objectManager->getLights();
 	int lLightsCount = lObjectManagersLigths.size();
 	for (int lt = 0; lt < LightType::lightCount; lt++)
@@ -139,37 +123,37 @@ void Scene::InitLayers()
 	m_Layers[SKINNEDOPAQUELAYER].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, &m_sceneBB);
 	m_Layers[SKINNEDNOTOPAQUELAYER].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, &m_sceneBB);
 	m_Layers[NOTOPAQUELAYERGH].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, nullptr);
-	m_Layers[NOTOPAQUELAYERCH].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, &m_sceneBB);
-	
-	DirectX::BoundingBox ltempBB(XMFLOAT3(m_sceneBB.Center.x, m_sceneBB.Center.y, m_sceneBB.Center.z), m_sceneBB.Extents);
-	BoundingSphere::CreateFromBoundingBox(m_sceneBSShadow, ltempBB);
-	m_sceneBSShadow.Radius /= 1.0f;
+	m_Layers[NOTOPAQUELAYERCH].getBoundingInformation(m_layerBBList, m_layerBBListExcludedFromCulling, &m_sceneBB);	
 }
 
 void Scene::update()
 {
-	if (!m_doesItNeedUpdate) return;
-		
-	ContainsCount = 0;
-	if (m_octreeCullingMode)
-	{		
-		assert(0);		
-	}	
-	else
-	{
-		// Copy at first object which should be out of Frustum Culling (e.g. Sky ) (?)
-		for (int i=0; i< m_Layers.size(); i++)
-			m_Layers[i].update();
-		
-		// Looking at Octree's bounding boxes through ViewFrustum, mark required Instances are selected. Really copy will be in TechDemo::update_objectCB() function
-		m_octree->selector.LOD0_distance = 20; //30
-		m_octree->selector.LOD1_distance = 80; //80
-		m_octree->selector.SelectorPostition = m_camera->getPosition();
-		m_octree->update(m_camera->getFrustomBoundingCameraWorld(0));
-	}
+	if (!m_doesItNeedUpdate) return; // do we have changes for Camera?
+
+	// Copy at first object which should be out of Frustum Culling (e.g. Sky ) 
+	for (int i = 0; i < m_Layers.size(); i++)
+		m_Layers[i].update();
+
+	// Looking at Octree's bounding boxes through ViewFrustum, mark required Instances are selected. Really copy will be in TechDemo::update_objectCB() function
+	m_octree->selector.LOD0_distance = 20; //30
+	m_octree->selector.LOD1_distance = 80; //80
+	m_octree->selector.SelectorPostition = m_camera->getPosition();
+	m_octree->update(m_camera->getBoundingFrustomCameraWorld());
+
+	UpdateInstances();
 
 	m_instancesDataReadTimes = FRAMERESOURCECOUNT;
-	m_doesItNeedUpdate = false;	
+	m_doesItNeedUpdate = false;
+}
+
+bool Scene::isInstancesDataUpdateRequred()
+{
+	return m_instancesDataReadTimes > 0;
+}
+
+void Scene::cameraListener()
+{
+	m_doesItNeedUpdate = true;
 }
 
 void Scene::updateLight(float time)
@@ -249,8 +233,7 @@ void Scene::updateLight(float time)
 						m_prevCosA = cosA;
 					else
 						m_isAfternoon = true;
-				}
-					
+				}					
 			}
 		}
 	}
@@ -269,16 +252,6 @@ void Scene::updateLight(float time)
 		}
 	}
 
-}
-
-bool Scene::isInstancesDataUpdateRequred()
-{
-	return m_instancesDataReadTimes > 0;
-}
-
-void Scene::cameraListener()
-{
-	m_doesItNeedUpdate = true;
 }
 
 const std::vector<LightCPU>& Scene::getLights()
@@ -331,17 +304,10 @@ void Scene::toggleLightAnimation()
 	m_lightAnimation = !m_lightAnimation;
 }
 
-void Scene::toggleCullingMode()
-{
-	m_octreeCullingMode = !m_octreeCullingMode;
-}
-
 // ================================================================ [Scene::SceneLayer] =============================== 
 
 void Scene::SceneLayer::clearLayer()
-{
-	//m_objects.clear();
-
+{	
 	for (int i = 0; i < m_objects.size(); i++)
 		m_objects[i].clearInstancesLODSize();
 }
@@ -357,7 +323,6 @@ void Scene::SceneLayer::init(const std::vector<std::unique_ptr<RenderItem>>& arr
 		addSceneObject(lSceneObject);
 	}
 }
-
 
 bool Scene::SceneLayer::isLayerVisible()
 {
@@ -411,90 +376,22 @@ void Scene::SceneLayer::update()
 		m_objects[i].copyInstancesWithoutFC();
 }
 
-//TO_DO: delete this method?
-void Scene::SceneLayer::update(const std::vector<std::unique_ptr<RenderItem>>& arrayRI)
-{
-	if (!isLayerVisible()) return; // no need to fill this layer if it is not visible
-
-	clearLayer();	
-
-	UINT lDrawInstanceID = 0; /*each Layer has his own through-ID for all LayerObjects */
-	for (int ri = 0; ri < arrayRI.size(); ri++)
-	{
-		SceneLayer::SceneLayerObject lSceneObject = {};
-		RenderItem* lRI = arrayRI[ri].get();
-		lSceneObject.setObjectMesh(lRI);
-		lSceneObject.setMaxSizeForDrawingIntancesArray(lRI->Instances.size());
-
-		/* 
-		Note:
-			Here we think that we use only one list of Instances information: InstancesID. It is because we use only one Frustom
-			for building this list - ShadowFrustom. If we want to use two Frustoms: Camera and Shadow, we should add one more 
-			list to RenderItems - DrawInstancesID and add filling of this information in Octree. But SceneLayers and Shaders support it now.
-		*/
-		for (int i = 0; i < lRI->InstancesID.size(); i++)
-		{
-			lSceneObject.addInstance(&lRI->Instances[lRI->InstancesID[i]]);
-			lSceneObject.setDrawInstanceID(lDrawInstanceID++);
-		}
-
-		lRI->InstancesID.clear();
-		lSceneObject.setMinSizeForDrawingIntancesArray();
-		addSceneObject(lSceneObject);
-	}
-}
-
-void Scene::SceneLayer::update(const std::vector<std::unique_ptr<RenderItem>>& arrayRI, bool LODUsing)
-{
-	/*
-		- This variant is for using LOD for SceneLayerObject
-		- Does not use DrawInstancesID, but direct ID
-	*/
-
-	if (!isLayerVisible()) return; // no need to fill this layer if it is not visible
-		
-	clearLayer();
-
-	//for (int ri = 0; ri < arrayRI.size(); ri++)
-	//{
-	//	SceneLayer::SceneLayerObject& lSceneObject = m_objects[ri];
-	//	RenderItem* lRI = arrayRI[ri].get();
-	//					
-	//	for (int i = 0; i < lRI->InstancesID_LOD_size; i++)
-	//	{
-	//		auto lID_LOD = lRI->InstancesID_LOD[i];
-	//		
-	//		lSceneObject.addInstance(&lRI->Instances[lID_LOD.first], lID_LOD.second);
-	//	}
-
-	//	lRI->InstancesID_LOD_size = 0;
-	//}
-}
-
 void Scene::SceneLayer::getBoundingInformation(
 	vector<BoundingMath::BoundingBoxEXT*>& lLayerBBList, 
 	vector<BoundingMath::BoundingBoxEXT*>& lLayerBBListExcludedFromCulling,
 	BoundingMath::BoundingBox* sceneBB)
 {	
-	//Get a list of BoundingBoxed for current SceneLayer. This BBs are in World space.
+	//Get a list of BoundingBoxes for current SceneLayer. This BBs are in World space.
 
 	for (int i = 0; i < m_objects.size(); i++)
 		m_objects[i].getBoundingInformation(lLayerBBList, lLayerBBListExcludedFromCulling, sceneBB);
 }
 
 // ================================================================ [Scene::SceneLayer::SceneLayerObject] =============
-//Scene::SceneLayer::SceneLayerObject::SceneLayerObject()
-//{	
-//}
 
 void Scene::SceneLayer::SceneLayerObject::setObjectMesh(RenderItem* objectMesh)
 {
 	m_mesh = objectMesh;
-}
-
-void Scene::SceneLayer::SceneLayerObject::clearInstances()
-{
-	m_instances.clear();
 }
 
 void Scene::SceneLayer::SceneLayerObject::clearInstancesLODSize()
@@ -512,27 +409,6 @@ void Scene::SceneLayer::SceneLayerObject::init(RenderItem* RI)
 	UINT lInstancesCount = RI->Instances.size();
 	for (int i = 0; i < RI_LOD_COUNT; i++)
 		RI->InstancesID_LOD[i].resize(lInstancesCount);	
-
-	// Init data for storing Instances information
-	{
-		int lCountLOD = (RI->Geometry != NULL) ? 1 : 3; // If we have our mesh in RI->Geometry, so we do not have LOD for this RI, so we have only one LOD0
-			
-		for (int i = 0; i < lCountLOD; i++)
-		{
-			m_instancesLOD[i].resize(lInstancesCount);
-			m_instancesLODArraySize[i] = 0;
-		}
-	}
-}
-
-void Scene::SceneLayer::SceneLayerObject::addInstance(const InstanceDataGPU* instance)
-{
-	m_instances.push_back(instance);
-}
-
-void Scene::SceneLayer::SceneLayerObject::addInstance(const InstanceDataGPU* instance, UINT LodID)
-{
-	m_instancesLOD[LodID][m_instancesLODArraySize[LodID]++] = instance;
 }
 
 void Scene::SceneLayer::SceneLayerObject::copyInstancesWithoutFC()
@@ -549,22 +425,6 @@ inline UINT Scene::SceneLayer::SceneLayerObject::getInstancesCountLOD()
 	for (int i = 0; i < RI_LOD_COUNT; i++)
 		result += m_mesh->InstancesID_LOD_size[i];
 	return result;
-}
-
-void Scene::SceneLayer::SceneLayerObject::getInstances(std::vector<const InstanceDataGPU*>& out_Instances, 
-	std::vector<UINT>& out_DrawInstancesID, UINT InstancesPerPrevLayer)
-{
-	int lPrevSize = out_Instances.size();
-	int lPrevSizeDrawID = out_DrawInstancesID.size();
-
-	out_Instances.resize(lPrevSize + m_instances.size());
-	out_DrawInstancesID.resize(lPrevSizeDrawID + m_drawInstancesID.size());
-
-	for (int i = 0; i < m_instances.size(); i++)
-		out_Instances[lPrevSize + i] = m_instances[i];	
-
-	for (int i = 0; i < m_drawInstancesID.size(); i++)
-		out_DrawInstancesID[lPrevSizeDrawID + i] = m_drawInstancesID[i] + InstancesPerPrevLayer;
 }
 
 void Scene::SceneLayer::SceneLayerObject::getInstances(std::vector<const InstanceDataGPU*>& out_Instances, UINT& instancesCount)
