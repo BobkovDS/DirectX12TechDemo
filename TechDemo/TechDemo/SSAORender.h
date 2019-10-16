@@ -1,3 +1,11 @@
+/*
+	***************************************************************************************************
+	Description:
+		Realizes Screen Space Ambient Occlusion render technique.
+
+	***************************************************************************************************
+*/
+
 #pragma once
 #include "RenderBase.h"
 #include "PSOSSAOLayer1.h"
@@ -15,8 +23,7 @@ class SSAORender :
 	std::unique_ptr<Mesh> m_mesh;
 	D3D12_GPU_DESCRIPTOR_HANDLE m_RNDVectorMapHandle;
 	D3D12_VIEWPORT m_viewPortHalf;
-	D3D12_RECT m_scissorRectHalf;
-	UINT m_ViewNormalMapScaleFactor; // default value is 1- no scale for ViewNormalMap
+	D3D12_RECT m_scissorRectHalf;	
 	UINT m_AOMapScaleFactor; // default value is 2 - AO map in twice time less then screen size
 	ResourceWithUploader m_randomVectorsTexture;
 	Timer m_timer;
@@ -35,7 +42,7 @@ public:
 
 	void initialize(const RenderMessager& renderParams);
 	void build();
-	void draw(int flag);	
+	void draw(UINT flag);	
 	void resize(UINT newWidth, UINT newHeight);	
 	ID3D12Resource* getVNResource();
 	ID3D12Resource* getAOResource();	

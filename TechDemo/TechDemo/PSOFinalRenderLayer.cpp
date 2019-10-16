@@ -161,8 +161,7 @@ void PSOFinalRenderLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, D
 	psoDescLayer6.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
 	psoDescLayer6.DepthStencilState.StencilEnable = true; // Turn Stenciling on
 	psoDescLayer6.DepthStencilState.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS;
-	psoDescLayer6.DepthStencilState.FrontFace.StencilPassOp = D3D12_STENCIL_OP_REPLACE; // If we pass stencil and depth, we set stencil to StencilRef Value (=1)
-	//psoDescLayer6.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+	psoDescLayer6.DepthStencilState.FrontFace.StencilPassOp = D3D12_STENCIL_OP_REPLACE; // If we pass stencil and depth, we set stencil to StencilRef Value (=1)	
 
 	// Create PSO objects
 	//OPAQUELAYER

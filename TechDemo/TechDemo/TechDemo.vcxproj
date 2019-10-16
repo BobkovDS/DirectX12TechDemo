@@ -162,7 +162,6 @@
     <ClCompile Include="PSOShadowLayer.cpp" />
     <ClCompile Include="PSOSSAOLayer1.cpp" />
     <ClCompile Include="PSOSSAOLayer2.cpp" />
-    <ClCompile Include="PSOSSAOLayer3.cpp" />
     <ClCompile Include="RenderBase.cpp" />
     <ClCompile Include="RenderManager.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
@@ -221,7 +220,6 @@
     <ClInclude Include="PSOShadowLayer.h" />
     <ClInclude Include="PSOSSAOLayer1.h" />
     <ClInclude Include="PSOSSAOLayer2.h" />
-    <ClInclude Include="PSOSSAOLayer3.h" />
     <ClInclude Include="RenderBase.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="ResourceManager.h" />

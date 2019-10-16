@@ -9,14 +9,11 @@ DebugRender_Axis::~DebugRender_Axis()
 {
 }
 
-void DebugRender_Axis::initialize(const RenderMessager& renderParams)
-{	
-	RenderBase::initialize(renderParams);
-}
-
 void DebugRender_Axis::build()
 {
 	assert(m_initialized == true);
+
+	m_doesRenderUseMutliSampling = true;
 
 	// DepthStencil resources. This class own it.
 	{
@@ -35,13 +32,9 @@ void DebugRender_Axis::build()
 	buildAxisGeometry();
 }
 
-void DebugRender_Axis::draw(int flags)
+void DebugRender_Axis::draw(UINT flags)
 {
-	int lResourceIndex = m_swapChain->GetCurrentBackBufferIndex();
-	m_cmdList->ResourceBarrier(1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
-			D3D12_RESOURCE_STATE_PRESENT,
-			D3D12_RESOURCE_STATE_RENDER_TARGET));
+	int lResourceIndex = m_msaaRenderTargets->getCurrentBufferID();
 
 	CD3DX12_CPU_DESCRIPTOR_HANDLE currentRTV(
 		m_rtvHeap->GetCPUDescriptorHandleForHeapStart(),
@@ -64,8 +57,8 @@ void DebugRender_Axis::draw(int flags)
 	auto passCB = m_frameResourceManager->getCurrentPassCBResource();
 	
 	UINT lTechFlags = flags;
-	m_cmdList->SetGraphicsRoot32BitConstant(0, lTechFlags, 1); // Tech Flags	
-	m_cmdList->SetGraphicsRootShaderResourceView(1, objectCB->GetGPUVirtualAddress()); // Instances constant buffer arrray data		
+	m_cmdList->SetGraphicsRoot32BitConstant(0, lTechFlags, 1); // Tech Flags
+	m_cmdList->SetGraphicsRootShaderResourceView(1, objectCB->GetGPUVirtualAddress()); // Instances constant buffer arrray data
 	m_cmdList->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress()); // Pass constant buffer data
 	
 	m_cmdList->SetPipelineState(m_psoLayer.getPSO(OPAQUELAYER));
@@ -78,19 +71,7 @@ void DebugRender_Axis::draw(int flags)
 	m_cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
 	auto drawArg = m_axesMesh->DrawArgs[m_axesMesh->Name];
-	m_cmdList->DrawIndexedInstanced(drawArg.IndexCount, 1, drawArg.StartIndexLocation, 0, 0);
-
-	//-----------------------
-	m_cmdList->ResourceBarrier(1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
-			D3D12_RESOURCE_STATE_RENDER_TARGET,
-			D3D12_RESOURCE_STATE_PRESENT));
-}
-
-
-void DebugRender_Axis::setSwapChainResources(ComPtr<ID3D12Resource>* swapChainResources)
-{
-	m_swapChainResources = swapChainResources;
+	m_cmdList->DrawIndexedInstanced(drawArg.IndexCount, 1, drawArg.StartIndexLocation, 0, 0);	
 }
 
 void DebugRender_Axis::resize(UINT iwidth, UINT iheight)

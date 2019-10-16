@@ -135,7 +135,7 @@ void LogoRender::work()
 	}
 }
 
-void LogoRender::draw()
+void LogoRender::draw(UINT flags)
 {
 	// Set RootArguments
 	auto objectCB = m_frameResourceManager.getCurrentObjectCBResource();

@@ -88,11 +88,7 @@ D3D12_GRAPHICS_PIPELINE_STATE_DESC PSOBaseLayer::buildCommonPSODescription(DXGI_
 	psoDesc.RasterizerState.FrontCounterClockwise = false; 
 	psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 	psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; // Do not draw Back-faces. For performances
-
-	//psoDesc.RasterizerState.DepthBias = d00000;
-	//psoDesc.RasterizerState.DepthBiasClamp = 0.0f;
-	//psoDesc.RasterizerState.SlopeScaledDepthBias = 1.0f;
-
+	
 	psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	psoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 	psoDesc.SampleMask = UINT_MAX;

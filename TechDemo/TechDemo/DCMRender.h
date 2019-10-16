@@ -2,6 +2,7 @@
 	Dynamic Cube Map Render
 */
 
+
 #pragma once
 #include "RenderBase.h"
 #include "PSODCMLayer.h"
@@ -24,10 +25,9 @@ class DCMRender :
 public:
 	DCMRender();
 	~DCMRender();
-
-	void initialize(const RenderMessager& renderParams);
+		
 	void build();
-	void draw(int flag);
+	void draw(UINT flag);
 	void resize(UINT newWidth, UINT newHeight);
 };
 

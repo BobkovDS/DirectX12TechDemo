@@ -11,12 +11,6 @@ DCMRender::~DCMRender()
 
 using namespace DirectX;
 
-
-void DCMRender::initialize(const RenderMessager& renderParams)
-{
-	RenderBase::initialize(renderParams);	
-}
-
 void DCMRender::build()
 {
 	assert(m_initialized == true);
@@ -111,7 +105,7 @@ void DCMRender::resize(UINT iwidth, UINT iheight)
 	build_TechDescriptors();
 }
 
-void DCMRender::draw(int flags)
+void DCMRender::draw(UINT flags)
 {
 	if (!m_timer.tick()) return;
 

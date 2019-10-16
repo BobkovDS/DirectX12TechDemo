@@ -1,12 +1,17 @@
+/*
+	***************************************************************************************************
+	Description:
+		Render to draw Light Direction for the first Directional Light source in DEBUG draw mode
+
+	***************************************************************************************************
+*/
+
 #pragma once
 #include "RenderBase.h"
 #include "PSODebugLayer_Light.h"
 class DebugRender_Light :
 	public RenderBase
 {
-	IDXGISwapChain3* m_swapChain;
-	ComPtr<ID3D12Resource>* m_swapChainResources;
-
 	std::unique_ptr<Mesh> m_mesh;
 	PSODebugLayer_Light m_psoLayer;
 
@@ -14,11 +19,9 @@ class DebugRender_Light :
 public:
 	DebugRender_Light();
 	~DebugRender_Light();
-
-	void initialize(const RenderMessager& renderParams);
+		
 	void build();
-	void draw(int flag);
-	void resize(UINT newWidth, UINT newHeight);
-	void setSwapChainResources(ComPtr<ID3D12Resource>* swapChainResources);
+	void draw(UINT flag);
+	void resize(UINT newWidth, UINT newHeight);	
 };
 

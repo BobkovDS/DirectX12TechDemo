@@ -14,10 +14,10 @@ void PSOMirrorLayer::buildShadersBlob()
 {
 	// Compile shaders and store it
 	string basedir = "Shaders\\";
-	string shaderName = "MirrorRender_shaders.hlsl";		
-	string shaderNameSky = "MirrorRender_Sky_shaders.hlsl";
-	string skinedShaderName = "MirrorRender_skinnedShaders.hlsl";
-	string shaderNameCH = "MirrorRender_CH_shaders.hlsl";
+	string shaderName = "FinalRender_shaders.hlsl";		
+	string shaderNameSky = "FinalRender_SKY_shaders.hlsl";
+	string skinedShaderName = "FinalRender_skinnedShaders.hlsl";
+	string shaderNameCH = "FinalRender_CH_shaders.hlsl";
 
 	string fullFileName = basedir + shaderName;	
 	string fullFileNameCH = basedir + shaderNameCH;
@@ -143,9 +143,7 @@ void PSOMirrorLayer::buildPSO(ID3D12Device* device, DXGI_FORMAT rtFormat, DXGI_F
 	psoDescLayer6.PS = { reinterpret_cast<BYTE*>(m_shaders["ps_cs"]->GetBufferPointer()), m_shaders["ps_cs"]->GetBufferSize() };
 	psoDescLayer6.BlendState = CD3DX12_BLEND_DESC(blend_desc);
 	psoDescLayer6.DepthStencilState.StencilEnable = true; // Turn Stenciling on	
-	psoDescLayer6.DepthStencilState.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;; // to pass it should be = 1		
-
-	//psoDescLayer6.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+	psoDescLayer6.DepthStencilState.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;; // to pass it should be = 1			
 
 	// Create PSO objects
 	//OPAQUELAYER

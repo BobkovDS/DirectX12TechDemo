@@ -12,7 +12,6 @@ PSODebugLayer_Light::~PSODebugLayer_Light()
 {
 }
 
-
 void PSODebugLayer_Light::buildShadersBlob()
 {
 	// Compile shaders and store it

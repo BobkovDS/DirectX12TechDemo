@@ -10,14 +10,14 @@ BlurRender::~BlurRender()
 {
 }
 
-void BlurRender::initialize(const RenderMessager& renderParams)
-{
-	RenderBase::initialize(renderParams);
-}
-
 void BlurRender::setInputResource(ID3D12Resource* inputResource)
 {
 	m_inputResource = inputResource;
+}
+
+void BlurRender::build()
+{
+	build(2);
 }
 
 void BlurRender::build(int blurCount)
@@ -115,7 +115,7 @@ void BlurRender::resize(UINT iwidth, UINT iheight)
 	build_TechDescriptors();
 }
 
-void BlurRender::draw(int flags)
+void BlurRender::draw(UINT flags)
 {
 	//if (!m_timer.tick()) return; // TO_DO: delete
 
@@ -202,60 +202,4 @@ void BlurRender::draw(int flags)
 	m_uavResources[1]->changeState(m_cmdList, D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_GENERIC_READ);
 
 	m_isBlurReady = true;
-}
-
-void BlurRender::build_screen()
-{
-	// TO_DO: do we need it? Maybe delete ?
-
-	std::vector<VertexGPU> lVertices(4);
-	std::vector<uint32_t> lIndices(6);
-
-	VertexGPU vertex = {};
-
-	//v0
-	vertex.Pos = XMFLOAT3(-1.0f, -1.0f, 0.0f);
-	vertex.Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	vertex.TangentU = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
-	vertex.UVText = XMFLOAT2(0.0f, 1.0f);
-	lVertices[0] = vertex;
-	//v1
-	vertex.Pos = XMFLOAT3(-1.0f, 1.0f, 0.0f);
-	vertex.Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	vertex.UVText = XMFLOAT2(0.0f, 0.0f);
-	lVertices[1] = vertex;
-	//v2
-	vertex.Pos = XMFLOAT3(1.0f, 1.0f, 0.0f);
-	vertex.Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	vertex.UVText = XMFLOAT2(1.0f, 0.0f);
-	lVertices[2] = vertex;
-	//v3
-	vertex.Pos = XMFLOAT3(1.0f, -1.0f, 0.0f);
-	vertex.Normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-	vertex.UVText = XMFLOAT2(1.0f, 1.0f);
-	lVertices[3] = vertex;
-
-	lIndices[0] = 0;
-	lIndices[1] = 1;
-	lIndices[2] = 2;
-
-	lIndices[3] = 0;
-	lIndices[4] = 2;
-	lIndices[5] = 3;
-
-	m_mesh = std::make_unique<Mesh>();
-	int vertexByteStride = sizeof(VertexGPU);
-
-	
-	m_mesh->VertexBufferByteSize = vertexByteStride * (UINT) lVertices.size();
-	m_mesh->IndexBufferByteSize = sizeof(uint32_t) * (UINT) lIndices.size();
-	m_mesh->VertexByteStride = vertexByteStride;
-	m_mesh->IndexFormat = DXGI_FORMAT_R32_UINT;
-
-	SubMesh submesh = {};
-	m_mesh->Name = "screen";
-	submesh.IndexCount = (UINT) lIndices.size();
-	m_mesh->DrawArgs[m_mesh->Name] = submesh;
-
-	Utilit3D::UploadMeshToDefaultBuffer<Mesh, VertexGPU, uint32_t>(m_mesh.get(), lVertices, lIndices);
 }

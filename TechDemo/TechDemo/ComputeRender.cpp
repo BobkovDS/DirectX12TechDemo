@@ -10,11 +10,10 @@ ComputeRender::~ComputeRender()
 {
 }
 
-void ComputeRender::initialize(const RenderMessager& renderParams)
+void ComputeRender::build()
 {
-	RenderBase::initialize(renderParams);
+	build(0);
 }
-
 
 void ComputeRender::build(int ObjectID)
 {
@@ -84,8 +83,9 @@ void ComputeRender::build(int ObjectID)
 		m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat, lSampleDesc);
 
 		build_TechDescriptors();
-		//m_timer.setTickTime(0.008333); //120fps;
-		m_timer.setTickTime(0.029f); //60fps; 0.029f
+		
+		// This time should be the same, which was set in TechDemo::update_passSSAOCB::{Calculate Coefficients for ComputeRender (WaterV2 object)}
+		m_timer.setTickTime(0.029f); 
 
 		m_isReady = true;
 	}
@@ -164,7 +164,7 @@ void ComputeRender::build_TechDescriptors()
 	}	
 }
 
-void ComputeRender::draw(int flags)
+void ComputeRender::draw(UINT flags)
 {
 	if (!m_isReady) return;
 
@@ -180,9 +180,7 @@ void ComputeRender::draw(int flags)
 			lYPos = (double)((double)rand() / (RAND_MAX + 1.0f) * m_height);
 			//lXPos = (double)rand() / (RAND_MAX + 1) * 10 + m_width/2;
 			//lYPos = (double)rand() / (RAND_MAX + 1) * 10;
-			lMagnitude = (double)((double) rand() / (RAND_MAX + 1) * 50 + 10);
-			//lXPos = m_width / 2;
-			//lYPos = 2;
+			lMagnitude = (double)((double) rand() / (RAND_MAX + 1) * 50 + 10);			
 			m_drop = false;
 		}
 
@@ -203,8 +201,7 @@ void ComputeRender::draw(int flags)
 		m_cmdList->SetComputeRoot32BitConstant(0, lYPos, 1); // Tech Flags: Even Pass (TRUE)			
 		m_cmdList->SetComputeRoot32BitConstant(0, lMagnitude, 2); // Tech Flags: Even Pass (TRUE)			
 
-		// Compute call. 
-	//	m_height = 280;
+		// Compute call. 	
 		UINT numGroups = (UINT)ceilf(m_height / 256.0f);
 		m_cmdList->Dispatch(1, numGroups, 1);
 

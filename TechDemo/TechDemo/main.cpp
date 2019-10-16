@@ -1,7 +1,6 @@
 #include "TechDemo.h"
 #include "ApplException.h"
 #include "ApplLogger.h"
-#include "LogoAwaiter.h"
 
 using namespace std;
 

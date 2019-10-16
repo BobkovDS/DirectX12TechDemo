@@ -9,35 +9,25 @@ DebugRender_Normals::~DebugRender_Normals()
 {
 }
 
-void DebugRender_Normals::initialize(const RenderMessager& renderParams)
-{	
-	RenderBase::initialize(renderParams);
-}
-
 void DebugRender_Normals::build()
 {
 	assert(m_initialized == true);
 
-	//This class does not own it DepthStencil resources	
+	m_doesRenderUseMutliSampling = true;
+
+	//This class does not own its DepthStencil resources	
 
 	// Initialize PSO layer
 	DXGI_SAMPLE_DESC lSampleDesc;
 	lSampleDesc.Count = m_msaaRenderTargets->getSampleCount();
 	lSampleDesc.Quality = m_msaaRenderTargets->getSampleQuality();
-	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat, lSampleDesc);
-
-	// Build Axis geometry
-	buildGeometry();
+	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat, lSampleDesc);	
 }
 
-void DebugRender_Normals::draw(int flags)
+void DebugRender_Normals::draw(UINT flags)
 {
-	int lResourceIndex = m_swapChain->GetCurrentBackBufferIndex();
-	m_cmdList->ResourceBarrier(1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
-			D3D12_RESOURCE_STATE_PRESENT,
-			D3D12_RESOURCE_STATE_RENDER_TARGET));
-
+	int lResourceIndex = m_msaaRenderTargets->getCurrentBufferID();
+	
 	CD3DX12_CPU_DESCRIPTOR_HANDLE currentRTV(
 		m_rtvHeap->GetCPUDescriptorHandleForHeapStart(),
 		lResourceIndex, m_rtvDescriptorSize);
@@ -46,11 +36,6 @@ void DebugRender_Normals::draw(int flags)
 	m_cmdList->RSSetScissorRects(1, &m_scissorRect);
 
 	m_cmdList->OMSetRenderTargets(1, &currentRTV, true, &m_dsvHeap->GetCPUDescriptorHandleForHeapStart());
-
-	//FLOAT clearColor[4] = { 0.0f, 0.5f, 0.4f, 1.0f };
-	////m_cmdList->ClearRenderTargetView(currentRTV, clearColor, 0, nullptr);
-	//m_cmdList->ClearDepthStencilView(m_dsvHeap->GetCPUDescriptorHandleForHeapStart(),
-	//	D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
 	m_cmdList->SetGraphicsRootSignature(m_psoLayer.getRootSignature());
 
@@ -75,12 +60,6 @@ void DebugRender_Normals::draw(int flags)
 		for (int i = 0; i < m_scene->getLayersCount(); i++)
 			draw_layer(i, lInstanceOffset, (lcLayerWhichMayBeDrawn & (1<<i)), D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
 	}
-
-	//-----------------------
-	m_cmdList->ResourceBarrier(1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
-			D3D12_RESOURCE_STATE_RENDER_TARGET,
-			D3D12_RESOURCE_STATE_PRESENT));
 }
 
 void DebugRender_Normals::draw_layer(int layerID, int& instanceOffset, bool doDraw, D3D12_PRIMITIVE_TOPOLOGY PrimitiveTopology)
@@ -95,11 +74,7 @@ void DebugRender_Normals::draw_layer(int layerID, int& instanceOffset, bool doDr
 			Scene::SceneLayer::SceneLayerObject* lSceneObject = lObjectLayer->getSceneObject(ri);
 			int lInstancesCount = lSceneObject->getInstancesCountLOD(); // How much instances for this RenderItem we should draw
 			if (lInstancesCount == 0) continue;
-
-			/*
-			if (doDraw)
-				m_cmdList->SetPipelineState(m_psoLayer.getPSO(layerID));
-			*/			
+		
 			const RenderItem* lRI = lSceneObject->getObjectMesh();
 
 			for (int lod_id = 0; lod_id < LODCOUNT; lod_id++)
@@ -138,11 +113,6 @@ void DebugRender_Normals::draw_layer(int layerID, int& instanceOffset, bool doDr
 	}
 }
 
-void DebugRender_Normals::setSwapChainResources(ComPtr<ID3D12Resource>* swapChainResources)
-{
-	m_swapChainResources = swapChainResources;
-}
-
 void DebugRender_Normals::resize(UINT iwidth, UINT iheight)
 {
 	RenderBase::resize(iwidth, iheight);
@@ -153,8 +123,3 @@ void DebugRender_Normals::resize(UINT iwidth, UINT iheight)
 		m_dsResource->resize(iwidth, iheight);
 	}
 }
-
-void DebugRender_Normals::buildGeometry()
-{
-}
-

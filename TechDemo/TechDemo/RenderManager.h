@@ -1,3 +1,12 @@
+/*
+	***************************************************************************************************
+	Description:
+		Connects all Renders together. The task for RenderManager is to initialize all Renders, to create/set 
+		visualization flags and to create a draw-flow based on it.
+
+	***************************************************************************************************
+*/
+
 #pragma once
 #include "RenderBase.h"
 #include "FinalRender.h"
@@ -85,7 +94,7 @@ public:
 	void setRenderMode_SSAO_Map2(); // AO Map
 	void setRenderMode_SSAO_Map3(); // AO Blured Map
 	void setRenderMode_Shadow(UINT mapID=0); // Shadow Map
-	void test_drop();
+	void water_drop();
 	bool isDebugMode() { return m_debugMode; }
 	ID3D12Resource* getCurrentRenderTargetResource();
 
@@ -93,4 +102,3 @@ public:
 	UINT getTrianglesCountIfWithoutLOD() { return m_finalRender.getTrianglesCountIfWithoutLOD(); } // How much triangles would be drawn without using LOD
 	UINT getTrianglesCountInScene() { return m_finalRender.getTrianglesCountInScene(); } // How much triangles in Scene at all (Without LOD and Frustum Culling)
 };
-

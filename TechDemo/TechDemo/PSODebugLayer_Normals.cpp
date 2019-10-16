@@ -14,8 +14,7 @@ void PSODebugLayer_Normals::buildShadersBlob()
 {
 	// Compile shaders and store it
 	string basedir = "Shaders\\";
-	string shaderName = "DebugNormalsRender_shaders.hlsl";	
-	//shaderName = "DebugLightRender_shaders.hlsl";	
+	string shaderName = "DebugNormalsRender_shaders.hlsl";		
 	string fullFileName = basedir + shaderName;	
 
 	string shaderType = "none";

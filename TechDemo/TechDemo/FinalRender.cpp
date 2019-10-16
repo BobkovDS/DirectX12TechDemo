@@ -8,15 +8,10 @@ FinalRender::~FinalRender()
 {
 }
 
-void FinalRender::initialize(const RenderMessager& renderParams)
-{	
-	RenderBase::initialize(renderParams);	
-}
-
 void FinalRender::build()
 {
 	assert(m_initialized == true);
-	m_DoesRenderUseMutliSampling = true;
+	m_doesRenderUseMutliSampling = true;
 
 	// DepthStencil resources. This class own it.
 	{
@@ -49,7 +44,7 @@ void FinalRender::build_SkyDescriptor()
 	{
 		std::vector<const InstanceDataGPU*> lInstances;
 		lInstances.resize(1);
-		std::vector<UINT> lDrawInstancesID; // we do not use it for SkyLayer TO_DO: delete
+
 		UINT lInstanceCount = 0;
 		lSkyLayer->getInstances(lInstances, lInstanceCount);
 		if (lInstanceCount != 0)
@@ -87,7 +82,7 @@ void FinalRender::resize(UINT iwidth, UINT iheight)
 	create_DSV();
 }
 
-void FinalRender::draw(int flags)
+void FinalRender::draw(UINT flags)
 {	
 	const UINT lcLayerWhichMayBeDrawn =
 		(1 << (SKY)) |
@@ -97,12 +92,7 @@ void FinalRender::draw(int flags)
 		(1 << (NOTOPAQUELAYERGH)) |
 		(1 << (NOTOPAQUELAYERCH));		
 
-	int lResourceIndex = m_msaaRenderTargets->getCurrentBufferID();
-
-	//m_cmdList->ResourceBarrier(1,
-	//	&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
-	//		D3D12_RESOURCE_STATE_PRESENT,
-	//		D3D12_RESOURCE_STATE_RENDER_TARGET));
+	int lResourceIndex = m_msaaRenderTargets->getCurrentBufferID();	
 
 	CD3DX12_CPU_DESCRIPTOR_HANDLE currentRTV(
 		m_rtvHeap->GetCPUDescriptorHandleForHeapStart(),
@@ -136,9 +126,9 @@ void FinalRender::draw(int flags)
 	m_cmdList->SetGraphicsRootShaderResourceView(1, objectCB->GetGPUVirtualAddress()); // Instances constant buffer arrray data
 	m_cmdList->SetGraphicsRootShaderResourceView(2, m_resourceManager->getMaterialsResource()->GetGPUVirtualAddress());
 	m_cmdList->SetGraphicsRootShaderResourceView(3, boneCB->GetGPUVirtualAddress()); // bones constant buffer array data	
-	m_cmdList->SetGraphicsRootConstantBufferView(5, passCB->GetGPUVirtualAddress()); // Pass constant buffer data
-	m_cmdList->SetGraphicsRootDescriptorTable(6, m_techSRVHandle); // Technical SRV (CubeMap ViewNormal, SSAO maps and etc)
-	m_cmdList->SetGraphicsRootDescriptorTable(7, m_textureSRVHandle); // Textures SRV
+	m_cmdList->SetGraphicsRootConstantBufferView(4, passCB->GetGPUVirtualAddress()); // Pass constant buffer data
+	m_cmdList->SetGraphicsRootDescriptorTable(5, m_techSRVHandle); // Technical SRV (CubeMap ViewNormal, SSAO maps and etc)
+	m_cmdList->SetGraphicsRootDescriptorTable(6, m_textureSRVHandle); // Textures SRV
 	
 	m_cmdList->OMSetStencilRef(1);
 
@@ -150,12 +140,6 @@ void FinalRender::draw(int flags)
 	int lInstanceOffset = 0;
 	for (int i = 0; i < m_scene->getLayersCount(); i++) // Draw all Layers	
 		draw_layer(i, lInstanceOffset, lcLayerWhichMayBeDrawn & (1 << i));
-		
-	////-----------------------
-	//m_cmdList->ResourceBarrier(1,
-	//	&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
-	//		D3D12_RESOURCE_STATE_RENDER_TARGET,
-	//		D3D12_RESOURCE_STATE_PRESENT));
 }
 
 
@@ -186,7 +170,8 @@ void FinalRender::draw_layer(int layerID, int& instanceOffset, bool doDraw)
 
 				lInstancesForThisMesh += lInstanceCountByLODLevel;
 
-				bool lLODDraw = ((lod_id == 0) | (lod_id == 1) | (lod_id == 2));
+				//bool lLODDraw = ((lod_id == 0) | (lod_id == 1) | (lod_id == 2)); // Draw all LODs
+				bool lLODDraw = true;
 				if (doDraw && lLODDraw) // some layers we do not need to draw, but we need to count instances for it
 				{
 					Mesh* lMesh = lRI->LODGeometry[lod_id];

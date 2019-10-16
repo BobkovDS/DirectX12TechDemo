@@ -98,6 +98,7 @@ void SSAOToMultiSamplingRender::resize(UINT iwidth, UINT iheight)
 	m_rtResources[0]->resize(iwidth, iheight);
 	
 	create_RTV();
+
 	build_TechDescriptors();
 }
 

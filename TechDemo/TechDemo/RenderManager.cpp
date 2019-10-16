@@ -1,6 +1,5 @@
 #include "RenderManager.h"
 
-
 RenderManager::RenderManager(): m_initialized(false)
 {
 	m_debugMode = false;
@@ -22,7 +21,10 @@ RenderManager::~RenderManager()
 void RenderManager::initialize(RenderManagerMessanger& renderParams)
 {
 	if (renderParams.RTResources != nullptr) // Do we use SwapChain RenderTarget Buffers directly or through MSAA RenderTargets
+	{
 		m_swapChainResources = renderParams.RTResources;
+		assert(0 && "SwapChain's buffers are not used like RT directly in this version");
+	}
 	else
 		m_swapChainResources = m_msaaRenderTargets.RenderTargetBuffers;
 
@@ -51,6 +53,7 @@ void RenderManager::initialize(RenderManagerMessanger& renderParams)
 	m_finalRender.initialize(renderParams.commonRenderData);
 	m_mirrorRender.initialize(renderParams.commonRenderData);	
 	m_ssaoMSRender.initialize(renderParams.commonRenderData);
+	m_ssaoRender.initialize(renderParams.commonRenderData);
 	m_debugRenderAxes.initialize(renderParams.commonRenderData);
 	m_debugRenderLights.initialize(renderParams.commonRenderData);
 	m_debugRenderNormals.initialize(renderParams.commonRenderData);
@@ -62,11 +65,7 @@ void RenderManager::initialize(RenderManagerMessanger& renderParams)
 	lRenderParams.Height = 4096;
 	m_shadowRender.initialize(lRenderParams);
 
-	lRenderParams = renderParams.commonRenderData;
-	//lRenderParams.Width /= 2; 
-	//lRenderParams.Height /= 2;	
-	m_ssaoRender.initialize(lRenderParams);
-		
+	lRenderParams = renderParams.commonRenderData;			
 	lRenderParams.Width /= 2; 
 	lRenderParams.Height /= 2;	
 	lRenderParams.RTResourceFormat = SSAORender::AOMapFormat;
@@ -85,50 +84,44 @@ void RenderManager::buildRenders()
 	buildTechSRVs();
 
 	//build Final Render	
-	m_finalRender.set_DescriptorHeap_RTV(m_applicationRTVHeap);	
-	m_finalRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
-	m_finalRender.build();
-	//m_finalRender.setSwapChainResources(m_swapChainResources); // TO_DO: delete Swapchain from renders
+	m_finalRender.set_DescriptorHeap_RTV(m_applicationRTVHeap);	// MSAARenderTargets changed RTVs: DXGI has created it for SwapChain, but MSAARenderTargets has set it to his own RTVs
+	m_finalRender.set_DescriptorHeap(m_texturesDescriptorHeap); // External Application Textures SRV heap
+	m_finalRender.build();	
 
 	//build Mirror Render	
 	m_mirrorRender.set_DescriptorHeap_RTV(m_applicationRTVHeap);
 	m_mirrorRender.set_DescriptorHeap_DSV(m_finalRender.get_dsvHeapPointer());
-	m_mirrorRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
-	//m_mirrorRender.setSwapChainResources(m_swapChainResources);
+	m_mirrorRender.set_DescriptorHeap(m_texturesDescriptorHeap); 
 	m_mirrorRender.build();	
 
 	// build Debug Axes Render
 	m_debugRenderAxes.set_DescriptorHeap_RTV(m_applicationRTVHeap);
-	m_debugRenderAxes.build();
-	//m_debugRenderAxes.setSwapChainResources(m_swapChainResources);
+	m_debugRenderAxes.build();	
 
 	// build Debug Light Render
 	m_debugRenderLights.set_DescriptorHeap_RTV(m_applicationRTVHeap);
-	m_debugRenderLights.build();
-	//m_debugRenderLights.setSwapChainResources(m_swapChainResources);
+	m_debugRenderLights.build();	
 
 	// build Debug Normals Render
 	m_debugRenderNormals.set_DescriptorHeap_RTV(m_applicationRTVHeap);
 	m_debugRenderNormals.set_DescriptorHeap_DSV(m_finalRender.get_dsvHeapPointer());
-	m_debugRenderNormals.build();
-	//m_debugRenderNormals.setSwapChainResources(m_swapChainResources);
+	m_debugRenderNormals.build();	
 
 	// build Debug Screen Render
 	m_debugRenderScreen.set_DescriptorHeap_RTV(m_applicationRTVHeap);
-	m_debugRenderScreen.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
-	m_debugRenderScreen.build();
-	//m_debugRenderScreen.setSwapChainResources(m_swapChainResources);
+	m_debugRenderScreen.set_DescriptorHeap(m_texturesDescriptorHeap);
+	m_debugRenderScreen.build();	
 
 	// build SSAO Render
-	m_ssaoRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
+	m_ssaoRender.set_DescriptorHeap(m_texturesDescriptorHeap);
 	m_ssaoRender.build();
 
 	// build SSAO Render
-	m_ssaoMSRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
+	m_ssaoMSRender.set_DescriptorHeap(m_texturesDescriptorHeap);
 	m_ssaoMSRender.build();
 
 	// build Blur Render	
-	m_blurRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
+	m_blurRender.set_DescriptorHeap(m_texturesDescriptorHeap);
 	m_blurRender.setInputResource(m_ssaoRender.getAOResource());	
 	m_blurRender.build(2);
 
@@ -137,11 +130,11 @@ void RenderManager::buildRenders()
 	m_shadowRender.build();	
 
 	// build Compute Render
-	m_computeRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
+	m_computeRender.set_DescriptorHeap(m_texturesDescriptorHeap);
 	m_computeRender.build(0);
 
 	// build SSAO Render
-	m_dcmRender.set_DescriptorHeap(m_texturesDescriptorHeap); // Textures SRV
+	m_dcmRender.set_DescriptorHeap(m_texturesDescriptorHeap);
 	m_dcmRender.build();
 }
 
@@ -218,7 +211,7 @@ void RenderManager::buildTechSRVs()
 {
 	/*
 		Add [TECHSRVCOUNT] 'NULL' SRVs for technical Textures (Results for other Renders) in the beginning of
-		common DescriptorHeap (m_texturesDescriptorHeap). Later each Render will use his slot(s) and will create 'normal' SRV
+		common DescriptorHeap (m_texturesDescriptorHeap). Later each Render will use his slot(s) and will create SRV
 		0 - Sky Cube map
 		1 - Dynamic Cube Map
 		2 - Random Vector Map
@@ -357,8 +350,7 @@ void RenderManager::toggleTechnik_Reflection()
 	m_isReflection = !m_isReflection;
 }
 
-
-void RenderManager::test_drop()
+void RenderManager::water_drop()
 {
 	m_computeRender.drop();
 }

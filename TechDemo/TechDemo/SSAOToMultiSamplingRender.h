@@ -15,9 +15,9 @@ public:
 	SSAOToMultiSamplingRender();
 	~SSAOToMultiSamplingRender();
 
-	void initialize(const RenderMessager& renderParams);
 	void build();
 	void draw(UINT textureID);
+	void initialize(const RenderMessager& renderParams);
 	void resize(UINT newWidth, UINT newHeight);
 };
 

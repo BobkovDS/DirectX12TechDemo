@@ -48,7 +48,7 @@ class LogoRender :
 		
 	void build_mesh();
 	void build_2DResources();
-	void draw();
+	void draw(UINT flags=0);
 	void renderUI();	
 	void update();
 	void update_CB();

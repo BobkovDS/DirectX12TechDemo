@@ -85,7 +85,7 @@ void TechDemo::onKeyDown(WPARAM btnState)
 	case VK_NUMPAD1: m_renderManager.toggleDebug_Axes(); break;						// Turn on/off Axes drawing in Debug mode
 	case VK_NUMPAD2: m_renderManager.toggleDebug_Lights(); break;					// Turn on/off Ligh direction drawing in Debug mode
 	case VK_NUMPAD3: m_renderManager.toggleDebug_Normals_Vertex(); break;			// Turn on/off Normal drawing in Debug mode	for some objects layers
-	case VK_NUMPAD5: m_renderManager.test_drop(); break;					// Add drop to Water
+	case VK_NUMPAD5: m_renderManager.water_drop(); break;					// Add drop to Water
 	case VK_NUMPAD7: m_renderManager.toggleTechnik_SSAO(); break;			// Turn on/off SSAO technique using
 	case VK_NUMPAD8: m_renderManager.toggleTechnik_Shadow(); break;			// Turn on/off Dynamic Shadows technique using
 	case VK_NUMPAD9: m_renderManager.toggleTechnik_ComputeWork(); break;	// Turn on/off Compute work for the water simulation
@@ -191,7 +191,7 @@ void TechDemo::init3D()
 
 	RenderManagerMessanger lRenderManagerParams;
 	lRenderManagerParams.RTVHeap = m_rtvHeap.Get();
-	lRenderManagerParams.RTResources = nullptr;
+	lRenderManagerParams.RTResources = nullptr;	
 	lRenderManagerParams.commonRenderData.Device = m_device.Get();
 	lRenderManagerParams.commonRenderData.CmdList= m_cmdList.Get();	
 	lRenderManagerParams.commonRenderData.RTResourceFormat = backBufferFormat();

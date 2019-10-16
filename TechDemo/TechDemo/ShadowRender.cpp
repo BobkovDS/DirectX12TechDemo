@@ -8,17 +8,11 @@ ShadowRender::~ShadowRender()
 {
 }
 
-
-void ShadowRender::initialize(const RenderMessager& renderParams)
-{
-	RenderBase::initialize(renderParams);
-}
-
 void ShadowRender::build()
 {
 	assert(m_initialized == true);
 
-	m_DoesRenderUseMutliSampling = false;
+	m_doesRenderUseMutliSampling = false;
 
 	m_own_resources.resize(1);
 	// DepthStencil resources. This class own it.
@@ -30,8 +24,8 @@ void ShadowRender::build()
 
 	// Initialize PSO layer
 	DXGI_SAMPLE_DESC lSampleDesc;
-	lSampleDesc.Count = m_DoesRenderUseMutliSampling ? m_msaaRenderTargets->getSampleCount(): 1;
-	lSampleDesc.Quality = m_DoesRenderUseMutliSampling ? m_msaaRenderTargets->getSampleQuality(): 0;	
+	lSampleDesc.Count = m_doesRenderUseMutliSampling ? m_msaaRenderTargets->getSampleCount(): 1;
+	lSampleDesc.Quality = m_doesRenderUseMutliSampling ? m_msaaRenderTargets->getSampleQuality(): 0;	
 	
 	m_psoLayer.buildPSO(m_device, m_rtResourceFormat, m_dsResourceFormat, lSampleDesc);
 
@@ -57,7 +51,7 @@ void ShadowRender::build_TechDescriptors()
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 
 	// SRV for Depth Map
-	bool lMutliSamplingEnabled = m_msaaRenderTargets != NULL && m_msaaRenderTargets->getMSAAEnabled() && m_DoesRenderUseMutliSampling ? true : false;
+	bool lMutliSamplingEnabled = m_msaaRenderTargets != NULL && m_msaaRenderTargets->getMSAAEnabled() && m_doesRenderUseMutliSampling ? true : false;
 		
 	lhDescriptorOffseting = lhDescriptor;
 	lhDescriptorOffseting.Offset(TECHSLOT_SHADOW, lSrvSize);
@@ -70,17 +64,7 @@ void ShadowRender::build_TechDescriptors()
 	m_dsResource->changeState(m_cmdList, D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_GENERIC_READ);
 }
 
-//TO_DO: delete
-//void ShadowRender::resize(UINT iwidth, UINT iheight)
-//{
-//	RenderBase::resize(iwidth, iheight); 
-//	m_dsResource->resize(m_width, m_height);
-//	create_DSV();
-//
-//	build_TechDescriptors();
-//}
-
-void ShadowRender::draw(int lightID)
+void ShadowRender::draw(UINT lightID)
 {
 	//if (!m_timer.tick()) return;
 	
@@ -110,9 +94,9 @@ void ShadowRender::draw(int lightID)
 	m_cmdList->SetGraphicsRootShaderResourceView(1, objectCB->GetGPUVirtualAddress()); // Instances constant buffer arrray data
 	m_cmdList->SetGraphicsRootShaderResourceView(2, m_resourceManager->getMaterialsResource()->GetGPUVirtualAddress());
 	m_cmdList->SetGraphicsRootShaderResourceView(3, boneCB->GetGPUVirtualAddress()); // bones constant buffer array data
-	m_cmdList->SetGraphicsRootConstantBufferView(5, passCB->GetGPUVirtualAddress()); // Pass constant buffer data
+	m_cmdList->SetGraphicsRootConstantBufferView(4, passCB->GetGPUVirtualAddress()); // Pass constant buffer data
 	//m_cmdList->SetGraphicsRootDescriptorTable(5, m_techSRVHandle); // Technical SRV (CubeMap ViewNormal, SSAO maps and etc)
-	m_cmdList->SetGraphicsRootDescriptorTable(7, m_textureSRVHandle); // Textures SRV
+	m_cmdList->SetGraphicsRootDescriptorTable(6, m_textureSRVHandle); // Textures SRV
 	
 	m_cmdList->OMSetRenderTargets(0, nullptr, true, &m_dsvHeap->GetCPUDescriptorHandleForHeapStart());
 
@@ -166,7 +150,7 @@ void ShadowRender::draw_layer(int layerID, int& instanceOffset, bool doDraw)
 				if (doDraw && lLODDraw) // some layers we do not need to draw, but we need to count instances for it
 				{						
 
-					Mesh* lMesh = lRI->LODGeometry[lod_id == 0 ? 0 : 2];
+					Mesh* lMesh = lRI->LODGeometry[lod_id == 0 ? 0 : 2]; // LOD0_Mesh for LOD0, LOD2_Mesh for LOD1 and LOD2
 
 					if (lMesh == NULL)
 					{

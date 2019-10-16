@@ -1,3 +1,15 @@
+/*
+	***************************************************************************************************
+	Description:
+		A base class for all PSOLayers. Pipeline State Object Layer represents a set of PSOs, which are used for some Render.
+		Each Object layer has its own one PSO for drawing by a Render.
+		Root Signature is defined inside .hlsl files
+
+		The main difference for PSOLayers classes it is they use different HLSL files and different settings for PSO objects.
+
+	***************************************************************************************************
+*/
+
 #pragma once
 #include "stdafx.h"
 #include <map>

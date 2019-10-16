@@ -3,7 +3,7 @@
 
 using namespace DirectX;
 
-SSAORender::SSAORender():m_ViewNormalMapScaleFactor(1), m_AOMapScaleFactor(2)
+SSAORender::SSAORender():m_AOMapScaleFactor(2)
 {
 }
 
@@ -16,8 +16,8 @@ void SSAORender::initialize(const RenderMessager& renderParams)
 	RenderBase::initialize(renderParams);
 	
 	m_viewPortHalf = {};
-	m_viewPortHalf.Width = static_cast<float> (renderParams.Width/2 );
-	m_viewPortHalf.Height = static_cast<float> (renderParams.Height/2);
+	m_viewPortHalf.Width = static_cast<float> (renderParams.Width/ m_AOMapScaleFactor);
+	m_viewPortHalf.Height = static_cast<float> (renderParams.Height/ m_AOMapScaleFactor);
 	m_viewPortHalf.MinDepth = 0.0f;
 	m_viewPortHalf.MaxDepth = 1.0f;
 
@@ -39,7 +39,7 @@ void SSAORender::build()
 	// Render Target Resource. This class own it
 	{
 		create_Resource_RT(m_viewNormalMapFormat); // for ViewNormal Map		
-		create_Resource_RT(AOMapFormat, m_width/2, m_height/2); // for AO Map
+		create_Resource_RT(AOMapFormat, m_width/ m_AOMapScaleFactor, m_height/ m_AOMapScaleFactor); // for AO Map
 		create_DescriptorHeap_RTV(m_rtResources.size());
 		
 		create_RTV(m_rtResourceFormat);
@@ -117,25 +117,23 @@ void SSAORender::resize(UINT iwidth, UINT iheight)
 	RenderBase::resize(iwidth, iheight);
 	m_dsResource->resize(iwidth, iheight);
 	m_rtResources[RESOURCEID_VN]->resize(iwidth, iheight);
-	m_rtResources[RESOURCEID_AO]->resize(iwidth/2, iheight/2);
+	m_rtResources[RESOURCEID_AO]->resize(iwidth/ m_AOMapScaleFactor, iheight/ m_AOMapScaleFactor);
 	create_DSV(); // Here we create only DepthStencil Descriptor for DS Resource. SRV for it will be created in build_TechDescriptors()
 	create_RTV();
 
 	m_viewPortHalf= {};
-	m_viewPortHalf.Width = static_cast<float> (iwidth/2);
-	m_viewPortHalf.Height = static_cast<float> (iheight/2);
+	m_viewPortHalf.Width = static_cast<float> (iwidth/ m_AOMapScaleFactor);
+	m_viewPortHalf.Height = static_cast<float> (iheight/ m_AOMapScaleFactor);
 	m_viewPortHalf.MinDepth = 0.0f;
 	m_viewPortHalf.MaxDepth = 1.0f;
 
-	m_scissorRectHalf = { 0,0, static_cast<LONG> (iwidth/2),static_cast<LONG> (iheight/2) };
+	m_scissorRectHalf = { 0,0, static_cast<LONG> (iwidth/2),static_cast<LONG> (iheight/ m_AOMapScaleFactor) };
 
 	build_TechDescriptors();
 }
 
-void SSAORender::draw(int flags)
-{	  
-	//if (!m_timer.tick()) return; // TO_DO: delete
-	
+void SSAORender::draw(UINT flags)
+{		
 	const UINT lcLayerWhichMayBeDrawn =
 		1 << OPAQUELAYER | 1 << SKINNEDOPAQUELAYER; // SSAO only for Opaque objects
 
@@ -158,9 +156,7 @@ void SSAORender::draw(int flags)
 	m_cmdList->SetGraphicsRootShaderResourceView(1, objectCB->GetGPUVirtualAddress()); // Instances constant buffer arrray data
 	m_cmdList->SetGraphicsRootShaderResourceView(2, m_resourceManager->getMaterialsResource()->GetGPUVirtualAddress());
 	m_cmdList->SetGraphicsRootShaderResourceView(3, boneCB->GetGPUVirtualAddress()); // bones constant buffer array data	
-	m_cmdList->SetGraphicsRootConstantBufferView(5, passCB->GetGPUVirtualAddress()); // Pass constant buffer data
-	//m_cmdList->SetGraphicsRootDescriptorTable(5, m_techSRVHandle); // Technical SRV (CubeMap ViewNormal, SSAO maps and etc)
-	//m_cmdList->SetGraphicsRootDescriptorTable(6, m_textureSRVHandle); // Textures SRV
+	m_cmdList->SetGraphicsRootConstantBufferView(4, passCB->GetGPUVirtualAddress()); // Pass constant buffer data	
 
 	// ---------------- The first Step of SSAO: Drawing ViewNormal and Depth Map
 	{	
@@ -242,7 +238,7 @@ void SSAORender::draw(int flags)
 void SSAORender::draw_layer(int layerID, int& instanceOffset, bool doDraw)
 {
 	/*
-		SSAO Render draw only LOD0 instances for RenderITem. But in our Instances CB we have all intances for all LOD. To count 
+		SSAO Render draw only LOD0 instances for RenderITem. But in our Instances CB we have all intances for all LODs. To count 
 		'instanceOffset' correctly, we "draw" all LOD, but do real work only for LOD0, for LOD1..LOD2 we just count InstanceCountByLODLevel
 	*/
 

@@ -1,3 +1,10 @@
+/*
+	***************************************************************************************************
+	Description:
+		This render draw selected Map texture on screen.
+
+	***************************************************************************************************
+*/
 #pragma once
 #include "RenderBase.h"
 #include "PSODebugLayer_Screen.h"

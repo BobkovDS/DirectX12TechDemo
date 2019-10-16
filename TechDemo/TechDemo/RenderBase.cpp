@@ -91,8 +91,6 @@ void MSAARenderTargets::createRTV(ID3D12DescriptorHeap* RTVHeap)
 	}
 }
 
-
-
 void RenderResource::createResource(ID3D12Device* device, DXGI_FORMAT resourceFormat, D3D12_RESOURCE_FLAGS resourceFlags,
 	UINT width, UINT height, DXGI_SAMPLE_DESC* sampleDesc, D3D12_CLEAR_VALUE* optClear, UINT16 texturesCount)
 {
@@ -159,7 +157,7 @@ ID3D12Resource* RenderResource::getResource()
 //--------------------------------- RenderBase ------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------
 
-RenderBase::RenderBase() : m_initialized(false), m_rtResourceWasSetBefore(false), m_DoesRenderUseMutliSampling(false),
+RenderBase::RenderBase() : m_initialized(false), m_rtResourceWasSetBefore(false), m_doesRenderUseMutliSampling(false),
 m_rtvDescriptorSize(0), m_currentResourceID(0) 
 {
 	m_dsResource = nullptr;	
@@ -230,7 +228,7 @@ void RenderBase::create_Resource_DS(DXGI_FORMAT resourceFormat)
 	optClear.DepthStencil.Stencil = 0;	
 
 	DXGI_SAMPLE_DESC lSampleDesc;
-	if (m_msaaRenderTargets!=NULL && m_msaaRenderTargets->getMSAAEnabled() && m_DoesRenderUseMutliSampling)
+	if (m_msaaRenderTargets!=NULL && m_msaaRenderTargets->getMSAAEnabled() && m_doesRenderUseMutliSampling)
 	{
 		lSampleDesc.Count = m_msaaRenderTargets->getSampleCount();
 		lSampleDesc.Quality = m_msaaRenderTargets->getSampleQuality();
@@ -327,7 +325,7 @@ void RenderBase::create_DSV(DXGI_FORMAT viewFormat)
 	DXGI_FORMAT lViewFormat = viewFormat;
 	if (lViewFormat == DXGI_FORMAT_UNKNOWN) lViewFormat = m_dsResourceFormat;
 
-	bool lMutliSamplingEnabled = m_msaaRenderTargets != NULL && m_msaaRenderTargets->getMSAAEnabled() && m_DoesRenderUseMutliSampling ? true : false;
+	bool lMutliSamplingEnabled = m_msaaRenderTargets != NULL && m_msaaRenderTargets->getMSAAEnabled() && m_doesRenderUseMutliSampling ? true : false;
 
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
 	dsvDesc.Flags = D3D12_DSV_FLAG_NONE;
@@ -371,9 +369,3 @@ void RenderBase::set_DescriptorHeap(ID3D12DescriptorHeap* srvDescriptorHeap)
 	assert(srvDescriptorHeap);
 	m_descriptorHeap = srvDescriptorHeap;
 }
-
-// --------------- General Methods -------------------------------
-void RenderBase::draw(int pFlags)
-{
-}
-

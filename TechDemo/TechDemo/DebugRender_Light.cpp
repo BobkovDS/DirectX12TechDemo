@@ -1,7 +1,6 @@
 #include "DebugRender_Light.h"
 #include <vector>
 
-
 DebugRender_Light::DebugRender_Light()
 {
 }
@@ -10,14 +9,11 @@ DebugRender_Light::~DebugRender_Light()
 {
 }
 
-void DebugRender_Light::initialize(const RenderMessager& renderParams)
-{	
-	RenderBase::initialize(renderParams);
-}
-
 void DebugRender_Light::build()
 {
 	assert(m_initialized == true);
+
+	m_doesRenderUseMutliSampling = true;
 
 	// DepthStencil resources. This class own it.
 	{
@@ -36,13 +32,9 @@ void DebugRender_Light::build()
 	buildGeometry();
 }
 
-void DebugRender_Light::draw(int flags)
+void DebugRender_Light::draw(UINT flags)
 {
-	int lResourceIndex = m_swapChain->GetCurrentBackBufferIndex();
-	m_cmdList->ResourceBarrier(1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
-			D3D12_RESOURCE_STATE_PRESENT,
-			D3D12_RESOURCE_STATE_RENDER_TARGET));
+	int lResourceIndex = m_msaaRenderTargets->getCurrentBufferID();	
 
 	CD3DX12_CPU_DESCRIPTOR_HANDLE currentRTV(
 		m_rtvHeap->GetCPUDescriptorHandleForHeapStart(),
@@ -53,8 +45,7 @@ void DebugRender_Light::draw(int flags)
 
 	m_cmdList->OMSetRenderTargets(1, &currentRTV, true, &m_dsvHeap->GetCPUDescriptorHandleForHeapStart());
 
-	FLOAT clearColor[4] = { 0.0f, 0.5f, 0.4f, 1.0f };
-	//m_cmdList->ClearRenderTargetView(currentRTV, clearColor, 0, nullptr);
+	FLOAT clearColor[4] = { 0.0f, 0.5f, 0.4f, 1.0f };	
 	m_cmdList->ClearDepthStencilView(m_dsvHeap->GetCPUDescriptorHandleForHeapStart(),
 		D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
@@ -65,8 +56,8 @@ void DebugRender_Light::draw(int flags)
 	auto passCB = m_frameResourceManager->getCurrentPassCBResource();
 
 	UINT lTechFlags = flags;
-	m_cmdList->SetGraphicsRoot32BitConstant(0, lTechFlags, 1); // Tech Flags	
-	m_cmdList->SetGraphicsRootShaderResourceView(1, objectCB->GetGPUVirtualAddress()); // Instances constant buffer arrray data		
+	m_cmdList->SetGraphicsRoot32BitConstant(0, lTechFlags, 1); // Tech Flags
+	m_cmdList->SetGraphicsRootShaderResourceView(1, objectCB->GetGPUVirtualAddress()); // Instances constant buffer arrray data
 	m_cmdList->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress()); // Pass constant buffer data
 
 	m_cmdList->SetPipelineState(m_psoLayer.getPSO(OPAQUELAYER));
@@ -81,18 +72,6 @@ void DebugRender_Light::draw(int flags)
 	auto drawArg = m_mesh->DrawArgs[m_mesh->Name];
 	UINT lInstancesCount = (UINT) m_scene->getLights().size();
 	m_cmdList->DrawIndexedInstanced(drawArg.IndexCount, lInstancesCount, drawArg.StartIndexLocation, 0, 0);
-
-	//-----------------------
-	m_cmdList->ResourceBarrier(1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(m_swapChainResources[lResourceIndex].Get(),
-			D3D12_RESOURCE_STATE_RENDER_TARGET,
-			D3D12_RESOURCE_STATE_PRESENT));
-}
-
-
-void DebugRender_Light::setSwapChainResources(ComPtr<ID3D12Resource>* swapChainResources)
-{
-	m_swapChainResources = swapChainResources;
 }
 
 void DebugRender_Light::resize(UINT iwidth, UINT iheight)

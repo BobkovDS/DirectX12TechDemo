@@ -1,3 +1,19 @@
+/*
+	***************************************************************************************************
+	Description:
+		A base class for all Renders. It has internal DirectX12 resources like RenderTarget resource, DepthStencil buffer resource, 
+		his own RTV, DSV and SRV heaps. It allows to render into internal texutures without output this information to Output device (SwapChain).
+		In the same time application may set external RenderTarget, DepthStencil buffer and heaps to allow some Renders share informations and/or render to 
+		external output device. 
+
+		MSAARenderTargets is class to make RenderTarget resource support MultiSampling. RenderManager initializes it. So if Render draws to external RT, it draws to 
+		MSAARenderTarget and then application resolve it to SwapChain back buffer.
+
+		Render has its own PSOLayer - a class to represents a set of Pipeline State Objects, it because each render need draw Objects Layer in its own way. 
+
+	***************************************************************************************************
+*/
+
 #pragma once
 #include <d2d1.h>
 #include <d2d1_3.h>
@@ -50,8 +66,6 @@ private:
 	DXGI_SAMPLE_DESC m_sampleDesc;
 	Microsoft::WRL::ComPtr<ID3D12Resource> m_resource;
 };
-
-//const int g_swapChainsBufferCount=3;
 
 struct MSAARenderTargets
 {
@@ -114,7 +128,6 @@ struct RenderMessager11on12 {
 	Microsoft::WRL::ComPtr<ID2D1Bitmap1>* HUDRenderTargets;
 };
 
-
 class RenderBase
 {
 
@@ -133,7 +146,7 @@ protected:
 	bool m_rtResourceWasSetBefore;
 	bool m_dsvHeapWasSetBefore; // The heap(s) can be only created by Render or Set from another source. No combinated variants.
 	bool m_rtvHeapWasSetBefore;
-	bool m_DoesRenderUseMutliSampling;
+	bool m_doesRenderUseMutliSampling;
 
 	DXGI_FORMAT m_dsResourceFormat;
 	DXGI_FORMAT m_rtResourceFormat;
@@ -159,6 +172,9 @@ protected:
 	D3D12_GPU_DESCRIPTOR_HANDLE m_textureSRVHandle;	
 
 public:
+	RenderBase();
+	virtual ~RenderBase();
+
 	RenderResource* create_Resource(DXGI_FORMAT resourceFormat, D3D12_RESOURCE_FLAGS resourceFlags,
 		UINT width = 0, UINT height = 0,
 		DXGI_SAMPLE_DESC* sampleDesc = NULL, 
@@ -170,26 +186,20 @@ public:
 	void create_DescriptorHeap_DSV();
 	void create_DescriptorHeap_RTV(UINT descriptorsCount);
 	void create_DSV(DXGI_FORMAT viewFormat = DXGI_FORMAT_UNKNOWN);
-	void create_RTV(DXGI_FORMAT viewFormat = DXGI_FORMAT_UNKNOWN);
-	//void set_Resource_DS(ID3D12Resource* Resource); //TO_DO: delete
-	//void set_Resource_RT(ID3D12Resource* Resource); //TO_DO: delete
+	void create_RTV(DXGI_FORMAT viewFormat = DXGI_FORMAT_UNKNOWN);	
 	void set_DescriptorHeap_RTV(ID3D12DescriptorHeap* rtvHeap); // set Descriptor Heap for RT view
 	void set_DescriptorHeap_DSV(ID3D12DescriptorHeap* dsvHeap); // set Descriptor Heap for RT view
 
 	void set_DescriptorHeap(ID3D12DescriptorHeap* srvDescriptorHeap); // set Descriptor Heap for Textures SRVs
-
-	ID3D12Resource* get_Resource(int resourceIndex);
-	ID3D12Resource* get_Resource_DS();
-	ID3D12Resource* get_Resource_RT();
-	int get_ResourceCount();
+		
+	ID3D12Resource* get_Resource_DS();	
 	ID3D12DescriptorHeap* get_rtvHeapPointer();
 	ID3D12DescriptorHeap* get_dsvHeapPointer();	
 
-	void initialize(const RenderMessager& renderParams); // initialize the Render
-	void build(); // Do any other operations to build Render (to add more resources, create SRVs and etc)
-	void draw(int flags);
+	void initialize(const RenderMessager& renderParams); // initialize the Render	
 	void resize(UINT newWidth, UINT newHeight);	
-	RenderBase();
-	virtual ~RenderBase();
+	
+	virtual void build()=0; // Do any other operations to build Render (to add more resources, create SRVs and etc)
+	virtual void draw(UINT flags)=0;
 };
 

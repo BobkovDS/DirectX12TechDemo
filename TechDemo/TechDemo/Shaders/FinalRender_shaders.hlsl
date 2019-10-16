@@ -3,8 +3,6 @@
 #include "commonPart.hlsl"
 #include "RootSignature.hlsl"
 
-/*
-*/
 
 [RootSignature(rootSignatureC1)]
 VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID) 

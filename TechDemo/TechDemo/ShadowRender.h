@@ -1,3 +1,11 @@
+/*
+	***************************************************************************************************
+	Description:
+		This render implement dynamic shadow from directional (Orthogonal) light source.
+
+	***************************************************************************************************
+*/
+
 #pragma once
 #include "RenderBase.h"
 #include "PSOShadowLayer.h"
@@ -15,9 +23,8 @@ class ShadowRender :
 public:
 	ShadowRender();
 	~ShadowRender();
-
-	void initialize(const RenderMessager& renderParams);
+		
 	void build();
-	void draw(int flag);	
+	void draw(UINT flag);	
 };
 
