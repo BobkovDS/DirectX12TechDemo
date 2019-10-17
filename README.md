@@ -23,7 +23,7 @@ But in the same time, it does not claim to be 'real' 3D Engine. The goal was to 
   
 * Mathematic / Algorithmic part
   * 3D Mathematic (Matrix, Vectors, Coordinate transformation)
-  * Bounding Objects mathematic
+  * Bounding Objects mathematic (Books[4]. Chapter 8)
   * View Frustum Culling
   * Octree
   * Skeleton animation
@@ -34,7 +34,7 @@ But in the same time, it does not claim to be 'real' 3D Engine. The goal was to 
    * Screen Space Ambient Occlusion
    * Dynamic Shadows (Sun light with Orthogonal projection)
    * Normal Mapping
-   * Water simulation on Computer Shaders
+   * Water simulation on Computer Shaders (Books[4]. Chapter 15  )
 
 **Screenshots (3840x2160):**
 ![Alt text](/TechDemo/Screenshots/TechDemo_1.jpg?raw=true "Screenshot 1")
@@ -64,6 +64,13 @@ Inheriting is used to allow child-class, using virtual methods get access to mai
   - Renders, using __*Scene*__ object, implement some render technique (__*SSAORender*__, __*ShadowRender*__ etc) or final scene drawing (__*FinalRender*__). Each Render has its own set of Pipeline State Objects (PSOLayers) for each Objects Layer (Opaques objects, Transparent objects, Opaque Skinned Objects etc). But because PSOLayer for some Render, has the same RootSignature for all Objects Layers, it is no need to set all RootSignature arguments every time when we draw a Objects Layer, changing a PSO for this.
 
 **Summary:**
- Please feel free to contact me if you want to get more information. Also please find a video with TechDemo application demonstration https://youtu.be/uSJOSiK7oxk
+ Please feel free to contact me (bobkovds285@gmail.com) if you want to get more information. Also please find a video with TechDemo application demonstration https://youtu.be/uSJOSiK7oxk
  
- Thank you.
+ **Books:**
+ 1. "Thinking in C++. Volume One: Introduction to Standard C++. Second Edition". Bruce Eckel.
+ 2. "Thinking in C++. Volume Two: Practical Programming. Second Edition". Bruce Eckel, Chuck Allision.
+ 3. "Introduction to 3D Game Programming with DirectX 12". Frank D. Luna.
+ 4. "Mathematics for 3D Game Programming and Computer Graphics. Third Edition". Eric Lengyel.
+ 
+ 
+ **Thank you.**
