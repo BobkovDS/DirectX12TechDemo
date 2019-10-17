@@ -15,7 +15,6 @@
 #include "DebugRender_Normals.h"
 #include "DebugRender_Screen.h"
 #include "SSAORender.h"
-#include "SSAOToMultiSamplingRender.h"
 #include "BlurRender.h"
 #include "ShadowRender.h"
 #include "ComputeRender.h"
@@ -45,8 +44,7 @@ class RenderManager
 
 	bool m_initialized;
 	FinalRender m_finalRender;
-	SSAORender m_ssaoRender;
-	SSAOToMultiSamplingRender m_ssaoMSRender;
+	SSAORender m_ssaoRender;	
 	BlurRender m_blurRender;
 	ComputeRender m_computeRender;
 	DCMRender m_dcmRender;

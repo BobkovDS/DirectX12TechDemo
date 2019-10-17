@@ -143,7 +143,12 @@
     <ClCompile Include="DebugRender_Screen.cpp" />
     <ClCompile Include="FBXFileLoader.cpp" />
     <ClCompile Include="FinalRender.cpp" />
-    <ClCompile Include="LogoRender.cpp" />
+    <ClCompile Include="LogoRender.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MirrorRender.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
@@ -170,7 +175,6 @@
     <ClCompile Include="SkeletonManager.cpp" />
     <ClCompile Include="SkinnedData.cpp" />
     <ClCompile Include="SSAORender.cpp" />
-    <ClCompile Include="SSAOToMultiSamplingRender.cpp" />
     <ClCompile Include="TechDemo.cpp" />
     <ClCompile Include="TextureLoader\DDSTextureLoader.cpp" />
     <ClCompile Include="TextureLoader\DirectXHelpers.cpp" />
@@ -201,7 +205,12 @@
     <ClInclude Include="FBXFileLoader.h" />
     <ClInclude Include="FinalRender.h" />
     <ClInclude Include="GraphicDataStructures.h" />
-    <ClInclude Include="LogoRender.h" />
+    <ClInclude Include="LogoRender.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="MirrorRender.h" />
     <ClInclude Include="ObjectManager.h" />
@@ -228,7 +237,6 @@
     <ClInclude Include="SkeletonManager.h" />
     <ClInclude Include="SkinnedData.h" />
     <ClInclude Include="SSAORender.h" />
-    <ClInclude Include="SSAOToMultiSamplingRender.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TechDemo.h" />
     <ClInclude Include="TextureLoader\DDSTextureLoader.h" />

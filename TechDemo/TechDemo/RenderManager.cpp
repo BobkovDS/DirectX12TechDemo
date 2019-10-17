@@ -51,8 +51,7 @@ void RenderManager::initialize(RenderManagerMessanger& renderParams)
 	renderParams.commonRenderData.MSAARenderTarget = &m_msaaRenderTargets;
 
 	m_finalRender.initialize(renderParams.commonRenderData);
-	m_mirrorRender.initialize(renderParams.commonRenderData);	
-	m_ssaoMSRender.initialize(renderParams.commonRenderData);
+	m_mirrorRender.initialize(renderParams.commonRenderData);		
 	m_ssaoRender.initialize(renderParams.commonRenderData);
 	m_debugRenderAxes.initialize(renderParams.commonRenderData);
 	m_debugRenderLights.initialize(renderParams.commonRenderData);
@@ -115,10 +114,6 @@ void RenderManager::buildRenders()
 	// build SSAO Render
 	m_ssaoRender.set_DescriptorHeap(m_texturesDescriptorHeap);
 	m_ssaoRender.build();
-
-	// build SSAO Render
-	m_ssaoMSRender.set_DescriptorHeap(m_texturesDescriptorHeap);
-	m_ssaoMSRender.build();
 
 	// build Blur Render	
 	m_blurRender.set_DescriptorHeap(m_texturesDescriptorHeap);
@@ -263,8 +258,7 @@ void RenderManager::resize(int iwidth, int iheight)
 		m_msaaRenderTargets.resize(iwidth, iheight);
 		m_msaaRenderTargets.createRTV(m_applicationRTVHeap);
 
-		m_ssaoRender.resize(iwidth, iheight);
-		m_ssaoMSRender.resize(iwidth, iheight);
+		m_ssaoRender.resize(iwidth, iheight);	
 
 		m_blurRender.setInputResource(m_ssaoRender.getAOResource());
 		m_blurRender.resize(iwidth, iheight);		
