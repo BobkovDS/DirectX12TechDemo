@@ -142,12 +142,6 @@
     <ClCompile Include="DebugRender_Screen.cpp" />
     <ClCompile Include="FBXFileLoader.cpp" />
     <ClCompile Include="FinalRender.cpp" />
-    <ClCompile Include="LogoRender.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MirrorRender.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
@@ -160,7 +154,6 @@
     <ClCompile Include="PSODebugLayer_Screen.cpp" />
     <ClCompile Include="PSOFinalRenderLayer.cpp" />
     <ClCompile Include="PSOBaseLayer.cpp" />
-    <ClCompile Include="PSOLogoLayer.cpp" />
     <ClCompile Include="PSOMirrorLayer.cpp" />
     <ClCompile Include="PSOShadowLayer.cpp" />
     <ClCompile Include="PSOSSAOLayer1.cpp" />
@@ -202,12 +195,6 @@
     <ClInclude Include="FBXFileLoader.h" />
     <ClInclude Include="FinalRender.h" />
     <ClInclude Include="GraphicDataStructures.h" />
-    <ClInclude Include="LogoRender.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="MathHelper.h" />
     <ClInclude Include="MirrorRender.h" />
     <ClInclude Include="ObjectManager.h" />
@@ -277,10 +264,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Shaders\FinalRender_CH_shaders.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="Shaders\LogoRender_shaders.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>

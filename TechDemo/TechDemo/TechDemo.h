@@ -19,8 +19,6 @@
 #include "FBXFileLoader.h"
 #include "RenderManager.h"
 #include "Camera.h"
-#include "LogoRender.h"
-#include <Thread>
 
 // How many Pass constant buffers we have
 #define PASSCONSTBUF_COUNT_MAIN 1
@@ -52,8 +50,7 @@ class TechDemo :
 	Camera m_camerasDCM[PASSCONSTBUF_COUNT_DCM]; // Cameras for DCM (Dynamic Cube Map buidling)
 	Timer m_animationTimer;
 	Timer m_framePrepareAndDrawTimer;
-	Timer m_betweenFramesTimer;
-	std::thread m_logoThread;
+	Timer m_betweenFramesTimer;	
 	DirectX::XMFLOAT4 m_offsets[14];	
 
 	bool m_init3D_done;

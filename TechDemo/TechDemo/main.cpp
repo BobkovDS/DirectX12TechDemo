@@ -15,7 +15,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, PSTR cmdLine, in
 	{
 		TechDemo my3DAppl(hInstance, L"my 3D application", 1920, 1080);
 		
-		//BasicDXGI my3DAppl(hInstance );
 		my3DAppl.run();
 	}
 	catch (Canvas::CanvasException& exc)
