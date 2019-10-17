@@ -35,3 +35,7 @@ But in the same time, it does not claim to be 'real' 3D Engine. The goal was to 
    * Dynamic Shadows
    * Normal Mapping
    * Water simulation on Computer Shaders
+   
+**Screenshots:**
+![GitHub Logo](/images/logo.png)
+Format: ![Alt Text](url)
