@@ -1,0 +1,494 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access">
+  <Class Name="PSOBaseLayer" Collapsed="true">
+    <Position X="29.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAwAEAAABAAAAAAAAAAAggAAAAAgAAQAAACCAJYAIA=</HashCode>
+      <FileName>PSOBaseLayer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PSOBlurLayer" Collapsed="true">
+    <Position X="26.75" Y="14" Width="2.25" />
+    <InheritanceLine Type="PSOBaseLayer" FixedToPoint="true">
+      <Path>
+        <Point X="30" Y="7.562" />
+        <Point X="30" Y="14.375" />
+        <Point X="29" Y="14.375" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAACgAAAAAAABAAAAAAAAAAIA=</HashCode>
+      <FileName>PSOBlurLayer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PSOComputeLayer" Collapsed="true">
+    <Position X="26.75" Y="18" Width="2.25" />
+    <InheritanceLine Type="PSOBaseLayer" FixedToPoint="true">
+      <Path>
+        <Point X="30" Y="7.562" />
+        <Point X="30" Y="18.375" />
+        <Point X="29" Y="18.375" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>PSOComputeLayer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PSODebugLayer_Axis" Collapsed="true">
+    <Position X="26.75" Y="8" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAABAAAgAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>PSODebugLayer_Axis.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PSODebugLayer_Light" Collapsed="true">
+    <Position X="26.75" Y="9" Width="2.25" />
+    <InheritanceLine Type="PSOBaseLayer" FixedToPoint="true">
+      <Path>
+        <Point X="30" Y="7.562" />
+        <Point X="30" Y="9.438" />
+        <Point X="29" Y="9.438" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAIAAgAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>PSODebugLayer_Light.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PSODebugLayer_Normals" Collapsed="true">
+    <Position X="26.75" Y="10" Width="2.25" />
+    <InheritanceLine Type="PSOBaseLayer" FixedToPoint="true">
+      <Path>
+        <Point X="30" Y="7.562" />
+        <Point X="30" Y="10.312" />
+        <Point X="29" Y="10.312" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAACAAAAAAAAgAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>PSODebugLayer_Normals.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PSODebugLayer_Screen" Collapsed="true">
+    <Position X="26.75" Y="11" Width="2.25" />
+    <InheritanceLine Type="PSOBaseLayer" FixedToPoint="true">
+      <Path>
+        <Point X="30" Y="7.562" />
+        <Point X="30" Y="11.375" />
+        <Point X="29" Y="11.375" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAAAgAAAAAAAAAAAAAAAQAAIA=</HashCode>
+      <FileName>PSODebugLayer_Screen.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PSOFinalRenderLayer" Collapsed="true">
+    <Position X="26.75" Y="17" Width="2.25" />
+    <InheritanceLine Type="PSOBaseLayer" FixedToPoint="true">
+      <Path>
+        <Point X="30" Y="7.562" />
+        <Point X="30" Y="17.375" />
+        <Point X="29" Y="17.375" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAABCAAAAAIA=</HashCode>
+      <FileName>PSOFinalRenderLayer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PSOMirrorLayer" Collapsed="true">
+    <Position X="26.75" Y="16" Width="2.25" />
+    <InheritanceLine Type="PSOBaseLayer" FixedToPoint="true">
+      <Path>
+        <Point X="30" Y="7.562" />
+        <Point X="30" Y="16.375" />
+        <Point X="29" Y="16.375" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAgAAAAAQAAAAAAAAAAAAJA=</HashCode>
+      <FileName>PSOMirrorLayer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PSOShadowLayer" Collapsed="true">
+    <Position X="26.75" Y="15" Width="2.25" />
+    <InheritanceLine Type="PSOBaseLayer" FixedToPoint="true">
+      <Path>
+        <Point X="30" Y="7.562" />
+        <Point X="30" Y="15.375" />
+        <Point X="29" Y="15.375" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAAAAAAgABAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>PSOShadowLayer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PSOSSAOLayer1" Collapsed="true">
+    <Position X="26.75" Y="12" Width="2.25" />
+    <InheritanceLine Type="PSOBaseLayer" FixedToPoint="true">
+      <Path>
+        <Point X="30" Y="7.562" />
+        <Point X="30" Y="12.312" />
+        <Point X="29" Y="12.312" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAACAAAAAAAAAgAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>PSOSSAOLayer1.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PSOSSAOLayer2" Collapsed="true">
+    <Position X="26.75" Y="13" Width="2.25" />
+    <InheritanceLine Type="PSOBaseLayer" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="30" Y="7.562" />
+        <Point X="30" Y="13.845" />
+        <Point X="29" Y="13.845" />
+        <Point X="29" Y="13.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAAAAAAAgAAAAAAAEAAAAAAAAAAIA=</HashCode>
+      <FileName>PSOSSAOLayer2.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BlurRender" Collapsed="true">
+    <Position X="22.75" Y="14" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgEAAgAACQAKAAACAAAgAIAAEAYCAAAAAABQ=</HashCode>
+      <FileName>BlurRender.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_psoLayer" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ComputeRender" Collapsed="true">
+    <Position X="22.75" Y="18" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAECEAAAAAAEAKgAAgAAAAAAAAkA4QAgAAAABQ=</HashCode>
+      <FileName>ComputeRender.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_psoLayer" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="DebugRender_Axis" Collapsed="true">
+    <Position X="22.75" Y="8" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AACgAAAAAIAAAAAAAAKAAAAAAAAAAAAAAYAAAAAAABA=</HashCode>
+      <FileName>DebugRender_Axis.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_psoLayer" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="DebugRender_Light" Collapsed="true">
+    <Position X="22.75" Y="9" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAIAAEAAAAAIAAQAAYAAAAAAABA=</HashCode>
+      <FileName>DebugRender_Light.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_psoLayer" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="DebugRender_Normals" Collapsed="true">
+    <Position X="22.75" Y="10" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAEAAAAAAQAIAAEAAAAAAAAAAAYAAAAAAABA=</HashCode>
+      <FileName>DebugRender_Normals.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_psoLayer" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="DebugRender_Screen" Collapsed="true">
+    <Position X="22.75" Y="11" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAICAAAAcAAEAAgAAAAAAAAYAEAAAAABA=</HashCode>
+      <FileName>DebugRender_Screen.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_psoLayer" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="FinalRender" Collapsed="true">
+    <Position X="22.75" Y="17" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAgAAAAASAASAIAAAAAhAAAAACAQYEEAAAAABA=</HashCode>
+      <FileName>FinalRender.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_psoLayer" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="MirrorRender" Collapsed="true">
+    <Position X="22.75" Y="16" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAICAAAAAAACAAQAIAAAAAAAAAAAAAAIAEAAAAABQ=</HashCode>
+      <FileName>MirrorRender.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_psoLayer" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="RenderBase" Collapsed="true">
+    <Position X="24.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CGWJBiAEBIACASABwIcCAQghAKgGQADMAYANCEAAAgA=</HashCode>
+      <FileName>RenderBase.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RenderManager" Collapsed="true">
+    <Position X="18.75" Y="10.5" Width="2.25" />
+    <AssociationLine Name="m_debugRenderAxes" Type="DebugRender_Axis" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="20.125" Y="10.5" />
+        <Point X="20.125" Y="8.346" />
+        <Point X="22.75" Y="8.346" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_debugRenderLights" Type="DebugRender_Light" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="20.625" Y="10.5" />
+        <Point X="20.625" Y="9.375" />
+        <Point X="22.75" Y="9.375" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_debugRenderNormals" Type="DebugRender_Normals" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="20.875" Y="10.5" />
+        <Point X="20.875" Y="10.346" />
+        <Point X="22.75" Y="10.346" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_ssaoRender" Type="SSAORender" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="20.75" Y="11.062" />
+        <Point X="20.75" Y="12.346" />
+        <Point X="22.75" Y="12.346" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_shadowRender" Type="ShadowRender" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="20.375" Y="11.062" />
+        <Point X="20.375" Y="15.346" />
+        <Point X="22.75" Y="15.346" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_mirrorRender" Type="MirrorRender" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="20.25" Y="11.062" />
+        <Point X="20.25" Y="16.346" />
+        <Point X="22.75" Y="16.346" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_finalRender" Type="FinalRender" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="20.125" Y="11.062" />
+        <Point X="20.125" Y="17.346" />
+        <Point X="22.75" Y="17.346" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_debugRenderScreen" Type="DebugRender_Screen" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="20.875" Y="11.062" />
+        <Point X="20.875" Y="11.346" />
+        <Point X="22.75" Y="11.346" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_computeRender" Type="ComputeRender" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="20" Y="11.062" />
+        <Point X="20" Y="18.346" />
+        <Point X="22.75" Y="18.346" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_blurRender" Type="BlurRender" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="20.562" Y="11.062" />
+        <Point X="20.562" Y="14.346" />
+        <Point X="22.75" Y="14.346" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>ACACQEpEAACBASAbSIMkgSABCAIAAADgAxQICRJQ+kE=</HashCode>
+      <FileName>RenderManager.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_debugRenderAxes" />
+      <Field Name="m_debugRenderLights" />
+      <Field Name="m_debugRenderNormals" />
+      <Field Name="m_ssaoRender" />
+      <Field Name="m_shadowRender" />
+      <Field Name="m_mirrorRender" />
+      <Field Name="m_finalRender" />
+      <Field Name="m_debugRenderScreen" />
+      <Field Name="m_computeRender" />
+      <Field Name="m_blurRender" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ShadowRender" Collapsed="true">
+    <Position X="22.75" Y="15" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAYAIAAAAAAAAAAAAEAYAAAAAAABQ=</HashCode>
+      <FileName>ShadowRender.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_psoLayer" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="SSAORender" Collapsed="true">
+    <Position X="22.75" Y="12" Width="2" />
+    <TypeIdentifier>
+      <HashCode>IAAAAIIAAFAAEAAAQAMIQEAAgAAAAACEAYAACFAAgAQ=</HashCode>
+      <FileName>SSAORender.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_psoLayer1" />
+      <Field Name="m_psoLayer2" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="BasicDXGI" Collapsed="true">
+    <Position X="13.25" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ChAIFiAICCBCAMkEQCIAEggmAKAAAhCBAAAMeAQAIBg=</HashCode>
+      <FileName>BasicDXGI.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FBXFileLoader" Collapsed="true">
+    <Position X="13.75" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IIDKAEaEgJJQNQQAIAUKokBcAAoAMAhhAKAQWICBAIA=</HashCode>
+      <FileName>FBXFileLoader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FrameResourcesManager&lt;ConstObjectType, PassConstsType, SSAOType&gt;" Collapsed="true">
+    <Position X="13" Y="10.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AgiAAAAEAAAAAQAIBBAQwAAAAQAAABQgAgAgAAEBAAQ=</HashCode>
+      <FileName>FrameResourcesManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ObjectManager" Collapsed="true">
+    <Position X="13.75" Y="12.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>QAIBAAICAQEIAKEAAAQAAAcCwAEEEIAIIBAkAAIIABE=</HashCode>
+      <FileName>ObjectManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Octree" Collapsed="true">
+    <Position X="14.5" Y="15.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>BAAAIACgAAAAAAAAAAAAABgAAAAACAIAAIAAgIgEAAQ=</HashCode>
+      <FileName>Octree.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ResourceManager" Collapsed="true">
+    <Position X="13.75" Y="11.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>YAAAIAAAHAAAABAIACAgEAAAAACiQgAAGChAAYAoBCg=</HashCode>
+      <FileName>ResourceManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene" Collapsed="true">
+    <Position X="13.75" Y="14.25" Width="1.75" />
+    <NestedTypes>
+      <Class Name="Scene::SceneLayer" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Scene.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAIAAAABAAQACIAE4AAgAEDQQBBwACSICIgAABwEQIg=</HashCode>
+      <FileName>Scene.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_octree" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="TechDemo" Collapsed="true">
+    <Position X="16" Y="9.25" Width="2.5" />
+    <InheritanceLine Type="BasicDXGI" FixedToPoint="true">
+      <Path>
+        <Point X="14" Y="8.691" />
+        <Point X="14" Y="8.875" />
+        <Point X="16.312" Y="8.875" />
+        <Point X="16.312" Y="9.25" />
+      </Path>
+    </InheritanceLine>
+    <AssociationLine Name="m_renderManager" Type="RenderManager" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="18.5" Y="9.688" />
+        <Point X="19.25" Y="9.688" />
+        <Point X="19.25" Y="10.5" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_skeletonManager" Type="SkeletonManager" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="17.188" Y="9.941" />
+        <Point X="17.188" Y="13.75" />
+        <Point X="15.5" Y="13.75" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_resourceManager" Type="ResourceManager" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="16.688" Y="9.941" />
+        <Point X="16.688" Y="11.562" />
+        <Point X="15.5" Y="11.562" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_scene" Type="Scene" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="17.312" Y="9.941" />
+        <Point X="17.312" Y="14.438" />
+        <Point X="15.5" Y="14.438" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_objectManager" Type="ObjectManager" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="17.062" Y="9.941" />
+        <Point X="17.062" Y="13.031" />
+        <Point X="15.5" Y="13.031" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="m_frameResourceManager" Type="FrameResourcesManager&lt;ConstObjectType, PassConstsType, SSAOType&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="16" Y="9.938" />
+        <Point X="15" Y="9.938" />
+        <Point X="15" Y="10.25" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>IIKAEwQIEBAgQoEEAaMCE8IQlAggIAAAIAAAAABEYgA=</HashCode>
+      <FileName>TechDemo.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="m_renderManager" />
+      <Field Name="m_skeletonManager" />
+      <Field Name="m_resourceManager" />
+      <Field Name="m_scene" />
+      <Field Name="m_objectManager" />
+      <Field Name="m_frameResourceManager" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Canvas" Collapsed="true">
+    <Position X="13.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAgAIAAAACAUVyAYAEgAACACgAgKAICIgCACkAgQ=</HashCode>
+      <FileName>Canvas.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SkeletonManager" Collapsed="true">
+    <Position X="13.75" Y="13.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>wgABAAAQAAQAABAAAAAAAACAAAAAAACAAAAAAAIgAAA=</HashCode>
+      <FileName>SkeletonManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

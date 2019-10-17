@@ -201,14 +201,12 @@
     <ClInclude Include="Octree.h" />
     <ClInclude Include="PSOBlurLayer.h" />
     <ClInclude Include="PSOComputeLayer.h" />
-    <ClInclude Include="PSODCMLayer.h" />
     <ClInclude Include="PSODebugLayer_Axis.h" />
     <ClInclude Include="PSODebugLayer_Light.h" />
     <ClInclude Include="PSODebugLayer_Normals.h" />
     <ClInclude Include="PSODebugLayer_Screen.h" />
     <ClInclude Include="PSOFinalRenderLayer.h" />
     <ClInclude Include="PSOBaseLayer.h" />
-    <ClInclude Include="PSOLogoLayer.h" />
     <ClInclude Include="PSOMirrorLayer.h" />
     <ClInclude Include="PSOShadowLayer.h" />
     <ClInclude Include="PSOSSAOLayer1.h" />
@@ -330,6 +328,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="BoundingMath.inl" />
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

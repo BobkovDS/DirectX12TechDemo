@@ -329,16 +329,10 @@
     <ClInclude Include="PSOComputeLayer.h">
       <Filter>Header Files\PSO</Filter>
     </ClInclude>
-    <ClInclude Include="PSODCMLayer.h">
-      <Filter>Header Files\PSO</Filter>
-    </ClInclude>
     <ClInclude Include="MirrorRender.h">
       <Filter>Header Files\Render</Filter>
     </ClInclude>
     <ClInclude Include="PSOMirrorLayer.h">
-      <Filter>Header Files\PSO</Filter>
-    </ClInclude>
-    <ClInclude Include="PSOLogoLayer.h">
       <Filter>Header Files\PSO</Filter>
     </ClInclude>
   </ItemGroup>
@@ -417,5 +411,6 @@
     <None Include="BoundingMath.inl">
       <Filter>Header Files\Other</Filter>
     </None>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>
