@@ -116,7 +116,7 @@ void TechDemo::init3D()
 	{		
 		FBXFileLoader m_fbx_loader;
 		m_fbx_loader.Initialize(&m_objectManager, &m_resourceManager, &m_skeletonManager);
-		m_fbx_loader.loadSceneFile("Models\\Landscape.fbx");
+		m_fbx_loader.loadSceneFile("Models\\Scene.fbx");
 	}
 	
 	// Load lights
