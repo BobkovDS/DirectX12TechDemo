@@ -73,7 +73,6 @@ void RenderManager::initialize(RenderManagerMessanger& renderParams)
 	lRenderParams = renderParams.commonRenderData;
 	lRenderParams.Width = 1024; 
 	lRenderParams.Height = 1024;
-	m_dcmRender.initialize(lRenderParams);
 
 	m_initialized = true;
 }
@@ -127,10 +126,6 @@ void RenderManager::buildRenders()
 	// build Compute Render
 	m_computeRender.set_DescriptorHeap(m_texturesDescriptorHeap);
 	m_computeRender.build(0);
-
-	// build SSAO Render
-	m_dcmRender.set_DescriptorHeap(m_texturesDescriptorHeap);
-	m_dcmRender.build();
 }
 
 void RenderManager::draw()

@@ -18,7 +18,6 @@
 #include "BlurRender.h"
 #include "ShadowRender.h"
 #include "ComputeRender.h"
-#include "DCMRender.h"
 #include "MirrorRender.h"
 
 struct RenderManagerMessanger {
@@ -46,8 +45,7 @@ class RenderManager
 	FinalRender m_finalRender;
 	SSAORender m_ssaoRender;	
 	BlurRender m_blurRender;
-	ComputeRender m_computeRender;
-	DCMRender m_dcmRender;
+	ComputeRender m_computeRender;	
 	ShadowRender m_shadowRender;
 	MirrorRender m_mirrorRender;
 	DebugRender_Axis m_debugRenderAxes;

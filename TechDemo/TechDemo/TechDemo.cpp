@@ -237,58 +237,6 @@ void TechDemo::init3D()
 	m_renderManager.initialize(lRenderManagerParams);
 	m_renderManager.buildRenders();		
 
-	// Build Cameras for DCM	
-	//if (PASSCONSTBUF_COUNT_DCM > 0)
-	//{
-	//	XMFLOAT3 position(0.0f, 0.0f, 0.0f); // Get Position of a Lake
-
-	//	// Get the first WaveV2 object position
-	//	Scene::SceneLayer* lWaveV2Layer = nullptr;
-	//	lWaveV2Layer = m_scene.getLayer(NOTOPAQUELAYERCH);
-	//	if (lWaveV2Layer)
-	//	{
-	//		Scene::SceneLayer::SceneLayerObject* lWaveV2Object = lWaveV2Layer->getSceneObject(0);
-	//		if (lWaveV2Object)
-	//		{
-	//			XMMATRIX lWorld = XMLoadFloat4x4(&lWaveV2Object->getObjectMesh()->Instances[0].World);
-	//			XMVECTOR lPosition = XMVectorSet(0.0f, 0.0f, 0.0, 1.0f);
-	//			lPosition = XMVector3TransformCoord(lPosition, lWorld);
-	//			XMStoreFloat3(&position, lPosition);
-	//		}
-	//	}
-
-	//	XMFLOAT3 targets[6] =
-	//	{
-	//		XMFLOAT3(position.x + 1.0f, position.y, position.z),
-	//		XMFLOAT3(position.x - 1.0f, position.y, position.z),
-	//		XMFLOAT3(position.x, position.y + 1.0f, position.z),
-	//		XMFLOAT3(position.x, position.y - 1.0f, position.z),
-	//		XMFLOAT3(position.x, position.y, position.z + 1.0f),
-	//		XMFLOAT3(position.x, position.y, position.z - 1.0f)
-	//	};
-
-	//	XMFLOAT3 ups[6] =
-	//	{
-	//		XMFLOAT3(0.0f, 1.0f, 0.0f),
-	//		XMFLOAT3(0.0f, 1.0f, 0.0f),
-	//		XMFLOAT3(0.0f, 0.0f, -1.0f),
-	//		XMFLOAT3(0.0f, 0.0f, 1.0f),
-	//		XMFLOAT3(0.0f, 1.0f, 0.0f),
-	//		XMFLOAT3(0.0f, 1.0f, 0.0f)
-	//	};
-
-	//	float angle = 90 * XM_PI / 180.f; // we need 90 gradus angle
-	//	float aspect = 1.0f; // because out cube map texture is square
-	//	for (int i = 0; i < PASSCONSTBUF_COUNT_DCM; i++)
-	//	{
-	//		m_camerasDCM[i].lookAt(position, targets[i], ups[i]);
-	//		m_camerasDCM[i].lens = new PerspectiveCameraLens();
-
-	//		m_camerasDCM[i].lens->setLens(angle, aspect, 1.0f, 100.0f);
-	//		m_camerasDCM[i].updateViewMatrix();
-	//	}
-	//}
-
 	lLogoRender.addLine(L"Done");
 
 	ApplLogger::getLogger().log("TechDemo::init3D()::before Cmd list execution.", 0);
@@ -479,28 +427,6 @@ void TechDemo::update_passCB()
 	
 	auto currPassCB = m_frameResourceManager.currentFR()->getPassCB();
 	currPassCB->CopyData(PASSCONSTBUF_ID_MAIN, mMainPassCB);
-
-	
-	//// Update Pass CB for Dynamic Cube Map drawcalls
-	//if (PASSCONSTBUF_COUNT_DCM > 0)
-	//{
-	//	for (int i = 0; i < PASSCONSTBUF_COUNT_DCM; i++)
-	//	{
-	//		XMMATRIX view = m_camerasDCM[i].getView();
-	//		XMMATRIX proj = m_camerasDCM[i].lens->getProj();
-
-	//		XMMATRIX viewProj = XMMatrixMultiply(view, proj);			
-	//		XMMATRIX invProj = XMMatrixInverse(&XMMatrixDeterminant(proj), proj);			
-	//		mMainPassCB.EyePosW = m_camerasDCM[i].getPosition3f();
-
-	//		XMStoreFloat4x4(&mMainPassCB.View, XMMatrixTranspose(view));			
-	//		XMStoreFloat4x4(&mMainPassCB.Proj, XMMatrixTranspose(proj));
-	//		XMStoreFloat4x4(&mMainPassCB.InvProj, XMMatrixTranspose(invProj));
-	//		XMStoreFloat4x4(&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));			
-
-	//		currPassCB->CopyData(PASSCONSTBUF_ID_DCM + i, mMainPassCB);
-	//	}
-	//}	
 
 	update_passMirror(mMainPassCB);
 }
