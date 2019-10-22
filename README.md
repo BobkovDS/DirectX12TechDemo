@@ -1,6 +1,6 @@
 # DirectX12TechDemo
 
-**Please find a video with TechDemo application demonstration https://youtu.be/uSJOSiK7oxk**
+**Please find a video with TechDemo application demonstration on YouTube: https://youtu.be/uSJOSiK7oxk**
 
 **Goal**: 
 
@@ -73,5 +73,6 @@ Inheriting is used to allow child-class, using virtual methods get access to mai
  
 **Contacts:**
  Please feel free to contact me (bobkovds285@gmail.com) if you want to get more information.
+ Also you can find me in WhatsApp: +48 576 345 711
  
  **Thank you.**
