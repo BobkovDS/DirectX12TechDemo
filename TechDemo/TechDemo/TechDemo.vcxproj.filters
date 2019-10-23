@@ -403,9 +403,6 @@
     <FxCompile Include="Shaders\ComputeRender_shaders.hlsl">
       <Filter>Resource Files\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Shaders\SSAORender_shaders3.hlsl">
-      <Filter>Resource Files\Shaders</Filter>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="BoundingMath.inl">

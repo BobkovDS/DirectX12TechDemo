@@ -82,8 +82,7 @@ float4 PS(VertexOut pin) : SV_Target
         
     float4 ambient = ssao_factor * cbPass.AmbientLight * diffuseAlbedo;
     
-    const float shiness = 1.0f;//  -material.Roughness;
-    
+    const float shiness = 1.0f;    
     material.FresnelR0 = float3(0.08f, 0.08f, 0.08f);
     MaterialLight matLight = { diffuseAlbedo, material.FresnelR0, shiness };
         
@@ -93,24 +92,13 @@ float4 PS(VertexOut pin) : SV_Target
         float4 lShadowPosH = mul(float4(pin.PosW, 1.0f), cbPass.Lights[0].ViewProjT);
         shadow_depth = CalcShadowFactor(lShadowPosH, gShadowMap0, gsamShadow);
     }   
-
-    //shadow_depth = 1.0f;
+    
     float4 directLight = ComputeLighting(cbPass.Lights, matLight, pin.PosW, Normal, toEyeW, shadow_depth);
 
-    float4 litColor = directLight + ambient;
-    
-    //if (cbPass.FogRange > 0)
-    if (0 > 1)
-    {
-        float fogAmount = saturate((distToEye - cbPass.FogStart) / cbPass.FogRange);
-        litColor = lerp(litColor, cbPass.FogColor, fogAmount);
-    }        
+    float4 litColor = directLight + ambient;    
        
-    float3 r = reflect(-toEyeW, Normal);
-    //float3 r = refract(-toEyeW, pin.NormalW, 0.9f);
-    float4 reflectionColor = gCubeMap.Sample(gsamPointWrap, r);
-    float3 fresnelFactor = SchlickFresnel(material.FresnelR0, Normal, r);
-    //litColor.rgb += shiness * fresnelFactor * reflectionColor.rgb;
+    float3 r = reflect(-toEyeW, Normal);    
+    float4 reflectionColor = gCubeMap.Sample(gsamPointWrap, r);    
     litColor.rgb = reflectionColor.rgb;
 
     litColor.a = 0.5f;

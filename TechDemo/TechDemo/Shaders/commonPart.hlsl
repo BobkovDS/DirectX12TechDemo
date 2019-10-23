@@ -46,8 +46,7 @@ struct VertexOut
     float2 UVText : TEXCOORD;
     float4 UVTextProj : TEXCOORDPROJ;
     float4 SSAOPosH : TEXCOORDPROJSSAO;
-    uint ShapeID : SHAPEID;    
-	//uint instID : SV_INSTANCEID;
+    uint ShapeID : SHAPEID;
 };
 
 struct GeometryIn// Vertex shader output - Geometry Shader input
@@ -66,16 +65,15 @@ struct GeometryOut
     float4 TangentW : TANGENT;
     float2 UVText : TEXCOORD;        	
     uint ShapeID : SHAPEID;
-  //  uint instID : SV_INSTANCEID;
 };
 
 struct PassStruct
 {
     float4x4 View;    
-    float4x4 Proj; // +
-    float4x4 InvProj; //+
-    float4x4 ViewProj; //+    
-    float4x4 ViewProjT; // +    
+    float4x4 Proj;
+    float4x4 InvProj;
+    float4x4 ViewProj;
+    float4x4 ViewProjT;
    
     float3 EyePosW; 
     float pad0;

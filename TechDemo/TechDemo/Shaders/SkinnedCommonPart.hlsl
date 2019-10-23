@@ -41,8 +41,7 @@ struct VertexIn
     float4 BoneWeight0 : BONEWEIGHT;    
     float4 BoneWeight1 : BONEWEIGHT1;
     float4 BoneWeight2: BONEWEIGHT2;
-    float4 BoneWeight3 : BONEWEIGHT3;
-	//float3 pad0; on CPU side
+    float4 BoneWeight3 : BONEWEIGHT3;	
 };
 
 struct VertexOut
@@ -54,8 +53,7 @@ struct VertexOut
     float2 UVText : TEXCOORD;
     float4 UVTextProj : TEXCOORDPROJ;
     float4 SSAOPosH : TEXCOORDPROJSSAO;
-    uint ShapeID : SHAPEID;    
-	//uint instID : SV_INSTANCEID;
+    uint ShapeID : SHAPEID;    	
 };
 
 struct PassStruct

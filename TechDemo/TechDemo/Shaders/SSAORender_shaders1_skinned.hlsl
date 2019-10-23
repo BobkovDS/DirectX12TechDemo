@@ -40,9 +40,7 @@ VertexOut VS(VertexIn vin, uint instID : SV_INSTANCEID)
 
     float4x4 lFinalM = mul(Final, wordMatrix);
 
-    vout.NormalW = mul((float3x3) lFinalM, vin.Normal);
-    //vout.NormalW = mul(vout.NormalW, (float3x3) cbPass.View);
-    //vout.NormalW = normalize(vout.NormalW);
+    vout.NormalW = mul((float3x3) lFinalM, vin.Normal);    
     vout.TangentW = float4(mul((float3x3) lFinalM, vin.TangentU), 0.0f);
     vout.UVText = vin.UVText;
 

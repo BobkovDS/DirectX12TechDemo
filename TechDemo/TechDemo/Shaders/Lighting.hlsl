@@ -62,8 +62,7 @@ float3 BlinnPhong(float3 lightStrenght, float3 lightVec, float3 normal, float3 t
 
 // Direction Light
 float3 ComputeDirectionalLight(Light L, MaterialLight mat, float3 normal, float3 toEye)
-{
-	//float3 lightVec = -L.ReflectDirection;
+{	
     float3 lightVec = -L.Direction;
 	
 	float ndotl = max(dot(lightVec, normal), 0.0f);
@@ -181,8 +180,7 @@ float CalcShadowFactor(float4 shadowPosH, Texture2D shadowMap, SamplerComparison
 
     for (int i = 0; i < 9; ++i)
     {
-        percentLit += shadowMap.SampleCmpLevelZero(gsamShadow, shadowPosH.xy + offset[i], depth).r;
-        //percentLit += shadowMap.SampleCmp(gsamShadow, shadowPosH.xy + offset[i], depth).r;
+        percentLit += shadowMap.SampleCmpLevelZero(gsamShadow, shadowPosH.xy + offset[i], depth).r;        
     }   
 
     return (percentLit / 9.0f); // * spot_factor

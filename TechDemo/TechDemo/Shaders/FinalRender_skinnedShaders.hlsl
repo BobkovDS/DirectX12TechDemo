@@ -88,7 +88,7 @@ float4 PS(VertexOut pin) : SV_Target
     float ssao_factor = 1.0f;
     if ((gTechFlags & (1 << RTB_SSAO)) > 0) // if we use SSAO information
     {
-        float4 lUV = pin.SSAOPosH; // mul(float4(pin.PosW, 1.0f), cbPass.ViewProjT);
+        float4 lUV = pin.SSAOPosH;
         lUV.xyz /= lUV.w;
         ssao_factor = gSSAOBlurMap.Sample(gsamPointWrap, lUV.xy).r;
     }
@@ -99,22 +99,10 @@ float4 PS(VertexOut pin) : SV_Target
     MaterialLight matLight = { diffuseAlbedo, material.FresnelR0, shiness };
     
     float shadow_depth = 1.0f;
-    //if ((gTechFlags & (1 << RTB_SHADOWMAPPING)) > 0)  // if we use Shadow mapping
-    //{
-    //    float4 lShadowPosH = mul(float4(pin.PosW, 1.0f), cbPass.Lights[0].ViewProjT);
-    //    shadow_depth = CalcShadowFactor(lShadowPosH, gShadowMap0, gsamShadow);
-    //}
     
     float4 directLight = ComputeLighting(cbPass.Lights, matLight, pin.PosW, Normal, toEyeW, shadow_depth);
         
-    float4 litColor = directLight + ambient;
-    
-    //if (cbPass.FogRange > 0)
-    if (0 > 1)
-    {
-        float fogAmount = saturate((distToEye - cbPass.FogStart) / cbPass.FogRange);
-        litColor = lerp(litColor, cbPass.FogColor, fogAmount);
-    }
+    float4 litColor = directLight + ambient;   
      
     litColor.a = diffuseTranspFactor;
 

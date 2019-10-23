@@ -226,11 +226,7 @@ float4 PS(GeometryOut pin) : SV_Target
     }
    
     //float3 bumpedNormalW = normalize(normal1 + normal2);
-    float3 bumpedNormalW = normal1;//   normalize(normal1);
-    //return float4(bumpedNormalW, 1.0f);
-
-    //if (material.textureFlags && 0x01)
-    //    diffuseAlbedo = gDiffuseMap[material.DiffuseMapIndex[0]].Sample(gsamPointWrap, textC.xy);
+    float3 bumpedNormalW = normal1;//   normalize(normal1);    
 	
     float4 ambient = cbPass.AmbientLight * diffuseAlbedo;
 

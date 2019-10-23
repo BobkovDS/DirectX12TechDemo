@@ -55,18 +55,11 @@ void CS(int3 groupThreadID : SV_GroupThreadID, int3 dispatchThreadID : SV_Dispat
     if (dispatchThreadID.y < 1 || dispatchThreadID.y > lTextureSizeH-1)
         return;    
 
-    lTextureSizeW = lTextureSizeW ;
-    //float k1 = cbPass.k1;
-    //float k2 = cbPass.k2;
-    //float k3 = cbPass.k3;
-
     float4 cV = gCurrentBuffer[int2(1, dispatchThreadID.y)];
     float4 lV = gCurrentBuffer[int2(0, dispatchThreadID.y)];
 
     for (int i = 1; i < lTextureSizeW-1; i++)
-    {   
-       // float4 cV = gCurrentBuffer[int2(i, dispatchThreadID.y)];
-       // float4 lV = gCurrentBuffer[int2(i-1, dispatchThreadID.y )];
+    {
         float4 rV = gCurrentBuffer[int2(i + 1, dispatchThreadID.y)];
         float4 tV = gCurrentBuffer[int2(i, dispatchThreadID.y - 1)];
         float4 bV = gCurrentBuffer[int2(i, dispatchThreadID.y + 1)];

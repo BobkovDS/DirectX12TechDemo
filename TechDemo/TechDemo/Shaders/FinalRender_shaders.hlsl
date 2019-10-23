@@ -79,12 +79,10 @@ float4 PS(VertexOut pin) : SV_Target
         if ((material.textureFlags & 0x04))
         {
             float4 readNormal = gDiffuseMap[material.DiffuseMapIndex[2]].Sample(gsamPointWrap, pin.UVText);           
-            Normal = NormalSampleToWorldSpace(readNormal.xyz, Normal, pin.TangentW);
-            //return float4(Normal, 1.0f);
+            Normal = NormalSampleToWorldSpace(readNormal.xyz, Normal, pin.TangentW);           
         }
     }  
-
-    //return float4(ssao_factor, ssao_factor, ssao_factor, 1.0f);
+    
     float4 ambient = ssao_factor * cbPass.AmbientLight * diffuseAlbedo;    
        
     const float shiness = 1.0f - material.Roughness;    
@@ -101,19 +99,7 @@ float4 PS(VertexOut pin) : SV_Target
     
     float4 directLight = ComputeLighting(cbPass.Lights, matLight, pin.PosW, Normal, toEyeW, shadow_depth);
 
-    float4 litColor = directLight + ambient;
-    
-    //if (cbPass.FogRange > 0)
-    if (0 > 1)
-    {
-        float fogAmount = saturate((distToEye - cbPass.FogStart) / cbPass.FogRange);
-        litColor = lerp(litColor, cbPass.FogColor, fogAmount);
-    }           
-    
-    //float3 r = refract(-toEyeW, Normal, 0.9f);
-    //float4 reflectionColor = gCubeMap.Sample(gsamPointWrap, r);
-    //float3 fresnelFactor = SchlickFresnel(material.FresnelR0, Normal, r);
-    //litColor.rgb += shiness * fresnelFactor * reflectionColor.rgb;
+    float4 litColor = directLight + ambient;  
 
     litColor.a = diffuseTranspFactor;
 
