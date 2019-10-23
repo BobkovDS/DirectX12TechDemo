@@ -65,6 +65,24 @@ Inheriting is used to allow child-class, using virtual methods get access to mai
 * Render part
   - Renders, using __*Scene*__ object, implement some render technique (__*SSAORender*__, __*ShadowRender*__ etc) or final scene drawing (__*FinalRender*__). Each Render has its own set of Pipeline State Objects (PSOLayers) for each Objects Layer (Opaques objects, Transparent objects, Opaque Skinned Objects etc). But because PSOLayer for some Render has the same RootSignature for all Objects Layers, it is no need to set all RootSignature arguments every time when we draw a Objects Layer, changing a PSO for this.
 
+**Application Control:**
+   - Camera rotation: a mouse
+   - Camera moving: W/S/A/D
+  - Camera animation on/off: C
+  - Light animation on/off: L
+  - SSAO turn on/off: NumPad7
+  - Shadows turn on/off: NumPad8
+  - Normal mapping turn on/off: NumPad6
+  - Water reflection turn on/off: NumPad4
+  - Water simulation turn on/off: NumPad9
+  - Water drop add: NumPad5
+  - Which texture to show:
+    - Final Image: 1
+    - SSAO View-space Normal Map (if SSAO is turned on): 2
+    - SSAO AO Map (if SSAO is turned on): 3
+    - SSAO AO blured Map (if SSAO is turned on): 4
+    - Shadow map (if Shadows are turned on): 5 
+
  **Books:**
  1. "Thinking in C++. Volume One: Introduction to Standard C++. Second Edition". Bruce Eckel.
  2. "Thinking in C++. Volume Two: Practical Programming. Second Edition". Bruce Eckel, Chuck Allision.
