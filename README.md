@@ -8,7 +8,7 @@ A Technical demo to show my DirectX 12 basic/junior-level programming skills
 
 **Description:**
 
-Hello, my name is Dmitriy and i want to be Engine/Rendering Engineer. This Project is to put together and upgrade my C++ and DirectX 12 programming skills.
+Hello, my name is Dmitriy and i want to be Rendering/Graphics Engineer. This Project is to put together and upgrade my C++ and DirectX 12 programming skills.
 This project looks like some kind of 3D Engine, with possability to load a scene from several FBX files and render it using some render techniques. 
 But in the same time, it does not claim to be 'real' 3D Engine. The goal was to create a solid 3D application with attention to using next topics:
 * DXGI
