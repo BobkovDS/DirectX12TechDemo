@@ -90,7 +90,6 @@ Inheriting is used to allow child-class, using virtual methods get access to mai
  4. "Mathematics for 3D Game Programming and Computer Graphics. Third Edition". Eric Lengyel.
  
 **Contacts:**
- Please feel free to contact me (bobkovds285@gmail.com) if you want to get more information.
- Also you can find me in WhatsApp: +48 576 345 711
+ Please feel free to contact me (bobkovds285@gmail.com) if you want to get more information. 
  
  **Thank you.**
